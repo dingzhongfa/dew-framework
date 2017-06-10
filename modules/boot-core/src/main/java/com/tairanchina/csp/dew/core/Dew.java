@@ -1,13 +1,14 @@
 package com.tairanchina.csp.dew.core;
 
-import com.tairanchina.csp.dew.core.cluster.Cluster;
-import com.tairanchina.csp.dew.core.dto.OptInfo;
-import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.ecfront.dew.common.$;
+import com.ecfront.dew.common.HttpHelper;
+import com.tairanchina.csp.dew.core.cluster.Cluster;
 import com.tairanchina.csp.dew.core.cluster.ClusterCache;
 import com.tairanchina.csp.dew.core.cluster.ClusterDist;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
+import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
+import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,11 @@ import javax.annotation.PostConstruct;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -130,73 +130,89 @@ public class Dew {
      */
     public static class EB {
 
-        private static RestTemplate restTemplate;
+        private static RestTemplate serviceClient;
 
-        public static void setRestTemplate(RestTemplate _restTemplate) {
-            restTemplate = _restTemplate;
+        public static void setServiceClient(RestTemplate _serviceClient) {
+            serviceClient = _serviceClient;
         }
 
-        public static <T> ResponseEntity<T> get(String url, Class<T> respClazz) {
-            return get(url, null, respClazz);
+        public static HttpHelper.WrapHead get(String url) {
+            return get(url, null);
         }
 
-        public static <T> ResponseEntity<T> get(String url, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.GET, url, null, header, respClazz);
+        public static HttpHelper.WrapHead get(String url, Map<String, String> header) {
+            return exchange(HttpMethod.GET, url, null, header);
         }
 
-        public static <T> ResponseEntity<T> delete(String url, Class<T> respClazz) {
-            return delete(url, null, respClazz);
+        public static HttpHelper.WrapHead delete(String url) {
+            return delete(url, null);
         }
 
-        public static <T> ResponseEntity<T> delete(String url, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.DELETE, url, null, header, respClazz);
+        public static HttpHelper.WrapHead delete(String url, Map<String, String> header) {
+            return exchange(HttpMethod.DELETE, url, null, header);
         }
 
-        public static <T> ResponseEntity<T> head(String url, Class<T> respClazz) {
-            return head(url, null, respClazz);
+        public static HttpHelper.WrapHead head(String url) {
+            return head(url, null);
         }
 
-        public static <T> ResponseEntity<T> head(String url, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.HEAD, url, null, header, respClazz);
+        public static HttpHelper.WrapHead head(String url, Map<String, String> header) {
+            return exchange(HttpMethod.HEAD, url, null, header);
         }
 
-        public static <T> ResponseEntity<T> options(String url, Class<T> respClazz) {
-            return options(url, null, respClazz);
+        public static HttpHelper.WrapHead options(String url) {
+            return options(url, null);
         }
 
-        public static <T> ResponseEntity<T> options(String url, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.OPTIONS, url, null, header, respClazz);
+        public static HttpHelper.WrapHead options(String url, Map<String, String> header) {
+            return exchange(HttpMethod.OPTIONS, url, null, header);
         }
 
-        public static <T> ResponseEntity<T> post(String url, Object body, Class<T> respClazz) {
-            return post(url, body, null, respClazz);
+        public static HttpHelper.WrapHead post(String url, Object body) {
+            return post(url, body, null);
         }
 
-        public static <T> ResponseEntity<T> post(String url, Object body, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.POST, url, body, header, respClazz);
+        public static HttpHelper.WrapHead post(String url, Object body, Map<String, String> header) {
+            return exchange(HttpMethod.POST, url, body, header);
         }
 
-        public static <T> ResponseEntity<T> put(String url, Object body, Class<T> respClazz) {
-            return put(url, body, null, respClazz);
+        public static HttpHelper.WrapHead put(String url, Object body) {
+            return put(url, body, null);
         }
 
-        public static <T> ResponseEntity<T> put(String url, Object body, Map<String, String> header, Class<T> respClazz) {
-            return exchange(HttpMethod.PUT, url, body, header, respClazz);
+        public static HttpHelper.WrapHead put(String url, Object body, Map<String, String> header) {
+            return exchange(HttpMethod.PUT, url, body, header);
         }
 
-        public static <T> ResponseEntity<T> exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header, Class<T> respClazz) {
-            HttpHeaders headers = new HttpHeaders();
-            if (header != null) {
-                header.forEach(headers::add);
+        private static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) {
+            try {
+                if (!$.field.isIPv4Address(new URL(url).getHost())) {
+                    HttpHeaders headers = new HttpHeaders();
+                    if (header != null) {
+                        header.forEach(headers::add);
+                    }
+                    tryAttachTokenToHeader(headers);
+                    HttpEntity entity;
+                    if (body != null) {
+                        entity = new HttpEntity(body, headers);
+                    } else {
+                        entity = new HttpEntity(headers);
+                    }
+                    ResponseEntity resp = serviceClient.exchange(tryAttachTokenToUrl(url), httpMethod, entity, Object.class);
+                    HttpHelper.WrapHead wrapHead = new HttpHelper.WrapHead();
+                    wrapHead.head = new HashMap<>();
+                    for (Map.Entry<String, List<String>> entry : resp.getHeaders().entrySet()) {
+                        wrapHead.head.put(entry.getKey(), entry.getValue().size() > 0 ? entry.getValue().get(0) : "");
+                    }
+                    wrapHead.result = $.json.toJsonString(resp.getBody());
+                    return wrapHead;
+                } else {
+                    return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
-            tryAttachTokenToHeader(headers);
-            HttpEntity entity;
-            if (body != null) {
-                entity = new HttpEntity(body, headers);
-            } else {
-                entity = new HttpEntity(headers);
-            }
-            return restTemplate.exchange(tryAttachTokenToUrl(url), httpMethod, entity, respClazz);
         }
 
         private static String tryAttachTokenToUrl(String url) {

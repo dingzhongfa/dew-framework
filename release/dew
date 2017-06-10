@@ -1,7 +1,7 @@
 #!/bin/bash
 
 log_path=./logs
-profile=test
+profile=default
 
 start_dew(){
     stop_dew
@@ -11,7 +11,7 @@ start_dew(){
             app=`echo $file|cut -d "." -f1`
             mkdir -p  $log_path/$app/
             cd ./dew_apps/$app
-            nohup java -Dspring.profiles.active=$profile -Ddew.flag=dew_apps_sh -jar ./$app.jar > ../../$log_path/$app/out.log &
+            nohup java -Dspring.profiles.active=$profile -Ddew.flag=dew_apps_sh -jar ./$app.jar > /dev/null &
             echo "Started $app"
             cd ../../
     done
@@ -66,7 +66,7 @@ start(){
             app=`echo $file|cut -d "." -f1`
             if [ $1 = 'all' ] || [ "$1" = $app ]; then
                 mkdir -p  $log_path/$app/
-                nohup java -Dspring.profiles.active=$profile -Ddew.flag=apps_sh -jar ./apps/$app/$app.jar  > $log_path/$app/out.log &
+                nohup java -Dspring.profiles.active=$profile -Ddew.flag=apps_sh -jar ./apps/$app/$app.jar  > /dev/null &
                 echo "Started $app"
             fi
         done
@@ -149,7 +149,7 @@ show(){
 }
 
 tip(){
-    echo "============== [ EZ-Framework ] Deploy Script =============="
+    echo "============== [ Dew-Framework ] Deploy Script =============="
     echo ">>  start_dew"
     echo ">>  stop_dew"
     echo ">>  restart_dew"
@@ -177,19 +177,10 @@ command=$1
 args=$2
 case $command in
     "start_dew")
-	if [ "$args" = "" ] ; then
-     tip
-    fi
 	start_dew ;;
 	"stop_dew")
-	if [ "$args" = "" ] ; then
-     tip
-    fi
 	stop_dew ;;
 	"restart_dew")
-	if [ "$args" = "" ] ; then
-     tip
-    fi
 	restart_dew ;;
 	"start")
 	if [ "$args" = "" ] ; then 

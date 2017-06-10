@@ -9,15 +9,15 @@ security:
   basic:
     enabled: true
   user:
-    name: client
-    password: ecfront
+    name: tr
+    password: 123456
 
 eureka:
   client:
     register-with-eureka: false
     fetch-registry: false
     serviceUrl:
-      defaultZone: http://client:ecfront@localhost:${server.port}/eureka
+      defaultZone: http://tr:123456@localhost:${server.port}/eureka
 
 logging:
   path: ./logs

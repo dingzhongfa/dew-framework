@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -56,12 +54,7 @@ public class Dew {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(_dewConfig.getCluster().getMq() + "ClusterMQ");
         }
         Dew.dewConfig = _dewConfig;
-    }
-
-    @PostConstruct
-    @ConditionalOnClass({Entity.class})
-    public void initEntity() {
-        _applicationContext.getBean(EntityContainer.class);
+        _applicationContext.containsBean(EntityContainer.class.getSimpleName());
     }
 
     public static class Constant {

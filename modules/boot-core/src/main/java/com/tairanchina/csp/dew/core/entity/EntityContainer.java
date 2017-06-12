@@ -5,6 +5,7 @@ import com.ecfront.dew.common.BeanHelper;
 import com.tairanchina.csp.dew.core.DewConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@ConditionalOnClass({Entity.class})
+@ConditionalOnClass(JpaRepository.class)
 public class EntityContainer {
 
     private static final Map<String, Optional<EntityClassInfo>> CODE_FIELD_NAMES = new ConcurrentHashMap<>();

@@ -22,6 +22,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     tomcat:
       max-wait: 24000
+
 eureka:
   instance:
     metadata-map:

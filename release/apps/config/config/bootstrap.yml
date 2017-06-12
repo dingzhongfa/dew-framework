@@ -5,10 +5,13 @@ spring:
     config:
       server:
         git:
-          uri: https://rep.360taihe.com/crm/env.git
+          uri: https://rep.360taihe.com/env/fake.git
+          repos:
+            crm:
+              pattern: crm*
+              uri: https://rep.360taihe.com/env/crm.git
           username: cdman
           password: cdman123
-          default-label: 1.0
 
 server:
   port: 9000

@@ -3,8 +3,8 @@
 *基于Spring Cloud的服务封装*
 
 === 设计理念
-力求提供一个完备的生产级微服务架构，最小化的学习成本，快速上手，
-对Spring Cloud做一层薄的封装，在不改变Spring Cloud的开发模式下做简洁明了的扩展。
+对Spring Cloud做一层薄的封装，力求提供一个完备的生产级微服务架构，最小化的学习成本，快速上手，在不改变Spring Cloud的开发模式下做简洁明了的扩展。
+
 
 === 模块与功能
 
@@ -15,17 +15,15 @@ IMPORTANT: 当前先迁移 `modules` 和 两个核心的 `config` `register` 服
 . 提供了Spring Boot & Spring Cloud 的基础pom结构
 . 通过 `maven clean package -P package`来生成fatjar
 
-
 ==== *com.tairanchina.csp.dew:boot-core* Dew Spring Boot 封装
 
-
-. 常用分布式服务（Cache、Lock、Map、MQ）
-. 常用实体模型
-. 服务脚手架（CRUDS，针对实体的创建、查询、更新、删除、启用禁用）
-. 基于Spring Data JPA的常用方式扩展
-. 统一返回信息格式（Resp<E>）
-. 可跟踪日志支持（请求级ID）
-. 通用拦截器栈
+. `Dew.cluster.*` - 常用分布式服务（Cache、Lock、Map、MQ）
+. `entity`包 - 常用实体模型
+. `controller & service`包 - 服务脚手架（CRUDS，针对实体的创建、查询、更新、删除、启用禁用）
+. `DewRepository<E extends IdEntity>` - 基于Spring Data JPA的常用方式扩展
+. `Resp<E>` - 统一返回信息格式
+. `DewLogger` - 可跟踪日志支持（请求级ID）
+. `Dew.EB.*` 统一生产、测试环境的微服务路由
 . Swagger文档
 
 [source,xml]

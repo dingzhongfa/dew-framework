@@ -1,0 +1,334 @@
+= Dew-Config
+
+*基于Spring Cloud Config的服务封装*
+
+== 目标
+. 支持基于Spring Boot及其它技术框架的配置统一管理及配置变更推送
+. 提供一套成熟的最佳实践方案
+
+== 设计架构
+
+TBD
+
+== 最佳实践
+
+Spring Cloud Config支持多种类型的数据源，如Git、SVN、Local等，本服务推荐使用Git，
+在Git的处理上支持单库和基于模式匹配的多库，本服务要求使用多库管理。
+
+=== 准备
+
+.初始化Git仓库
+
+. 首先建立一个叫`env`的`Group`，加上运维人员的权限（可以是Master）
+. 为不同项目建立对应的Git仓库，使用项目标识做为仓库名称，加上开发组的权限
+. 为不同项目建立各自的`Branch`，用于标识不同的版本
+. 建立一个名为`fake`的仓库，由于Spring Cloud Config必须指定一个基础库，用于在路由不到特定库时指向的默认库。从最佳实践中不应该存在“默认库”，所以这里建立一个“虚假”的库，仅用于满足它的检查要求
+
+[source,text]
+.仓库示例
+----
+env(group)
+ |- fake
+ `- crm
+   `- 1.0
+     |- application.yml
+     |- application-default.yml
+     `- crm-finance.yml
+----
+
+[source,yml]
+.仓库配置格式
+----
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://<url>/env/fake.git <1>
+          repos:
+            <projectFlagA>: <2>
+              pattern: <projectFlagA>* <3>
+              uri: https://<url>/env/<projectFlagA>.git <4>
+            <projectFlag...>:
+              pattern: <projectFlag...>*
+              uri: https://<url>/env/<projectFlag...>.git
+          username: <CD Name> <5>
+          password: <CD Pwd> <6>
+----
+<1> 默认库，仅用于Spring Cloud Config格式要求
+<2> 项目标识
+<3> 匹配方式，这里表示匹配所有以这一项目名称开头的请求
+<4> 匹配的目标库，这里要求库名为项目标识
+<5> Git用户名
+<6> Git密码
+
+[source,yml]
+.仓库配置示例
+----
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://rep.360taihe.com/env/fake.git
+          repos:
+            crm:
+              pattern: crm*
+              uri: https://rep.360taihe.com/env/crm.git
+          username: cdman
+          password: cdman123
+----
+TIP: 此配置表示crm项目及其所有子项目（以crm开头）都会使用`https://rep.360taihe.com/env/crm.git`这个库。
+
+[source,yml]
+.其它配置格式
+----
+encrypt:
+  key: <seed> <1>
+
+security: <2>
+  basic:
+    enabled: true
+  user:
+    name: <name>
+    password: <pwd>
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://<auth>@<host:port>/eureka <3>
+----
+<1> 配置值加密种子，对于密码或其它认证信息可以加密后保存，使用`{cipher}xxxxx`格式表示此值是密文，调用`curl <Config Service Url>/encrypt -d <明文>`可以转换成密文
+<2> 使用Http Basic认证访问Config服务
+<3> Eureka服务地址，将Config做为Spring Cloud的一个服务注册到Eureka中
+
+[source,yml]
+.其它配置示例
+----
+encrypt:
+  key: dsffjsske4wku^%&*&
+
+security:
+  basic:
+    enabled: true
+  user:
+    name: config
+    password: 123456
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry:123456@localhost:10000/eureka
+----
+
+=== 使用
+
+Config服务使用Http方式获取数据，支持多种`path`组合，这里推荐为：
+`http<s>://<Config Service Url>/<Project Flag>/<Profile Flag>/<Version Flag>/<Specific File Name>`
+
+[source,properties]
+.例 `http://xxx/crm-finance/prod/1.0/application.yml` 表示获取`crm-finance`这个服务`生产环境`下`1.0`版本的`application-default.yml`文件。它返回：
+----
+"dew.basic.name": "泰然金服CRM",
+"dew.basic.version": 1,
+"dew.basic.desc": "",
+...
+----
+
+[TIP]
+.Profile Flag说明
+====
+`Profile Flag`指的是环境变量，项目一般会分`开发（dev）、测试（test）、预发（prepub）、生产（prod）`等多个环境，如果项目不存在或不需要区分环境时使用`default`标识。
+====
+
+[IMPORTANT]
+.文件组合说明
+====
+在不指定`Specific File Name`时，Config服务会返回符合url要求的所有文件：
+. application.<yml/properties>
+. application-<Profile Flag>.<yml/properties>
+. <Project Flag>.<yml/properties>
+. <Project Flag>-<Profile Flag>.<yml/properties>
+
+如上，application.yml或application.properties是基础文件，只要它存在无论访问什么`Project Flag`/`Profile Flag`都会返回，同时还会加上一个带`Profile Flag`的application文件，最后带上两个`Profile Flag`文件，一个有`Profile Flag`，一个没有。
+====
+
+[source,properties]
+.例 `http://xxx/crm-finance/prod/1.0` 表示获取`crm-finance`这个服务`生产环境`下`1.0`版本的`application-default.yml`文件。它返回：
+----
+{
+    "name": "crm-finance",
+    "profiles": [
+        "prod"
+    ],
+    "label": "1.0",
+    "propertySources": [
+        {
+            "name": "https://rep.360taihe.com/env/crm.git/application-prod.yml",
+            "source": {
+                "spring.redis.host": "172.30.251.183",
+                "spring.redis.port": 16379,
+                ...
+            }
+        },
+        {
+            "name": "https://rep.360taihe.com/env/crm.git/crm-finance.yml",
+            "source": {
+                "server.port": 8000
+            }
+        },
+        {
+            "name": "https://rep.360taihe.com/env/crm.git/application.yml",
+            "source": {
+                "dew.basic.name": "泰然金服CRM",
+                "dew.basic.version": 1,
+                ...
+            }
+        }
+    ]
+}
+----
+
+==== Spring Cloud项目
+
+Config服务与Spring Cloud可以很好的适配。
+
+.启用Config服务
+
+[source,xml]
+.添加`cloud-core`依赖
+----
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cloud-core</artifactId>
+    <version>${dew.version}</version>
+</dependency>
+----
+
+[source,java]
+.继承`DewCloudApplication`类
+----
+public abstract class SomeApplication extends DewCloudApplication {
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(SomeApplication.class).run(args);
+    }
+}
+----
+
+[source.yml]
+.配置Config服务格式
+----
+spring:
+  cloud:
+    config:
+      discovery:
+        enabled: true <1>
+        service-id: config <2>
+      username: <name> <3>
+      password: <pwd> <4>
+      label: <version> <5>
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://<auth>@<host:port>/eureka <6>
+
+management:
+  address: 127.0.0.1 <7>
+  security:
+    enabled: false <8>
+----
+<1> 启用服务发现，即从Eureka服务中找Config服务
+<2> Config服务在Eureka服务中的服务id
+<3> Config服务Http Basic认证用户名
+<4> Config服务Http Basic认证密码
+<5> 当前配置的版本号
+<6> Eureka服务Url
+<7> 管理请求允许的IP
+<8> 由于使用了白名单，可以关闭管理请求的认证
+
+TIP: 当服务没有使用Eureka时可以去除`discovery`配置，使用`uri`直接指定Config服务的Url
+
+[source.yml]
+.配置Config服务示例
+----
+spring:
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      username: config
+      password: 123456
+      label: 1.0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://registry:123456@172.30.248.162:10000/eureka
+
+management:
+  address: 127.0.0.1
+  security:
+    enabled: false
+----
+
+.获取配置
+Spring Boot支持两种方式获取Classpath下的`yml`或`properties`文件
+. 使用`@ConfigurationProperties`将配置映射成Java对象，
+. 使用`@Value("${}")`获取某个配置项的值
+
+TIP: via https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+
+[source.java]
+.获取配置示例
+----
+// 配置文件
+config-example:
+  version: v1.0  // 有一个叫config-example.version的配置
+
+// 方式一，使用@ConfigurationProperties
+@Component
+@ConfigurationProperties(prefix = "config-example")  // 前缀
+public class ConfigExampleConfig {
+    private String version;
+    // get/set...
+}
+
+# 测试类
+@RefreshScope // 刷新配置
+@RestController
+public class TestController {
+
+    @Autowired
+    private ConfigExampleConfig configExampleConfig; // 方式一注入
+
+    @Value("${config-example.version}") // 方式二注入
+    private String version;
+
+    @RequestMapping("/value") // 测试调用
+    public void value() throws BadPaddingException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {
+        System.out.println("Ctl @Value:" + version);
+        System.out.println("Ctl @ConfigurationProperties:" + configExampleConfig.getVersion());
+    }
+
+}
+----
+
+.配置变更
+
+TBD
+
+==== Other Frameworks
+
+TBD
+
+==== CD
+
+TBD
+
+== 部署
+=== 运行环境
+Java8及以上、Git
+
+TBD

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-example
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      username: config
+      password: 123456
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://registry:123456@localhost:10000/eureka
+
+server:
+  port: 8080

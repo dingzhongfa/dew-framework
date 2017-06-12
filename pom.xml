@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <modules>
         <module>modules/parent</module>
@@ -20,6 +20,7 @@
         <module>modules/cloud-core</module>
         <module>components/registry</module>
         <module>components/config</module>
+        <module>examples/config-example</module>
     </modules>
 
     <profiles>

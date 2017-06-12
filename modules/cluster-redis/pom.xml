@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../../modules/parent/pom.xml</relativePath>
     </parent>
 
@@ -15,7 +15,7 @@
     <name>Dew Cluster Redis</name>
     <description>Dew 集群 Redis 实现</description>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <properties>
     </properties>

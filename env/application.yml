@@ -8,8 +8,8 @@ dew:
       basePackage: "com.tairanchina"
   cluster:
     cache: redis
-    dist: hazelcast
-    mq: hazelcast
+    dist: redis
+    mq: redis
 
 spring:
   jpa:
@@ -22,17 +22,6 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     tomcat:
       max-wait: 24000
-  mail:
-    host: smtp.exmail.qq.com
-    username: test@ecfront.com
-    password: Ez1234
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
 eureka:
   instance:
     metadata-map:
@@ -43,4 +32,6 @@ logging:
 
 management:
   address: 127.0.0.1
+  security:
+    enabled: false
 

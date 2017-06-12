@@ -296,7 +296,6 @@ public class ConfigExampleConfig {
 }
 
 # 测试类
-@RefreshScope // 刷新配置
 @RestController
 public class TestController {
 
@@ -317,7 +316,13 @@ public class TestController {
 
 .配置变更
 
-TBD
+有两种方式实现配置变更：
+. 使用@RefreshScope注解，调用`http<s>://<host:port>/refresh`实现配置刷新
+. 设置`endpoints.restart.enabled: true`，调用`http<s>://<host:port>/restart`重启服务
+
+经测试，配置刷新在某些场景下无效，且对单例或使用缓存的应用也无法刷新，所以推荐重启的方法。
+
+IMPORTANT: 重启需要错开执行，保证同一时间有可用服务。
 
 ==== Other Frameworks
 

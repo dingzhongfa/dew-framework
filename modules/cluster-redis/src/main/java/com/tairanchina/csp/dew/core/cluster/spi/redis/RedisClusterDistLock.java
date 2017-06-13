@@ -52,42 +52,25 @@ public class RedisClusterDistLock implements ClusterDistLock {
 
     @Override
     public void lock() {
-        if (!isLock()) {
-            redisTemplate.opsForValue().set(key, currThreadId);
-        }
+        redisTemplate.opsForValue().setIfAbsent(key, currThreadId);
     }
 
     @Override
     public boolean tryLock() {
-        if (!isLock()) {
-            lock();
-            return true;
-        } else {
-            return false;
-        }
+        return redisTemplate.opsForValue().setIfAbsent(key, currThreadId);
     }
 
     @Override
     public boolean tryLock(int waitSec) throws InterruptedException {
         synchronized (this) {
             if (waitSec == 0) {
-                if (!isLock()) {
-                    lock();
-                    return true;
-                } else {
-                    return false;
-                }
+                return tryLock();
             } else {
                 long now = new Date().getTime();
                 while (isLock() && new Date().getTime() - now < waitSec) {
                     Thread.sleep(500);
                 }
-                if (!isLock()) {
-                    lock();
-                    return true;
-                } else {
-                    return false;
-                }
+                return tryLock();
             }
         }
     }

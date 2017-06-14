@@ -33,8 +33,9 @@ public class TestController {
     }
 
     @RequestMapping("/value")
-    public void value() throws BadPaddingException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {
+    public String value() throws BadPaddingException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, IOException {
         executeFileDownLoadTask();
+        return version;
     }
 
 }

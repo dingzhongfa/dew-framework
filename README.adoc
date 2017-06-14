@@ -8,7 +8,7 @@
 
 === 模块与功能
 
-IMPORTANT: 当前先迁移 `modules` 和 两个核心的 `config` `register` 服务。
+IMPORTANT: 当前先迁移 `modules` 和 三个核心的 `config` `register` `Gateway`服务。
 
 ==== *com.tairanchina.csp.dew:parent* Dew 父工程
 
@@ -88,7 +88,7 @@ IMPORTANT: 当前先迁移 `modules` 和 两个核心的 `config` `register` 服
 ==== *com.tairanchina.csp.dew:gateway* 网关服务
 
 . 集成Zuul网关
-. 与Auth配合，支持权限认证
+. 与Auth配合，支持权限认证（暂不迁移）
 
 ==== *com.tairanchina.csp.dew:gateway* Websocket网关服务
 

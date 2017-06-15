@@ -11,18 +11,20 @@ import java.util.List;
 @ConfigurationProperties(prefix = "dew")
 public class DewConfig {
 
-    private DewBasic basic = new DewBasic();
-    private DewCluster cluster = new DewCluster();
-    private DewSecurity security = new DewSecurity();
+    private Basic basic = new Basic();
+    private Cluster cluster = new Cluster();
+    private Security security = new Security();
 
-    public static class DewBasic {
+    public static class Basic {
 
         private String name = "";
         private String version = "1.0";
         private String desc = "";
         private String webSite = "";
-        private DewDoc doc = new DewDoc();
-        private DewEntity entity = new DewEntity();
+
+        private Doc doc = new Doc();
+        private Entity entity = new Entity();
+        private Format format = new Format();
 
         public String getName() {
             return name;
@@ -56,7 +58,7 @@ public class DewConfig {
             this.webSite = webSite;
         }
 
-        public static class DewDoc {
+        public static class Doc {
 
             private String basePackage = "";
 
@@ -69,7 +71,7 @@ public class DewConfig {
             }
         }
 
-        public static class DewEntity {
+        public static class Entity {
 
             private List<String> basePackages = new ArrayList<String>() {{
                 add("com.tairanchina");
@@ -84,25 +86,54 @@ public class DewConfig {
             }
         }
 
-        public DewDoc getDoc() {
+        public static class Format {
+
+            private boolean useUnityError = false;
+            private boolean reuseHttpState = false;
+
+            public boolean isUseUnityError() {
+                return useUnityError;
+            }
+
+            public void setUseUnityError(boolean useUnityError) {
+                this.useUnityError = useUnityError;
+            }
+
+            public boolean isReuseHttpState() {
+                return reuseHttpState;
+            }
+
+            public void setReuseHttpState(boolean reuseHttpState) {
+                this.reuseHttpState = reuseHttpState;
+            }
+        }
+
+        public Doc getDoc() {
             return doc;
         }
 
-        public void setDoc(DewDoc doc) {
+        public void setDoc(Doc doc) {
             this.doc = doc;
         }
 
-        public DewEntity getEntity() {
+        public Entity getEntity() {
             return entity;
         }
 
-        public void setEntity(DewEntity entity) {
+        public void setEntity(Entity entity) {
             this.entity = entity;
         }
 
+        public Format getFormat() {
+            return format;
+        }
+
+        public void setFormat(Format format) {
+            this.format = format;
+        }
     }
 
-    public static class DewCluster {
+    public static class Cluster {
 
         private String mq = "redis";
         private String cache = "redis";
@@ -133,9 +164,9 @@ public class DewConfig {
         }
     }
 
-    public static class DewSecurity {
+    public static class Security {
 
-        private DewSecurityCORS cors = new DewSecurityCORS();
+        private SecurityCORS cors = new SecurityCORS();
 
         private String tokenFlag = "__dew_token__";
 
@@ -143,11 +174,11 @@ public class DewConfig {
 
         private boolean tokenHash = false;
 
-        public DewSecurityCORS getCors() {
+        public SecurityCORS getCors() {
             return cors;
         }
 
-        public void setCors(DewSecurityCORS cors) {
+        public void setCors(SecurityCORS cors) {
             this.cors = cors;
         }
 
@@ -176,7 +207,7 @@ public class DewConfig {
         }
     }
 
-    public static class DewSecurityCORS {
+    public static class SecurityCORS {
 
         private String allowOrigin = "*";
         private String allowMethods = "POST,GET,OPTIONS,PUT,DELETE,HEAD";
@@ -207,28 +238,28 @@ public class DewConfig {
         }
     }
 
-    public DewBasic getBasic() {
+    public Basic getBasic() {
         return basic;
     }
 
 
-    public void setBasic(DewBasic basic) {
+    public void setBasic(Basic basic) {
         this.basic = basic;
     }
 
-    public DewCluster getCluster() {
+    public Cluster getCluster() {
         return cluster;
     }
 
-    public void setCluster(DewCluster cluster) {
+    public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
 
-    public DewSecurity getSecurity() {
+    public Security getSecurity() {
         return security;
     }
 
-    public void setSecurity(DewSecurity security) {
+    public void setSecurity(Security security) {
         this.security = security;
     }
 }

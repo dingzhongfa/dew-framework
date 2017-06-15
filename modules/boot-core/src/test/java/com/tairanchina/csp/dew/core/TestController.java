@@ -41,7 +41,7 @@ public class TestController {
             @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
     })
     public Resp<String> t3(@RequestParam String q) throws IOException {
-        throw new IOException("io error");
+        throw Dew.e("A000", new IOException("io error"));
     }
 
 }

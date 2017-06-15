@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.service;
 
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.repository.DewRepository;
+import com.tairanchina.csp.dew.core.jdbc.DewRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;

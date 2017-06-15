@@ -7,11 +7,13 @@ import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
 @Component
+@ConditionalOnExpression("#{'${dew.cluster.cache}'=='ignite' || '${dew.cluster.mq}'=='ignite' || '${dew.cluster.dist}'=='ignite'}")
 public class IgniteAdapter {
 
     @Autowired

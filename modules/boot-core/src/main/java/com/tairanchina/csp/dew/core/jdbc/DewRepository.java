@@ -1,23 +1,20 @@
-package com.tairanchina.csp.dew.core.repository;
+package com.tairanchina.csp.dew.core.jdbc;
 
-import com.tairanchina.csp.dew.core.entity.IdEntity;
 import com.ecfront.dew.common.Page;
+import com.tairanchina.csp.dew.core.entity.IdEntity;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
-@NoRepositoryBean
-public interface DewRepository<E extends IdEntity> extends JpaRepository<E, Long> {
+public interface DewRepository<E extends IdEntity> {
 
-    EntityManager em();
 
-    @Override
     @Transactional
     <S extends E> List<S> save(Iterable<S> entities);
+
+    @Transactional
+    <S extends E> S save(S entity);
 
     @Transactional
     E updateById(long id, E entity);
@@ -34,6 +31,8 @@ public interface DewRepository<E extends IdEntity> extends JpaRepository<E, Long
 
     @Transactional
     void deleteByCode(String code);
+
+    List<E> findAll();
 
     List<E> findEnable();
 

@@ -1,8 +1,12 @@
 dew:
-  cluster:
-    cache: redis
-    dist: redis
-    mq: redis
+  basic:
+    format:
+      use-unity-error: true
+      reuse-http-state: true
+#  cluster:
+#    cache: redis
+#    dist: hazelcast
+#    mq: redisE
 
 spring:
   application:

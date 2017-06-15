@@ -2,11 +2,13 @@ package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
 @Component
+@ConditionalOnBean(HazelcastAdapter.class)
 public class HazelcastClusterMQ implements ClusterMQ {
 
     @Autowired

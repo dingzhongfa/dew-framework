@@ -2,15 +2,8 @@ package com.tairanchina.csp.dew.core.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
-@MappedSuperclass
 public abstract class IdEntity extends EmptyEntity {
 
-    @Id
-    @GeneratedValue
     @ApiModelProperty("主键")
     protected long id;
 

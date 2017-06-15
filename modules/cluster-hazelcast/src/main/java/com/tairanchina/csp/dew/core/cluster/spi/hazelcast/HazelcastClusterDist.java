@@ -4,9 +4,11 @@ import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.ClusterDist;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnBean(HazelcastAdapter.class)
 public class HazelcastClusterDist implements ClusterDist {
 
     @Autowired

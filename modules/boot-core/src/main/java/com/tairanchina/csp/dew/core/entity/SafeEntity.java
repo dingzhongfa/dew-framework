@@ -3,26 +3,19 @@ package com.tairanchina.csp.dew.core.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
-@MappedSuperclass
 public abstract class SafeEntity extends IdEntity {
 
-    @Column(nullable = false)
     @ApiModelProperty("创建时间")
     protected Date createTime;
 
-    @Column(nullable = false)
     @ApiModelProperty("更新时间")
     protected Date updateTime;
 
-    @Column()
     @ApiModelProperty("创建人编码")
     protected String createUser;
 
-    @Column()
     @ApiModelProperty("更新人编码")
     protected String updateUser;
 

@@ -7,7 +7,6 @@ import com.tairanchina.csp.dew.core.cluster.ClusterCache;
 import com.tairanchina.csp.dew.core.cluster.ClusterDist;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
-import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +17,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -54,7 +53,6 @@ public class Dew {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(_dewConfig.getCluster().getMq() + "ClusterMQ");
         }
         Dew.dewConfig = _dewConfig;
-        _applicationContext.containsBean(EntityContainer.class.getSimpleName());
     }
 
     public static class Constant {
@@ -105,7 +103,7 @@ public class Dew {
 
     public static ApplicationContext applicationContext;
 
-    public static EntityManager em;
+    public static JdbcTemplate jdbcTemplate;
 
     public static DewConfig dewConfig;
 
@@ -365,6 +363,18 @@ public class Dew {
             Dew.cluster.cache.set(Dew.Constant.TOKEN_INFO_FLAG + optInfo.getToken(), $.json.toJsonString(optInfo));
         }
 
+    }
+
+    public static <E extends Throwable> E e(String code, E e) throws E {
+        try {
+            $.bean.setValue(e, "detailMessage", $.json.createObjectNode()
+                    .put("code", code)
+                    .put("message", e.getLocalizedMessage())
+                    .toString());
+        } catch (NoSuchFieldException e1) {
+            e1.printStackTrace();
+        }
+        throw e;
     }
 
 }

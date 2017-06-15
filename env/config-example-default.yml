@@ -1,9 +1,6 @@
 config-example:
   version: v2.2
 
-server:
-  port: 8080
-
 endpoints:
   restart:
     enabled: true

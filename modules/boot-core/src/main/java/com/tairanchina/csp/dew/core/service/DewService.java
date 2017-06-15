@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core.service;
 
 import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.repository.DewRepository;
+import com.tairanchina.csp.dew.core.jdbc.DewRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,10 +1,9 @@
 package com.tairanchina.csp.dew.core.controller;
 
 
-import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.service.CRUService;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
+import com.tairanchina.csp.dew.core.service.CRUService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface CRUVOController<T extends CRUService, V extends Object, E extends IdEntity> extends DewVOController<T, V, E> {
+public interface CRUVOController<T extends CRUService, V, E> extends DewVOController<T, V, E> {
 
     @GetMapping("")
     @ApiOperation(value = "获取记录列表")

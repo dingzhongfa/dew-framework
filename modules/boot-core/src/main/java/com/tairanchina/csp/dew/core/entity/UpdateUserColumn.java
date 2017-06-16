@@ -5,8 +5,9 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Code {
+public @interface UpdateUserColumn {
 
-    boolean uuid() default true;
+    // 默认为类名（驼峰转下划线）
+    String columnName() default "";
 
 }

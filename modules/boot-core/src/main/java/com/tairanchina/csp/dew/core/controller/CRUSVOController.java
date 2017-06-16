@@ -3,7 +3,6 @@ package com.tairanchina.csp.dew.core.controller;
 
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.entity.IdEntity;
 import com.tairanchina.csp.dew.core.service.CRUSService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,21 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface CRUSVOController<T extends CRUSService, V extends Object, E extends IdEntity> extends CRUVOController<T, V, E> {
+public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOController<T, V, E> {
 
     @GetMapping(value = "", params = {"enable"})
     @ApiOperation(value = "根据状态获取记录列表")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "enable", value = "状态", paramType = "query", dataType = "boolean"),
+            @ApiImplicitParam(name = "enabled", value = "状态", paramType = "query", dataType = "boolean"),
     })
-    default Resp<List<V>> findByStatus(@RequestParam(required = false) Boolean enable) {
+    default Resp<List<V>> findByStatus(@RequestParam(required = false) Boolean enabled) {
         Resp<List<E>> result;
-        if (enable == null) {
+        if (enabled == null) {
             result = getDewService().find();
-        } else if (enable) {
-            result = getDewService().findEnable();
+        } else if (enabled) {
+            result = getDewService().findEnabled();
         } else {
-            result = getDewService().findDisable();
+            result = getDewService().findDisabled();
         }
         if (result.ok()) {
             List<V> body = result.getBody().stream().map(i -> entityToVO(i)).collect(Collectors.toList());
@@ -42,16 +41,16 @@ public interface CRUSVOController<T extends CRUSService, V extends Object, E ext
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNumber", value = "当前页（从0开始）", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "path", dataType = "int", required = true),
-            @ApiImplicitParam(name = "enable", value = "状态", paramType = "query", dataType = "boolean"),
+            @ApiImplicitParam(name = "enabled", value = "状态", paramType = "query", dataType = "boolean"),
     })
-    default Resp<Page<V>> pagingByStatus(@PathVariable int pageNumber, @PathVariable int pageSize, @RequestParam(required = false) Boolean enable) {
+    default Resp<Page<V>> pagingByStatus(@PathVariable int pageNumber, @PathVariable int pageSize, @RequestParam(required = false) Boolean enabled) {
         Resp<Page<E>> result;
-        if (enable == null) {
+        if (enabled == null) {
             result = getDewService().paging(pageNumber, pageSize);
-        } else if (enable) {
-            result = getDewService().pagingEnable(pageNumber, pageSize);
+        } else if (enabled) {
+            result = getDewService().pagingEnabled(pageNumber, pageSize);
         } else {
-            result = getDewService().pagingDisable(pageNumber, pageSize);
+            result = getDewService().pagingDisabled(pageNumber, pageSize);
         }
         if (result.ok()) {
             List<V> body = result.getBody().getObjects().stream().map(i -> entityToVO(i)).collect(Collectors.toList());

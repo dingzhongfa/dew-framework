@@ -7,7 +7,9 @@ import com.tairanchina.csp.dew.core.cluster.ClusterCache;
 import com.tairanchina.csp.dew.core.cluster.ClusterDist;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
+import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
+import com.tairanchina.csp.dew.core.jdbc.DS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,6 +35,8 @@ import java.util.concurrent.Executors;
 @Component
 public class Dew {
 
+    private static final Logger logger = LoggerFactory.getLogger(Dew.class);
+
     @Autowired
     @Qualifier("dewConfig")
     private DewConfig _dewConfig;
@@ -41,7 +44,7 @@ public class Dew {
     private ApplicationContext _applicationContext;
 
     @PostConstruct
-    public void init() {
+    private void init() {
         Dew.applicationContext = _applicationContext;
         if (Dew.applicationContext.containsBean(_dewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(_dewConfig.getCluster().getCache() + "ClusterCache");
@@ -53,6 +56,10 @@ public class Dew {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(_dewConfig.getCluster().getMq() + "ClusterMQ");
         }
         Dew.dewConfig = _dewConfig;
+        if (Dew.applicationContext.containsBean(DS.class.getSimpleName())) {
+            Dew.ds = Dew.applicationContext.getBean(DS.class);
+        }
+        Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
     }
 
     public static class Constant {
@@ -103,7 +110,7 @@ public class Dew {
 
     public static ApplicationContext applicationContext;
 
-    public static JdbcTemplate jdbcTemplate;
+    public static DS ds;
 
     public static DewConfig dewConfig;
 
@@ -365,7 +372,7 @@ public class Dew {
 
     }
 
-    public static <E extends Throwable> E e(String code, E e) throws E {
+    public static <E extends Throwable> E e(String code, E e)  {
         try {
             $.bean.setValue(e, "detailMessage", $.json.createObjectNode()
                     .put("code", code)
@@ -374,7 +381,8 @@ public class Dew {
         } catch (NoSuchFieldException e1) {
             e1.printStackTrace();
         }
-        throw e;
+        logger.error(e.getLocalizedMessage(), e);
+        return e;
     }
 
 }

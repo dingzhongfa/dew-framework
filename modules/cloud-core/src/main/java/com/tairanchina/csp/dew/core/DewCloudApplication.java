@@ -22,7 +22,7 @@ public abstract class DewCloudApplication extends DewBootApplication {
     private RestTemplate restTemplate;
 
     @PostConstruct
-    public void initCloudCore(){
+    private void initCloudCore(){
         Dew.EB.setServiceClient(restTemplate);
     }
 

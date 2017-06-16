@@ -1,8 +1,8 @@
 package com.tairanchina.csp.dew.core;
 
+import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
-import com.ecfront.dew.common.$;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(SpringRunner.class)
 @SpringBootApplication
 @SpringBootTest(classes = DewBootApplication.class)
-@ComponentScan(basePackageClasses = {ClusterTest.class, Dew.class})
+@ComponentScan(basePackageClasses = {Dew.class, ClusterTest.class})
 public class ClusterTest {
 
     @Test

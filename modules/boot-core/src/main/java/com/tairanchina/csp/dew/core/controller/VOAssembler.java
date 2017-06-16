@@ -1,14 +1,12 @@
 package com.tairanchina.csp.dew.core.controller;
 
-import com.tairanchina.csp.dew.core.entity.IdEntity;
-
 /**
  * VO组装器
  *
  * @param <V>
  * @param <E>
  */
-public interface VOAssembler<V extends Object, E extends IdEntity> {
+public interface VOAssembler<V, E> {
 
     default V entityToVO(E entity) throws RuntimeException {
         return (V) entity;

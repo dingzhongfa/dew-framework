@@ -1,16 +1,16 @@
 package com.tairanchina.csp.dew.core.service;
 
+import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.jdbc.DewRepository;
-import org.springframework.data.domain.Sort;
+import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUService<T extends DewRepository<E>, E extends IdEntity> extends DewService<T, E> {
+public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
 
     default Resp<Optional<Object>> preGetById(long id) throws RuntimeException {
         return Resp.success(Optional.empty());
@@ -78,7 +78,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] GetById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preGetById(id);
         if (preResult.ok()) {
-            return Resp.success(postGet(getDewRepository().getById(id), preResult.getBody()));
+            return Resp.success(postGet(getDao().getById(id), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -87,7 +87,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] GetByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preGetByCode(code);
         if (preResult.ok()) {
-            return Resp.success(postGet(getDewRepository().getByCode(code), preResult.getBody()));
+            return Resp.success(postGet(getDao().getByCode(code), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -96,7 +96,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] Find.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
-            return Resp.success(postFind(getDewRepository().findAll(), preResult.getBody()));
+            return Resp.success(postFind(getDao().findAll(), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -105,11 +105,11 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         return paging(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> paging(int pageNumber, int pageSize, Sort sort) throws RuntimeException {
-        logger.debug("[{}] Paging {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, sort != null ? sort.toString() : "");
+    default Resp<Page<E>> paging(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+        logger.debug("[{}] Paging {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
-            return Resp.success(postPaging(getDewRepository().paging(pageNumber, pageSize, sort), preResult.getBody()));
+            return Resp.success(postPaging(getDao().paging(pageNumber, pageSize, orderDesc), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -119,7 +119,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] Save.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preSave(entity);
         if (preResult.ok()) {
-            return Resp.success(postSave(getDewRepository().save(entity), preResult.getBody()));
+            return Resp.success(postSave(getDao().getById(getDao().insert(entity)), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -129,7 +129,8 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] UpdateById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preUpdateById(id, entity);
         if (preResult.ok()) {
-            return Resp.success(postUpdate(getDewRepository().updateById(id, entity), preResult.getBody()));
+            getDao().updateById(id, entity);
+            return Resp.success(postUpdate(getDao().getById(id), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -139,7 +140,8 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] UpdateByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preUpdateByCode(code, entity);
         if (preResult.ok()) {
-            return Resp.success(postUpdate(getDewRepository().updateByCode(code, entity), preResult.getBody()));
+            getDao().updateByCode(code, entity);
+            return Resp.success(postUpdate(getDao().getByCode(code), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -148,7 +150,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] ExistById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preExistById(id);
         if (preResult.ok()) {
-            boolean result = getDewRepository().existById(id);
+            boolean result = getDao().existById(id);
             postExistById(id, preResult.getBody());
             return Resp.success(result);
         }
@@ -159,7 +161,7 @@ public interface CRUService<T extends DewRepository<E>, E extends IdEntity> exte
         logger.debug("[{}] ExistByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preExistByCode(code);
         if (preResult.ok()) {
-            boolean result = getDewRepository().existByCode(code);
+            boolean result = getDao().existByCode(code);
             postExistByCode(code, preResult.getBody());
             return Resp.success(result);
         }

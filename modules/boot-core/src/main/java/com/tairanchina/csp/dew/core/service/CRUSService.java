@@ -1,16 +1,16 @@
 package com.tairanchina.csp.dew.core.service;
 
+import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.jdbc.DewRepository;
-import org.springframework.data.domain.Sort;
+import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> extends CRUService<T, E> {
+public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
 
     default Resp<Optional<Object>> preEnableById(long id) throws RuntimeException {
         return Resp.success(Optional.empty());
@@ -40,46 +40,46 @@ public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> ext
     default void postDisableByCode(String code, Optional<Object> preBody) throws RuntimeException {
     }
 
-    default Resp<List<E>> findEnable() throws RuntimeException {
+    default Resp<List<E>> findEnabled() throws RuntimeException {
         logger.debug("[{}] FindEnable.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
-            return Resp.success(postFind(getDewRepository().findEnable(), preResult.getBody()));
+            return Resp.success(postFind(getDao().findEnabled(), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<List<E>> findDisable() throws RuntimeException {
+    default Resp<List<E>> findDisabled() throws RuntimeException {
         logger.debug("[{}] FindDisable.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
-            return Resp.success(postFind(getDewRepository().findDisable(), preResult.getBody()));
+            return Resp.success(postFind(getDao().findEnabled(), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingEnable(int pageNumber, int pageSize) throws RuntimeException {
-        return pagingEnable(pageNumber, pageSize, null);
+    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize) throws RuntimeException {
+        return pagingEnabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingEnable(int pageNumber, int pageSize, Sort sort) throws RuntimeException {
-        logger.debug("[{}] PagingEnable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, sort != null ? sort.toString() : "");
+    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+        logger.debug("[{}] PagingEnable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
-            return Resp.success(postPaging(getDewRepository().pagingEnable(pageNumber, pageSize, sort), preResult.getBody()));
+            return Resp.success(postPaging(getDao().pagingEnabled(pageNumber, pageSize, orderDesc), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingDisable(int pageNumber, int pageSize) throws RuntimeException {
-        return pagingDisable(pageNumber, pageSize, null);
+    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize) throws RuntimeException {
+        return pagingDisabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingDisable(int pageNumber, int pageSize, Sort sort) throws RuntimeException {
-        logger.debug("[{}] PagingDisable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, sort != null ? sort.toString() : "");
+    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+        logger.debug("[{}] PagingDisable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
-            return Resp.success(postPaging(getDewRepository().pagingDisable(pageNumber, pageSize, sort), preResult.getBody()));
+            return Resp.success(postPaging(getDao().pagingDisabled(pageNumber, pageSize, orderDesc), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
@@ -89,7 +89,7 @@ public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] EnableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preEnableById(id);
         if (preResult.ok()) {
-            getDewRepository().enableById(id);
+            getDao().enableById(id);
             postEnableById(id, preResult.getBody());
             return Resp.success(null);
         }
@@ -101,7 +101,7 @@ public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] EnableByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preEnableByCode(code);
         if (preResult.ok()) {
-            getDewRepository().enableByCode(code);
+            getDao().enableByCode(code);
             postEnableByCode(code, preResult.getBody());
             return Resp.success(null);
         }
@@ -113,7 +113,7 @@ public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] DisableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDisableById(id);
         if (preResult.ok()) {
-            getDewRepository().disableById(id);
+            getDao().disableById(id);
             postDisableById(id, preResult.getBody());
             return Resp.success(null);
         }
@@ -125,7 +125,7 @@ public interface CRUSService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] DisableByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preDisableByCode(code);
         if (preResult.ok()) {
-            getDewRepository().disableByCode(code);
+            getDao().disableByCode(code);
             postDisableByCode(code, preResult.getBody());
             return Resp.success(null);
         }

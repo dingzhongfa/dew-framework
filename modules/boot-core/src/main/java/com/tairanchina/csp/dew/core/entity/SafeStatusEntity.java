@@ -5,14 +5,15 @@ import io.swagger.annotations.ApiModelProperty;
 public abstract class SafeStatusEntity extends SafeEntity {
 
     @ApiModelProperty("是否启用")
-    protected Boolean enable = true;
+    @EnabledColumn
+    protected Boolean enabled = true;
 
-    public Boolean getEnable() {
-        return enable;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

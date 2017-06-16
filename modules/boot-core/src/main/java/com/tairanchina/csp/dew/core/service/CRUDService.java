@@ -1,13 +1,12 @@
 package com.tairanchina.csp.dew.core.service;
 
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.entity.IdEntity;
-import com.tairanchina.csp.dew.core.jdbc.DewRepository;
+import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-public interface CRUDService<T extends DewRepository<E>, E extends IdEntity> extends CRUService<T, E> {
+public interface CRUDService<T extends DewDao<E>, E> extends CRUService<T, E> {
 
     default Resp<Optional<Object>> preDeleteById(long id) throws RuntimeException {
         return Resp.success(Optional.empty());
@@ -28,7 +27,7 @@ public interface CRUDService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] DeleteById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDeleteById(id);
         if (preResult.ok()) {
-            getDewRepository().deleteById(id);
+            getDao().deleteById(id);
             postDeleteById(id, preResult.getBody());
             return Resp.success(null);
         }
@@ -40,7 +39,7 @@ public interface CRUDService<T extends DewRepository<E>, E extends IdEntity> ext
         logger.debug("[{}] DeleteByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preDeleteByCode(code);
         if (preResult.ok()) {
-            getDewRepository().deleteByCode(code);
+            getDao().deleteByCode(code);
             postDeleteByCode(code, preResult.getBody());
             return Resp.success(null);
         }

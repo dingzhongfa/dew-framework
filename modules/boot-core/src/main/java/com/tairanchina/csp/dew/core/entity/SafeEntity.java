@@ -5,18 +5,22 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public abstract class SafeEntity extends IdEntity {
+public abstract class SafeEntity extends PkEntity {
 
     @ApiModelProperty("创建时间")
+    @CreateTimeColumn
     protected Date createTime;
 
     @ApiModelProperty("更新时间")
+    @UpdateTimeColumn
     protected Date updateTime;
 
     @ApiModelProperty("创建人编码")
+    @CreateUserColumn
     protected String createUser;
 
     @ApiModelProperty("更新人编码")
+    @UpdateUserColumn
     protected String updateUser;
 
     public Date getCreateTime() {

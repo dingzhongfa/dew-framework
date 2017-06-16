@@ -2,9 +2,12 @@ package com.tairanchina.csp.dew.core.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public abstract class IdEntity extends EmptyEntity {
+import java.io.Serializable;
+
+public abstract class PkEntity implements Serializable {
 
     @ApiModelProperty("主键")
+    @PkColumn
     protected long id;
 
     public long getId() {

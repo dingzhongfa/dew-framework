@@ -3,10 +3,10 @@ dew:
     format:
       use-unity-error: true
       reuse-http-state: true
-#  cluster:
-#    cache: redis
-#    dist: hazelcast
-#    mq: redisE
+  cluster:
+    cache: redis
+    dist: hazelcast
+    mq: hazelcast
 
 spring:
   application:

@@ -30,7 +30,7 @@ public class IgniteClusterMQ implements ClusterMQ {
                         consumer.accept(msg);
                         return true;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error("Ignite Subscribe error.",e);
                         return false;
                     }
                 });
@@ -52,7 +52,7 @@ public class IgniteClusterMQ implements ClusterMQ {
                     consumer.accept(message);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Ignite Response error.",e);
             }
         }).start();
     }

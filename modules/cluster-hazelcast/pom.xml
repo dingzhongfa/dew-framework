@@ -7,15 +7,15 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../../modules/parent/pom.xml</relativePath>
+        <version>1.0.0-alpha</version>
+        <relativePath>../../modules/parent/</relativePath>
     </parent>
 
     <artifactId>cluster-spi-hazelcast</artifactId>
     <name>Dew Cluster Hazelcast</name>
     <description>Dew 集群 Hazelcast 实现</description>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-alpha</version>
 
     <properties>
         <hazelcast.verion>3.8.1</hazelcast.verion>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-alpha</version>
         </dependency>
     </dependencies>
 

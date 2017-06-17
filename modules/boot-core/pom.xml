@@ -7,15 +7,15 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../../modules/parent/pom.xml</relativePath>
+        <version>1.0.0-alpha</version>
+        <relativePath>../../modules/parent/</relativePath>
     </parent>
 
     <artifactId>boot-core</artifactId>
     <name>Dew Boot Core</name>
     <description>Dew Spring Boot 封装</description>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-alpha</version>
 
     <properties>
     </properties>
@@ -32,7 +32,7 @@
             <version>${dew.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.tairanchina.csp.dew</groupId>
+                    <groupId>com.ecfront.dew</groupId>
                     <artifactId>common</artifactId>
                 </exclusion>
             </exclusions>

@@ -100,7 +100,7 @@ public class Dew {
                 ip = InetAddress.getLocalHost().getHostAddress();
                 host = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                e.printStackTrace();
+                logger.error("Dew info fetch error.",e);
             }
         }
 
@@ -208,7 +208,7 @@ public class Dew {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("EB Process error.",e);
                 return null;
             }
         }
@@ -379,7 +379,7 @@ public class Dew {
                     .put("message", e.getLocalizedMessage())
                     .toString());
         } catch (NoSuchFieldException e1) {
-            e1.printStackTrace();
+            logger.error("Throw Exception Convert error",e);
         }
         logger.error(e.getLocalizedMessage(), e);
         return e;

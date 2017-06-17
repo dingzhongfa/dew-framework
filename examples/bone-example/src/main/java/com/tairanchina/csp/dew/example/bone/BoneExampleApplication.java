@@ -8,6 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  */
 public class BoneExampleApplication extends DewBootApplication {
 
+
     public static void main(String[] args) {
         new SpringApplicationBuilder(BoneExampleApplication.class).run(args);
     }

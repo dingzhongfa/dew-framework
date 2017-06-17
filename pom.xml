@@ -22,6 +22,9 @@
         <module>components/config</module>
         <module>components/gateway</module>
         <module>examples/bone-example</module>
+        <module>examples/web-example</module>
+        <module>examples/jdbc-example</module>
+        <module>examples/cluster-example</module>
         <module>examples/config-example</module>
     </modules>
 

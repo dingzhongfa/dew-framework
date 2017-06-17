@@ -20,6 +20,7 @@ public class HazelcastAdapter {
     private HazelcastConfig hazelcastConfig;
 
     private HazelcastInstance hazelcastInstance;
+    private boolean active;
 
     @PostConstruct
     public void init() {
@@ -33,14 +34,20 @@ public class HazelcastAdapter {
         clientConfig.getNetworkConfig().setConnectionAttemptPeriod(hazelcastConfig.getConnectionAttemptPeriod());
         hazelcastConfig.getAddresses().forEach(i -> clientConfig.getNetworkConfig().addAddress(i));
         hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
+        active=true;
     }
 
     public HazelcastInstance getHazelcastInstance() {
         return hazelcastInstance;
     }
 
+    public boolean isActive(){
+        return active;
+    }
+
     @PreDestroy
     public void shutdown(){
+        active=false;
         hazelcastInstance.shutdown();
     }
 }

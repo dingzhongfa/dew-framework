@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
+import com.hazelcast.client.HazelcastClientNotActiveException;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -16,7 +17,7 @@ public class HazelcastClusterMQ implements ClusterMQ {
 
     @Override
     public void publish(String topic, String message) {
-        logger.trace("[MQ] publish {}:{}",topic,message);
+        logger.trace("[MQ] publish {}:{}", topic, message);
         hazelcastAdapter.getHazelcastInstance().getTopic(topic).publish(message);
     }
 
@@ -24,11 +25,11 @@ public class HazelcastClusterMQ implements ClusterMQ {
     public void subscribe(String topic, Consumer<String> consumer) {
         hazelcastAdapter.getHazelcastInstance().getTopic(topic).addMessageListener(message -> {
             try {
-                String msg=(String) message.getMessageObject();
-                logger.trace("[MQ] subscribe {}:{}",topic,msg);
+                String msg = (String) message.getMessageObject();
+                logger.trace("[MQ] subscribe {}:{}", topic, msg);
                 consumer.accept(msg);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Hazelcast Subscribe error.",e);
             }
         });
 
@@ -36,7 +37,7 @@ public class HazelcastClusterMQ implements ClusterMQ {
 
     @Override
     public void request(String address, String message) {
-        logger.trace("[MQ] request {}:{}",address,message);
+        logger.trace("[MQ] request {}:{}", address, message);
         hazelcastAdapter.getHazelcastInstance().getQueue(address).add(message);
     }
 
@@ -44,13 +45,17 @@ public class HazelcastClusterMQ implements ClusterMQ {
     public void response(String address, Consumer<String> consumer) {
         new Thread(() -> {
             try {
-                while (true) {
+                while (hazelcastAdapter.isActive()) {
                     String message = (String) hazelcastAdapter.getHazelcastInstance().getQueue(address).take();
-                    logger.trace("[MQ] response {}:{}",address,message);
+                    logger.trace("[MQ] response {}:{}", address, message);
                     consumer.accept(message);
                 }
+            } catch (HazelcastClientNotActiveException e) {
+                if (hazelcastAdapter.isActive()) {
+                    logger.error("Hazelcast Response error.",e);
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Hazelcast Response error.",e);
             }
         }).start();
     }

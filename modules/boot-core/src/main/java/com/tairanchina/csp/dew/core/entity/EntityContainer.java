@@ -3,6 +3,8 @@ package com.tairanchina.csp.dew.core.entity;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.BeanHelper;
 import com.tairanchina.csp.dew.core.Dew;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @ConditionalOnClass({JdbcTemplate.class})
 public class EntityContainer {
 
+    private static final Logger logger = LoggerFactory.getLogger(EntityContainer.class);
+
     private static final Map<String, EntityClassInfo> COLUMN_INFO = new ConcurrentHashMap<>();
 
     @PostConstruct
@@ -26,12 +30,12 @@ public class EntityContainer {
         }
         Dew.dewConfig.getBasic().getEntity().getBasePackages().stream().parallel().forEach(s -> {
             try {
-                // find has Entity annotation
+                // Find has Entity annotation
                 $.clazz.scan(s, new HashSet<Class<? extends Annotation>>() {{
                     add(Entity.class);
                 }}, null).stream().forEach(EntityContainer::loadEntityClassInfo);
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.error("Entity Scan error.", e);
             }
         });
     }

@@ -71,7 +71,7 @@ public class IgniteClusterDistLock implements ClusterDistLock {
             lock.unlock();
             return true;
         }catch (IllegalStateException e){
-            e.printStackTrace();
+            logger.error("Ignite Unlock error.",e);
             return false;
         }
     }

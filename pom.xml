@@ -21,6 +21,7 @@
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>
+        <module>examples/bone-example</module>
         <module>examples/config-example</module>
     </modules>
 
@@ -77,7 +78,7 @@
         </repository>
         <repository>
             <id>Sonatype OSS Snapshot Repository</id>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>http://oss.sonatype.org/content/groups/staging/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

@@ -53,7 +53,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         logger.debug("[{}] FindDisable.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
-            return Resp.success(postFind(getDao().findEnabled(), preResult.getBody()));
+            return Resp.success(postFind(getDao().findDisabled(), preResult.getBody()));
         }
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }

@@ -148,7 +148,7 @@
             </build>
         </profile>
         <profile>
-            <id>package</id>
+            <id>fatjar</id>
             <build>
                 <plugins>
                     <plugin>

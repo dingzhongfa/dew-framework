@@ -3,9 +3,10 @@ package com.tairanchina.csp.dew.core;
 import com.tairanchina.csp.dew.core.entity.CodeColumn;
 import com.tairanchina.csp.dew.core.entity.Column;
 import com.tairanchina.csp.dew.core.entity.Entity;
+import com.tairanchina.csp.dew.core.entity.SafeStatusEntity;
 
-@Entity
-public class CRUDSTestEntity {
+@Entity(tableName = "t_test_crud_s_entity")
+public class CRUDSTestEntity extends SafeStatusEntity {
 
     @CodeColumn
     private String code;

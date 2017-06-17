@@ -57,9 +57,9 @@ public class EntityContainer {
             // table info
             Entity entity = (Entity) Arrays.stream(clazz.getAnnotations()).filter(ann -> ann.annotationType() == Entity.class).findAny().get();
             if (entity.tableName().isEmpty()) {
-                entityClassInfo.tableName = camelToUnderline(clazz.getSimpleName());
+                entityClassInfo.tableName = camelToUnderline(clazz.getSimpleName()).toLowerCase();
             } else {
-                entityClassInfo.tableName = entity.tableName();
+                entityClassInfo.tableName = entity.tableName().toLowerCase();
             }
             // column info
             fieldInfo.values().forEach(field -> {

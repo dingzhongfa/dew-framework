@@ -367,22 +367,27 @@ public class DS {
         if (!entityClassInfo.pkFieldNameOpt.isPresent() && !entityClassInfo.codeFieldNameOpt.isPresent()) {
             throw Dew.e(StandardCode.NOT_FOUND.toString(), new RuntimeException("Need @PkColumn or @CodeColumn field."));
         }
-        String whereColumnName;
-        Object whereValue;
+        String whereColumnName = null;
+        Object whereValue = null;
         if (entityClassInfo.pkFieldNameOpt.isPresent()
                 && values.get(entityClassInfo.pkFieldNameOpt.get()) != null
                 && !values.get(entityClassInfo.pkFieldNameOpt.get()).toString().isEmpty()) {
-            whereColumnName = entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName;
-            whereValue = values.get(entityClassInfo.pkFieldNameOpt.get());
+            if (!"0".equals(values.get(entityClassInfo.pkFieldNameOpt.get()).toString())) {
+                whereColumnName = entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName;
+                whereValue = values.get(entityClassInfo.pkFieldNameOpt.get());
+            }
             values.remove(entityClassInfo.pkFieldNameOpt.get());
-        } else if (entityClassInfo.codeFieldNameOpt.isPresent()
-                && values.get(entityClassInfo.codeFieldNameOpt.get()) != null
-                && !values.get(entityClassInfo.codeFieldNameOpt.get()).toString().isEmpty()) {
-            whereColumnName = entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName;
-            whereValue = values.get(entityClassInfo.codeFieldNameOpt.get());
-            values.remove(entityClassInfo.codeFieldNameOpt.get());
-        } else {
-            throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Need Private Key or Code value."));
+        }
+        if (whereColumnName == null) {
+            if (entityClassInfo.codeFieldNameOpt.isPresent()
+                    && values.get(entityClassInfo.codeFieldNameOpt.get()) != null
+                    && !values.get(entityClassInfo.codeFieldNameOpt.get()).toString().isEmpty()) {
+                whereColumnName = entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName;
+                whereValue = values.get(entityClassInfo.codeFieldNameOpt.get());
+                values.remove(entityClassInfo.codeFieldNameOpt.get());
+            } else {
+                throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Need Private Key or Code value."));
+            }
         }
         // Filter null value if ignoreNullValue=true
         if (ignoreNullValue) {
@@ -397,13 +402,13 @@ public class DS {
                 values.put(entityClassInfo.updateUserFieldNameOpt.get(), "");
             }
         }
+        if (entityClassInfo.updateTimeFieldNameOpt.isPresent()) {
+            values.put(entityClassInfo.updateTimeFieldNameOpt.get(), new Date());
+        }
         // Check null
         if (values.entrySet().stream()
                 .anyMatch(entry -> entityClassInfo.columns.get(entry.getKey()).notNull && entry.getValue() == null)) {
             throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Not Null check fail."));
-        }
-        if (entityClassInfo.updateTimeFieldNameOpt.isPresent()) {
-            values.put(entityClassInfo.updateTimeFieldNameOpt.get(), new Date());
         }
         // Package
         StringBuilder sb = new StringBuilder();

@@ -32,11 +32,11 @@
             <artifactId>cluster-spi-redis</artifactId>
             <version>${dew.version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-hazelcast</artifactId>
             <version>${dew.version}</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
 </project>

@@ -29,7 +29,7 @@ public class HazelcastClusterMQ implements ClusterMQ {
                 logger.trace("[MQ] subscribe {}:{}", topic, msg);
                 consumer.accept(msg);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Hazelcast Subscribe error.",e);
             }
         });
 
@@ -52,10 +52,10 @@ public class HazelcastClusterMQ implements ClusterMQ {
                 }
             } catch (HazelcastClientNotActiveException e) {
                 if (hazelcastAdapter.isActive()) {
-                    e.printStackTrace();
+                    logger.error("Hazelcast Response error.",e);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Hazelcast Response error.",e);
             }
         }).start();
     }

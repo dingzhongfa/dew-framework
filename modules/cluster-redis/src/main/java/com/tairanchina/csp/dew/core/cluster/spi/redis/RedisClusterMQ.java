@@ -33,24 +33,27 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void subscribe(String topic, Consumer<String> consumer) {
-        RedisConnection connection = null;
-        try {
-            connection = redisTemplate.getConnectionFactory().getConnection();
-            RedisConnection finalConnection = connection;
-            new Thread(() -> finalConnection.subscribe((message, pattern) -> {
-                try {
-                    String msg = new String(message.getBody(), "UTF-8");
-                    logger.trace("[MQ] subscribe {}:{}", topic, msg);
-                    consumer.accept(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
+       Thread thread= new Thread(() -> {
+            RedisConnection connection = null;
+            try {
+                connection = redisTemplate.getConnectionFactory().getConnection();
+                connection.subscribe((message, pattern) -> {
+                    try {
+                        String msg = new String(message.getBody(), "UTF-8");
+                        logger.trace("[MQ] subscribe {}:{}", topic, msg);
+                        consumer.accept(msg);
+                    } catch (Exception e) {
+                        logger.error("Redis Subscribe error.",e);
+                    }
+                }, topic.getBytes());
+            } finally {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
                 }
-            }, topic.getBytes())).start();
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
             }
-        }
+        });
+        thread.setName("Redis Subscribe");
+        thread.start();
     }
 
     @Override
@@ -83,7 +86,7 @@ public class RedisClusterMQ implements ClusterMQ {
                     consumer.accept(message);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Redis Response error.",e);
             } finally {
                 if (connection != null && !connection.isClosed()) {
                     connection.close();

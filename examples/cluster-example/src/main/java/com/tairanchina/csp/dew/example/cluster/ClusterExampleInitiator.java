@@ -49,7 +49,8 @@ public class ClusterExampleInitiator {
 
         // pub-sub
         Dew.cluster.mq.subscribe("test_pub_sub", message ->
-                logger.info("1 pub_sub>>" + message));
+                logger.info("pub_sub>>" + message));
+        Thread.sleep(1000);
         Dew.cluster.mq.publish("test_pub_sub", "msgA");
         Dew.cluster.mq.publish("test_pub_sub", "msgB");
         // req-resp
@@ -57,7 +58,6 @@ public class ClusterExampleInitiator {
                 logger.info("req_resp>>" + message));
         Dew.cluster.mq.request("test_rep_resp", "msg1");
         Dew.cluster.mq.request("test_rep_resp", "msg2");
-
     }
 
     static class TestMapObj implements Serializable {

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core;
 
-import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.ecfront.dew.common.$;
+import com.tairanchina.csp.dew.core.dto.OptInfo;
 
 import java.util.Optional;
 
@@ -18,12 +18,7 @@ public class DewContext {
             return innerOptInfo;
         }
         if (token != null && !token.isEmpty()) {
-            String result = Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token);
-            if (result != null && !result.isEmpty()) {
-                innerOptInfo = Optional.of($.json.toObject(result, OptInfo.class));
-            } else {
-                innerOptInfo = Optional.empty();
-            }
+            innerOptInfo = Dew.Auth.getOptInfo(token);
         } else {
             innerOptInfo = Optional.empty();
         }

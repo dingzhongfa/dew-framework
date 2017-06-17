@@ -1,7 +1,5 @@
 = Dew-Framework
 
-*基于Spring Cloud的服务封装*
-
 === 设计理念
 对Spring Cloud做一层薄的封装，力求提供一个完备的生产级微服务架构，最小化的学习成本，快速上手，在不改变Spring Cloud的开发模式下做简洁明了的扩展。
 

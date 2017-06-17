@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-alpha</version>
         <relativePath>../../modules/parent/pom.xml</relativePath>
     </parent>
 

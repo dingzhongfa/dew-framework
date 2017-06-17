@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface Column {
 
-    // 默认为类名（驼峰转下划线）
+    // 默认为字段名（驼峰转下划线）
     String columnName() default "";
 
     boolean notNull() default false;

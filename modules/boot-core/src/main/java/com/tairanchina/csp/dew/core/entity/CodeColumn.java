@@ -9,7 +9,7 @@ public @interface CodeColumn {
 
     boolean uuid() default true;
 
-    // 默认为类名（驼峰转下划线）
+    // 默认为字段名（驼峰转下划线）
     String columnName() default "";
 
 }

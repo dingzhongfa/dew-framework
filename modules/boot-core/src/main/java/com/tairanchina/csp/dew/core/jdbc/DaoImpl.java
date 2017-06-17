@@ -7,7 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public abstract class DewDaoImpl<E> implements DewDao<E> {
+public abstract class DaoImpl<E> implements DewDao<E> {
 
     private Class<E> clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
 

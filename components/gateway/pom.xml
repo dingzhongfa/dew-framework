@@ -7,15 +7,15 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../../modules/parent/pom.xml</relativePath>
+        <version>1.0.0-alpha</version>
+        <relativePath>../../modules/parent/</relativePath>
     </parent>
 
     <artifactId>gateway</artifactId>
     <name>Dew Gateway</name>
     <description>Dew 网关服务</description>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-alpha</version>
 
     <properties>
     </properties>

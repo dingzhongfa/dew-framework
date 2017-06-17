@@ -8,14 +8,14 @@
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0-alpha</version>
-        <relativePath>../../modules/parent/pom.xml</relativePath>
+        <relativePath>../../modules/parent/</relativePath>
     </parent>
 
     <artifactId>cluster-example</artifactId>
     <name>Dew Cluster 示例</name>
     <description>Dew 集群功能 示例</description>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-alpha</version>
 
     <properties>
     </properties>

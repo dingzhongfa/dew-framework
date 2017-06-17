@@ -8,14 +8,14 @@
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
         <version>1.0.0-alpha</version>
-        <relativePath>../../modules/parent/pom.xml</relativePath>
+        <relativePath>../../modules/parent/</relativePath>
     </parent>
 
     <artifactId>bone-example</artifactId>
     <name>Dew Bone 示例</name>
     <description>Dew 骨架（仅包含最基本依赖）示例</description>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-alpha</version>
 
     <properties>
     </properties>

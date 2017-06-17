@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: web-example
+
+server:
+  port: 8080
+
+logging:
+  path: ./logs

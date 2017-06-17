@@ -9,6 +9,7 @@ import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@ConditionalOnClass(JdbcTemplate.class)
 public class DS {
 
     @Autowired
@@ -262,7 +264,7 @@ public class DS {
         Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
         String countSql = wrapCountSql((String) packageSelect[0]);
         String pagedSql = wrapPagingSql((String) packageSelect[0], pageNumber, pageSize);
-        long totalRecords = jdbcTemplate.queryForObject(countSql,(Object[]) packageSelect[1], Long.class);
+        long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) packageSelect[1], Long.class);
         List<E> objects = jdbcTemplate.queryForList(pagedSql, (Object[]) packageSelect[1]).stream()
                 .map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());

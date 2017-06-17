@@ -32,7 +32,7 @@
             <version>${dew.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.tairanchina.csp.dew</groupId>
+                    <groupId>com.ecfront.dew</groupId>
                     <artifactId>common</artifactId>
                 </exclusion>
             </exclusions>

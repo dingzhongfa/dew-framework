@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.example.bone;
+package com.tairanchina.csp.dew.example.cluster;
 
 import com.tairanchina.csp.dew.core.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -6,11 +6,11 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 /**
  * 工程启动类
  */
-public class BoneExampleApplication extends DewBootApplication {
+public class ClusterExampleApplication extends DewBootApplication {
 
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(BoneExampleApplication.class).run(args);
+        new SpringApplicationBuilder(ClusterExampleApplication.class).run(args);
     }
 
 }

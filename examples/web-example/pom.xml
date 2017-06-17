@@ -11,9 +11,9 @@
         <relativePath>../../modules/parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>config-example</artifactId>
-    <name>Dew Config 示例</name>
-    <description>Dew 配置中心 示例</description>
+    <artifactId>web-example</artifactId>
+    <name>Dew Web 示例</name>
+    <description>Dew Web 示例</description>
     <packaging>jar</packaging>
     <version>1.0.0</version>
 
@@ -23,9 +23,10 @@
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cloud-core</artifactId>
+            <artifactId>boot-core</artifactId>
             <version>${dew.version}</version>
         </dependency>
+        <!-- 引入web依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

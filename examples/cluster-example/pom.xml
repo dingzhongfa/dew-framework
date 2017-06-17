@@ -11,9 +11,9 @@
         <relativePath>../../modules/parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>config-example</artifactId>
-    <name>Dew Config 示例</name>
-    <description>Dew 配置中心 示例</description>
+    <artifactId>cluster-example</artifactId>
+    <name>Dew Cluster 示例</name>
+    <description>Dew 集群功能 示例</description>
     <packaging>jar</packaging>
     <version>1.0.0</version>
 
@@ -23,13 +23,20 @@
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cloud-core</artifactId>
+            <artifactId>boot-core</artifactId>
             <version>${dew.version}</version>
         </dependency>
+        <!--引入集群依赖，可选redis或hazelcast-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>cluster-spi-redis</artifactId>
+            <version>${dew.version}</version>
         </dependency>
+        <!--<dependency>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>cluster-spi-hazelcast</artifactId>
+            <version>${dew.version}</version>
+        </dependency>-->
     </dependencies>
 
 </project>

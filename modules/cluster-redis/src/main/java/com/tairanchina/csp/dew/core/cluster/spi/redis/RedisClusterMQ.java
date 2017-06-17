@@ -36,7 +36,8 @@ public class RedisClusterMQ implements ClusterMQ {
         RedisConnection connection = null;
         try {
             connection = redisTemplate.getConnectionFactory().getConnection();
-            connection.subscribe((message, pattern) -> {
+            RedisConnection finalConnection = connection;
+            new Thread(() -> finalConnection.subscribe((message, pattern) -> {
                 try {
                     String msg = new String(message.getBody(), "UTF-8");
                     logger.trace("[MQ] subscribe {}:{}", topic, msg);
@@ -44,7 +45,7 @@ public class RedisClusterMQ implements ClusterMQ {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }, topic.getBytes());
+            }, topic.getBytes())).start();
         } finally {
             if (connection != null && !connection.isClosed()) {
                 connection.close();

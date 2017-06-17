@@ -26,7 +26,7 @@ public class EntityContainer {
         }
         Dew.dewConfig.getBasic().getEntity().getBasePackages().stream().parallel().forEach(s -> {
             try {
-                // find has Entity annotation
+                // Find has Entity annotation
                 $.clazz.scan(s, new HashSet<Class<? extends Annotation>>() {{
                     add(Entity.class);
                 }}, null).stream().forEach(EntityContainer::loadEntityClassInfo);

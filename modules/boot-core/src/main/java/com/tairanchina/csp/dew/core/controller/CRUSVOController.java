@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOController<T, V, E> {
 
-    @GetMapping(value = "", params = {"enable"})
+    @GetMapping(value = "", params = {"enabled"})
     @ApiOperation(value = "根据状态获取记录列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "enabled", value = "状态", paramType = "query", dataType = "boolean"),
@@ -36,7 +36,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
         }
     }
 
-    @GetMapping(value = "{pageNumber}/{pageSize}", params = {"enable"})
+    @GetMapping(value = "{pageNumber}/{pageSize}", params = {"enabled"})
     @ApiOperation(value = "根据状态获取记录分页列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNumber", value = "当前页（从0开始）", paramType = "path", dataType = "int", required = true),

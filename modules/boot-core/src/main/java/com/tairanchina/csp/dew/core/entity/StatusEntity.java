@@ -6,14 +6,14 @@ public abstract class StatusEntity extends PkEntity {
 
     @ApiModelProperty("是否启用")
     @EnabledColumn
-    protected Boolean enable = true;
+    protected Boolean enabled = true;
 
-    public Boolean getEnable() {
-        return enable;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

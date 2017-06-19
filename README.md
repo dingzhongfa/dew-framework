@@ -600,33 +600,33 @@ Dew支持两种格式：
 如果是`IPv4`则直接调用服务，否则使用Spring Cloud的`RestTemplate`调用。
 所以您只需要把服务url做成配置，开发时使用`ip`，测试/生产时使用`service-id`。
 
-### Dubbo协同
+#### Dubbo协同
 
 1. 引入依赖
 
-      <dependency>
-          <groupId>io.dubbo.springboot</groupId>
-          <artifactId>spring-boot-starter-dubbo</artifactId>
-          <version>1.0.0</version>
-          <exclusions>
-              <exclusion>
-                  <groupId>org.springframework.boot</groupId>
-                  <artifactId>spring-boot-starter</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>log4j</groupId>
-                  <artifactId>log4j</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>org.slf4j</groupId>
-                  <artifactId>slf4j-api</artifactId>
-              </exclusion>
-              <exclusion>
-                  <groupId>ch.qos.logback</groupId>
-                  <artifactId>logback-classic</artifactId>
-              </exclusion>
-          </exclusions>
-      </dependency>
+       <dependency>
+           <groupId>io.dubbo.springboot</groupId>
+           <artifactId>spring-boot-starter-dubbo</artifactId>
+           <version>1.0.0</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>org.springframework.boot</groupId>
+                   <artifactId>spring-boot-starter</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>log4j</groupId>
+                   <artifactId>log4j</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.slf4j</groupId>
+                   <artifactId>slf4j-api</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>ch.qos.logback</groupId>
+                   <artifactId>logback-classic</artifactId>
+               </exclusion>
+           </exclusions>
+       </dependency>
 
 2. 配置与使用
 

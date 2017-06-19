@@ -1,5 +1,6 @@
 Dew-Framework
 ==
+*对Spring Cloud/Boot的封装扩展、整合公司现有能力、提供最佳实践，做为基础服务框架，支撑公司新项目的研发。*
 
 > Dew [du:] 意为`露水`，希望此框架可以像晨间的露水一样透明、静谧。让使用者尽量不要感知框架的存在，专注业务实现。
 
@@ -16,8 +17,14 @@ Dew-Framework
 
 ### Dew框架思想
 
-上述问题是Dew框架必须面对的，对应的设计理念是核心是：**基于成熟框架扩展** 。
-选择Spring Boot/Cloud这一业界主流框架，简单易用、功能强大，我们只做扩展，在不改变后者的结构的前提下实现易用性升级及功能增强，Spring Boot/Cloud有的、好用的功能尽量重用，不重复造轮子。
+上述问题是Dew框架必须面对的，对应设计的核心理念是：**基于成熟框架扩展** ，具体要做到：
+
+1. 简单容易，用最通用的、标准的、开发人员都熟悉的开发模型
+2. 功能全面，尽量重用市场已有能力实现，减少框架自身的维护成本
+3. 轻量，原则上不引入高侵入性的三方框架/类库
+4. 可替换，只做扩展，尽量不修改基础框架代码，开发人员完全可以直接基于基础框架开发
+
+实现上我们选择Spring Boot/Cloud这一业界主流框架。
 
 ## 功能模块
 
@@ -595,13 +602,42 @@ Dew支持两种格式：
 
 ## 编译部署
 
-打包: `mvn clean package -P fatjar` 即可打出一个包含所有依赖的包。
+### 开发期热部署
+
+1. 引入依赖
+
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-devtools</artifactId>
+           <optional>true</optional>
+       </dependency>
+
+2. 设置IDE(以Intellij IDEA为例)
+
+    2.1 `Setting` -> `Build,Executiion,Deployment>Compiler`，勾选 `Build project automatically`
+    2.2  `Shift+Ctrl+Alt+/` -> 选择 `Registry`，出现 `Maintenance` 窗口，勾选 `compiler.automake.allow.when.app.running`
+
+### 打包
+ 
+`mvn clean package -P fatjar` 即可打出一个包含所有依赖的包。
 
 ## 最佳实践
 
 TBD
 
+## 路线图
+
+TBD
+
 ## 贡献
+
+ 角色   | 成员
+-------- | ---------------- 
+负责部门 | 架构组
+开发成员 | 所有开发人员
+
+#### SCM
+https://rep.360taihe.com/csp/dew-framework/
 
 TBD
 

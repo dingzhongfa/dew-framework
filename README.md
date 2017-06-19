@@ -66,7 +66,7 @@ Dew-Framework
 
 #### 原生版本
 
-1. 引入Maven
+1. 引入依赖
 
        <parent>
            <groupId>org.springframework.boot</groupId>
@@ -105,7 +105,7 @@ Dew-Framework
 
 #### Dew版本
 
-1. 引入Maven
+1. 引入依赖
 
        <parent>
            <groupId>com.tairanchina.csp.dew</groupId>
@@ -145,7 +145,7 @@ Dew-Framework
 
 #### 原生版本
 
-1. 引入Maven
+1. 引入依赖
 
        <dependencies>
            <dependency>
@@ -181,7 +181,7 @@ Dew-Framework
 
 #### Dew版本
 
-1. 引入Maven
+1. 引入依赖
 
        <dependencies>
            <dependency>
@@ -213,7 +213,7 @@ Dew-Framework
 
 #### 原生版本
 
-1. 引入Maven (在`启用Web服务`的基础上增加)
+1. 引入依赖 (在`启用Web服务`的基础上增加)
 
        <dependencies>
           <dependency>
@@ -237,7 +237,7 @@ Dew-Framework
 
 #### Dew版本
 
-1. 引入Maven (同原生版本)
+1. 引入依赖 (同原生版本)
 
 2. 增加配置
 
@@ -254,7 +254,7 @@ Dew-Framework
 
 #### 原生版本
 
-1. 引入Maven
+1. 引入依赖
 
        <dependencies>
            <dependency>
@@ -300,7 +300,7 @@ Dew-Framework
 
 #### Dew版本
 
-1. 引入Maven
+1. 引入依赖
 
        <dependencies>
            <dependency>
@@ -377,7 +377,7 @@ Dew-Framework
 
 > Dew的集群支持`分布式缓存` `分布式Map` `分布式锁` `MQ`，并且做了接口抽象以适配不同的实现，目前支持`Redis`和`hazelcast`，对`Ignite`的适配正在进行中。
 
-1. 引入Maven
+1. 引入依赖
 
        <dependencies>
            <dependency>
@@ -599,6 +599,38 @@ Dew支持两种格式：
 在服务调用时使用`Dew.EB.post/get/put/delete/options/head`方法，Dew会根据传入的`URL`判断，
 如果是`IPv4`则直接调用服务，否则使用Spring Cloud的`RestTemplate`调用。
 所以您只需要把服务url做成配置，开发时使用`ip`，测试/生产时使用`service-id`。
+
+### Dubbo协同
+
+1. 引入依赖
+
+      <dependency>
+          <groupId>io.dubbo.springboot</groupId>
+          <artifactId>spring-boot-starter-dubbo</artifactId>
+          <version>1.0.0</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>org.slf4j</groupId>
+                  <artifactId>slf4j-api</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>ch.qos.logback</groupId>
+                  <artifactId>logback-classic</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+2. 配置与使用
+
+  >**TIP** 详见：https://github.com/teaey/spring-boot-starter-dubbo
 
 ## 编译部署
 

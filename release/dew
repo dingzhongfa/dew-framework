@@ -5,6 +5,10 @@ profile=default
 
 start(){
     app_code=$1
+    if [ -n "$2" ] ; then
+        profile=$2
+    fi
+
     start_app=''
     if [ $app_code = 'all' ] ; then
         start_app="\-Ddew.flag=apps_sh"
@@ -18,7 +22,6 @@ start(){
         do
             app=`echo $file|cut -d "." -f1`
             if [ $1 = 'all' ] || [ "$1" = $app ]; then
-                mkdir -p  $log_path/$app/
                 cd ./apps/$app
                 nohup java -Dspring.profiles.active=$profile -Ddew.flag=apps_sh -jar ./$app.jar  > /dev/null &
                 echo "Started $app"
@@ -65,9 +68,8 @@ stop(){
 }
 
 restart(){
-    app_code=$1
-    stop $app_code
-    start $app_code
+    stop $1
+    start $1 $2
 }
 
 tailf(){
@@ -82,6 +84,9 @@ trace(){
 
 deploy(){
     app_code=$1
+    if [ -n "$2" ] ; then
+        profile=$2
+    fi
 
     stop $app_code
 
@@ -132,29 +137,29 @@ case $command in
 	if [ "$args" = "" ] ; then 
      tip
     fi
-	start $args ;;
+	start $2 $3 ;;
 	"stop")
 	if [ "$args" = "" ] ; then 
      tip
     fi
-	stop $args ;;
+	stop $2 ;;
 	"restart")
 	if [ "$args" = "" ] ; then 
      tip
     fi
-	restart $args ;;
+	restart $2 $3 ;;
 	"tailf")
 	if [ "$args" = "" ] ; then 
      tip
     fi
-	tailf $args ;;
+	tailf $2 ;;
 	"trace")
-    trace $args ;;
+    trace $2 ;;
 	"deploy")
 	if [ "$args" = "" ] ; then 
      tip
     fi
-	deploy $args ;;
+	deploy $2 $3 ;;
 	"show")
 	show ;;
 	* )

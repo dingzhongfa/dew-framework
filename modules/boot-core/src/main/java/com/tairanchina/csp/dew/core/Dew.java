@@ -39,23 +39,23 @@ public class Dew {
 
     @Autowired
     @Qualifier("dewConfig")
-    private DewConfig _dewConfig;
+    private DewConfig innerDewConfig;
     @Autowired
-    private ApplicationContext _applicationContext;
+    private ApplicationContext innerApplicationContext;
 
     @PostConstruct
     private void init() {
-        Dew.applicationContext = _applicationContext;
-        if (Dew.applicationContext.containsBean(_dewConfig.getCluster().getCache() + "ClusterCache")) {
-            Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(_dewConfig.getCluster().getCache() + "ClusterCache");
+        Dew.applicationContext = innerApplicationContext;
+        if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
+            Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
         }
-        if (Dew.applicationContext.containsBean(_dewConfig.getCluster().getDist() + "ClusterDist")) {
-            Dew.cluster.dist = (ClusterDist) Dew.applicationContext.getBean(_dewConfig.getCluster().getDist() + "ClusterDist");
+        if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getDist() + "ClusterDist")) {
+            Dew.cluster.dist = (ClusterDist) Dew.applicationContext.getBean(innerDewConfig.getCluster().getDist() + "ClusterDist");
         }
-        if (Dew.applicationContext.containsBean(_dewConfig.getCluster().getMq() + "ClusterMQ")) {
-            Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(_dewConfig.getCluster().getMq() + "ClusterMQ");
+        if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getMq() + "ClusterMQ")) {
+            Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(innerDewConfig.getCluster().getMq() + "ClusterMQ");
         }
-        Dew.dewConfig = _dewConfig;
+        Dew.dewConfig = innerDewConfig;
         if (Dew.applicationContext.containsBean(DS.class.getSimpleName())) {
             Dew.ds = Dew.applicationContext.getBean(DS.class);
         }
@@ -92,15 +92,16 @@ public class Dew {
         // 应用主机名
         public static String host;
         // 应用实例，各组件唯一
-        public static String instance = $.field.createUUID();
+        public static String instance;
 
         static {
             try {
                 name = Dew.applicationContext.getId();
                 ip = InetAddress.getLocalHost().getHostAddress();
                 host = InetAddress.getLocalHost().getHostName();
+                instance = $.field.createUUID();
             } catch (UnknownHostException e) {
-                logger.error("Dew info fetch error.",e);
+                logger.error("Dew info fetch error.", e);
             }
         }
 
@@ -208,7 +209,7 @@ public class Dew {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }
             } catch (IOException e) {
-                logger.error("EB Process error.",e);
+                logger.error("EB Process error.", e);
                 return null;
             }
         }
@@ -372,14 +373,14 @@ public class Dew {
 
     }
 
-    public static <E extends Throwable> E e(String code, E e)  {
+    public static <E extends Throwable> E e(String code, E e) {
         try {
             $.bean.setValue(e, "detailMessage", $.json.createObjectNode()
                     .put("code", code)
                     .put("message", e.getLocalizedMessage())
                     .toString());
         } catch (NoSuchFieldException e1) {
-            logger.error("Throw Exception Convert error",e);
+            logger.error("Throw Exception Convert error", e);
         }
         logger.error(e.getLocalizedMessage(), e);
         return e;

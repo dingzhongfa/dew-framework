@@ -3,10 +3,12 @@ package com.tairanchina.csp.dew.core.dto;
 
 import com.ecfront.dew.common.Resp;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
- *  第三方服务影响对象，继承自Resp，添加了数据来源说明（用于区分是首选还是备选数据源）
+ * 第三方服务影响对象，继承自Resp，添加了数据来源说明（用于区分是首选还是备选数据源）
+ *
  * @param <E>
  */
 public class TPSIResp<E> extends Resp<E> {
@@ -31,7 +33,7 @@ public class TPSIResp<E> extends Resp<E> {
         this.source = source;
     }
 
-    public class Source {
+    public static class Source implements Serializable {
         private boolean primary;
         private String desc;
         private Date updateTime;

@@ -73,9 +73,7 @@ public class DewConfig {
 
         public static class Entity {
 
-            private List<String> basePackages = new ArrayList<String>() {{
-                add("com.tairanchina");
-            }};
+            private List<String> basePackages = new ArrayList<>();
 
             public List<String> getBasePackages() {
                 return basePackages;

@@ -29,6 +29,7 @@
         <dew.version>1.0.0-alpha</dew.version>
         <dew-common.version>1.3.6</dew-common.version>
         <swagger.version>2.6.1</swagger.version>
+        <sonar.host.url>http://10.200.131.7:9000</sonar.host.url>
     </properties>
 
     <developers>
@@ -82,6 +83,11 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.3.0.603</version>
             </plugin>
         </plugins>
     </build>

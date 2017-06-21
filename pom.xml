@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>build</artifactId>
+    <name>Dew Build</name>
+    <packaging>pom</packaging>
+    <version>1.0.0-alpha</version>
+
+    <modules>
+        <module>modules/parent</module>
+        <module>modules/cluster-common</module>
+        <module>modules/cluster-redis</module>
+        <module>modules/cluster-hazelcast</module>
+        <module>modules/cluster-ignite</module>
+        <module>modules/boot-core</module>
+        <module>modules/cloud-core</module>
+        <module>components/registry</module>
+        <module>components/config</module>
+        <module>components/gateway</module>
+        <module>examples/bone-example</module>
+        <module>examples/web-example</module>
+        <module>examples/jdbc-example</module>
+        <module>examples/cluster-example</module>
+        <module>examples/config-example</module>
+    </modules>
+
+</project>

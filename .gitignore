@@ -4,3 +4,6 @@ target/
 
 *.log
 *.iml
+.project
+.settings/
+.classpath

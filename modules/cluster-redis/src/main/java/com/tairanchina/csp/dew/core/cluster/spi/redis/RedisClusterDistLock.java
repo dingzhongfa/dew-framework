@@ -1,22 +1,21 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
+import com.tairanchina.csp.dew.core.cluster.Cluster;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class RedisClusterDistLock implements ClusterDistLock {
 
-    private static String instance = UUID.randomUUID().toString();
     private String key;
     private String currThreadId;
     private RedisTemplate<String, String> redisTemplate;
 
-    public RedisClusterDistLock(String key, RedisTemplate<String, String> redisTemplate) {
+    RedisClusterDistLock(String key, RedisTemplate<String, String> redisTemplate) {
         this.key = "dew:dist:lock:" + key;
-        currThreadId = instance + "-" + Thread.currentThread().getId();
+        currThreadId = Cluster.CLASS_LOAD_UNIQUE_FLAG + "-" + Thread.currentThread().getId();
         this.redisTemplate = redisTemplate;
     }
 
@@ -25,8 +24,6 @@ public class RedisClusterDistLock implements ClusterDistLock {
         try {
             lock();
             fun.exec();
-        } catch (Exception e) {
-            throw e;
         } finally {
             unLock();
         }
@@ -42,8 +39,6 @@ public class RedisClusterDistLock implements ClusterDistLock {
         if (tryLock(waitSec)) {
             try {
                 fun.exec();
-            } catch (Exception e) {
-                throw e;
             } finally {
                 unLock();
             }

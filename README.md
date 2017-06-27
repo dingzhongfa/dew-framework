@@ -48,14 +48,14 @@ Dew-Framework
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-alpha</version>
+        <version>1.0.0-beta1</version>
     </parent>
     ...
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId><模块名></artifactId>
-            <version>1.0.0-alpha</version>
+            <version>1.0.0-beta1</version>
         </dependency>
     </dependencies>
     ...
@@ -110,7 +110,7 @@ Dew-Framework
        <parent>
            <groupId>com.tairanchina.csp.dew</groupId>
            <artifactId>parent</artifactId>
-           <version>1.0.0-alpha</version>
+           <version>1.0.0-beta1</version>
        </parent>
        ....
        <dependencies>

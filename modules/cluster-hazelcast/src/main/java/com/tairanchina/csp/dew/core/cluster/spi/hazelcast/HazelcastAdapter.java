@@ -37,11 +37,11 @@ public class HazelcastAdapter {
         active=true;
     }
 
-    public HazelcastInstance getHazelcastInstance() {
+    HazelcastInstance getHazelcastInstance() {
         return hazelcastInstance;
     }
 
-    public boolean isActive(){
+    boolean isActive(){
         return active;
     }
 

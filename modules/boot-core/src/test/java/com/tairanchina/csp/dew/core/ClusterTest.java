@@ -111,7 +111,7 @@ public class ClusterTest {
         map.clear();
         Dew.Timer.periodic(1, () -> map.put("a" + System.currentTimeMillis(), System.currentTimeMillis()));
         Dew.Timer.periodic(10, () -> map.getAll().forEach((key, value) -> System.out.println(">>a:" + value)));
-        Thread.sleep(15);
+        Thread.sleep(15000);
 
         // lock
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
@@ -120,7 +120,7 @@ public class ClusterTest {
             lock.lock();
             System.out.println("Lock1 > " + Thread.currentThread().getId());
             try {
-                Thread.sleep(500);
+                Thread.sleep(500000);
             } catch (Exception e) {
             } finally {
                 System.out.println("UnLock1 > " + Thread.currentThread().getId());
@@ -134,7 +134,7 @@ public class ClusterTest {
             try {
                 Assert.assertTrue(lockLocal.tryLock());
                 System.out.println("Lock2 > " + Thread.currentThread().getId());
-                Thread.sleep(10000);
+                Thread.sleep(10000000);
             } catch (Exception e) {
             } finally {
                 lockLocal.unLock();
@@ -142,13 +142,13 @@ public class ClusterTest {
             }
         });
         t2.start();
-        Thread.sleep(1000);
+        Thread.sleep(1000000);
         Thread t3 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
                 while (!lockLocal.tryLock()) {
                     System.out.println("waiting 1 unlock");
-                    Thread.sleep(100);
+                    Thread.sleep(100000);
                 }
                 System.out.println("Lock3 > " + Thread.currentThread().getId());
             } catch (Exception e) {
@@ -161,9 +161,9 @@ public class ClusterTest {
         Thread t4 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                while (!lockLocal.tryLock(5000)) {
+                while (!lockLocal.tryLock(5000000)) {
                     System.out.println("waiting 2 unlock");
-                    Thread.sleep(100);
+                    Thread.sleep(100000);
                 }
                 System.out.println("Lock4 > " + Thread.currentThread().getId());
             } catch (Exception e) {

@@ -6,6 +6,7 @@ import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class RedisClusterDistLock implements ClusterDistLock {
 
@@ -35,8 +36,19 @@ public class RedisClusterDistLock implements ClusterDistLock {
     }
 
     @Override
-    public void tryLockWithFun(int waitSec, VoidProcessFun fun) throws Exception {
-        if (tryLock(waitSec)) {
+    public void tryLockWithFun(long waitMillSec, VoidProcessFun fun) throws Exception {
+        if (tryLock(waitMillSec)) {
+            try {
+                fun.exec();
+            } finally {
+                unLock();
+            }
+        }
+    }
+
+    @Override
+    public void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception {
+        if (tryLock(waitMillSec,leaseMillSec)) {
             try {
                 fun.exec();
             } finally {
@@ -56,16 +68,31 @@ public class RedisClusterDistLock implements ClusterDistLock {
     }
 
     @Override
-    public boolean tryLock(int waitSec) throws InterruptedException {
+    public boolean tryLock(long waitMillSec) throws InterruptedException {
         synchronized (this) {
-            if (waitSec == 0) {
-                return tryLock();
-            } else {
+            long now = new Date().getTime();
+            while (isLock() && new Date().getTime() - now < waitMillSec) {
+                Thread.sleep(100);
+            }
+            return tryLock();
+        }
+    }
+
+    @Override
+    public boolean tryLock(long waitMillSec, long leaseMillSec) throws InterruptedException {
+        if (waitMillSec == 0 && leaseMillSec == 0) {
+            return tryLock();
+        } else if (leaseMillSec == 0) {
+            return tryLock(waitMillSec);
+        } else if (waitMillSec == 0) {
+            return redisTemplate.getConnectionFactory().getConnection()..set(key.getBytes(),currThreadId.getBytes(),"NX","EX",leaseMillSec);
+        } else {
+            synchronized (this) {
                 long now = new Date().getTime();
-                while (isLock() && new Date().getTime() - now < waitSec) {
-                    Thread.sleep(500);
+                while (isLock() && new Date().getTime() - now < waitMillSec) {
+                    Thread.sleep(100);
                 }
-                return tryLock();
+                return redisTemplate.getConnectionFactory().getConnection().set(key,currThreadId,"NX","EX",leaseMillSec);
             }
         }
     }

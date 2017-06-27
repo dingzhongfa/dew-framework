@@ -11,13 +11,17 @@ public interface ClusterDistLock {
 
     void tryLockWithFun(VoidProcessFun fun) throws Exception;
 
-    void tryLockWithFun(int waitSec, VoidProcessFun fun) throws Exception;
+    void tryLockWithFun(long waitMillSec, VoidProcessFun fun) throws Exception;
+
+    void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception;
 
     void lock();
 
     boolean tryLock();
 
-    boolean tryLock(int waitSec) throws InterruptedException;
+    boolean tryLock(long waitMillSec) throws InterruptedException;
+
+    boolean tryLock(long waitMillSec, long leaseMillSec) throws InterruptedException;
 
     boolean unLock();
 

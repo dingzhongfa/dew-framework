@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
-import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
-import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ILock;
+import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
+import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +31,19 @@ public class HazelcastClusterDistLock implements ClusterDistLock {
     }
 
     @Override
-    public void tryLockWithFun(int waitSec, VoidProcessFun fun) throws Exception {
-        if (tryLock(waitSec)) {
+    public void tryLockWithFun(long waitMillSec, VoidProcessFun fun) throws Exception {
+        if (tryLock(waitMillSec)) {
+            try {
+                fun.exec();
+            } finally {
+                unLock();
+            }
+        }
+    }
+
+    @Override
+    public void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception {
+        if (tryLock(waitMillSec, leaseMillSec)) {
             try {
                 fun.exec();
             } finally {
@@ -52,11 +63,20 @@ public class HazelcastClusterDistLock implements ClusterDistLock {
     }
 
     @Override
-    public boolean tryLock(int waitSec) throws InterruptedException {
-        if (waitSec == 0) {
+    public boolean tryLock(long waitMillSec) throws InterruptedException {
+        return tryLock(waitMillSec, 0);
+    }
+
+    @Override
+    public boolean tryLock(long waitMillSec, long leaseMillSec) throws InterruptedException {
+        if (waitMillSec == 0 && leaseMillSec == 0) {
             return lock.tryLock();
+        } else if (leaseMillSec == 0) {
+            return lock.tryLock(waitMillSec, TimeUnit.MILLISECONDS);
+        } else if (waitMillSec == 0) {
+            return lock.tryLock(0, TimeUnit.MILLISECONDS, leaseMillSec, TimeUnit.MILLISECONDS);
         } else {
-            return lock.tryLock(waitSec, TimeUnit.SECONDS);
+            return lock.tryLock(waitMillSec, TimeUnit.MILLISECONDS, leaseMillSec, TimeUnit.MILLISECONDS);
         }
     }
 

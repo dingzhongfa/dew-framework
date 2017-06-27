@@ -36,14 +36,19 @@ public class IgniteClusterDistLock implements ClusterDistLock {
 
 
     @Override
-    public void tryLockWithFun(int waitSec, VoidProcessFun fun) throws Exception {
-        if (tryLock(waitSec)) {
+    public void tryLockWithFun(long waitMillSec, VoidProcessFun fun) throws Exception {
+        if (tryLock(waitMillSec)) {
             try {
                 fun.exec();
             } finally {
                 unLock();
             }
         }
+    }
+
+    @Override
+    public void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception {
+
     }
 
     @Override
@@ -57,12 +62,17 @@ public class IgniteClusterDistLock implements ClusterDistLock {
     }
 
     @Override
-    public boolean tryLock(int waitSec) throws InterruptedException {
-        if (waitSec == 0) {
+    public boolean tryLock(long waitMillSec) throws InterruptedException {
+        if (waitMillSec == 0) {
             return lock.tryLock();
         } else {
-            return lock.tryLock(waitSec, TimeUnit.SECONDS);
+            return lock.tryLock(waitMillSec, TimeUnit.SECONDS);
         }
+    }
+
+    @Override
+    public boolean tryLock(long waitMillSec, long leaseMillSec) throws InterruptedException {
+        return false;
     }
 
     @Override

@@ -320,7 +320,7 @@ Dew-Framework
 3. 使用JDBC
 
         // ddl
-        Dew.ds.jdbc().execute("CREATE TABLE example_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +
@@ -328,9 +328,9 @@ Dew-Framework
         // insert
         ExampleEntity entity = new ExampleEntity();
         entity.setFieldA("测试A");
-        long id = Dew.ds.insert(entity);
+        long id = Dew.ds().insert(entity);
         // get
-        logger.info(">>>> "+Dew.ds.getById(id, ExampleEntity.class).getFieldA());
+        logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 
 #### Dew对`JdbcTemplate`做扩展
 
@@ -358,20 +358,173 @@ Dew-Framework
 
 2. 支持常用操作
 
-       增加 Dew.ds.insert(Object entity) / Dew.ds.insert(Iterable<?> entities)
-       更新 Dew.ds.updateById(long id, Object entity) / Dew.ds.updateByCode(String code, Object entity)
-       获取单条记录 getById(long id, Class<E> entityClazz) / getByCode(String code, Class<E> entityClazz)
-       获取多条记录 findAll(Class<E> entityClazz) / findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / findEnabled(...) / / findDisabled(...)
-       获取分页记录 paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / pagingEnabled(...) / pagingDisabled(...)
-       计数 countAll(Class<?> entityClazz) / countEnabled(Class<?> entityClazz) / countDisabled(Class<?> entityClazz) 
-       启用 Dew.ds.enableById(long id, Class<?> entityClazz) / Dew.ds.enableByCode(String code, Class<?> entityClazz)
-       禁用 Dew.ds.disableById(long id, Class<?> entityClazz) / Dew.ds.disableByCode(String code, Class<?> entityClazz)
-       是否存在 Dew.ds.existById(long id, Class<?> entityClazz) / Dew.ds.existByCode(String code, Class<?> entityClazz)
-       物理删除 Dew.ds.deleteById(long id, Class<?> entityClazz) / Dew.ds.deleteByCode(String code, Class<?> entityClazz)
+       增加 Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable<?> entities)
+       更新 Dew.ds().updateById(long id, Object entity) / Dew.ds().updateByCode(String code, Object entity)
+       获取单条记录 Dew.ds().getById(long id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)
+       获取多条记录 Dew.ds().findAll(Class<E> entityClazz) / Dew.ds().findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().findEnabled(...) / Dew.ds().findDisabled(...)
+       获取分页记录 Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().pagingEnabled(...) / Dew.ds().pagingDisabled(...)
+       计数 Dew.ds().countAll(Class<?> entityClazz) / Dew.ds().countEnabled(Class<?> entityClazz) / Dew.ds().countDisabled(Class<?> entityClazz) 
+       启用 Dew.ds().enableById(long id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)
+       禁用 Dew.ds().disableById(long id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)
+       是否存在 Dew.ds().existById(long id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)
+       物理删除 Dew.ds().deleteById(long id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)
        
-  > **TIP** 您可以使用：`Dew.ds.jdbc()`获取`JdbcTemplate`原生API
+  > **TIP** 您可以使用：`Dew.ds().jdbc()`获取`JdbcTemplate`原生API
 
 > **NOTE** 以下功能原生版本支持比较繁琐或无对应实现，所以后文只描述Dew框架实现。
+
+### 多数据源支持
+
+#### 原生版本
+
+1. 配置数据源
+
+       # 主数据源
+       spring.datasource.url=...
+       spring.datasource.username=...
+       spring.datasource.password=...
+       spring.datasource.driver-class-name=...
+       spring.datasource.tomcat.max-idle=...
+       ...
+       # 其它数据源
+       spring.datasource.secondary.url=...
+       spring.datasource.secondary.username=...
+       spring.datasource.secondary.password=...
+       spring.datasource.secondary.driver-class-name=...
+       spring.datasource.secondary.tomcat.max-idle=...
+       ...
+
+1. 添加DataSource
+
+       @Bean
+       @Primary  
+       @ConfigurationProperties(prefix="spring.datasource")  
+       public DataSource primaryDataSource() {  
+           return DataSourceBuilder.create().build();  
+       }  
+         
+       @Bean
+       @ConfigurationProperties(prefix="spring.datasource.secondary")  
+       public DataSource secondaryDataSource() {  
+           return DataSourceBuilder.create().build();  
+       }  
+       
+1. 添加JdbcTemplate
+
+       @Bean
+       @Primary
+       public JdbcTemplate primaryJdbcTemplate(@Qualifier("primaryDataSource")DataSource dataSource){
+           return new JdbcTemplate(dataSource);
+       }
+   
+       @Bean
+       public JdbcTemplate secondaryJdbcTemplate(@Qualifier("secondaryDataSource")DataSource dataSource){
+           return new JdbcTemplate(dataSource);
+       }
+       
+1. 启用事务
+
+       @EnableTransactionManagement
+       
+1. 添加事务
+
+       @Bean
+       @Primary  
+       public PlatformTransactionManager primaryTransactionManager(@Qualifier("primaryDataSource") DataSource dataSource) {
+           return new DataSourceTransactionManager(dataSource);
+       }
+       
+       @Bean
+       public PlatformTransactionManager secondaryTransactionManager(@Qualifier("secondaryDataSource") DataSource dataSource) {
+           return new DataSourceTransactionManager(dataSource);
+       }
+
+1. 使用
+
+       @Autowired
+       private JdbcTemplate jdbcTemplate;
+      
+       @Autowired
+       @Qualifier("secondaryJdbcTemplate")
+       private JdbcTemplate secondaryJdbcTemplate;
+       
+       @Transactional
+       public long insert(Object entity) {
+          // DoSomething
+          jdbcTemplate.xxx;
+       }
+       
+       @Transactional(secondaryTransactionManager)
+       public long insert(Object entity) {
+          // DoSomething
+          secondaryJdbcTemplate.xxx;
+       }
+
+#### Dew版本
+
+1. 配置数据源
+
+       # 主数据源
+       spring.datasource.url=...
+       spring.datasource.username=...
+       spring.datasource.password=...
+       spring.datasource.driver-class-name=...
+       spring.datasource.tomcat.max-idle=...
+       ...
+       # 其它数据源1
+       spring.datasource.multi-datasources.other1.url=...
+       spring.datasource.multi-datasources.other1.username=...
+       spring.datasource.multi-datasources.other1.password=...
+       spring.datasource.multi-datasources.other1.driver-class-name=...
+       spring.datasource.multi-datasources.other1.tomcat.max-idle=...
+       # 其它数据源2
+       spring.datasource.multi-datasources.other2.url=...
+       ...
+
+  > **IMPORTANT** 其它数据源务必配置在`spring.datasource.multi-datasources`下，格式是`spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
+
+1. 使用
+
+       // Dew常规方式
+       
+       Dew.ds().xxx // 使用主数据源
+       Dew.ds("other1").xxx // 使用DS Name为`other1`的数据源
+       
+       // 泛型DAO (详见 `服务脚手架` 章节)
+       
+       @Repository
+       public class CRUDSTestDao extends DaoImpl<CRUDSTestEntity> {
+          @Override
+          public String ds() {
+              return "other1"; // 使用DS Name为`other1`的数据源，此方法不重载时表示使用主数据源
+          }
+       }
+       
+       // 手工注入（同原生版本）
+       
+       @Autowired
+       private JdbcTemplate jdbcTemplate;
+       
+       @Autowired
+       @Qualifier("other1JdbcTemplate")
+       private JdbcTemplate secondaryJdbcTemplate;
+       
+       @Transactional
+       public long insert(Object entity) {
+          // DoSomething
+          jdbcTemplate.xxx;
+       }
+       
+       @Transactional(otherTransactionManager)
+       public long insert(Object entity) {
+          // DoSomething
+          secondaryJdbcTemplate.xxx;
+       }
+       
+   > **IMPORTANT** `JdbcTemplate`Bean名称规则：主数据源=`jdbcTemplate`，其它数据源=`<DS Name>JdbcTemplate`
+   
+   > **IMPORTANT** `TransactionManager`Bean名称规则：主数据源=`transactionManager`，其它数据源=`<DS Name>TransactionManager`
+      
 
 ### 启用集群功能
 

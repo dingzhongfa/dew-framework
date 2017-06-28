@@ -26,6 +26,7 @@
         <module>examples/jdbc-example</module>
         <module>examples/cluster-example</module>
         <module>examples/config-example</module>
+        <module>examples/mybatisplus-example</module>
     </modules>
 
 </project>

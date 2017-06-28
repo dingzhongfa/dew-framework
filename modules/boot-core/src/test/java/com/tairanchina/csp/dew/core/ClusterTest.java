@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.validation.constraints.AssertTrue;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class ClusterTest {
         Dew.Timer.periodic(10, () -> map.getAll().forEach((key, value) -> System.out.println(">>a:" + value)));
         Thread.sleep(15000);
 
-        // lock
+        //lock
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
         lock.delete();
         Thread t1 = new Thread(() -> {
@@ -132,10 +133,11 @@ public class ClusterTest {
         Thread t2 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                Assert.assertTrue(lockLocal.tryLock());
+                Assert.assertTrue(lockLocal.tryLock(0, 100000));
                 System.out.println("Lock2 > " + Thread.currentThread().getId());
                 Thread.sleep(10000000);
             } catch (Exception e) {
+                System.out.println(e);
             } finally {
                 lockLocal.unLock();
                 System.out.println("UnLock2 > " + Thread.currentThread().getId());
@@ -276,6 +278,119 @@ public class ClusterTest {
 
         Thread.sleep(1000);
     }
+
+    /**
+     * 测试同一个线程能否锁住
+     * @throws InterruptedException
+     */
+    @Test
+    public void testSameThreadLock() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_A");
+        Boolean temp = lock.tryLock(0, 100000);
+        Assert.assertTrue(temp);
+        temp = lock.tryLock(0, 100000);
+        Assert.assertFalse(temp);
+    }
+
+    /**
+     * 测试不同线程能否锁住
+     * @throws InterruptedException
+     */
+    @Test
+    public void testDiffentTreadLock() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_B");
+        Boolean temp = lock.tryLock(0, 100000);
+        System.out.println("*********" + temp);
+        Assert.assertTrue(temp);
+
+        new Thread(() -> {
+            try {
+                ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_B");
+                Boolean tempTest = lockChild.tryLock(0, 100000);
+                System.out.println("*********" + tempTest);
+                Assert.assertFalse(tempTest);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
+    /**
+     * testDiffentJVMLockA
+     * testDiffentJVMLockB
+     * 模拟两个虚拟机。
+     * 先调用testDiffentJVMLockA锁住，等方法执行结束。
+     * 再执行testDiffentJVMLockB，再去获得锁，正常结果第二次调用不能获取锁
+     * @throws InterruptedException
+     */
+    @Test
+    public void testDiffentJVMLockA() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_C");
+        Boolean temp = lock.tryLock(0, 200000);
+        Assert.assertTrue(temp);
+    }
+
+    @Test
+    public void testDiffentJVMLockB() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_C");
+        Boolean temp = lock.tryLock(0, 200000);
+        Assert.assertFalse(temp);
+    }
+
+    /**
+     * 测试释放锁
+     * @throws InterruptedException
+     */
+    @Test
+    public void testUnLock() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_D");
+        //测试还没有加锁前去解锁
+        Boolean temp = lock.unLock();
+        Assert.assertFalse(temp);
+        //加锁
+        temp = lock.tryLock(0, 200000);
+        Assert.assertTrue(temp);
+        new Thread(() -> {
+            ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_D");
+            //测试不同的线程去解锁
+            Boolean tempTest = lockChild.unLock();
+            Assert.assertFalse(tempTest);
+        }).start();
+        //测试同一个线程去解锁
+        temp = lock.unLock();
+        Assert.assertTrue(temp);
+    }
+
+    /**
+     * 测试等待获取锁【同一个线程】
+     * @throws InterruptedException
+     */
+    @Test
+    public void testWaitLock() throws InterruptedException{
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_E");
+        Boolean temp = lock.tryLock(0, 10000);
+        Assert.assertTrue(temp);
+        temp = lock.tryLock(3000, 10000);
+        Assert.assertFalse(temp);
+        temp = lock.tryLock(10001, 10000);
+        Assert.assertTrue(temp);
+    }
+
+    /**
+     * 测试连接是否被关闭，连接池默认设置最大连接数1，设置两次值
+     * @throws InterruptedException
+     */
+    @Test
+    public void testConnection() throws InterruptedException {
+        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_DA");
+        Boolean temp = lock.tryLock(0, 100000);
+        Assert.assertTrue(temp);
+        lock = Dew.cluster.dist.lock("test_lock_DE");
+        temp = lock.tryLock(0, 100000);
+        Assert.assertTrue(temp);
+    }
+
 
     static class TestMapObj implements Serializable {
         private String a;

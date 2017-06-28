@@ -5,13 +5,17 @@ import com.tairanchina.csp.dew.core.entity.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootApplication
@@ -24,23 +28,24 @@ public class JDBCTest {
         testEntity();
         testSql();
         testTx();
+        testMultiDS();
     }
 
     public void testEntity() throws InterruptedException {
         // 没有Entity注解的类，异常
         try {
-            Dew.ds.findAll(EmptyEntity.class);
+            Dew.ds().findAll(EmptyEntity.class);
             Assert.assertTrue(false);
         } catch (Throwable e) {
             Assert.assertTrue(true);
         }
         // ddl
-        Dew.ds.jdbc().execute("CREATE TABLE basic_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +
                 ")");
-        Dew.ds.jdbc().execute("CREATE TABLE t_full_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE t_full_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "code varchar(255),\n" +
@@ -54,22 +59,22 @@ public class JDBCTest {
                 ")");
         // =========== Basic Test
         // findAll
-        Assert.assertEquals(0, Dew.ds.findAll(BasicEntity.class).size());
+        Assert.assertEquals(0, Dew.ds().findAll(BasicEntity.class).size());
         // insert
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("测试A");
         basicEntity.setFieldB("测试B");
-        long id = Dew.ds.insert(basicEntity);
+        long id = Dew.ds().insert(basicEntity);
         // getById
-        Assert.assertEquals("测试A", Dew.ds.getById(id, BasicEntity.class).getFieldA());
+        Assert.assertEquals("测试A", Dew.ds().getById(id, BasicEntity.class).getFieldA());
         // updateById
         basicEntity.setFieldA("测试C");
-        Dew.ds.updateById(id, basicEntity);
-        Assert.assertEquals("测试C", Dew.ds.getById(id, BasicEntity.class).getFieldA());
+        Dew.ds().updateById(id, basicEntity);
+        Assert.assertEquals("测试C", Dew.ds().getById(id, BasicEntity.class).getFieldA());
         // findAll
-        Assert.assertEquals(1, Dew.ds.findAll(BasicEntity.class).size());
+        Assert.assertEquals(1, Dew.ds().findAll(BasicEntity.class).size());
         try {
-            Dew.ds.findEnabled(BasicEntity.class);
+            Dew.ds().findEnabled(BasicEntity.class);
             Assert.assertTrue(false);
         } catch (Throwable e) {
             Assert.assertTrue(true);
@@ -79,70 +84,70 @@ public class JDBCTest {
         fullEntity.setFieldA("测试A");
         // insert
         try {
-            Dew.ds.insert(fullEntity);
+            Dew.ds().insert(fullEntity);
             Assert.assertTrue(false);
         } catch (Throwable e) {
             Assert.assertTrue(true);
         }
         fullEntity.setFieldB("测试B");
-        id = Dew.ds.insert(fullEntity);
+        id = Dew.ds().insert(fullEntity);
         // getById
-        fullEntity = Dew.ds.getById(id, FullEntity.class);
+        fullEntity = Dew.ds().getById(id, FullEntity.class);
         Assert.assertTrue(!fullEntity.getCode().isEmpty());
         Assert.assertEquals("测试A", fullEntity.getFieldA());
         Assert.assertEquals("测试B", fullEntity.getFieldB());
         // getByCode
-        fullEntity = Dew.ds.getByCode(fullEntity.getCode(), FullEntity.class);
+        fullEntity = Dew.ds().getByCode(fullEntity.getCode(), FullEntity.class);
         Assert.assertEquals("", fullEntity.getCreateUser());
         Assert.assertEquals("", fullEntity.getUpdateUser());
         Assert.assertTrue(fullEntity.getCreateTime() != null);
         Assert.assertEquals(fullEntity.getCreateTime(), fullEntity.getUpdateTime());
         // updateById
         fullEntity.setFieldA("测试C");
-        Dew.ds.updateById(id, fullEntity);
-        Assert.assertEquals("测试C", Dew.ds.getById(id, FullEntity.class).getFieldA());
+        Dew.ds().updateById(id, fullEntity);
+        Assert.assertEquals("测试C", Dew.ds().getById(id, FullEntity.class).getFieldA());
         // updateByCode
         fullEntity.setFieldA(null);
         fullEntity.setFieldB("测试D");
         // null不更新
         Thread.sleep(1000);
-        Dew.ds.updateByCode(fullEntity.getCode(), fullEntity);
-        fullEntity = Dew.ds.getById(id, FullEntity.class);
+        Dew.ds().updateByCode(fullEntity.getCode(), fullEntity);
+        fullEntity = Dew.ds().getById(id, FullEntity.class);
         Assert.assertEquals("测试C", fullEntity.getFieldA());
         Assert.assertEquals("测试D", fullEntity.getFieldB());
         Assert.assertNotEquals(fullEntity.getCreateTime(), fullEntity.getUpdateTime());
         Assert.assertEquals(true, fullEntity.getEnabled());
         // disableById
-        Dew.ds.disableById(fullEntity.getId(), FullEntity.class);
-        Assert.assertEquals(false, Dew.ds.getById(fullEntity.getId(), FullEntity.class).getEnabled());
+        Dew.ds().disableById(fullEntity.getId(), FullEntity.class);
+        Assert.assertEquals(false, Dew.ds().getById(fullEntity.getId(), FullEntity.class).getEnabled());
         // enableById
-        Dew.ds.enableById(fullEntity.getId(), FullEntity.class);
-        Assert.assertEquals(true, Dew.ds.getById(fullEntity.getId(), FullEntity.class).getEnabled());
+        Dew.ds().enableById(fullEntity.getId(), FullEntity.class);
+        Assert.assertEquals(true, Dew.ds().getById(fullEntity.getId(), FullEntity.class).getEnabled());
         // disableByCode
-        Dew.ds.disableByCode(fullEntity.getCode(), FullEntity.class);
-        Assert.assertEquals(false, Dew.ds.getById(fullEntity.getId(), FullEntity.class).getEnabled());
+        Dew.ds().disableByCode(fullEntity.getCode(), FullEntity.class);
+        Assert.assertEquals(false, Dew.ds().getById(fullEntity.getId(), FullEntity.class).getEnabled());
         // enableByCode
-        Dew.ds.enableByCode(fullEntity.getCode(), FullEntity.class);
-        Assert.assertEquals(true, Dew.ds.getById(fullEntity.getId(), FullEntity.class).getEnabled());
+        Dew.ds().enableByCode(fullEntity.getCode(), FullEntity.class);
+        Assert.assertEquals(true, Dew.ds().getById(fullEntity.getId(), FullEntity.class).getEnabled());
         // existById
-        Assert.assertEquals(true, Dew.ds.existById(fullEntity.getId(), FullEntity.class));
-        Assert.assertEquals(false, Dew.ds.existById(11111, FullEntity.class));
+        Assert.assertEquals(true, Dew.ds().existById(fullEntity.getId(), FullEntity.class));
+        Assert.assertEquals(false, Dew.ds().existById(11111, FullEntity.class));
         // existByCode
-        Assert.assertEquals(true, Dew.ds.existByCode(fullEntity.getCode(), FullEntity.class));
-        Assert.assertEquals(false, Dew.ds.existByCode("11111", FullEntity.class));
+        Assert.assertEquals(true, Dew.ds().existByCode(fullEntity.getCode(), FullEntity.class));
+        Assert.assertEquals(false, Dew.ds().existByCode("11111", FullEntity.class));
         // findAll
-        Assert.assertEquals(1, Dew.ds.findAll(FullEntity.class).size());
-        Assert.assertEquals("测试C", Dew.ds.findAll(FullEntity.class).get(0).getFieldA());
+        Assert.assertEquals(1, Dew.ds().findAll(FullEntity.class).size());
+        Assert.assertEquals("测试C", Dew.ds().findAll(FullEntity.class).get(0).getFieldA());
         // findEnabled
-        Assert.assertEquals(1, Dew.ds.findEnabled(FullEntity.class).size());
+        Assert.assertEquals(1, Dew.ds().findEnabled(FullEntity.class).size());
         // findDisabled
-        Assert.assertEquals(0, Dew.ds.findDisabled(FullEntity.class).size());
+        Assert.assertEquals(0, Dew.ds().findDisabled(FullEntity.class).size());
         // countAll
-        Assert.assertEquals(1, Dew.ds.countAll(FullEntity.class));
+        Assert.assertEquals(1, Dew.ds().countAll(FullEntity.class));
         // countEnabled
-        Assert.assertEquals(1, Dew.ds.countEnabled(FullEntity.class));
+        Assert.assertEquals(1, Dew.ds().countEnabled(FullEntity.class));
         // countDisabled
-        Assert.assertEquals(0, Dew.ds.countDisabled(FullEntity.class));
+        Assert.assertEquals(0, Dew.ds().countDisabled(FullEntity.class));
         // insert
         FullEntity fullEntity2 = new FullEntity();
         fullEntity2.setFieldA("测试A2");
@@ -150,30 +155,30 @@ public class JDBCTest {
         FullEntity fullEntity3 = new FullEntity();
         fullEntity3.setFieldA("测试A3");
         fullEntity3.setFieldB("测试B3");
-        Dew.ds.insert(new ArrayList<FullEntity>() {{
+        Dew.ds().insert(new ArrayList<FullEntity>() {{
             add(fullEntity2);
             add(fullEntity3);
         }});
-        Assert.assertEquals(3, Dew.ds.countAll(FullEntity.class));
+        Assert.assertEquals(3, Dew.ds().countAll(FullEntity.class));
         // paging
-        Page<FullEntity> fullEntities = Dew.ds.paging(1, 2, FullEntity.class);
+        Page<FullEntity> fullEntities = Dew.ds().paging(1, 2, FullEntity.class);
         Assert.assertEquals(3, fullEntities.getRecordTotal());
         Assert.assertEquals(2, fullEntities.getPageSize());
         Assert.assertEquals(1, fullEntities.getPageNumber());
         Assert.assertEquals(2, fullEntities.getPageTotal());
         Assert.assertEquals(2, fullEntities.getObjects().size());
         // pagingEnabled
-        Dew.ds.disableById(fullEntity.getId(), FullEntity.class);
-        fullEntities = Dew.ds.pagingEnabled(1, 2, FullEntity.class);
+        Dew.ds().disableById(fullEntity.getId(), FullEntity.class);
+        fullEntities = Dew.ds().pagingEnabled(1, 2, FullEntity.class);
         Assert.assertEquals(2, fullEntities.getRecordTotal());
         // pagingDisabled
-        fullEntities = Dew.ds.pagingDisabled(1, 2, FullEntity.class);
+        fullEntities = Dew.ds().pagingDisabled(1, 2, FullEntity.class);
         Assert.assertEquals(1, fullEntities.getRecordTotal());
         // deleteById
-        Dew.ds.deleteById(fullEntity.getId(), FullEntity.class);
+        Dew.ds().deleteById(fullEntity.getId(), FullEntity.class);
         // deleteByCode
-        Dew.ds.deleteByCode(Dew.ds.findAll(FullEntity.class).get(0).getCode(), FullEntity.class);
-        Assert.assertEquals(1, Dew.ds.findAll(FullEntity.class).size());
+        Dew.ds().deleteByCode(Dew.ds().findAll(FullEntity.class).get(0).getCode(), FullEntity.class);
+        Assert.assertEquals(1, Dew.ds().findAll(FullEntity.class).size());
     }
 
     public void testSql() {
@@ -183,30 +188,57 @@ public class JDBCTest {
 
     @Transactional
     public void testTx() throws Exception {
-        Dew.ds.jdbc().execute("DELETE FROM basic_entity");
+        Dew.ds().jdbc().execute("DELETE FROM basic_entity");
         Thread thread1 = new Thread(() -> {
             BasicEntity basicEntity = new BasicEntity();
             basicEntity.setFieldA("测试A");
             basicEntity.setFieldB("测试B");
-            long id = Dew.ds.insert(basicEntity);
+            long id = Dew.ds().insert(basicEntity);
             Assert.assertTrue(id != 0);
         });
         thread1.start();
         thread1.join();
         Thread thread2 = new Thread(() -> {
-            Dew.ds.jdbc().execute("DELETE FROM basic_entity");
+            Dew.ds().jdbc().execute("DELETE FROM basic_entity");
             BasicEntity basicEntity = new BasicEntity();
             basicEntity.setFieldA("测试C");
             basicEntity.setFieldB("测试D");
-            long id = Dew.ds.insert(basicEntity);
+            long id = Dew.ds().insert(basicEntity);
             Assert.assertTrue(id != 0);
             new Exception("");
         });
         thread2.start();
         thread2.join();
-        Thread thread3 = new Thread(() -> Assert.assertEquals(1, Dew.ds.findAll(BasicEntity.class).size()));
+        Thread thread3 = new Thread(() -> Assert.assertEquals(1, Dew.ds().findAll(BasicEntity.class).size()));
         thread3.start();
         thread3.join();
+    }
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier("test1")
+    private JdbcTemplate jdbcTemplate1;
+
+    @Autowired
+    @Qualifier("test2")
+    private JdbcTemplate jdbcTemplate2;
+
+    public void testMultiDS(){
+        Dew.ds().jdbc().queryForList("select * from basic_entity").size();
+        try {
+            Dew.ds("test1").jdbc().queryForList("select * from basic_entity").size();
+            Assert.assertFalse(1==1);
+        }catch (Exception e){
+            Assert.assertTrue(1==1);
+        }
+        Dew.ds("test2").jdbc().execute("CREATE TABLE basic_entity\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "field_a varchar(255)\n" +
+                ")");
+        Assert.assertEquals(0,Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
     }
 
     public static class EmptyEntity {

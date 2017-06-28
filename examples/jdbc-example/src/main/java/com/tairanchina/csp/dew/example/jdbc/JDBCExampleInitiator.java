@@ -19,7 +19,7 @@ public class JDBCExampleInitiator {
     @PostConstruct
     public void init() {
         // ddl
-        Dew.ds.jdbc().execute("CREATE TABLE example_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +
@@ -27,9 +27,9 @@ public class JDBCExampleInitiator {
         // insert
         ExampleEntity entity = new ExampleEntity();
         entity.setFieldA("测试A");
-        long id = Dew.ds.insert(entity);
+        long id = Dew.ds().insert(entity);
         // get
-        logger.info(">>>> "+Dew.ds.getById(id, ExampleEntity.class).getFieldA());
+        logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 
     }
 

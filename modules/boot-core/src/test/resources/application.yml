@@ -3,10 +3,10 @@ dew:
     format:
       use-unity-error: true
       reuse-http-state: true
-  cluster:
-    cache: redis
-    dist: redis
-    mq: redis
+#  cluster:
+#    cache: redis
+#    dist: redis
+#    mq: redis
 
 spring:
   application:
@@ -27,3 +27,10 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
+  multi-datasources:
+    test1:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:test1
+    test2:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:test2

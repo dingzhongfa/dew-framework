@@ -9,7 +9,6 @@ import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,19 +17,13 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
-@ConditionalOnClass(JdbcTemplate.class)
 public class DS {
 
-    @Autowired
     private JdbcTemplate jdbcTemplate;
+    private String jdbcUrl;
 
     private Dialect dialect;
 
-    @Value("${spring.datasource.url}")
-    private String jdbcUrl;
-
-    @PostConstruct
     private void init() {
         dialect = DialectFactory.parseDialect(jdbcUrl);
     }
@@ -466,5 +459,20 @@ public class DS {
         }
     }
 
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public String getJdbcUrl() {
+        return jdbcUrl;
+    }
+
+    public void setJdbcUrl(String jdbcUrl) {
+        this.jdbcUrl = jdbcUrl;
+    }
 }
 

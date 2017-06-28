@@ -10,6 +10,7 @@ import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.jdbc.DS;
+import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,8 @@ public class Dew {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(innerDewConfig.getCluster().getMq() + "ClusterMQ");
         }
         Dew.dewConfig = innerDewConfig;
-        if (Dew.applicationContext.containsBean(DS.class.getSimpleName())) {
-            Dew.ds = Dew.applicationContext.getBean(DS.class);
+        if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {
+            Dew.applicationContext.getBean(DSManager.class);
         }
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
     }
@@ -111,7 +112,13 @@ public class Dew {
 
     public static ApplicationContext applicationContext;
 
-    public static DS ds;
+    public static DS ds() {
+        return DSManager.select("");
+    }
+
+    public static DS ds(String dsName) {
+        return DSManager.select(dsName);
+    }
 
     public static DewConfig dewConfig;
 

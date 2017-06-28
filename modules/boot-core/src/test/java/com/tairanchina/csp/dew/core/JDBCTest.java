@@ -23,6 +23,13 @@ import java.util.stream.Collectors;
 @ComponentScan(basePackageClasses = {Dew.class, JDBCTest.class})
 public class JDBCTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    @Qualifier("test2JdbcTemplate")
+    private JdbcTemplate jdbcTemplate2;
+
     @Test
     public void testAll() throws Exception {
         testEntity();
@@ -214,17 +221,6 @@ public class JDBCTest {
         thread3.join();
     }
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    @Qualifier("test1JdbcTemplate")
-    private JdbcTemplate jdbcTemplate1;
-
-    @Autowired
-    @Qualifier("test2JdbcTemplate")
-    private JdbcTemplate jdbcTemplate2;
-
     public void testMultiDS(){
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         try {
@@ -239,6 +235,72 @@ public class JDBCTest {
                 "field_a varchar(255)\n" +
                 ")");
         Assert.assertEquals(0,Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
+    }
+
+    /**
+     * 测试没有配置多数据库的情况
+     * 在配置中注释掉multi-datasources:
+     */
+    @Test
+    public void testNotDynamic(){
+        int temp = Dew.ds().jdbc().queryForList("select * from basic_entity").size();
+        Assert.assertTrue(temp == 1);
+    }
+
+    /**
+     * 测试spring 直接注入jdbcTemplate的情况，是否生效
+     */
+    @Test
+    public void testAoto(){
+        int temp = jdbcTemplate.queryForList("select * from basic_entity").size();
+        Assert.assertTrue(temp == 1);
+        temp = jdbcTemplate2.queryForList("select * from basic_entity").size();
+        Assert.assertTrue(temp == 0);
+    }
+
+    /**
+     *
+     */
+    @Test
+    @Transactional
+    public void testPool() {
+        int temp = jdbcTemplate.queryForList("select * from basic_entity").size();
+        System.out.println("===selectQ==" + temp);
+        new Thread(() -> {
+            int tempAA = jdbcTemplate.queryForList("select * from basic_entity").size();
+            System.out.println("===selectQ=tempAA=" + tempAA);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        try {
+            Thread.sleep(10000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testPoolA() {
+        int temp = jdbcTemplate2.queryForList("select * from basic_entity").size();
+        System.out.println("===selectQE==" + temp);
+        new Thread(() -> {
+            int tempAA = jdbcTemplate2.queryForList("select * from basic_entity").size();
+            System.out.println("===selectQ=tempAA=" + tempAA);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        try {
+            Thread.sleep(10000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static class EmptyEntity {

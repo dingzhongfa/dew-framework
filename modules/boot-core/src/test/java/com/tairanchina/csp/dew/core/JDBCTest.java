@@ -218,11 +218,11 @@ public class JDBCTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    @Qualifier("test1")
+    @Qualifier("test1JdbcTemplate")
     private JdbcTemplate jdbcTemplate1;
 
     @Autowired
-    @Qualifier("test2")
+    @Qualifier("test2JdbcTemplate")
     private JdbcTemplate jdbcTemplate2;
 
     public void testMultiDS(){

@@ -13,117 +13,117 @@ public abstract class DaoImpl<E> implements DewDao<E> {
 
     @Override
     public long insert(Object entity) {
-        return Dew.ds().insert(entity);
+        return Dew.ds(ds()).insert(entity);
     }
 
     @Override
     public void insert(Iterable<?> entities) {
-        Dew.ds().insert(entities);
+        Dew.ds(ds()).insert(entities);
     }
 
     @Override
     public void updateById(long id, Object entity) {
-        Dew.ds().updateById(id, entity);
+        Dew.ds(ds()).updateById(id, entity);
     }
 
     @Override
     public void updateByCode(String code, Object entity) {
-        Dew.ds().updateByCode(code, entity);
+        Dew.ds(ds()).updateByCode(code, entity);
     }
 
     @Override
     public E getById(long id) {
-        return Dew.ds().getById(id, clazz);
+        return Dew.ds(ds()).getById(id, clazz);
     }
 
     @Override
     public E getByCode(String code) {
-        return Dew.ds().getByCode(code, clazz);
+        return Dew.ds(ds()).getByCode(code, clazz);
     }
 
     @Override
     public void deleteById(long id) {
-        Dew.ds().deleteById(id, clazz);
+        Dew.ds(ds()).deleteById(id, clazz);
     }
 
     @Override
     public void deleteByCode(String code) {
-        Dew.ds().deleteByCode(code, clazz);
+        Dew.ds(ds()).deleteByCode(code, clazz);
     }
 
     @Override
     public void enableById(long id) {
-        Dew.ds().enableById(id, clazz);
+        Dew.ds(ds()).enableById(id, clazz);
     }
 
     @Override
     public void enableByCode(String code) {
-        Dew.ds().enableByCode(code, clazz);
+        Dew.ds(ds()).enableByCode(code, clazz);
     }
 
     @Override
     public void disableById(long id) {
-        Dew.ds().disableById(id, clazz);
+        Dew.ds(ds()).disableById(id, clazz);
     }
 
     @Override
     public void disableByCode(String code) {
-        Dew.ds().disableByCode(code, clazz);
+        Dew.ds(ds()).disableByCode(code, clazz);
     }
 
     @Override
     public boolean existById(long id) {
-        return Dew.ds().existById(id, clazz);
+        return Dew.ds(ds()).existById(id, clazz);
     }
 
     @Override
     public boolean existByCode(String code) {
-        return Dew.ds().existByCode(code, clazz);
+        return Dew.ds(ds()).existByCode(code, clazz);
     }
 
     @Override
     public List<E> findAll(LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().findAll(orderDesc, clazz);
+        return Dew.ds(ds()).findAll(orderDesc, clazz);
     }
 
     @Override
     public List<E> findEnabled(LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().findEnabled(orderDesc, clazz);
+        return Dew.ds(ds()).findEnabled(orderDesc, clazz);
     }
 
     @Override
     public List<E> findDisabled(LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().findDisabled(orderDesc, clazz);
+        return Dew.ds(ds()).findDisabled(orderDesc, clazz);
     }
 
     @Override
     public long countAll() {
-        return Dew.ds().countAll(clazz);
+        return Dew.ds(ds()).countAll(clazz);
     }
 
     @Override
     public long countEnabled() {
-        return Dew.ds().countEnabled(clazz);
+        return Dew.ds(ds()).countEnabled(clazz);
     }
 
     @Override
     public long countDisabled() {
-        return Dew.ds().countDisabled(clazz);
+        return Dew.ds(ds()).countDisabled(clazz);
     }
 
     @Override
     public Page<E> paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().paging(pageNumber, pageSize, orderDesc, clazz);
+        return Dew.ds(ds()).paging(pageNumber, pageSize, orderDesc, clazz);
     }
 
     @Override
     public Page<E> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().pagingEnabled(pageNumber, pageSize, orderDesc, clazz);
+        return Dew.ds(ds()).pagingEnabled(pageNumber, pageSize, orderDesc, clazz);
     }
 
     @Override
     public Page<E> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
-        return Dew.ds().pagingDisabled(pageNumber, pageSize, orderDesc, clazz);
+        return Dew.ds(ds()).pagingDisabled(pageNumber, pageSize, orderDesc, clazz);
     }
 
 }

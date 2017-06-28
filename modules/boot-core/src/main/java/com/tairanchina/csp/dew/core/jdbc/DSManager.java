@@ -9,12 +9,12 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -30,6 +30,9 @@ public class DSManager {
     @Autowired
     private JdbcTemplate primaryJdbcTemplate;
 
+    @Autowired
+    private DataSource dataSource;
+
     @Value("${spring.datasource.url}")
     private String primaryJdbcUrl;
 
@@ -37,16 +40,23 @@ public class DSManager {
 
     @PostConstruct
     private void init() throws NoSuchFieldException {
+        // Register TransactionManager
         beanFactory = (DefaultListableBeanFactory) ((ConfigurableApplicationContext) Dew.applicationContext).getBeanFactory();
-        // Package primary DS
+        AbstractBeanDefinition transactionManager = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class)
+                .addConstructorArgValue(dataSource).getBeanDefinition();
+        transactionManager.setScope("singleton");
+        transactionManager.setPrimary(true);
+        beanFactory.registerBeanDefinition("transactionManager", transactionManager);
+        // Register primary DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyValue("jdbcTemplate", primaryJdbcTemplate)
+                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean("transactionManager")))
                 .addPropertyValue("jdbcUrl", primaryJdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");
         dsBean.setPrimary(true);
         beanFactory.registerBeanDefinition("ds", dsBean);
-        // Package others DS
+        // Register others DS
         if (dsConfig.getMultiDatasources() != null && !dsConfig.getMultiDatasources().isEmpty()) {
             for (Map.Entry<String, Map<String, String>> entry : dsConfig.getMultiDatasources().entrySet()) {
                 String dsName = entry.getKey();
@@ -58,6 +68,12 @@ public class DSManager {
     }
 
     private void register(String dsName, String jdbcUrl, DataSource dataSource) {
+        // Package TransactionManager
+        AbstractBeanDefinition transactionManager = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class)
+                .addConstructorArgValue(dataSource).getBeanDefinition();
+        transactionManager.setScope("singleton");
+        transactionManager.setPrimary(false);
+        beanFactory.registerBeanDefinition(dsName + "TransactionManager", transactionManager);
         // Register JdbcTemplate
         AbstractBeanDefinition jdbcTemplate = BeanDefinitionBuilder.rootBeanDefinition(JdbcTemplate.class)
                 .addConstructorArgValue(dataSource).getBeanDefinition();
@@ -67,6 +83,7 @@ public class DSManager {
         // Register DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyReference("jdbcTemplate", dsName + "JdbcTemplate")
+                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean(dsName + "TransactionManager")))
                 .addPropertyValue("jdbcUrl", jdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");

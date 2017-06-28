@@ -1,45 +1,38 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.ecfront.dew.common.Page;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DewDao<E> {
 
-    @Transactional
+    default String ds() {
+        return "";
+    }
+
     long insert(Object entity);
 
-    @Transactional
     void insert(Iterable<?> entities);
 
-    @Transactional
     void updateById(long id, Object entity);
 
-    @Transactional
     void updateByCode(String code, Object entity);
 
     E getById(long id);
 
     E getByCode(String code);
 
-    @Transactional
     void deleteById(long id);
 
-    @Transactional
     void deleteByCode(String code);
 
-    @Transactional
     void enableById(long id);
 
-    @Transactional
     void enableByCode(String code);
 
-    @Transactional
     void disableById(long id);
 
-    @Transactional
     void disableByCode(String code);
 
     boolean existById(long id);

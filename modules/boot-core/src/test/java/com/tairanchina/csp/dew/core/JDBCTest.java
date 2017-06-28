@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
@@ -29,6 +30,17 @@ public class JDBCTest {
     @Autowired
     @Qualifier("test2JdbcTemplate")
     private JdbcTemplate jdbcTemplate2;
+
+
+    /**
+     * 测试没有配置多数据库的情况
+     * 在配置中注释掉multi-datasources:
+     */
+    @Test
+    public void testNotDynamic(){
+        int temp = Dew.ds().jdbc().queryForList("select * from basic_entity").size();
+        Assert.assertTrue(temp == 1);
+    }
 
     @Test
     public void testAll() throws Exception {
@@ -235,69 +247,43 @@ public class JDBCTest {
                 "field_a varchar(255)\n" +
                 ")");
         Assert.assertEquals(0,Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
-    }
 
-    /**
-     * 测试没有配置多数据库的情况
-     * 在配置中注释掉multi-datasources:
-     */
-    @Test
-    public void testNotDynamic(){
-        int temp = Dew.ds().jdbc().queryForList("select * from basic_entity").size();
-        Assert.assertTrue(temp == 1);
-    }
-
-    /**
-     * 测试spring 直接注入jdbcTemplate的情况，是否生效
-     */
-    @Test
-    public void testAoto(){
+        // 测试spring 直接注入jdbcTemplate的情况，是否生效
         int temp = jdbcTemplate.queryForList("select * from basic_entity").size();
         Assert.assertTrue(temp == 1);
         temp = jdbcTemplate2.queryForList("select * from basic_entity").size();
         Assert.assertTrue(temp == 0);
     }
 
-    /**
-     *
-     */
-    @Test
     @Transactional
+    @Test
     public void testPool() {
-        int temp = jdbcTemplate.queryForList("select * from basic_entity").size();
-        System.out.println("===selectQ==" + temp);
+        Boolean[] hasFinish={false};
+        Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         new Thread(() -> {
-            int tempAA = jdbcTemplate.queryForList("select * from basic_entity").size();
-            System.out.println("===selectQ=tempAA=" + tempAA);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Dew.ds().jdbc().queryForList("select * from basic_entity").size();
+            Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(10000000);
+            Thread.sleep(5000);
+            hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    @Transactional
+    @Transactional("test2TransactionManager")
     public void testPoolA() {
-        int temp = jdbcTemplate2.queryForList("select * from basic_entity").size();
-        System.out.println("===selectQE==" + temp);
+        Boolean[] hasFinish={false};
+        Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size();
         new Thread(() -> {
-            int tempAA = jdbcTemplate2.queryForList("select * from basic_entity").size();
-            System.out.println("===selectQ=tempAA=" + tempAA);
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size();
+            Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(10000000);
+            Thread.sleep(5000);
+            hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

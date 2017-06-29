@@ -15,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootApplication
@@ -26,6 +24,8 @@ public class JDBCTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private TxService txService;
 
     @Autowired
     @Qualifier("test2JdbcTemplate")
@@ -232,6 +232,69 @@ public class JDBCTest {
         thread3.start();
         thread3.join();
     }
+
+    /**
+     * 测试主数据库的事务
+     * 事务提交
+     */
+    @Test
+    public void testTxDataSuccess(){
+        txService.testCommit();
+    }
+
+    /**
+     * 测试主数据库的事务
+     * 抛错误回
+     */
+    @Test
+    public void testTxDataFail() throws Exception{
+        try {
+            txService.testRollBack();
+        } catch (Exception e){
+
+        }
+    }
+
+    /**
+     * 测试多数据源，成功事务
+     */
+    @Test
+    public void testTxMultiDataSuccess(){
+        txService.testMultiCommit();
+    }
+
+    /**
+     * 测试多数据源，失败事务
+     */
+    @Test
+    public void testTxMultiDataFail(){
+        try {
+            txService.testMultiRollBack();
+        } catch (Exception e){
+
+        }
+    }
+
+    /**
+     * 先执行 事务测试
+     */
+    @Test
+    public void testTranRes(){
+        int res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA1'").size();
+        Assert.assertTrue(res > 0);
+        res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA2'").size();
+        Assert.assertTrue(res == 0);
+        res = Dew.ds("test2").jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA1'").size();
+        Assert.assertTrue(res > 0);
+        res = Dew.ds("test2").jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA2'").size();
+        Assert.assertTrue(res == 0);
+    }
+
+    @Test
+    public void testTxMultiDataRes(){
+        Dew.ds().jdbc().queryForList("select * from basic_entity").size();
+    }
+
 
     public void testMultiDS(){
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();

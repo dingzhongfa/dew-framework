@@ -481,9 +481,9 @@ Dew-Framework
        spring.datasource.multi-datasources.other2.url=...
        ...
 
-  > **IMPORTANT** 其它数据源务必配置在`spring.datasource.multi-datasources`下，格式是`spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
-  
-  > **IMPORTANT** 主数据源连接池要加上`tomcat`或其它类型，其它数据源与`url`、`username`同级即可。
+   > **IMPORTANT** 其它数据源务必配置在`spring.datasource.multi-datasources`下，格式是`spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
+   
+   > **IMPORTANT** 主数据源连接池要加上`tomcat`或其它类型，其它数据源与`url`、`username`同级即可。
 
 1. 使用
 
@@ -786,6 +786,8 @@ Dew支持两种格式：
 2. 配置与使用
 
   >**TIP** 详见：https://github.com/teaey/spring-boot-starter-dubbo
+
+## 性能
 
 ## 编译部署
 

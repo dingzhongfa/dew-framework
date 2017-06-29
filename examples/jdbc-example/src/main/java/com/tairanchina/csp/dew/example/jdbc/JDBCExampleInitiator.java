@@ -2,72 +2,51 @@ package com.tairanchina.csp.dew.example.jdbc;
 
 
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.entity.Column;
+import com.tairanchina.csp.dew.core.entity.Entity;
+import com.tairanchina.csp.dew.core.entity.PkEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
 @Component
 public class JDBCExampleInitiator {
 
-    private static final Logger logger = LoggerFactory.getLogger(JDBCExampleInitiator.class);
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private TXService txService;
+    private static final Logger logger= LoggerFactory.getLogger(JDBCExampleInitiator.class);
 
     @PostConstruct
     public void init() {
-//        // ddl
-//        Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
-//                "(\n" +
-//                "id int primary key auto_increment,\n" +
-//                "field_a varchar(255)\n" +
-//                ")");
-//        txService.insert();
-//        logger.info(">>>> " + txService.count());
-//        txService.insertWithTX();
-//        logger.info(">>>> " + txService.count());
-//        try {
-//            txService.insertWithTXHasError();
-//        }catch(Exception e){
-//
-//        }
-//        logger.info(">>>> " + txService.count());
-
-
         // ddl
-        Dew.ds("test2").jdbc().execute("CREATE TABLE example_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +
                 ")");
-        txService.insertMulti();
-        logger.info(">>>> " + txService.countMulti());
-        txService.insertWithTXMulti();
-        logger.info(">>>> " + txService.countMulti());
-        try {
-            txService.insertWithTXHasErrorMulti();
-        }catch(Exception e){
+        // insert
+        ExampleEntity entity = new ExampleEntity();
+        entity.setFieldA("测试A");
+        long id = Dew.ds().insert(entity);
+        // get
+        logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 
-        }
-        logger.info(">>>> " + txService.countMulti());
     }
 
-//    @PostConstruct
-//    @Transactional
-//    public void init() {
-//
-//        jdbcTemplate.update("INSERT into example_entity (field_a) VALUE ('TransactionA3')");
-//        String aaa = null;
-//        if(aaa.equals("")){
-//
-//        }
-//    }
+    @Entity
+    public static class ExampleEntity extends PkEntity {
+
+        @Column
+        private String fieldA;
+
+        public String getFieldA() {
+            return fieldA;
+        }
+
+        public void setFieldA(String fieldA) {
+            this.fieldA = fieldA;
+        }
+
+    }
+
 }

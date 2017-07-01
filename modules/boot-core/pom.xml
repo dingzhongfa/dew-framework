@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-beta1</version>
+        <version>1.0.0-beta2</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
@@ -15,21 +15,20 @@
     <name>Dew Boot Core</name>
     <description>Dew Spring Boot 封装</description>
     <packaging>jar</packaging>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0-beta2</version>
 
     <properties>
+
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.ecfront.dew</groupId>
             <artifactId>common</artifactId>
-            <version>${dew-common.version}</version>
         </dependency>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-common</artifactId>
-            <version>${dew.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.ecfront.dew</groupId>
@@ -40,30 +39,25 @@
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-redis</artifactId>
-            <version>${dew.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-hazelcast</artifactId>
-            <version>${dew.version}</version>
             <optional>true</optional>
         </dependency>
         <!--<dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-ignite</artifactId>
-            <version>${dew.version}</version>
             <scope>test</scope>
         </dependency>-->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.8.10</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.8.10</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -78,19 +72,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.42</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -106,79 +87,18 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.195</version>
             <scope>test</scope>
         </dependency>
-        
         <dependency>
-		    <groupId>org.springframework.restdocs</groupId>
-		    <artifactId>spring-restdocs-mockmvc</artifactId>
-		    <scope>test</scope>
-		</dependency>
-		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-staticdocs</artifactId>
-		    <version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.8</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
-    
-	<build>
-		<plugins>
-			<plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*Documentation.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.asciidoctor</groupId>
-                <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>1.5.3</version>
-
-                <!-- Configure generic document generation settings -->
-                <configuration>
-                    <sourceDirectory>${project.basedir}/target/asciidoc</sourceDirectory>
-                    <sourceDocumentName>paths.adoc</sourceDocumentName>
-                    <attributes>
-                        <doctype>book</doctype>
-                        <toc>left</toc>
-                        <toclevels>3</toclevels>
-                        <numbered></numbered>
-                        <hardbreaks></hardbreaks>
-                        <sectlinks></sectlinks>
-                        <sectanchors></sectanchors>
-                        <generated>${project.build.directory}/asciidoc</generated>
-                    </attributes>
-                </configuration>
-                <!-- Since each execution can only handle one backend, run
-                     separate executions for each desired output type -->
-                <executions>
-                    <execution>
-                        <id>output-html</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>process-asciidoc</goal>
-                        </goals>
-                        <configuration>
-                            <backend>html5</backend>
-                            <outputDirectory>${project.basedir}/docs/asciidoc/html</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-		</plugins>
-	</build>
 
 </project>

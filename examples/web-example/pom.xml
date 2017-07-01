@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-beta1</version>
+        <version>1.0.0-beta2</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
@@ -15,7 +15,7 @@
     <name>Dew Web 示例</name>
     <description>Dew Web 示例</description>
     <packaging>jar</packaging>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0-beta2</version>
 
     <properties>
     </properties>
@@ -24,7 +24,6 @@
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>boot-core</artifactId>
-            <version>${dew.version}</version>
         </dependency>
         <!-- 引入web依赖 -->
         <dependency>
@@ -32,9 +31,17 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

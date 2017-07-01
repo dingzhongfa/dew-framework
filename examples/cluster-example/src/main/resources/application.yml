@@ -14,5 +14,7 @@ dew:
     dist: hazelcast # 可选 redis/hazelcast
     mq: hazelcast # 可选 redis/hazelcast
 
+# https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
 logging:
   path: ./logs

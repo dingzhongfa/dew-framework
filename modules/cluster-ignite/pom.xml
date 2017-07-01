@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tairanchina.csp.dew</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-beta2</version>
+        <relativePath>../../modules/parent/</relativePath>
+    </parent>
+
+    <artifactId>cluster-spi-ignite</artifactId>
+    <name>Dew Cluster Ignite</name>
+    <description>Dew 集群 Ignite 实现</description>
+    <packaging>jar</packaging>
+    <version>1.0.0-beta2</version>
+
+    <properties>
+        <ignite.version>1.9.0</ignite.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>cluster-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>${ignite.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

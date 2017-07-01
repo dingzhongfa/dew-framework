@@ -1,0 +1,46 @@
+dew:
+  basic:
+    format:
+      use-unity-error: true
+      reuse-http-state: true
+#  cluster:
+#    cache: redis
+#    dist: redis
+#    mq: redis
+
+spring:
+  application:
+    name: core-test
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    pool:
+      max-active: 1
+      max-wait: -1
+      max-idle: 1
+      min-idle: 0
+  hazelcast:
+    addresses: ["127.0.0.1"]
+  ignite:
+    addresses: ["127.0.0.1"]
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    tomcat:
+      initial-size: 1
+      max-idle: 1
+      max-active: 1
+  multi-datasources:
+    test1:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:test1
+      initial-size: 1
+      max-idle: 1
+      max-active: 1
+    test2:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:test2
+      initial-size: 1
+      max-idle: 1
+      max-active: 1

@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: config
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: file:/C:/Users/i/OneDrive/projects/tairan/projects/dew-framework/env
+#        git:
+#          uri: https://code.aliyun.com/wangzi/ws.sp.config_file.git
+#          username: root
+#          password: 123456
+
+server:
+  port: 9000
+
+encrypt:
+  key: sdk$30o#@#$$SDX
+
+security:
+  basic:
+    enabled: true
+  user:
+    name: config
+    password: 123456
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry:123456@localhost:10000/eureka
+
+logging:
+  path: ./logs

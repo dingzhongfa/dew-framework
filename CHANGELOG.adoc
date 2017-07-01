@@ -1,0 +1,37 @@
+== 版本说明
+
+=== 1.0.0-beta2
+
+==== Feature
+
+. 支持生成Html及PDF版本的离线文档
+
+==== Improvement
+
+. 添加Dubbo整合示例，提供Dubbo服务提供无法处理`声明式事务`的方案
+. 完善文档并改用asciidoc格式
+. 统一依赖管理
+. `parent` 中添加公司maven库
+. Hazelcast Client升级到3.8.2
+. Dew-Common升级到1.3.7
+
+==== Fixed
+
+=== 1.0.0-beta1
+
+==== Feature
+
+. 多数据源支持，详见说明文档`多数据源支持`章节
+
+IMPORTANT: 原`Dew.ds.xx`接口弃用，改为`Dew.ds().xx`，如需要使用其它数据源请使用`Dew.ds(&lt;DS Name&gt;).xx`
+
+==== Improvement
+
+. 新增`mybatisplus-example`
+. 改善`Swagger`文档支持
+. 新增销毁时间支持：`boolean tryLock(long waitMillSec, long leaseMillSec)`
+. 锁的等待、销毁时间单位由原来的`秒`改成`毫秒`
+
+==== Fixed
+
+. 修正`tryLock`锁（`Redis`实现），锁被其它线程或JVM占用时等待时间的计算错误

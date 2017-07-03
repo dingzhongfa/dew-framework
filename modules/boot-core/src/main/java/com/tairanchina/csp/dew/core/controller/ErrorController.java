@@ -3,6 +3,7 @@ package com.tairanchina.csp.dew.core.controller;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.core.Dew;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -50,6 +53,18 @@ public class ErrorController extends AbstractErrorController {
         int code = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
         String message = error.getOrDefault("message", "") + "";
+        if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
+            ArrayNode errorExt = $.json.createArrayNode();
+            Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
+            while (errorExtIt.hasNext()) {
+                JsonNode json = errorExtIt.next();
+                errorExt.add($.json.createObjectNode()
+                        .put("field", json.get("field").asText(""))
+                        .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
+                        .put("msg", json.get("defaultMessage").asText("")));
+            }
+            message += " Detail:" + $.json.toJsonString(errorExt);
+        }
         logger.error("Request [{}] from {} , error {} : {}", path, Dew.context().getSourceIP(), code, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             return Resp.customFail(code + "", "[" + err + "]" + message);

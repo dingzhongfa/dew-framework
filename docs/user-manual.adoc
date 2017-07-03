@@ -736,6 +736,7 @@ public Resp<String> test(){
 public String test() throws IOException{
     return "enjoy!";
     // or throw Dew.e("A000", new IOException("io error"));
+    // or throw Dew.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
 }
 ----
 

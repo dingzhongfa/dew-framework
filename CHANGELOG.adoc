@@ -6,7 +6,8 @@
 
 ==== Improvement
 
-. 开放将ResultSet转成对象的方法（ds.convertRsToObj）
+. 支持自定义http错误码( `Dew.e(String code, E ex, StandardCode customHttpCode)` )
+. 开放将ResultSet转成对象的方法( `ds.convertRsToObj(Map<String, Object> rs, Class<E> entityClazz)` )
 
 ==== Fixed
 

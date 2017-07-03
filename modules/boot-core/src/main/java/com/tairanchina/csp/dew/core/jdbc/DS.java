@@ -442,7 +442,7 @@ public class DS {
         return new Object[]{sb.toString(), params};
     }
 
-    private <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
+    public <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
         try {
             E entity = entityClazz.newInstance();

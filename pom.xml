@@ -28,6 +28,8 @@
         <module>examples/config-example</module>
         <module>examples/dubbo-example</module>
         <module>examples/mybatisplus-example</module>
+        <module>examples/pressure-test-api</module>
+        <module>examples/pressure-test-service</module>
     </modules>
 
 </project>

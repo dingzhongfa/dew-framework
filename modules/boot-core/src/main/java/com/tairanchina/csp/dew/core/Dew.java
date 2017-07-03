@@ -419,7 +419,6 @@ public class Dew {
         } catch (NoSuchFieldException e1) {
             logger.error("Throw Exception Convert error", ex);
         }
-        logger.error(ex.getLocalizedMessage(), ex);
         return ex;
     }
 

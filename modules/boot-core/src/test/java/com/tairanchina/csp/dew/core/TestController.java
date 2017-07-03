@@ -41,8 +41,8 @@ public class TestController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
     })
-    public Resp<String> t3(@RequestParam String q) throws IOException {
-        throw Dew.e("A000", new IOException("io error"));
+    public Resp<String> t3(@RequestParam String q) throws Exception {
+        throw Dew.e("A000", new Exception("io error"));
     }
 
     @GetMapping(value = "t4")

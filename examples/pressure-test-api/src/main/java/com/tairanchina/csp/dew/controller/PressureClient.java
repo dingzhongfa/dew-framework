@@ -14,7 +14,7 @@ public class PressureClient {
     private PressureService pressureService;
 
     @RequestMapping(value = "/account/{userId}/balance", method = RequestMethod.GET)
-    public int add(@PathVariable(value = "userId") int userId){
+    public int getBalance(@PathVariable(value = "userId") int userId){
         return pressureService.getBalance(userId);
     }
 
@@ -26,7 +26,7 @@ public class PressureClient {
     }
 
     @RequestMapping(value = "/account/addBalance", method = RequestMethod.GET)
-    public Boolean add(@RequestParam(value = "userId") int userId,
+    public Boolean addAmount(@RequestParam(value = "userId") int userId,
                        @RequestParam(value = "amount") int amount){
         return pressureService.addAmount(userId, amount);
     }

@@ -5,7 +5,7 @@
 
 	<groupId>com.tairanchina.csp.dew</groupId>
 	<artifactId>pressure-test-api</artifactId>
-	<version>1.0.0-beta1</version>
+	<version>1.0.0-beta2</version>
 	<packaging>jar</packaging>
 
 	<name>pressure-test-api</name>
@@ -14,23 +14,18 @@
 	<parent>
 		<groupId>com.tairanchina.csp.dew</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.0-beta1</version>
+		<version>1.0.0-beta2</version>
 		<relativePath>../../modules/parent/</relativePath>
 	</parent>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.tairanchina.csp.dew</groupId>
 			<artifactId>cloud-core</artifactId>
-			<version>${dew.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-feign</artifactId>
@@ -41,22 +36,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
-	<repositories>
-		<repository>
-			<id>tr</id>
-			<url>http://121.41.17.205:18081/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
-
 
 </project>

@@ -1,5 +1,16 @@
 == 版本说明
 
+=== 1.0.0-beta3
+
+==== Feature
+
+==== Improvement
+
+. 开放将ResultSet转成对象的方法（ds.convertRsToObj）
+
+==== Fixed
+
+
 === 1.0.0-beta2
 
 ==== Feature

@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
+import com.ecfront.dew.common.StandardCode;
 import com.tairanchina.csp.dew.core.cluster.Cluster;
 import com.tairanchina.csp.dew.core.cluster.ClusterCache;
 import com.tairanchina.csp.dew.core.cluster.ClusterDist;
@@ -380,17 +381,46 @@ public class Dew {
 
     }
 
-    public static <E extends Throwable> E e(String code, E e) {
+    /**
+     * 异常处理-重用Http状态
+     *
+     * @param code 异常编码
+     * @param ex   异常类型
+     */
+    public static <E extends Throwable> E e(String code, E ex) {
+        return e(code, ex, -1);
+    }
+
+    /**
+     * 异常处理-重用Http状态
+     *
+     * @param code           异常编码
+     * @param ex             异常类型
+     * @param customHttpCode 自定义Http状态码
+     */
+    public static <E extends Throwable> E e(String code, E ex, StandardCode customHttpCode) {
+        return e(code, ex, Integer.valueOf(customHttpCode.toString()));
+    }
+
+    /**
+     * 异常处理-重用Http状态
+     *
+     * @param code           异常编码
+     * @param ex             异常类型
+     * @param customHttpCode 自定义Http状态码
+     */
+    public static <E extends Throwable> E e(String code, E ex, int customHttpCode) {
         try {
-            $.bean.setValue(e, "detailMessage", $.json.createObjectNode()
+            $.bean.setValue(ex, "detailMessage", $.json.createObjectNode()
                     .put("code", code)
-                    .put("message", e.getLocalizedMessage())
+                    .put("message", ex.getLocalizedMessage())
+                    .put("customHttpCode", customHttpCode)
                     .toString());
         } catch (NoSuchFieldException e1) {
-            logger.error("Throw Exception Convert error", e);
+            logger.error("Throw Exception Convert error", ex);
         }
-        logger.error(e.getLocalizedMessage(), e);
-        return e;
+        logger.error(ex.getLocalizedMessage(), ex);
+        return ex;
     }
 
 }

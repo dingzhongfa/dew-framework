@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Resp;
+import com.ecfront.dew.common.StandardCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,6 +43,15 @@ public class TestController {
     })
     public Resp<String> t3(@RequestParam String q) throws IOException {
         throw Dew.e("A000", new IOException("io error"));
+    }
+
+    @GetMapping(value = "t4")
+    @ApiOperation(value = "fun4")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
+    })
+    public Resp<String> t4(@RequestParam String q) throws IOException {
+        throw Dew.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
     }
 
 }

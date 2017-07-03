@@ -27,7 +27,7 @@ public class ErrorController extends AbstractErrorController {
 
     protected static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-    private static Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\"}$");
+    private static Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     @Value("${error.path:/error}")
     private String errorPath;
@@ -44,7 +44,7 @@ public class ErrorController extends AbstractErrorController {
 
     @RequestMapping()
     @ResponseBody
-    public Object errorByHttpState(HttpServletRequest request) {
+    public Object error(HttpServletRequest request) {
         Map<String, Object> error = getErrorAttributes(request, false);
         String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
         int code = (int) error.getOrDefault("status", -1);
@@ -56,8 +56,15 @@ public class ErrorController extends AbstractErrorController {
         } else {
             JsonNode jsonNode;
             if (MESSAGE_CHECK.matcher(message).matches()) {
+                JsonNode detail = $.json.toJson(message);
                 jsonNode = $.json.createObjectNode()
-                        .set("error", $.json.toJson(message));
+                        .set("error", $.json.createObjectNode()
+                                .put("code", detail.get("code").asText())
+                                .put("message", detail.get("message").asText()));
+                if (detail.has("customHttpCode") && detail.get("customHttpCode").asInt() != -1) {
+                    // 使用自定义http状态码
+                    code = detail.get("customHttpCode").asInt();
+                }
             } else {
                 jsonNode = $.json.createObjectNode()
                         .set("error", $.json.createObjectNode()

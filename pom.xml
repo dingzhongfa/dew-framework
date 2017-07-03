@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-beta1</version>
+    <version>1.0.0-beta2</version>
 
     <modules>
         <module>modules/parent</module>
@@ -26,6 +26,7 @@
         <module>examples/jdbc-example</module>
         <module>examples/cluster-example</module>
         <module>examples/config-example</module>
+        <module>examples/dubbo-example</module>
         <module>examples/mybatisplus-example</module>
     </modules>
 

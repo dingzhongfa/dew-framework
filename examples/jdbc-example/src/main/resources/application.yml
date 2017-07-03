@@ -5,5 +5,7 @@ spring:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
 
+# https://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.html#JDBC_interceptors
+
 logging:
   path: ./logs

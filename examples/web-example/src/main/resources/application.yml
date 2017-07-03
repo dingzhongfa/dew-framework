@@ -5,5 +5,14 @@ spring:
 server:
   port: 8080
 
+dew:
+  basic:
+    name: web
+    version: 1.0
+    desc: desc
+    web-site: www.tairanchina.com
+    doc:
+      base-package: com.tairanchina
+
 logging:
   path: ./logs

@@ -5,6 +5,12 @@ spring:
     host: localhost
     port: 6379
     database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: 123456
+    virtual-host: dew
   hazelcast:
     addresses: ["127.0.0.1"]
 
@@ -12,7 +18,7 @@ dew:
   cluster:
     cache: redis
     dist: hazelcast # 可选 redis/hazelcast
-    mq: hazelcast # 可选 redis/hazelcast
+    mq: hazelcast # 可选 redis/hazelcast/rabbit
 
 # https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 

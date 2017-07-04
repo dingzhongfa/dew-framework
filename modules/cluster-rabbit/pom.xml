@@ -11,9 +11,9 @@
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
-    <artifactId>cluster-example</artifactId>
-    <name>Dew Cluster 示例</name>
-    <description>Dew 集群功能 示例</description>
+    <artifactId>cluster-spi-rabbit</artifactId>
+    <name>Dew Cluster Rabbit</name>
+    <description>Dew 集群 Rabbit 实现</description>
     <packaging>jar</packaging>
     <version>1.0.0-beta2</version>
 
@@ -23,20 +23,11 @@
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>boot-core</artifactId>
-        </dependency>
-        <!--引入集群依赖，可选redis/hazelcast/rabbit-->
-        <dependency>
-            <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cluster-spi-redis</artifactId>
+            <artifactId>cluster-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cluster-spi-hazelcast</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cluster-spi-rabbit</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
     </dependencies>
 

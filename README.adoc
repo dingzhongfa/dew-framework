@@ -40,6 +40,7 @@ ____
 |`cluster-redis` |集群能力-Redis实现
 |`cluster-hazelcast` |集群能力-Hazelcast实现
 |`cluster-ignite` |集群能力-Ignite实现(开发中）
+|`cluster-rabbit` |集群能力-Rabbit实现
 |`config` |统一配置中心组件
 |`registry` |服务注册中心组件
 |`gateway` |服务网关组件

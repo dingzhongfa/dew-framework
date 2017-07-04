@@ -4,9 +4,12 @@
 
 ==== Feature
 
+. Cluster的MQ添加RabbitMQ SPI
+
 ==== Improvement
 
 . 支持自定义http错误码( `Dew.e(String code, E ex, StandardCode customHttpCode)` )
+. 对加了字段校验(@Valid)的对象，如果检验失败会返回错误详细
 . 开放将ResultSet转成对象的方法( `ds.convertRsToObj(Map<String, Object> rs, Class<E> entityClazz)` )
 
 ==== Fixed

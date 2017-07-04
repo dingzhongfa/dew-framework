@@ -234,52 +234,22 @@ public class JDBCTest {
     }
 
     /**
-     * 测试主数据库的事务
-     * 事务提交
+     * 测试事务
      */
     @Test
-    public void testTxDataSuccess(){
+    public void testTranRes(){
         txService.testCommit();
-    }
-
-    /**
-     * 测试主数据库的事务
-     * 抛错误回
-     */
-    @Test
-    public void testTxDataFail() throws Exception{
         try {
             txService.testRollBack();
         } catch (Exception e){
 
         }
-    }
-
-    /**
-     * 测试多数据源，成功事务
-     */
-    @Test
-    public void testTxMultiDataSuccess(){
         txService.testMultiCommit();
-    }
-
-    /**
-     * 测试多数据源，失败事务
-     */
-    @Test
-    public void testTxMultiDataFail(){
         try {
             txService.testMultiRollBack();
         } catch (Exception e){
 
         }
-    }
-
-    /**
-     * 先执行 事务测试
-     */
-    @Test
-    public void testTranRes(){
         int res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA1'").size();
         Assert.assertTrue(res > 0);
         res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA2'").size();

@@ -88,6 +88,8 @@ public class DewConfig {
 
             private boolean useUnityError = false;
             private boolean reuseHttpState = false;
+            // 兼容原系统设置
+            private String messageFieldName = "message";
 
             public boolean isUseUnityError() {
                 return useUnityError;
@@ -103,6 +105,14 @@ public class DewConfig {
 
             public void setReuseHttpState(boolean reuseHttpState) {
                 this.reuseHttpState = reuseHttpState;
+            }
+
+            public String getMessageFieldName() {
+                return messageFieldName;
+            }
+
+            public void setMessageFieldName(String messageFieldName) {
+                this.messageFieldName = messageFieldName;
             }
         }
 
@@ -129,6 +139,8 @@ public class DewConfig {
         public void setFormat(Format format) {
             this.format = format;
         }
+
+
     }
 
     public static class Cluster {

@@ -442,7 +442,14 @@ public class DS {
         return new Object[]{sb.toString(), params};
     }
 
-    private <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
+    /**
+     * 将ResultSet转成对象
+     *
+     * @param rs          ResultSet(Map格式)
+     * @param entityClazz 对象类型
+     * @return 转换后的对象
+     */
+    public <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
         try {
             E entity = entityClazz.newInstance();

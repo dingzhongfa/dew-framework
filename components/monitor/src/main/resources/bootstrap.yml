@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: monitor
+  boot:
+    admin:
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
+      turbine:
+        clusters: default
+        location: turbine
+        
+server:
+  port: 12000
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://registry:123456@localhost:10000/eureka
+
+logging:
+  path: ./logs
+

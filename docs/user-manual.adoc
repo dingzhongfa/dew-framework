@@ -7,7 +7,7 @@ TIP: 所有模块均为Maven结构
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-Beta3</version>
 </parent>
 ...
 <dependencies>
@@ -76,7 +76,7 @@ public class BoneExampleApplication {
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-Beta3</version>
 </parent>
 …
 <dependencies>

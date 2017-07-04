@@ -75,7 +75,7 @@ public class ErrorController extends AbstractErrorController {
                 jsonNode = $.json.createObjectNode()
                         .set("error", $.json.createObjectNode()
                                 .put("code", detail.get("code").asText())
-                                .put("message", detail.get("message").asText()));
+                                .put(Dew.dewConfig.getBasic().getFormat().getMessageFieldName(), detail.get("message").asText()));
                 if (detail.has("customHttpCode") && detail.get("customHttpCode").asInt() != -1) {
                     // 使用自定义http状态码
                     code = detail.get("customHttpCode").asInt();

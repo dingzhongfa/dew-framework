@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-Beta3</version>
 
     <modules>
         <module>modules/parent</module>
@@ -22,12 +22,14 @@
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>
+        <module>components/monitor</module>
         <module>examples/bone-example</module>
         <module>examples/web-example</module>
         <module>examples/jdbc-example</module>
         <module>examples/cluster-example</module>
         <module>examples/config-example</module>
         <module>examples/dubbo-example</module>
+        <module>examples/monitor-example</module>
         <module>examples/mybatisplus-example</module>
         <module>examples/pressure-test-api</module>
         <module>examples/pressure-test-service</module>

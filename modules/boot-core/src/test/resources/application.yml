@@ -3,10 +3,10 @@ dew:
     format:
       use-unity-error: true
       reuse-http-state: true
-#  cluster:
-#    cache: redis
-#    dist: redis
-#    mq: redis
+  cluster:
+    cache: redis
+    dist: redis
+    mq: rabbit
 
 spring:
   application:
@@ -20,6 +20,12 @@ spring:
       max-wait: -1
       max-idle: 1
       min-idle: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: 123456
+    virtual-host: dew
   hazelcast:
     addresses: ["127.0.0.1"]
   ignite:

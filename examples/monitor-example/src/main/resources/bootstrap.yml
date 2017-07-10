@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: monitor-example
+  cloud:
+    config:
+      enabled: false
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry:123456@localhost:10000/eureka
+  instance:
+    metadata-map:
+      cluster: default
+
+management.security.enabled: false
+
+logging:
+  path: ./logs

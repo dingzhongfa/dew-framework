@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.log;
+package com.tairanchina.csp.dew.core.logger;
 
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.dto.OptInfo;

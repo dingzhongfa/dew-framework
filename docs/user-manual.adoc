@@ -7,7 +7,7 @@ TIP: 所有模块均为Maven结构
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-beta4</version>
 </parent>
 ...
 <dependencies>
@@ -76,7 +76,7 @@ public class BoneExampleApplication {
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-beta4</version>
 </parent>
 …
 <dependencies>
@@ -573,7 +573,7 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 
 === 启用集群功能
 
-Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 和 `hazelcast` ，对 `Ignite` 的适配正在进行中。
+Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
 
 [source,xml]
 .引入依赖
@@ -583,7 +583,7 @@ Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并�
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>boot-core</artifactId>
 </dependency>
-<!--引入集群依赖，可选redis或hazelcast-->
+<!--引入集群依赖，可选redis/hazelcast/rabbit-->
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-redis</artifactId>
@@ -592,6 +592,10 @@ Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并�
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-hazelcast</artifactId>
 </dependency>
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cluster-spi-rabbit</artifactId>
+</dependency>
 ----
 
 [source,yml]
@@ -599,10 +603,21 @@ Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并�
 ----
 spring:
     redis:
-    host: # redis主机
-    port: # redis端口
-    database: # redis数据库
-    password: # redis密码
+        host: # redis主机
+        port: # redis端口
+        database: # redis数据库
+        password: # redis密码
+        pool:
+          max-active:
+          max-wait:
+          max-idle:
+          min-idle:
+    rabbitmq:
+      host: # rabbit主机
+      port: # rabbit端口
+      username: # rabbit用户名
+      password: # rabbit密码
+      virtual-host: # rabbit VH
     hazelcast:
     addresses: [] # hazelcast地址，端口可选
 
@@ -610,7 +625,7 @@ dew:
     cluster:
     cache: redis
     dist: hazelcast # 可选 redis/hazelcast
-    mq: hazelcast # 可选 redis/hazelcast
+    mq: hazelcast # 可选 redis/hazelcast/rabbit
 ----
 
 [source,java]
@@ -655,7 +670,13 @@ Dew.cluster.mq.request("test_rep_resp", "msg1");
 Dew.cluster.mq.request("test_rep_resp", "msg2");
 ----
 
-IMPORTANT: 实际选型要考虑不同实现的场景，比如`Redis`只能用于轻量`MQ`，如果数据比较长，那么`Hazelcast`更为理想
+[IMPORTANT]
+.SPI选型
+====
+. Redis: 多用于Cache，可做为轻量MQ，可用于要求不高的Lock(Redis锁存在不安全隐患)及Map
+. Hazelcast: 对Lock及Map支持得很好，可做为轻量MQ
+. Rabbit: 仅做MQ用，支持持久化，支持仅在收到消息并且处理完成后才Acknowledge
+====
 
 === 服务脚手架
 
@@ -706,7 +727,10 @@ Dew支持两种格式：
 
 TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-common/#true-resp[https://gudaoxuri.github.io/dew-common/#true-resp]
 
-* 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回`{&quot;error&quot;:{&quot;code&quot;:&quot;实际错误码&quot;,&quot;message&quot;:&quot;错误信息&quot;}}`
+* 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
+
+TIP: 如果启用了字段检查（ `@RequestBody @Valid ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
+     `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
 
 启用统一响应格式支持：
 
@@ -736,6 +760,7 @@ public Resp<String> test(){
 public String test() throws IOException{
     return "enjoy!";
     // or throw Dew.e("A000", new IOException("io error"));
+    // or throw Dew.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
 }
 ----
 

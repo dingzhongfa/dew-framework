@@ -1,6 +1,9 @@
 spring:
   application:
     name: registry
+  cloud:
+    config:
+      enabled: false
 
 server:
   port: 10000

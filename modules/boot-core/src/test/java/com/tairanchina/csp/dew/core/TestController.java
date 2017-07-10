@@ -1,15 +1,18 @@
 package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Resp;
+import com.ecfront.dew.common.StandardCode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 
 @RestController
@@ -40,8 +43,46 @@ public class TestController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
     })
-    public Resp<String> t3(@RequestParam String q) throws IOException {
-        throw Dew.e("A000", new IOException("io error"));
+    public String t3(@RequestParam String q) throws Exception {
+        throw Dew.e("A000", new Exception("io error"));
+    }
+
+    @GetMapping(value = "t4")
+    @ApiOperation(value = "fun4")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
+    })
+    public String t4(@RequestParam String q) throws IOException {
+        throw Dew.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
+    }
+
+    @PostMapping(value = "t5")
+    public String t5(@RequestBody @Valid SomeReq someReq) throws IOException {
+        return "";
+    }
+
+    public static class SomeReq {
+        @NotNull
+        @Length(min = 2)
+        private String a;
+        @Min(10)
+        private int b;
+
+        public String getA() {
+            return a;
+        }
+
+        public void setA(String a) {
+            this.a = a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public void setB(int b) {
+            this.b = b;
+        }
     }
 
 }

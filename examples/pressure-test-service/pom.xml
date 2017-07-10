@@ -5,7 +5,7 @@
 
 	<groupId>pressure-test-service</groupId>
 	<artifactId>pressure-test-service</artifactId>
-	<version>1.0.0-beta1</version>
+	<version>1.0.0-beta4</version>
 	<packaging>jar</packaging>
 
 	<name>pressure-test-service</name>
@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>com.tairanchina.csp.dew</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.0-beta1</version>
+		<version>1.0.0-beta4</version>
 		<relativePath>../../modules/parent/</relativePath>
 	</parent>
 
@@ -23,36 +23,23 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>com.tairanchina.csp.dew</groupId>
 			<artifactId>cloud-core</artifactId>
-			<version>${dew.version}</version>
-			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>1.1.1</version>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.42</version>
-			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>tr</id>
-			<url>http://121.41.17.205:18081/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 </project>

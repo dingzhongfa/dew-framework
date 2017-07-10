@@ -121,7 +121,7 @@ public class ClusterTest {
             lock.lock();
             System.out.println("Lock1 > " + Thread.currentThread().getId());
             try {
-                Thread.sleep(500000);
+                Thread.sleep(500);
             } catch (Exception e) {
             } finally {
                 System.out.println("UnLock1 > " + Thread.currentThread().getId());
@@ -133,9 +133,9 @@ public class ClusterTest {
         Thread t2 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                Assert.assertTrue(lockLocal.tryLock(0, 100000));
+                Assert.assertTrue(lockLocal.tryLock());
                 System.out.println("Lock2 > " + Thread.currentThread().getId());
-                Thread.sleep(10000000);
+                Thread.sleep(10000);
             } catch (Exception e) {
                 System.out.println(e);
             } finally {
@@ -144,13 +144,13 @@ public class ClusterTest {
             }
         });
         t2.start();
-        Thread.sleep(1000000);
+        Thread.sleep(1000);
         Thread t3 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
                 while (!lockLocal.tryLock()) {
                     System.out.println("waiting 1 unlock");
-                    Thread.sleep(100000);
+                    Thread.sleep(100);
                 }
                 System.out.println("Lock3 > " + Thread.currentThread().getId());
             } catch (Exception e) {
@@ -163,9 +163,9 @@ public class ClusterTest {
         Thread t4 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                while (!lockLocal.tryLock(5000000)) {
+                while (!lockLocal.tryLock(2000)) {
                     System.out.println("waiting 2 unlock");
-                    Thread.sleep(100000);
+                    Thread.sleep(100);
                 }
                 System.out.println("Lock4 > " + Thread.currentThread().getId());
             } catch (Exception e) {
@@ -302,8 +302,7 @@ public class ClusterTest {
         Boolean temp = lock.tryLock(0, 100000);
         System.out.println("*********" + temp);
         Assert.assertTrue(temp);
-
-        new Thread(() -> {
+       Thread thread= new Thread(() -> {
             try {
                 ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_B");
                 Boolean tempTest = lockChild.tryLock(0, 100000);
@@ -312,8 +311,9 @@ public class ClusterTest {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-        }).start();
+        });
+        thread.start();
+        thread.join();
     }
 
     /**
@@ -351,12 +351,14 @@ public class ClusterTest {
         //加锁
         temp = lock.tryLock(0, 200000);
         Assert.assertTrue(temp);
-        new Thread(() -> {
+       Thread thread= new Thread(() -> {
             ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_D");
             //测试不同的线程去解锁
             Boolean tempTest = lockChild.unLock();
             Assert.assertFalse(tempTest);
-        }).start();
+        });
+        thread.start();
+        thread.join();
         //测试同一个线程去解锁
         temp = lock.unLock();
         Assert.assertTrue(temp);

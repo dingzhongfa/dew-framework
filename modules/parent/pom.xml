@@ -15,7 +15,7 @@
     <name>Dew Parent</name>
     <description>Dew 父工程</description>
     <packaging>pom</packaging>
-    <version>1.0.0-beta2</version>
+    <version>1.0.0-beta4</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -25,12 +25,13 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
-        <dew.version>1.0.0-beta2</dew.version>
+        <dew.version>1.0.0-beta4</dew.version>
         <dew-common.version>1.3.7</dew-common.version>
         <aspectjrt.version>1.8.10</aspectjrt.version>
         <swagger.version>2.6.1</swagger.version>
         <mysql.version>5.1.42</mysql.version>
         <h2.version>1.4.195</h2.version>
+        <spring-boot-admin.version>1.5.2</spring-boot-admin.version>
         <sonar.version>3.3.0.603</sonar.version>
         <sonar.host.url>http://10.200.131.7:9000</sonar.host.url>
     </properties>
@@ -79,6 +80,11 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectjrt.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
             <!-- Cluster -->
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
@@ -88,6 +94,11 @@
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-redis</artifactId>
+                <version>${dew.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>cluster-spi-rabbit</artifactId>
                 <version>${dew.version}</version>
             </dependency>
             <dependency>
@@ -131,10 +142,7 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -291,12 +299,23 @@
                             <config>
                                 <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
                                 <swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
-                                <swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath>
-                                <swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
-                                <swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath>
-                                <swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
-                                <swagger2markup.extensions.springRestDocs.snippetBaseUri>${project.build.directory}/asciidoc/snippets</swagger2markup.extensions.springRestDocs.snippetBaseUri>
-                                <swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
+                                <swagger2markup.extensions.dynamicOverview.contentPath>
+                                    ${project.basedir}/src/docs/asciidoc/extensions/overview
+                                </swagger2markup.extensions.dynamicOverview.contentPath>
+                                <swagger2markup.extensions.dynamicDefinitions.contentPath>
+                                    ${project.basedir}/src/docs/asciidoc/extensions/definitions
+                                </swagger2markup.extensions.dynamicDefinitions.contentPath>
+                                <swagger2markup.extensions.dynamicPaths.contentPath>
+                                    ${project.basedir}/src/docs/asciidoc/extensions/paths
+                                </swagger2markup.extensions.dynamicPaths.contentPath>
+                                <swagger2markup.extensions.dynamicSecurity.contentPath>
+                                    ${project.basedir}src/docs/asciidoc/extensions/security/
+                                </swagger2markup.extensions.dynamicSecurity.contentPath>
+                                <swagger2markup.extensions.springRestDocs.snippetBaseUri>
+                                    ${project.build.directory}/asciidoc/snippets
+                                </swagger2markup.extensions.springRestDocs.snippetBaseUri>
+                                <swagger2markup.extensions.springRestDocs.defaultSnippets>true
+                                </swagger2markup.extensions.springRestDocs.defaultSnippets>
                             </config>
                         </configuration>
                         <executions>

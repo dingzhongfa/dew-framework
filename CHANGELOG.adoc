@@ -4,8 +4,11 @@
 
 ==== Feature
 
-. 整合 `Spring boot admin`
-. 添加性能测试报告
+* 整合 `Spring boot admin` 与 `Turbine`，可直观的监控各个性能及访问指标
+
+image::./docs/images/spring-boot-admin.png[]
+
+* 添加性能测试报告
 
 ==== Improvement
 
@@ -25,7 +28,7 @@
 
 ==== Fixed
 
-=== 1.0.0-beta2
+=== 1.0.0-Beta2
 
 ==== Feature
 

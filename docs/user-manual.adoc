@@ -555,7 +555,7 @@ public long insert(Object entity) {
     jdbcTemplate.xxx;
 }
 
-@Transactional(otherTransactionManager)
+@Transactional(other1TransactionManager)
 public long insert(Object entity) {
     // DoSomething
     secondaryJdbcTemplate.xxx;

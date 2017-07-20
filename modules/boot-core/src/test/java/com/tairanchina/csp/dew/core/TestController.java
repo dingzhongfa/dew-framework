@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
-import com.tairanchina.csp.dew.core.validation.CardID;
+import com.tairanchina.csp.dew.core.validation.IdNumber;
 import com.tairanchina.csp.dew.core.validation.Phone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -65,7 +65,7 @@ public class TestController {
     public static class SomeReq {
         @NotNull
         @Length(min = 2)
-        @CardID(message = "身份证号错误")
+        @IdNumber(message = "身份证号错误")
         private String a;
         @Min(10)
         private int b;

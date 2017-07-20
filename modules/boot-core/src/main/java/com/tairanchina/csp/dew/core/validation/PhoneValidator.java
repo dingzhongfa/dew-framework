@@ -18,12 +18,7 @@ public class PhoneValidator implements ConstraintValidator<Phone, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (StringUtils.isEmpty(value))
-            return true;
-        if ($.field.validateMobile(value)) {
-            return true;
-        }
-        return false;
+        return StringUtils.isEmpty(value) || $.field.validateMobile(value);
     }
 
 }

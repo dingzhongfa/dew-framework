@@ -12,13 +12,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Created by 迹_Jason on 2017/7/19.
- * Validation of the CardID.
+ * Validation of the IdNumber.
  */
 @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = {CardIDValidator.class})
-public @interface CardID {
+@Constraint(validatedBy = {IdNumberValidator.class})
+public @interface IdNumber {
     String message() default "身份证号错误";
 
     Class<?>[] groups() default {};
@@ -26,6 +26,6 @@ public @interface CardID {
     Class<? extends Payload>[] payload() default {};
 
     @interface List {
-        CardID[] value();
+        IdNumber[] value();
     }
 }

@@ -8,21 +8,16 @@ import javax.validation.ConstraintValidatorContext;
 
 /**
  * Created by 迹_Jason on 2017/7/19.
- * Validation of the CardID.
+ * Validation of the IdNumber.
  */
-public class CardIDValidator implements ConstraintValidator<CardID, String> {
+public class IdNumberValidator implements ConstraintValidator<IdNumber, String> {
     @Override
-    public void initialize(CardID constraintAnnotation) {
+    public void initialize(IdNumber constraintAnnotation) {
 
     }
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (StringUtils.isEmpty(value))
-            return true;
-        if ($.field.validateIdNumber(value)) {
-            return true;
-        }
-        return false;
+        return StringUtils.isEmpty(value) || $.field.validateIdNumber(value);
     }
 }

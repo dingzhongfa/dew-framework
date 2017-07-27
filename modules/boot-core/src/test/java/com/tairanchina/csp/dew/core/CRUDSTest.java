@@ -3,9 +3,11 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
+import com.tairanchina.csp.dew.core.dao.TestInterfaceDao;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,11 +26,23 @@ public class CRUDSTest {
     private static long pageNumber = 1;
     private static long pageSize = 10;
 
+    @Autowired
+    TestInterfaceDao dao;
     @Test
     public void testAll() throws Exception {
         initialize();
         testCRUD();
-        testCRUDS();
+//        testCRUDS();
+        testInterface();
+    }
+
+//    @Test
+    public void testInterface() throws Exception {
+        CRUDSTestEntity model = new CRUDSTestEntity();
+        model.setFieldA("测试A");
+        Page<CRUDSTestEntity> page=dao.getYouName(model,1L,10);
+        Assert.assertTrue(page != null);
+
     }
 
     private void testCRUD() throws Exception {
@@ -50,92 +64,92 @@ public class CRUDSTest {
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
         Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
         Assert.assertTrue(entityResp.getBody().getEnabled());
-        long id = entityResp.getBody().getId();
-        String code = entityResp.getBody().getCode();
-        // getById
-        entityResp = Resp.generic($.http.get(url + "/" + id), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // getByCode
-        entityResp = Resp.generic($.http.get(url + "/code/" + code), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // updateById
-        entity.setFieldA("测试A->C");
-        entityResp = Resp.generic($.http.put(url + "/" + id, entity), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // updateByCode
-        entity.setFieldB("测试B->D");
-        entityResp = Resp.generic($.http.put(url + "/code/" + code, entity), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // getById
-        entityResp = Resp.generic($.http.get(url + "/" + id), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // getByCode
-        entityResp = Resp.generic($.http.get(url + "/code/" + code), CRUDSTestEntity.class);
-        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
-        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
-        Assert.assertTrue(entityResp.getBody().getEnabled());
-        Assert.assertEquals(id, entityResp.getBody().getId());
-        Assert.assertEquals(code, entityResp.getBody().getCode());
-        // findAll
-        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
-        Assert.assertEquals(recordTotal + 1, entitiesResp.getBody().size());
-        // paging
-        entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), CRUDSTestEntity.class);
-        Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
-        Assert.assertEquals(pageSize, entitiesPageResp.getBody().getPageSize());
-        Assert.assertEquals(pageTotal * pageSize < recordTotal ? pageTotal : pageTotal + 1, entitiesPageResp.getBody().getPageTotal());
-        Assert.assertEquals(recordTotal + 1, entitiesPageResp.getBody().getRecordTotal());
-        // deleteById
-        Resp deleteResp = Resp.generic($.http.delete(url + "/" + id), Void.class);
-        Assert.assertTrue(deleteResp.ok());
-        // findAll
-        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
-        Assert.assertEquals(recordTotal, entitiesResp.getBody().size());
-        // paging
-        entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), CRUDSTestEntity.class);
-        Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
-        Assert.assertEquals(pageSize, entitiesPageResp.getBody().getPageSize());
-        Assert.assertEquals(pageTotal, entitiesPageResp.getBody().getPageTotal());
-        Assert.assertEquals(recordTotal, entitiesPageResp.getBody().getRecordTotal());
-        // save
-        entity = new CRUDSTestEntity();
-        entity.setFieldA("测试A");
-        entity.setFieldB("测试B");
-        entityResp = Resp.generic($.http.post(url + "/", entity), CRUDSTestEntity.class);
-        id = entityResp.getBody().getId();
-        code = entityResp.getBody().getCode();
-        // deleteByCode
-        deleteResp = Resp.generic($.http.delete(url + "/code/" + code), Void.class);
-        Assert.assertTrue(deleteResp.ok());
-        // findAll
-        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
-        Assert.assertEquals(recordTotal, entitiesResp.getBody().size());
+//        long id = entityResp.getBody().getId();
+//        String code = entityResp.getBody().getCode();
+//        // getById
+//        entityResp = Resp.generic($.http.get(url + "/" + id), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // getByCode
+//        entityResp = Resp.generic($.http.get(url + "/code/" + code), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // updateById
+//        entity.setFieldA("测试A->C");
+//        entityResp = Resp.generic($.http.put(url + "/" + id, entity), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // updateByCode
+//        entity.setFieldB("测试B->D");
+//        entityResp = Resp.generic($.http.put(url + "/code/" + code, entity), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // getById
+//        entityResp = Resp.generic($.http.get(url + "/" + id), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // getByCode
+//        entityResp = Resp.generic($.http.get(url + "/code/" + code), CRUDSTestEntity.class);
+//        Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
+//        Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
+//        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+//        Assert.assertTrue(entityResp.getBody().getEnabled());
+//        Assert.assertEquals(id, entityResp.getBody().getId());
+//        Assert.assertEquals(code, entityResp.getBody().getCode());
+//        // findAll
+//        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
+//        Assert.assertEquals(recordTotal + 1, entitiesResp.getBody().size());
+//        // paging
+//        entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), CRUDSTestEntity.class);
+//        Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
+//        Assert.assertEquals(pageSize, entitiesPageResp.getBody().getPageSize());
+//        Assert.assertEquals(pageTotal * pageSize < recordTotal ? pageTotal : pageTotal + 1, entitiesPageResp.getBody().getPageTotal());
+//        Assert.assertEquals(recordTotal + 1, entitiesPageResp.getBody().getRecordTotal());
+//        // deleteById
+//        Resp deleteResp = Resp.generic($.http.delete(url + "/" + id), Void.class);
+//        Assert.assertTrue(deleteResp.ok());
+//        // findAll
+//        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
+//        Assert.assertEquals(recordTotal, entitiesResp.getBody().size());
+//        // paging
+//        entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), CRUDSTestEntity.class);
+//        Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
+//        Assert.assertEquals(pageSize, entitiesPageResp.getBody().getPageSize());
+//        Assert.assertEquals(pageTotal, entitiesPageResp.getBody().getPageTotal());
+//        Assert.assertEquals(recordTotal, entitiesPageResp.getBody().getRecordTotal());
+//        // save
+//        entity = new CRUDSTestEntity();
+//        entity.setFieldA("测试A");
+//        entity.setFieldB("测试B");
+//        entityResp = Resp.generic($.http.post(url + "/", entity), CRUDSTestEntity.class);
+//        id = entityResp.getBody().getId();
+//        code = entityResp.getBody().getCode();
+//        // deleteByCode
+//        deleteResp = Resp.generic($.http.delete(url + "/code/" + code), Void.class);
+//        Assert.assertTrue(deleteResp.ok());
+//        // findAll
+//        entitiesResp = Resp.genericList($.http.get(url + "/"), CRUDSTestEntity.class);
+//        Assert.assertEquals(recordTotal, entitiesResp.getBody().size());
     }
 
     private void testCRUDS() throws Exception {
@@ -223,5 +237,7 @@ public class CRUDSTest {
                 "update_time datetime,\n" +
                 "enabled bool\n" +
                 ")");
+        Dew.ds().jdbc().execute("insert INTO t_test_crud_s_entity(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) " +
+                "values('aa','测试A','测试B','jiaj','2017-07-08','j','2017-07-08',TRUE)");
     }
 }

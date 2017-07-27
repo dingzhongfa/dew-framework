@@ -5,6 +5,7 @@ import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.StandardCode;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
+import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -462,6 +463,33 @@ public class DS {
             return null;
         }
     }
+
+    public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {
+        sql = packageSelect(sql, params);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        return list.stream().map(row -> convertRsToObj(row, entityClazz))
+                .collect(Collectors.toList());
+    }
+
+    public <E> Page<E> selectForPaging(Class<E> entityClazz, MethodConstruction method, String sql) {
+        sql = packageSelect(sql, method.getParamsMap());
+        String countSql = wrapCountSql(sql);
+        String pagedSql = wrapPagingSql(sql, method.getPageNumber(), method.getPageSize());
+        long totalRecords = jdbcTemplate.queryForObject(countSql, Long.class);
+        List<E> objects = jdbcTemplate.queryForList(pagedSql).stream()
+                .map(row -> convertRsToObj(row, entityClazz))
+                .collect(Collectors.toList());
+        return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
+    }
+
+    public String packageSelect(String sql, Map<String, Object> params) {
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            sql = sql.replaceAll("\\#\\{\\s*" + entry.getKey() + "\\s*\\}", "'" + entry.getValue().toString() + "'");
+        }
+        sql=sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}","");
+        return sql;
+    }
+
 
     public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;

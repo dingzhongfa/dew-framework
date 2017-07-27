@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 public class DS {
 
+    private final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\S*\\s*\\}";
+    private final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
+
     private JdbcTemplate jdbcTemplate;
     private TransactionTemplate transactionTemplate;
     private String jdbcUrl;
@@ -485,9 +488,7 @@ public class DS {
     }
 
     public Object[] packageSelect(String sql, Map<String, Object> params) {
-        String regex = "\\#\\{\\s*\\S*\\s*\\}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher m = pattern.matcher(sql);
+        Matcher m = FIELD_PLACE_HOLDER_PATTERN.matcher(sql);
         List<String> matchRegexList = new ArrayList<>();
         //将#{...}抠出来
         while (m.find()) {
@@ -498,7 +499,7 @@ public class DS {
         for (String key : matchRegexList) {
             Object v = params.get(key.substring(2, key.length() - 1).replace(" ", ""));
             if (v != null) {
-                sql = sql.replaceFirst(regex, "?");
+                sql = sql.replaceFirst(FIELD_PLACE_HOLDER_REGEX, "?");
                 list.add(v);
             }
         }

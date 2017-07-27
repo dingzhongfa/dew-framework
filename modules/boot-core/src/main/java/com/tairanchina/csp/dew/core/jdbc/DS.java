@@ -8,10 +8,13 @@ import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DS {
@@ -465,31 +468,43 @@ public class DS {
     }
 
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {
-        sql = packageSelect(sql, params);
-        Object[] values = params.values().toArray();
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, values);
-        return list.stream().map(row -> convertRsToObj(row, entityClazz))
+        Object[] result = packageSelect(sql, params);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList((String) result[0], (Object[]) result[1]);
+        return entityClazz.isAssignableFrom(Map.class) ? (List<E>) list : list.stream().map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
     }
 
     public <E> Page<E> selectForPaging(Class<E> entityClazz, MethodConstruction method, String sql) {
-        sql = packageSelect(sql, method.getParamsMap());
-        String countSql = wrapCountSql(sql);
-        String pagedSql = wrapPagingSql(sql, method.getPageNumber(), method.getPageSize());
-        Object[] values = method.getParamsMap().values().toArray();
-        long totalRecords = jdbcTemplate.queryForObject(countSql, values, Long.class);
-        List<E> objects = jdbcTemplate.queryForList(pagedSql, values).stream()
-                .map(row -> convertRsToObj(row, entityClazz))
+        Object[] result = packageSelect(sql, method.getParamsMap());
+        String countSql = wrapCountSql((String) result[0]);
+        String pagedSql = wrapPagingSql((String) result[0], method.getPageNumber(), method.getPageSize());
+        long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) result[1], Long.class);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(pagedSql, result[1]);
+        List<E> objects = entityClazz.isAssignableFrom(Map.class) ? (List<E>) list : list.stream().map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
     }
 
-    public String packageSelect(String sql, Map<String, Object> params) {
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            sql = sql.replaceAll("\\#\\{\\s*" + entry.getKey() + "\\s*\\}", "?");
+    public Object[] packageSelect(String sql, Map<String, Object> params) {
+        String regex = "\\#\\{\\s*\\S*\\s*\\}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher m = pattern.matcher(sql);
+        List<String> matchRegexList = new ArrayList<>();
+        //将#{...}抠出来
+        while (m.find()) {
+            matchRegexList.add(m.group());
         }
-        sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
-        return sql;
+        List<Object> list = new ArrayList<>();
+        //将值不为空的key用？替换
+        for (String key : matchRegexList) {
+            Object v = params.get(key.substring(2, key.length() - 1).replace(" ", ""));
+            if (v != null && v.toString().length() > 0) {
+                sql = sql.replaceFirst(regex, "?");
+                list.add(v);
+            }
+        }
+//        sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
+        return new Object[]{sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", ""), list.toArray()};
     }
 
 

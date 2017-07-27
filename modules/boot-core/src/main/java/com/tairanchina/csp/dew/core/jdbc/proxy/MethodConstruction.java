@@ -79,7 +79,7 @@ public class MethodConstruction {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entities.getClass());
         Map<String, Object> values = $.bean.findValues(entities, null, null, entityClassInfo.columns.keySet(), null);
         values.forEach((k, v) -> {
-            if (v != null ) {
+            if (v != null) {
                 paramsMap.put(k, v);
             }
         });
@@ -102,11 +102,11 @@ public class MethodConstruction {
     }
 
     public long getPageNumber() {
-        return flagOfPaging()? (long) paramsMap.get(PAGE_NUMBER_FLAG): DEFAULT_PAGE_NUMBER;
+        return flagOfPaging() && paramsMap.get(PAGE_NUMBER_FLAG) != null ? (long) paramsMap.get(PAGE_NUMBER_FLAG) : DEFAULT_PAGE_NUMBER;
     }
 
     public int getPageSize() {
-        return flagOfPaging()?(int) paramsMap.get(PAGE_SIZE_FLAG): DEFAULT_PAGE_SIZE;
+        return flagOfPaging() && paramsMap.get(PAGE_SIZE_FLAG) != null ? (int) paramsMap.get(PAGE_SIZE_FLAG) : DEFAULT_PAGE_SIZE;
     }
 
     private void setMethod(Method method) {

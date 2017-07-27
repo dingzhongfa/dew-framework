@@ -21,7 +21,7 @@ import java.util.Set;
  */
 public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
 
-    ClassPathScanner(BeanDefinitionRegistry registry) {
+    public ClassPathScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 
@@ -40,7 +40,7 @@ public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
         return beanDefinitions;
     }
 
-    void registerFilters() {
+    public void registerFilters() {
         // default include filter that accepts all classes
         addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
 

@@ -35,18 +35,17 @@ public class JDBCTest {
      * 测试没有配置多数据库的情况
      * 在配置中注释掉multi-datasources:
      */
-    @Test
+   /* @Test
     public void testNotDynamic(){
         int temp = Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         Assert.assertTrue(temp == 1);
-    }
+    }*/
 
     @Test
     public void testAll() throws Exception {
         testEntity();
-        testSql();
-        testTx();
         testMultiDS();
+        testTx();
     }
 
     public void testEntity() throws InterruptedException {
@@ -199,44 +198,7 @@ public class JDBCTest {
         Assert.assertEquals(1, Dew.ds().findAll(FullEntity.class).size());
     }
 
-    public void testSql() {
-        // wrapPagingSql
-        // wrapCountSql
-    }
-
-    @Transactional
-    public void testTx() throws Exception {
-        Dew.ds().jdbc().execute("DELETE FROM basic_entity");
-        Thread thread1 = new Thread(() -> {
-            BasicEntity basicEntity = new BasicEntity();
-            basicEntity.setFieldA("测试A");
-            basicEntity.setFieldB("测试B");
-            long id = Dew.ds().insert(basicEntity);
-            Assert.assertTrue(id != 0);
-        });
-        thread1.start();
-        thread1.join();
-        Thread thread2 = new Thread(() -> {
-            Dew.ds().jdbc().execute("DELETE FROM basic_entity");
-            BasicEntity basicEntity = new BasicEntity();
-            basicEntity.setFieldA("测试C");
-            basicEntity.setFieldB("测试D");
-            long id = Dew.ds().insert(basicEntity);
-            Assert.assertTrue(id != 0);
-            new Exception("");
-        });
-        thread2.start();
-        thread2.join();
-        Thread thread3 = new Thread(() -> Assert.assertEquals(1, Dew.ds().findAll(BasicEntity.class).size()));
-        thread3.start();
-        thread3.join();
-    }
-
-    /**
-     * 测试事务
-     */
-    @Test
-    public void testTranRes(){
+    public void testTx(){
         txService.testCommit();
         try {
             txService.testRollBack();
@@ -258,12 +220,6 @@ public class JDBCTest {
         res = Dew.ds("test2").jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA2'").size();
         Assert.assertTrue(res == 0);
     }
-
-    @Test
-    public void testTxMultiDataRes(){
-        Dew.ds().jdbc().queryForList("select * from basic_entity").size();
-    }
-
 
     public void testMultiDS(){
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();

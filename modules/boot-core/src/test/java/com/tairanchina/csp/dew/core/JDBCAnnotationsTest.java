@@ -22,7 +22,7 @@ import java.util.Map;
 public class JDBCAnnotationsTest {
 
     @Autowired
-    TestInterfaceDao dao;
+    private TestInterfaceDao dao;
 
     @Before
     public void initialize() throws Exception {

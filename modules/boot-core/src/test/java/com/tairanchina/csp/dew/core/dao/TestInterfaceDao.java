@@ -6,6 +6,7 @@ import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.ModelParam;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;

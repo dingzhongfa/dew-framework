@@ -8,7 +8,6 @@ import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -498,12 +497,11 @@ public class DS {
         //将值不为空的key用？替换
         for (String key : matchRegexList) {
             Object v = params.get(key.substring(2, key.length() - 1).replace(" ", ""));
-            if (v != null && v.toString().length() > 0) {
+            if (v != null) {
                 sql = sql.replaceFirst(regex, "?");
                 list.add(v);
             }
         }
-//        sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
         return new Object[]{sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", ""), list.toArray()};
     }
 

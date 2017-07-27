@@ -10,7 +10,7 @@ import java.util.List;
 public interface DewDao<E> {
 
     default Class<E> getClazz() {
-        return (Class<E>) (((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        return (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
     }
 
     default String ds() {

@@ -20,16 +20,13 @@ public class TxService {
     }
 
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
-    public void testRollBack(){
+    public void testRollBack() throws Exception {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
         long id = Dew.ds().insert(basicEntity);
         Assert.assertTrue(id != 0);
-        String string  = null;
-        if(string.equals("")) {
-            int i = 0;
-        }
+        throw new Exception("");
     }
 
     @Transactional("test2TransactionManager")
@@ -42,17 +39,13 @@ public class TxService {
     }
 
     @Transactional(value = ("test2TransactionManager"), rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
-    public void testMultiRollBack(){
+    public void testMultiRollBack() throws Exception {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
         long id = Dew.ds("test2").insert(basicEntity);
         Assert.assertTrue(id != 0);
-        String string  = null;
-        if(string.equals("")) {
-            int i = 0;
-        }
+        throw new Exception("");
     }
-
 
 }

@@ -5,9 +5,9 @@ import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.StandardCode;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
-import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
+import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -31,7 +31,7 @@ public class DS {
     }
 
     public long insert(Object entity) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entity.getClass());
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entity.getClass());
         Object[] packageInsert = packageInsert(new ArrayList<Object>() {{
             add(entity);
         }}, true);
@@ -54,7 +54,7 @@ public class DS {
 
     public void updateById(long id, Object entity) {
         try {
-            $.bean.setValue(entity, EntityContainer.getCodeFieldNameByClazz(entity.getClass()).pkFieldNameOpt.get(), id);
+            $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).pkFieldNameOpt.get(), id);
             Object[] packageUpdate = packageUpdate(entity, true);
             transactionTemplate.execute(status ->
                     jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
@@ -65,7 +65,7 @@ public class DS {
 
     public void updateByCode(String code, Object entity) {
         try {
-            $.bean.setValue(entity, EntityContainer.getCodeFieldNameByClazz(entity.getClass()).codeFieldNameOpt.get(), code);
+            $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).codeFieldNameOpt.get(), code);
             Object[] packageUpdate = packageUpdate(entity, true);
             transactionTemplate.execute(status ->
                     jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
@@ -75,7 +75,7 @@ public class DS {
     }
 
     public <E> E getById(long id, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         Object[] packageSelect = packageSelect(entityClazz, new LinkedHashMap<String, Object>() {{
             put(entityClassInfo.pkFieldNameOpt.get(), id);
         }}, null);
@@ -83,7 +83,7 @@ public class DS {
     }
 
     public <E> E getByCode(String code, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         Object[] packageSelect = packageSelect(entityClazz, new LinkedHashMap<String, Object>() {{
             put(entityClassInfo.codeFieldNameOpt.get(), code);
         }}, null);
@@ -91,7 +91,7 @@ public class DS {
     }
 
     public void deleteById(long id, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
                         entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
@@ -99,7 +99,7 @@ public class DS {
     }
 
     public void deleteByCode(String code, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
                         entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
@@ -107,7 +107,7 @@ public class DS {
     }
 
     public void enableById(long id, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                         entityClassInfo.tableName,
@@ -117,7 +117,7 @@ public class DS {
     }
 
     public void enableByCode(String code, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                         entityClassInfo.tableName,
@@ -127,7 +127,7 @@ public class DS {
     }
 
     public void disableById(long id, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                         entityClassInfo.tableName,
@@ -137,7 +137,7 @@ public class DS {
     }
 
     public void disableByCode(String code, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                         entityClassInfo.tableName,
@@ -147,7 +147,7 @@ public class DS {
     }
 
     public boolean existById(long id, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE `%s` = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
@@ -155,7 +155,7 @@ public class DS {
     }
 
     public boolean existByCode(String code, Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE `%s` = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
@@ -188,7 +188,7 @@ public class DS {
     }
 
     private <E> List<E> find(Boolean enable, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         LinkedHashMap where = new LinkedHashMap<>();
         if (enable != null) {
             where.put(entityClassInfo.enabledFieldNameOpt.get(), enable);
@@ -200,14 +200,14 @@ public class DS {
     }
 
     public long countAll(Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s",
                 entityClassInfo.tableName),
                 new Object[]{}, Long.class);
     }
 
     public long countEnabled(Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
@@ -215,7 +215,7 @@ public class DS {
     }
 
     public long countDisabled(Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
@@ -247,7 +247,7 @@ public class DS {
     }
 
     private <E> Page<E> paging(long pageNumber, int pageSize, Boolean enable, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         LinkedHashMap where = new LinkedHashMap<>();
         if (enable != null) {
             where.put(entityClassInfo.enabledFieldNameOpt.get(), enable);
@@ -280,7 +280,7 @@ public class DS {
         if (!entities.iterator().hasNext()) {
             throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Entity List is empty."));
         }
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entities.iterator().next().getClass());
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entities.iterator().next().getClass());
         String sql = null;
         List<Object[]> params = new ArrayList<>();
         for (Object entity : entities) {
@@ -352,7 +352,7 @@ public class DS {
      * @return 格式 Object[]{Sql:String,params:Object[]}
      */
     private Object[] packageUpdate(Object entity, boolean ignoreNullValue) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entity.getClass());
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entity.getClass());
         Map<String, Object> values = $.bean.findValues(entity, null, null, entityClassInfo.columns.keySet(), null);
         // Check id or code Not empty
         if (!entityClassInfo.pkFieldNameOpt.isPresent() && !entityClassInfo.codeFieldNameOpt.isPresent()) {
@@ -425,7 +425,7 @@ public class DS {
      * @return 格式 Object[]{Sql:String,params:Object[]}
      */
     private Object[] packageSelect(Class<?> entityClazz, LinkedHashMap<String, Object> where, LinkedHashMap<String, Boolean> orderDesc) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         StringBuilder sb = new StringBuilder();
         Object[] params = new Object[]{};
         sb.append("SELECT ");
@@ -451,7 +451,7 @@ public class DS {
      * @return 转换后的对象
      */
     public <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         try {
             E entity = entityClazz.newInstance();
             for (Map.Entry<String, Object> entry : rs.entrySet()) {
@@ -466,7 +466,8 @@ public class DS {
 
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {
         sql = packageSelect(sql, params);
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        Object[] values = params.values().toArray();
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, values);
         return list.stream().map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
     }
@@ -475,8 +476,9 @@ public class DS {
         sql = packageSelect(sql, method.getParamsMap());
         String countSql = wrapCountSql(sql);
         String pagedSql = wrapPagingSql(sql, method.getPageNumber(), method.getPageSize());
-        long totalRecords = jdbcTemplate.queryForObject(countSql, Long.class);
-        List<E> objects = jdbcTemplate.queryForList(pagedSql).stream()
+        Object[] values = method.getParamsMap().values().toArray();
+        long totalRecords = jdbcTemplate.queryForObject(countSql, values, Long.class);
+        List<E> objects = jdbcTemplate.queryForList(pagedSql, values).stream()
                 .map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
@@ -484,9 +486,9 @@ public class DS {
 
     public String packageSelect(String sql, Map<String, Object> params) {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
-            sql = sql.replaceAll("\\#\\{\\s*" + entry.getKey() + "\\s*\\}", "'" + entry.getValue().toString() + "'");
+            sql = sql.replaceAll("\\#\\{\\s*" + entry.getKey() + "\\s*\\}", "?");
         }
-        sql=sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}","");
+        sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
         return sql;
     }
 

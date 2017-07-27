@@ -1,7 +1,6 @@
 package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.entity.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -319,78 +318,6 @@ public class JDBCTest {
             hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-    }
-
-    public static class EmptyEntity {
-
-        private String fieldA;
-
-        public String getFieldA() {
-            return fieldA;
-        }
-
-        public void setFieldA(String fieldA) {
-            this.fieldA = fieldA;
-        }
-    }
-
-    @Entity
-    public static class BasicEntity extends PkEntity {
-
-        @Column
-        private String fieldA;
-        private String fieldB;
-
-        public String getFieldA() {
-            return fieldA;
-        }
-
-        public void setFieldA(String fieldA) {
-            this.fieldA = fieldA;
-        }
-
-        public String getFieldB() {
-            return fieldB;
-        }
-
-        public void setFieldB(String fieldB) {
-            this.fieldB = fieldB;
-        }
-    }
-
-    @Entity(tableName = "t_full_entity")
-    public static class FullEntity extends SafeStatusEntity {
-
-        @CodeColumn
-        private String code;
-        @Column
-        private String fieldA;
-        @Column(columnName = "field_c", notNull = true)
-        private String fieldB;
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public String getFieldA() {
-            return fieldA;
-        }
-
-        public void setFieldA(String fieldA) {
-            this.fieldA = fieldA;
-        }
-
-        public String getFieldB() {
-            return fieldB;
-        }
-
-        public void setFieldB(String fieldB) {
-            this.fieldB = fieldB;
         }
     }
 

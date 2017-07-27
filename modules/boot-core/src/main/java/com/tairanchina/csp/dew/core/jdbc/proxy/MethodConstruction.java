@@ -18,6 +18,11 @@ import java.util.Map;
  */
 public class MethodConstruction {
 
+    private final String PAGE_NUMBER_FLAG = "pageNumber";
+    private final String PAGE_SIZE_FLAG = "pageSize";
+    private final int DEFAULT_PAGE_NUMBER = 1;
+    private final int DEFAULT_PAGE_SIZE = 10;
+
     private Method method;
 
     private Object[] params;
@@ -28,7 +33,7 @@ public class MethodConstruction {
 
     private Map<String, Object> paramsMap;
 
-    public MethodConstruction(Method method, Object[] args) {
+    MethodConstruction(Method method, Object[] args) {
         setMethod(method);
         setMethodAnnotations(method.getAnnotations());
         setParamAnnotations(method.getParameterAnnotations());
@@ -40,7 +45,7 @@ public class MethodConstruction {
         paramsMap = new HashMap<>();
         int i = 0;
         for (Object v : paramValues) {
-            if (v != null && v.toString().length() > 0) {
+            if (v != null) {
                 if (containAnnotation(paramAnnotations[i])) {
                     transformToMap(v, paramsMap);
                 } else {
@@ -70,11 +75,11 @@ public class MethodConstruction {
         return false;
     }
 
-    public void transformToMap(Object entities, Map<String, Object> paramsMap) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getCodeFieldNameByClazz(entities.getClass());
+    private void transformToMap(Object entities, Map<String, Object> paramsMap) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entities.getClass());
         Map<String, Object> values = $.bean.findValues(entities, null, null, entityClassInfo.columns.keySet(), null);
         values.forEach((k, v) -> {
-            if (v != null && v.toString().length() > 0) {
+            if (v != null ) {
                 paramsMap.put(k, v);
             }
         });
@@ -84,30 +89,24 @@ public class MethodConstruction {
         return method.getParameters();
     }
 
-    public Annotation[] getMethodAnnotions() {
+    Annotation[] getMethodAnnotations() {
         return methodAnnotations;
     }
 
-    public Class<?> getReturnType() {
+    Class<?> getReturnType() {
         return method.getReturnType();
     }
 
-    public boolean flagOfPaging() {
+    boolean flagOfPaging() {
         return method.getReturnType().isAssignableFrom(Page.class);
     }
 
     public long getPageNumber() {
-        if (flagOfPaging()) {
-            return (long) paramsMap.get("pageNumber");
-        }
-        return 1;
+        return flagOfPaging()? (long) paramsMap.get(PAGE_NUMBER_FLAG): DEFAULT_PAGE_NUMBER;
     }
 
     public int getPageSize() {
-        if (flagOfPaging()) {
-            return (int) paramsMap.get("pageSize");
-        }
-        return 10;
+        return flagOfPaging()?(int) paramsMap.get(PAGE_SIZE_FLAG): DEFAULT_PAGE_SIZE;
     }
 
     private void setMethod(Method method) {

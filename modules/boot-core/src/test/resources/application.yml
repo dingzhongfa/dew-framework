@@ -8,7 +8,7 @@ dew:
     dist: redis
     mq: rabbit
   dao:
-    basePackage: com.tairanchina.csp.dew.core.dao
+    base-package: com.tairanchina.csp.dew.core.dao
 
 spring:
   application:

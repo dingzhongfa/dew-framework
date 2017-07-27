@@ -21,14 +21,13 @@ import java.util.Set;
  */
 public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
 
-    public ClassPathScanner(BeanDefinitionRegistry registry) {
+    ClassPathScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
-
         if (beanDefinitions.isEmpty()) {
             logger.warn("No dao was found in '" + Arrays.toString(basePackages) + "' package. Please check your configuration.");
         } else {
@@ -36,30 +35,20 @@ public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
                 GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
                 definition.getPropertyValues().add("mapperInterface", definition.getBeanClassName());
                 definition.setBeanClass(DaoFactoryBean.class);
-
             }
         }
-
         return beanDefinitions;
     }
 
-    public void registerFilters() {
-
+    void registerFilters() {
         // default include filter that accepts all classes
-        addIncludeFilter(new TypeFilter() {
-            public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
-                return true;
-            }
-        });
+        addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
 
         // exclude package-info.java
-        addExcludeFilter(new TypeFilter() {
-            public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {
-                String className = metadataReader.getClassMetadata().getClassName();
-                return className.endsWith("package-info");
-            }
+        addExcludeFilter((metadataReader, metadataReaderFactory) -> {
+            String className = metadataReader.getClassMetadata().getClassName();
+            return className.endsWith("package-info");
         });
-
     }
 
     @Override

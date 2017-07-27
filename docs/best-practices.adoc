@@ -1,5 +1,31 @@
 == 最佳实践（TBD）
 
+=== JDBC框架的选择
+
+主流JDBC框架有Hibernate、MyBatis、Spring JDBC Template、Ebean、DBUtils等，Dew基于Spring Boot，所以对于这些框架都提供了很好的兼容。那么如何选择呢？
+
+1. 先说Hibernate，如果你的数据表结构与对象模型基本吻合，那么使用JPA会带来很大的便捷，推荐Hibernate
+1. 如果你的数据表结构与对象模型严重不吻合或是你希望对SQL有更多主动权（SQL优化、复杂查询等），那JPA就没什么优势了，这时：
+1.1. 如果你追求极简、不需要ORMPPING，那么DBUtils会是最佳选择
+1.1. 如果你喜欢敏捷开发，推崇充血模型，那么尝试一下Ebean，与Play!结合最合适不过
+1.1. 如果你既要有一定的ORMPPING能力，又希望自己写SQL，那么MyBatis会是不错的选择
+1.1. 如果你使用了Spring，希望框架简单些，可以接受自己写ORMPPING，未来无切换关系型数据库的计划，那么Spring JDBC Template将是个很好的选择
+
+上述是几个主流JDBC框架的使用场景分析，那么Dew默认的是哪个呢？Dew默认的是基于Spring JDBC Template的封装，其理由如下：
+
+1. Dew做为内部框架，需要能从容地处理公司规划的领域模型结构，但这一数据模型无法与对象模型对应，所以JPA的优势无法体现
+1. Dew希望尽可能保持“轻巧”，结构简单、容易上手，Hibernate相对而言过重了
+
+基于两个原因Hibernate并不适合使用，又因为：
+
+1. 在数据库设计上一般会存在业务主键、是否启用状态等字段，经常需要针对这些字段查询、修改
+1. 在数据库设计上一般会存在创建人/时间、更新人/时间等常规字段，在创建、更新对象时需要自动赋值
+1. 还是希望能有自动化的ORMPPING功能
+
+基于这三个原因MyBatis、Ebean、DBUtils及Spring JDBC Template都无法满足要求。
+
+所以为适应这一场景需求，Dew基于Spring JDBC Template做了扩展以支持上述功能。
+
 
     
 

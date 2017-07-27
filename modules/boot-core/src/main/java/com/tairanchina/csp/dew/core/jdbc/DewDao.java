@@ -1,85 +1,137 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.ecfront.dew.common.Page;
+import com.tairanchina.csp.dew.core.Dew;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DewDao<E> {
 
+    default Class<E> getClazz() {
+        return (Class<E>) (((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+    }
+
     default String ds() {
         return "";
     }
 
-    long insert(Object entity);
+    default long insert(Object entity) {
+        return Dew.ds(ds()).insert(entity);
+    }
 
-    void insert(Iterable<?> entities);
+    default void insert(Iterable<?> entities) {
+        Dew.ds(ds()).insert(entities);
+    }
 
-    void updateById(long id, Object entity);
+    default void updateById(long id, Object entity) {
+        Dew.ds(ds()).updateById(id, entity);
+    }
 
-    void updateByCode(String code, Object entity);
+    default void updateByCode(String code, Object entity) {
+        Dew.ds(ds()).updateByCode(code, entity);
+    }
 
-    E getById(long id);
+    default E getById(long id) {
+        return Dew.ds(ds()).getById(id, getClazz());
+    }
 
-    E getByCode(String code);
+    default E getByCode(String code) {
+        return Dew.ds(ds()).getByCode(code, getClazz());
+    }
 
-    void deleteById(long id);
+    default void deleteById(long id) {
+        Dew.ds(ds()).deleteById(id, getClazz());
+    }
 
-    void deleteByCode(String code);
+    default void deleteByCode(String code) {
+        Dew.ds(ds()).deleteByCode(code, getClazz());
+    }
 
-    void enableById(long id);
+    default void enableById(long id) {
+        Dew.ds(ds()).enableById(id, getClazz());
+    }
 
-    void enableByCode(String code);
+    default void enableByCode(String code) {
+        Dew.ds(ds()).enableByCode(code, getClazz());
+    }
 
-    void disableById(long id);
+    default void disableById(long id) {
+        Dew.ds(ds()).disableById(id, getClazz());
+    }
 
-    void disableByCode(String code);
+    default void disableByCode(String code) {
+        Dew.ds(ds()).disableByCode(code, getClazz());
+    }
 
-    boolean existById(long id);
+    default boolean existById(long id) {
+        return Dew.ds(ds()).existById(id, getClazz());
+    }
 
-    boolean existByCode(String code);
+    default boolean existByCode(String code) {
+        return Dew.ds(ds()).existByCode(code, getClazz());
+    }
 
     default List<E> findAll() {
         return findAll(null);
     }
 
-    List<E> findAll(LinkedHashMap<String, Boolean> orderDesc);
+    default List<E> findAll(LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).findAll(orderDesc, getClazz());
+    }
 
     default List<E> findEnabled() {
         return findEnabled(null);
     }
 
-    List<E> findEnabled(LinkedHashMap<String, Boolean> orderDesc);
+    default List<E> findEnabled(LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).findEnabled(orderDesc, getClazz());
+    }
 
     default List<E> findDisabled() {
         return findDisabled(null);
     }
 
-    List<E> findDisabled(LinkedHashMap<String, Boolean> orderDesc);
+    default List<E> findDisabled(LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).findDisabled(orderDesc, getClazz());
+    }
 
-    long countAll();
+    default long countAll() {
+        return Dew.ds(ds()).countAll(getClazz());
+    }
 
-    long countEnabled();
+    default long countEnabled() {
+        return Dew.ds(ds()).countEnabled(getClazz());
+    }
 
-    long countDisabled();
+    default long countDisabled() {
+        return Dew.ds(ds()).countDisabled(getClazz());
+    }
 
     default Page<E> paging(long pageNumber, int pageSize) {
         return paging(pageNumber, pageSize, null);
     }
 
-    Page<E> paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc);
+    default Page<E> paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).paging(pageNumber, pageSize, orderDesc, getClazz());
+    }
 
     default Page<E> pagingEnabled(int pageNumber, int pageSize) {
         return pagingEnabled(pageNumber, pageSize, null);
     }
 
-    Page<E> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc);
+    default Page<E> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).pagingEnabled(pageNumber, pageSize, orderDesc, getClazz());
+    }
 
     default Page<E> pagingDisabled(int pageNumber, int pageSize) {
         return pagingDisabled(pageNumber, pageSize, null);
     }
 
-    Page<E> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc);
+    default Page<E> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
+        return Dew.ds(ds()).pagingDisabled(pageNumber, pageSize, orderDesc, getClazz());
+    }
 
 }
 

@@ -396,6 +396,41 @@ TIP: 为方便操作，框架提供了`PkEntity` `SafeEntity` `StatusEntity` `Sa
 
 TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
 
+*支持@Select注解*
+
+* 使用操作
+
+[source,java]
+.返回全量数据
+----
+@Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
+List<CRUDSTestEntity> queryByField(@Param("fieldA") String fieldA);
+----
+
+[source,java]
+.返回分页数据
+----
+@Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
+Page<CRUDSTestEntity> queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Param("pageNumber") Long pageNumber, @Param("pageSize") Integer pageSize);
+----
+
+[source,java]
+.返回Bean类型数据
+----
+@Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
+CRUDSTestEntity getById(@Param("id") long id);
+----
+
+[source,java]
+.返回Map类型数据
+----
+@Select(value = "select * from t_test_crud_s_entity where id= #{id}")
+Map<String,Object> getMapById(@Param("id") long id);
+----
+
+TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需使用 `@Param()` 并指定与#{}相匹配的名称。
+`@Select` 中entityClass用于指定返回类型。
+
 === 多数据源支持
 
 ==== 原生版本

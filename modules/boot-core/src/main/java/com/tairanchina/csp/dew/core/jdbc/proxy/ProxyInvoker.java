@@ -4,6 +4,7 @@ import org.springframework.cglib.proxy.Proxy;
 
 /**
  * Created by 迹_Jason on 2017/7/26.
+ * 代理调用
  */
 public class ProxyInvoker {
 

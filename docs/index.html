@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="v1.0.0-beta4,2017-07-04">
+<meta name="author" content="v1.0.0-beta4,2017-07-28">
 <title>Dew-Framework（轻量服务框架）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Dew-Framework（轻量服务框架）</h1>
 <div class="details">
-<span id="author" class="author">v1.0.0-beta4,2017-07-04</span><br>
+<span id="author" class="author">v1.0.0-beta4,2017-07-28</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -487,7 +487,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truedubbo">2.13. Dubbo协同</a></li>
 </ul>
 </li>
-<li><a href="#true-tbd">3. 最佳实践（TBD）</a></li>
+<li><a href="#true-tbd">3. 最佳实践（TBD）</a>
+<ul class="sectlevel2">
+<li><a href="#truejdbc">3.1. JDBC框架的选择</a></li>
+</ul>
+</li>
 <li><a href="#true-tbd-2">4. 技术指标(TBD)</a>
 <ul class="sectlevel2">
 <li><a href="#true--17">4.1. 可靠性</a></li>
@@ -514,25 +518,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#true--26">7. 版本说明</a>
 <ul class="sectlevel2">
-<li><a href="#true1.0.0-beta4">7.1. 1.0.0-beta4</a>
+<li><a href="#true1-0-0-beta4">7.1. 1.0.0-beta4</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature">7.1.1. Feature</a></li>
 <li><a href="#trueimprovement">7.1.2. Improvement</a></li>
 <li><a href="#truefixed">7.1.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta2">7.2. 1.0.0-Beta2</a>
+<li><a href="#true1-0-0-beta3">7.2. 1.0.0-beta3</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature-2">7.2.1. Feature</a></li>
 <li><a href="#trueimprovement-2">7.2.2. Improvement</a></li>
 <li><a href="#truefixed-2">7.2.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta1">7.3. 1.0.0-beta1</a>
+<li><a href="#true1-0-0-beta2">7.3. 1.0.0-Beta2</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature-3">7.3.1. Feature</a></li>
 <li><a href="#trueimprovement-3">7.3.2. Improvement</a></li>
 <li><a href="#truefixed-3">7.3.3. Fixed</a></li>
+</ul>
+</li>
+<li><a href="#true1-0-0-beta1">7.4. 1.0.0-beta1</a>
+<ul class="sectlevel3">
+<li><a href="#truefeature-4">7.4.1. Feature</a></li>
+<li><a href="#trueimprovement-4">7.4.2. Improvement</a></li>
+<li><a href="#truefixed-4">7.4.3. Fixed</a></li>
 </ul>
 </li>
 </ul>
@@ -658,6 +669,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>gateway</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">服务网关组件</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monitor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">服务监控组件</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;x&gt;-example</code></p></td>
@@ -1318,6 +1333,93 @@ logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFie
 </tr>
 </table>
 </div>
+<div class="sect4">
+<h5 id="true-select"><a class="anchor" href="#true-select"></a>支持@Select注解</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>格式</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>@Select(value = "&lt;SQL，使用#{参数占位名}&gt;", entityClass = &lt;返回的实体，为空时以Map封装&gt;)
+&lt;返回类型，可为单个对象/List/Page&gt; &lt;方法名，java规范即可&gt;(&lt;行参修饰符，@Param(&lt;参数占位名&gt;)或@ModelParam&gt; &lt;行参&gt;);</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+方法参数Bean类型需使用 <code>@ModelParam</code> ，参数作为SQL参数需使用 <code>@Param()</code> 并指定与#{}相匹配的名称。
+<code>@Select</code> 中entityClass用于指定返回类型。
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>使用示例</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>添加扫描配置： <code>dew.dao.base-package: xxx</code></p>
+</div>
+<div class="listingblock">
+<div class="title">返回全量数据</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
+List&lt;CRUDSTestEntity&gt; queryByField(@Param("fieldA") String fieldA);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">返回分页数据</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
+Page&lt;CRUDSTestEntity&gt; queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Param("pageNumber") Long pageNumber, @Param("pageSize") Integer pageSize);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">返回Bean类型数据</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
+CRUDSTestEntity getById(@Param("id") long id);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">返回Map类型数据</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where id= #{id}")
+Map&lt;String,Object&gt; getMapById(@Param("id") long id);</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>限定</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>@Select</code> 只能用于接口</p>
+</li>
+<li>
+<p><code>@Select</code> 暂不支持DSL SQL，比如（HQL）</p>
+</li>
+<li>
+<p><code>@ModelParam</code> 参数不支持 <code>null</code> 查询</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1478,7 +1580,7 @@ Dew.ds("other1").xxx // 使用DS Name为`other1`的数据源
 // 泛型DAO (详见 `服务脚手架` 章节)
 
 @Repository
-public class CRUDSTestDao extends DaoImpl&lt;CRUDSTestEntity&gt; {
+public class CRUDSTestDao implements DewDao&lt;CRUDSTestEntity&gt; {
     @Override
     public String ds() {
         return "other1"; // 使用DS Name为`other1`的数据源，此方法不重载时表示使用主数据源
@@ -1500,7 +1602,7 @@ public long insert(Object entity) {
     jdbcTemplate.xxx;
 }
 
-@Transactional(otherTransactionManager)
+@Transactional(other1TransactionManager)
 public long insert(Object entity) {
     // DoSomething
     secondaryJdbcTemplate.xxx;
@@ -1712,21 +1814,9 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");</code></pre>
 <p>CRUDSService: 支持增删改查状态变更操作</p>
 </li>
 <li>
-<p>DaoImpl: 支持增删改查状态变更操作</p>
+<p>DewDao: 支持增删改查状态变更操作</p>
 </li>
 </ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-上述Controller及Service都是带默认方法的接口
-</td>
-</tr>
-</table>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2100,7 +2190,76 @@ public @interface Service {
 <div class="sect1">
 <h2 id="true-tbd"><a class="anchor" href="#true-tbd"></a>3. 最佳实践（TBD）</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="truejdbc"><a class="anchor" href="#truejdbc"></a>3.1. JDBC框架的选择</h3>
+<div class="paragraph">
+<p>主流JDBC框架有Hibernate、MyBatis、Spring JDBC Template、Ebean、DBUtils等，Dew基于Spring Boot，所以对于这些框架都提供了很好的兼容。那么如何选择呢？</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>先说Hibernate，如果你的数据表结构与对象模型基本吻合，那么使用JPA会带来很大的便捷，推荐Hibernate</p>
+</li>
+<li>
+<p>如果你的数据表结构与对象模型严重不吻合或是你希望对SQL有更多主动权（SQL优化、复杂查询等），那JPA就没什么优势了，这时：</p>
+<div class="ulist">
+<ul>
+<li>
+<p>如果你追求极简、不需要ORMPPING，那么DBUtils会是最佳选择</p>
+</li>
+<li>
+<p>如果你喜欢敏捷开发，推崇充血模型，那么尝试一下Ebean吧，与Play!结合最合适不过</p>
+</li>
+<li>
+<p>如果你既要有一定的ORMPPING能力，又希望自己写SQL，那么MyBatis会是不错的选择</p>
+</li>
+<li>
+<p>如果你使用了Spring，希望框架简单些，可以接受自己写ORMPPING，未来无切换关系型数据库的计划，那么Spring JDBC Template将是个很好的选择</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>上述是几个主流JDBC框架的使用场景分析，Dew默认的是哪个呢？Dew默认的是基于Spring JDBC Template的封装，其理由如下：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Dew做为内部框架，需要能从容地处理公司规划的领域模型结构，但这一数据模型无法与对象模型对应，所以JPA的优势无法体现</p>
+</li>
+<li>
+<p>Dew希望尽可能保持“轻巧”，结构简单、容易上手，Hibernate相对而言过重了</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>基于两个原因Hibernate并不适合使用，又因为：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>在数据库设计上一般会存在业务主键、是否启用状态等字段，经常需要针对这些字段查询、修改</p>
+</li>
+<li>
+<p>在数据库设计上一般会存在创建人/时间、更新人/时间等常规字段，在创建、更新对象时需要自动赋值</p>
+</li>
+<li>
+<p>希望能有自动化的ORMPPING功能</p>
+</li>
+<li>
+<p>要求能很好的支持多数据源操作</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>基于这三个原因MyBatis、Ebean、DBUtils及Spring JDBC Template都无法满足要求。</p>
+</div>
+<div class="paragraph">
+<p>所以为适应这一场景需求，Dew基于Spring JDBC Template做了扩展以支持上述功能。</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2116,6 +2275,236 @@ public @interface Service {
 <h3 id="true--18"><a class="anchor" href="#true--18"></a>4.2. 性能</h3>
 <div class="paragraph">
 <p>TBD</p>
+</div>
+<div class="paragraph">
+<p>服务器基本情况介绍
+    172.30.250.153
+        cpu:4核
+        内存:4G内存
+        网络：内网</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>172.30.249.186
+    cpu:4核
+    内存:4G内存
+    网络:内网
+    ps:有其它程序在跑暂用一定的内存空间可用内存2G左右</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>172.30.249.183
+    cpu:4核
+    内存:4G
+    网络:内网
+    ps:有其它程序在跑暂用一定的内存空间可用内存2G左右</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>所有程序介绍:
+    注册中心:registry[Eureka Server]
+    网关:gateway[Zuul]
+    对外服务接口:pressure-test-api
+    具体服务实现:pressure-test-service</p>
+</div>
+<div class="paragraph">
+<p>程序部署情况：
+    在172.30.250.153部署
+        Eureka Server 部署路径--&#8594;&gt;&gt;/home/release/apps/registry
+        Zuul 部署路径--&#8594;&gt;&gt;/home/release/apps/gateway</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>在172.30.249.186部署
+    pressure-test-api 部署路径---&gt;&gt;&gt;/opt/spring-cloud-client</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>在172.30.249.183部署
+    pressure-test-service 部署路径---&gt;&gt;&gt;/opt/spring-cloud-service</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>程序中影响性能的参数</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>1.四个程序tomcat的配置如下[全部相同]：
+    server.tomcat.accept-count=1000
+    server.tomcat.max-threads=1000
+    server.tomcat.max-connections=2000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>2.Eureka Server其它参数：
+    eureka.server.enable-self-preservation=false
+    eureka.server.remote-region-fetch-thread-pool-size=500
+    eureka.server.remote-region-read-timeout-ms=5000
+    eureka.server.remote-region-total-connections=1000
+    eureka.server.remote-region-total-connections-per-host=500</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>3.gateway其它参数：
+    eureka.host.max-per-route-connections=2000
+    eureka.host.max-total-connections=2000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>zuul.host.maxTotalConnections=1000
+zuul.host.maxPerRouteConnections=1000
+zuul.semaphore.maxConcurrentRequests=1000
+zuul.semaphore.maxSemaphores=1000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ribbon.MaxConnectionsPerHost=500
+ribbon.MaxTotalConnections=1000
+ribbon.PoolMaxThreads=1000
+ribbon.PoolMinThreads=500
+ribbon.ReadTimeout=6000
+ribbon.ConnectTimeout=6000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>hystrix.command.isolation.thread.timeoutInMilliseconds=10000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>4.pressure-test-api其它参数:
+    eureka.host.max-per-route-connections=2000
+    eureka.host.max-total-connections=2000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ribbon.ServerListRefreshInterval=1000
+ribbon.MaxConnectionsPerHost=500
+ribbon.MaxTotalConnections=1000
+ribbon.PoolMaxThreads=1000
+ribbon.PoolMinThreads=500
+ribbon.ReadTimeout=6000
+ribbon.ConnectTimeout=6000</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>5.pressure-test-service其它参数：
+    eureka.host.max-per-route-connections=2000
+    eureka.host.max-total-connections=2000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>服务之间调用情况:
+    gateway,pressure-test-api,pressure-test-service三者服务全部注册在registry中。
+    测试发起，首先掉用gateway服务，蒋分发到pressure-test-api中，pressure-test-api调用pressure-test-service，最后将结果返回。
+    ps:pressure-test-api 通过ribbon[负载均衡]来调用pressure-test-service</p>
+</div>
+<div class="paragraph">
+<p>测试结果：</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>测试条件:
+    1.并发线程数:350
+    2.持续运行10分钟
+    3.模拟执行服务时间为200毫秒
+测试结果:
+    总请求数:781372
+    成功:100%
+    Thoughput:1300/s
+    Average:268
+    Median:203
+    90%line:211
+    95%line:222
+    99%line:3835
+    Min:201
+    Max:7272</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>测试条件:
+    1.并发线程数:250
+    2.持续运行11分钟
+    3.模拟执行服务时间为200毫秒
+测试结果:
+    总请求数:811963
+    成功:100%
+    Thoughput:1225/s
+    Average:203
+    Median:203
+    90%line:205
+    95%line:210
+    99%line:222
+    Min:201
+    Max:545</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>测试条件:
+    1.并发线程数:500
+    2.持续运行10分钟
+    3.模拟执行服务时间为200毫秒
+测试结果:
+    总请求数:751614
+    成功:100%
+    Thoughput:1247/s
+    Average:400
+    Median:204
+    90%line:231
+    95%line:284
+    99%line:7209
+    Min:201
+    Max:7569</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>在业务处理时间为200毫秒，tomcat设置为1000线程的情况下，并发量为250比较合理。99%line也只有222毫秒。超过250的并发量，建议修改参数。</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>参数修改建议:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>参数具体参看：
+eureka-server:
+org.springframework.cloud:spring-cloud-netflix-eureka-server:1.3.1.RELEASE.jar/META-INF/spring-configuration-metadata.json
+eureka-client:
+org.springframework.cloud:spring-cloud-netflix-eureka-client:1.3.1.RELEASE.jar/META-INF/spring-configuration-metadata.json
+feign、ribbon、zuul:
+org.springframework.cloud:spring-cloud-netflix-core:1.3.1.RELEASE.jar/META-INF/spring-configuration-metadata.json
+Hystrix:
+https://github.com/Netflix/Hystrix/wiki/Configuration
+ribbon:
+参数名参考:https://github.com/Netflix/ribbon/blob/master/ribbon-core/src/main/java/com/netflix/client/config/CommonClientConfigKey.java#L83
+参数默认值:https://github.com/Netflix/ribbon/blob/3a707ec518a896053be44266dddc4c4f925f4e60/ribbon-core/src/main/java/com/netflix/client/config/DefaultClientConfigImpl.java#L331</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>如果默认配置不能满足性能要求，首先调高所有服务的tomcat的线程配置。accept-count[可以等待请求数量],max-threads[最大并发数量],max-connections[最大链接数]
+调整了tomcat以后，使用到了ribbon服务的地方需要调整ribbon的连接数大小。然后调整zuul[网关]连接数池大小。</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>当gateway[网关]中的ribbon的连接数没有调整的情况，测试结果中的Thoughput只能保持在200多，访问时长max异常的大。
+分析原因:gateway[网关]接收到请求以后，通过ribbon[负载均衡服务]去调用具体的服务。虽然gateway的tomcat能接受非常的多请求，但是ribbon线程数默认较小,很多请求在等待。
+这样导致max会异常的大。因为ribbon线程数默认较小，调用服务的线程数也较少，反应出来的情况就是服务的Thoughput并不是特别的高。Ps:实际上只需要调整MaxConnectionsPerHost,
+MaxTotalConnections两个参数，改问题就能解决，这里还是建议将Pool的参数也同等比例的调整放大比较合适。</pre>
+</div>
 </div>
 </div>
 </div>
@@ -2279,9 +2668,66 @@ public @interface Service {
 <h2 id="true--26"><a class="anchor" href="#true--26"></a>7. 版本说明</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true1.0.0-beta4"><a class="anchor" href="#true1.0.0-beta4"></a>7.1. 1.0.0-beta4</h3>
+<h3 id="true1-0-0-beta4"><a class="anchor" href="#true1-0-0-beta4"></a>7.1. 1.0.0-beta4</h3>
 <div class="sect3">
 <h4 id="truefeature"><a class="anchor" href="#truefeature"></a>7.1.1. Feature</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>整合 <code>Spring boot admin</code> 与 <code>Turbine</code>，可直观的监控各个性能及访问指标</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/spring-boot-admin.png" alt="spring boot admin.png">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>添加实验功能：使用注解自定义查询（ <code>@Select</code> ）</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>7.1.2. Improvement</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>添加了几个自定义验证方式</p>
+</li>
+<li>
+<p>添加性能测试报告</p>
+</li>
+<li>
+<p>移除 <code>DaoImpl</code> ，改用接口 <code>DewDao</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+为确保兼容， <code>DaoImpl</code> 在这一版本中未物理移除，如有条件请迁移至 <code>DewDao</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>7.1.3. Fixed</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true1-0-0-beta3"><a class="anchor" href="#true1-0-0-beta3"></a>7.2. 1.0.0-beta3</h3>
+<div class="sect3">
+<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>7.2.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2291,7 +2737,7 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>7.1.2. Improvement</h4>
+<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>7.2.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2307,14 +2753,14 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>7.1.3. Fixed</h4>
+<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>7.2.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>7.2. 1.0.0-Beta2</h3>
+<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>7.3. 1.0.0-Beta2</h3>
 <div class="sect3">
-<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>7.2.1. Feature</h4>
+<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>7.3.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2324,7 +2770,7 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>7.2.2. Improvement</h4>
+<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>7.3.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2349,14 +2795,14 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>7.2.3. Fixed</h4>
+<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>7.3.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>7.3. 1.0.0-beta1</h3>
+<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>7.4. 1.0.0-beta1</h3>
 <div class="sect3">
-<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>7.3.1. Feature</h4>
+<h4 id="truefeature-4"><a class="anchor" href="#truefeature-4"></a>7.4.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2378,7 +2824,7 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>7.3.2. Improvement</h4>
+<h4 id="trueimprovement-4"><a class="anchor" href="#trueimprovement-4"></a>7.4.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2397,7 +2843,7 @@ public @interface Service {
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>7.3.3. Fixed</h4>
+<h4 id="truefixed-4"><a class="anchor" href="#truefixed-4"></a>7.4.3. Fixed</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2418,7 +2864,7 @@ public @interface Service {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-04 19:55:37
+Last updated 2017-07-28 11:53:29 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

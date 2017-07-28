@@ -6,14 +6,17 @@
 
 * 整合 `Spring boot admin` 与 `Turbine`，可直观的监控各个性能及访问指标
 
-image::./docs/images/spring-boot-admin.png[]
+image::./images/spring-boot-admin.png[]
 
 * 添加实验功能：使用注解自定义查询（ `@Select` ）
-* 移除 `DaoImpl` ，改用接口 `DewDao`
-* 添加性能测试报告
-* 添加了几个自定义验证方式
 
 ==== Improvement
+
+* 添加了几个自定义验证方式
+* 添加性能测试报告
+* 移除 `DaoImpl` ，改用接口 `DewDao` 
+
+WARNING: 为确保兼容， `DaoImpl` 在这一版本中未物理移除，如有条件请迁移至 `DewDao` 
 
 ==== Fixed
 

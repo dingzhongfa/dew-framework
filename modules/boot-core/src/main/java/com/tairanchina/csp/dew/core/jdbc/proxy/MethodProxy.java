@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class MethodProxy implements InvocationHandler {
 
-    private Map<Method, MethodHandle> methodHandleCache = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+    private static final Map<Method, MethodHandle> METHOD_HANDLE_CACHE = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -37,7 +37,7 @@ public class MethodProxy implements InvocationHandler {
     }
 
     private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        MethodHandle handle = methodHandleCache.get(method);
+        MethodHandle handle = METHOD_HANDLE_CACHE.get(method);
         if (handle == null) {
             final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class);
             if (!constructor.isAccessible()) {
@@ -46,7 +46,7 @@ public class MethodProxy implements InvocationHandler {
             final Class<?> declaringClass = method.getDeclaringClass();
             handle = constructor.newInstance(declaringClass)
                     .unreflectSpecial(method, declaringClass);
-            methodHandleCache.put(method, handle);
+            METHOD_HANDLE_CACHE.put(method, handle);
         }
         return handle;
     }

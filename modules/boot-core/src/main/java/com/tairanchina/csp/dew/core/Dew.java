@@ -10,18 +10,23 @@ import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
+import com.tairanchina.csp.dew.core.jdbc.ClassPathScanner;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -62,6 +67,12 @@ public class Dew {
             Dew.applicationContext.getBean(DSManager.class);
         }
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
+        // JDBC Scan
+        ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ( (GenericApplicationContext) Dew.applicationContext).getBeanFactory());
+        scanner.setResourceLoader(Dew.applicationContext);
+        scanner.registerFilters();
+        scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+
     }
 
     public static class Constant {

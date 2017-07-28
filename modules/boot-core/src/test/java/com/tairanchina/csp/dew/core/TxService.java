@@ -12,7 +12,7 @@ public class TxService {
 
     @Transactional
     public void testCommit(){
-        JDBCTest.BasicEntity basicEntity = new JDBCTest.BasicEntity();
+        BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA1");
         basicEntity.setFieldB("TransactionA1");
         long id = Dew.ds().insert(basicEntity);
@@ -20,21 +20,18 @@ public class TxService {
     }
 
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
-    public void testRollBack(){
-        JDBCTest.BasicEntity basicEntity = new JDBCTest.BasicEntity();
+    public void testRollBack() throws Exception {
+        BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
         long id = Dew.ds().insert(basicEntity);
         Assert.assertTrue(id != 0);
-        String string  = null;
-        if(string.equals("")) {
-            int i = 0;
-        }
+        throw new Exception("");
     }
 
     @Transactional("test2TransactionManager")
     public void testMultiCommit(){
-        JDBCTest.BasicEntity basicEntity = new JDBCTest.BasicEntity();
+        BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA1");
         basicEntity.setFieldB("TransactionA1");
         long id = Dew.ds("test2").insert(basicEntity);
@@ -42,17 +39,13 @@ public class TxService {
     }
 
     @Transactional(value = ("test2TransactionManager"), rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
-    public void testMultiRollBack(){
-        JDBCTest.BasicEntity basicEntity = new JDBCTest.BasicEntity();
+    public void testMultiRollBack() throws Exception {
+        BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
         long id = Dew.ds("test2").insert(basicEntity);
         Assert.assertTrue(id != 0);
-        String string  = null;
-        if(string.equals("")) {
-            int i = 0;
-        }
+        throw new Exception("");
     }
-
 
 }

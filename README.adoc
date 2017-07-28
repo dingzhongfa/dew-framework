@@ -44,5 +44,6 @@ ____
 |`config` |统一配置中心组件
 |`registry` |服务注册中心组件
 |`gateway` |服务网关组件
+|`monitor` |服务监控组件
 |`<x>-example` |各类示例
 |===

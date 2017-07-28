@@ -19,7 +19,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
     default Resp<List<V>> find() {
         Resp<List<E>> result = getDewService().find();
         if (result.ok()) {
-            List<V> body = result.getBody().stream().map(i -> entityToVO(i)).collect(Collectors.toList());
+            List<V> body = result.getBody().stream().map(this::entityToVO).collect(Collectors.toList());
             return Resp.success(body);
         } else {
             return Resp.customFail(result.getCode(), result.getMessage());
@@ -35,7 +35,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
     default Resp<Page<V>> paging(@PathVariable int pageNumber, @PathVariable int pageSize) {
         Resp<Page<E>> result = getDewService().paging(pageNumber, pageSize);
         if (result.ok()) {
-            List<V> body = result.getBody().getObjects().stream().map(i -> entityToVO(i)).collect(Collectors.toList());
+            List<V> body = result.getBody().getObjects().stream().map(this::entityToVO).collect(Collectors.toList());
             Page<V> page = Page.build(pageNumber, pageSize, result.getBody().getRecordTotal(), body);
             return Resp.success(page);
         } else {

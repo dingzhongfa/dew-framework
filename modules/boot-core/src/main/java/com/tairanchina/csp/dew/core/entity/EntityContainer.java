@@ -134,7 +134,7 @@ public class EntityContainer {
         }
     }
 
-    public static EntityClassInfo getCodeFieldNameByClazz(Class<?> clazz) {
+    public static EntityClassInfo getEntityClassByClazz(Class<?> clazz) {
         if (!COLUMN_INFO.containsKey(clazz.getName())) {
             loadEntityClassInfo(clazz);
         }

@@ -7,7 +7,7 @@ TIP: 所有模块均为Maven结构
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-Beta3</version>
+    <version>1.0.0-beta4</version>
 </parent>
 ...
 <dependencies>
@@ -76,7 +76,7 @@ public class BoneExampleApplication {
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-Beta3</version>
+    <version>1.0.0-beta4</version>
 </parent>
 …
 <dependencies>
@@ -533,7 +533,7 @@ Dew.ds("other1").xxx // 使用DS Name为`other1`的数据源
 // 泛型DAO (详见 `服务脚手架` 章节)
 
 @Repository
-public class CRUDSTestDao extends DaoImpl<CRUDSTestEntity> {
+public class CRUDSTestDao implements DewDao<CRUDSTestEntity> {
     @Override
     public String ds() {
         return "other1"; // 使用DS Name为`other1`的数据源，此方法不重载时表示使用主数据源
@@ -555,7 +555,7 @@ public long insert(Object entity) {
     jdbcTemplate.xxx;
 }
 
-@Transactional(otherTransactionManager)
+@Transactional(other1TransactionManager)
 public long insert(Object entity) {
     // DoSomething
     secondaryJdbcTemplate.xxx;
@@ -695,9 +695,7 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 * CRUDService: 支持增删改查操作
 * CRUSService: 支持增改查状态变更操作
 * CRUDSService: 支持增删改查状态变更操作
-* DaoImpl: 支持增删改查状态变更操作
-
-NOTE: 上述Controller及Service都是带默认方法的接口
+* DewDao: 支持增删改查状态变更操作
 
 TIP: 详见API文档
 

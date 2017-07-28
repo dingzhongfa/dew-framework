@@ -1,14 +1,15 @@
 package com.tairanchina.csp.dew.core;
 
+import com.tairanchina.csp.dew.core.dao.TestInterfaceDao;
 import com.tairanchina.csp.dew.core.service.CRUDSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CRUDSTestService implements CRUDSService<CRUDSTestDao, CRUDSTestEntity> {
+public class CRUDSTestService implements CRUDSService<TestInterfaceDao, CRUDSTestEntity> {
 
     @Autowired
-    private CRUDSTestDao crudsTestDao;
+    private TestInterfaceDao crudsTestDao;
 
     @Override
     public Class<CRUDSTestEntity> getModelClazz() {
@@ -16,7 +17,7 @@ public class CRUDSTestService implements CRUDSService<CRUDSTestDao, CRUDSTestEnt
     }
 
     @Override
-    public CRUDSTestDao getDao() {
+    public TestInterfaceDao getDao() {
         return crudsTestDao;
     }
 }

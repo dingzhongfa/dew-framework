@@ -14,6 +14,19 @@ public class DewConfig {
     private Basic basic = new Basic();
     private Cluster cluster = new Cluster();
     private Security security = new Security();
+    private Dao dao = new Dao();
+
+    public static class Dao {
+        private String basePackage = "";
+
+        public String getBasePackage() {
+            return basePackage;
+        }
+
+        public void setBasePackage(String basePackage) {
+            this.basePackage = basePackage;
+        }
+    }
 
     public static class Basic {
 
@@ -271,5 +284,13 @@ public class DewConfig {
 
     public void setSecurity(Security security) {
         this.security = security;
+    }
+
+    public Dao getDao() {
+        return dao;
+    }
+
+    public void setDao(Dao dao) {
+        this.dao = dao;
     }
 }

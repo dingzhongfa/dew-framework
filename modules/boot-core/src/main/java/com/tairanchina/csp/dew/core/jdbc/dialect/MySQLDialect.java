@@ -11,7 +11,7 @@ class MySQLDialect implements Dialect {
 
     @Override
     public String count(String sql) {
-        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + System.currentTimeMillis();
+        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + sql.hashCode();
     }
 
     @Override

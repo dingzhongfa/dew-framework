@@ -29,7 +29,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             result = getDewService().findDisabled();
         }
         if (result.ok()) {
-            List<V> body = result.getBody().stream().map(i -> entityToVO(i)).collect(Collectors.toList());
+            List<V> body = result.getBody().stream().map(this::entityToVO).collect(Collectors.toList());
             return Resp.success(body);
         } else {
             return Resp.customFail(result.getCode(), result.getMessage());
@@ -53,7 +53,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             result = getDewService().pagingDisabled(pageNumber, pageSize);
         }
         if (result.ok()) {
-            List<V> body = result.getBody().getObjects().stream().map(i -> entityToVO(i)).collect(Collectors.toList());
+            List<V> body = result.getBody().getObjects().stream().map(this::entityToVO).collect(Collectors.toList());
             Page<V> page = Page.build(pageNumber, pageSize, result.getBody().getRecordTotal(), body);
             return Resp.success(page);
         } else {

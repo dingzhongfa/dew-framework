@@ -2,6 +2,8 @@ package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
+import com.tairanchina.csp.dew.core.validation.IdNumber;
+import com.tairanchina.csp.dew.core.validation.Phone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.IOException;
 
 @RestController
@@ -64,9 +65,12 @@ public class TestController {
     public static class SomeReq {
         @NotNull
         @Length(min = 2)
+        @IdNumber(message = "身份证号错误")
         private String a;
         @Min(10)
         private int b;
+        @Phone(message = "手机号错误")
+        private String c;
 
         public String getA() {
             return a;
@@ -82,6 +86,14 @@ public class TestController {
 
         public void setB(int b) {
             this.b = b;
+        }
+
+        public String getC() {
+            return c;
+        }
+
+        public void setC(String c) {
+            this.c = c;
         }
     }
 

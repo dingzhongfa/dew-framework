@@ -7,6 +7,8 @@ dew:
     cache: redis
     dist: redis
     mq: rabbit
+  dao:
+    base-package: com.tairanchina.csp.dew.core
 
 spring:
   application:

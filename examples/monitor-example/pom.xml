@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-beta4</version>
+        <version>1.0.0-rc</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
@@ -15,7 +15,7 @@
     <name>Dew Monitor 示例</name>
     <description>Dew Monitor 示例</description>
     <packaging>jar</packaging>
-    <version>1.0.0-beta4</version>
+    <version>1.0.0-rc</version>
 
     <properties>
     </properties>

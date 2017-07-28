@@ -9,6 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -18,27 +19,36 @@ import java.util.Map;
  */
 public class MethodProxy implements InvocationHandler {
 
+    private Map<Method, MethodHandle> methodHandleCache = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (!method.getClass().isInterface() && !method.isDefault()) {
-            // This Object is class and method has not impl
+        if (!method.getDeclaringClass().isInterface() && !method.isDefault()) {
+            // This proxy is class and method has not impl
             return method.invoke(this, args);
         } else if (method.isDefault()) {
-            // This Object is interface but method has impl
-            method.setAccessible(true);
+            // This proxy is interface but method has impl
+            return getMethodHandle(method).bindTo(proxy)
+                    .invokeWithArguments(args);
+        } else {
+            // This proxy is interface
+            return run(method, args);
+        }
+    }
+
+    private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        MethodHandle handle = methodHandleCache.get(method);
+        if (handle == null) {
             final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class);
             if (!constructor.isAccessible()) {
                 constructor.setAccessible(true);
             }
             final Class<?> declaringClass = method.getDeclaringClass();
-            return constructor.newInstance(declaringClass)
-                    .unreflectSpecial(method, declaringClass)
-                    .bindTo(proxy)
-                    .invokeWithArguments(args);
-        } else {
-            // This Object is interface
-            return run(method, args);
+            handle = constructor.newInstance(declaringClass)
+                    .unreflectSpecial(method, declaringClass);
+            methodHandleCache.put(method, handle);
         }
+        return handle;
     }
 
     /**

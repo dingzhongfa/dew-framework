@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class MethodProxy implements InvocationHandler {
 
-    private Map<Method, MethodHandle> methodHandleCache = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+    private static Map<Method, MethodHandle> methodHandleCache = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

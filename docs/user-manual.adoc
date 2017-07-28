@@ -396,9 +396,22 @@ TIP: 为方便操作，框架提供了`PkEntity` `SafeEntity` `StatusEntity` `Sa
 
 TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
 
-*支持@Select注解*
+===== 支持@Select注解
 
-* 使用操作
+* 格式
+
+[source]
+----
+@Select(value = "<SQL，使用#{参数占位名}>", entityClass = <返回的实体，为空时以Map封装>)
+<返回类型，可为单个对象/List/Page> <方法名，java规范即可>(<行参修饰符，@Param(<参数占位名>)或@ModelParam> <行参>);
+----
+
+TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需使用 `@Param()` 并指定与#{}相匹配的名称。
+`@Select` 中entityClass用于指定返回类型。
+
+* 使用示例
+
+添加扫描配置： `dew.dao.base-package: xxx`
 
 [source,java]
 .返回全量数据
@@ -428,8 +441,12 @@ CRUDSTestEntity getById(@Param("id") long id);
 Map<String,Object> getMapById(@Param("id") long id);
 ----
 
-TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需使用 `@Param()` 并指定与#{}相匹配的名称。
-`@Select` 中entityClass用于指定返回类型。
+* 限定
+
+. `@Select` 只能用于接口
+. `@Select` 暂不支持DSL SQL，比如（HQL）
+. `@ModelParam` 参数不支持 `null` 查询
+
 
 === 多数据源支持
 

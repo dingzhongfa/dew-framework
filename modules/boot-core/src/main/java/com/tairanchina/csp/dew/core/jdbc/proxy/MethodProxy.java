@@ -3,10 +3,15 @@ package com.tairanchina.csp.dew.core.jdbc.proxy;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
 import org.springframework.cglib.proxy.InvocationHandler;
+import org.springframework.util.ConcurrentReferenceHashMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 迹_Jason on 2017/7/26.
@@ -14,28 +19,32 @@ import java.util.List;
 public class MethodProxy implements InvocationHandler {
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args)  throws Throwable {
-        //如果传进来是一个已实现的具体类
-        if (Object.class.equals(method.getDeclaringClass())) {
-            try {
-                return method.invoke(this, args);
-            } catch (Throwable t) {
-                t.printStackTrace();
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (!method.getClass().isInterface() && !method.isDefault()) {
+            // This Object is class and method has not impl
+            return method.invoke(this, args);
+        } else if (method.isDefault()) {
+            // This Object is interface but method has impl
+            method.setAccessible(true);
+            final Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class);
+            if (!constructor.isAccessible()) {
+                constructor.setAccessible(true);
             }
-            //如果传进来的是一个接口
+            final Class<?> declaringClass = method.getDeclaringClass();
+            return constructor.newInstance(declaringClass)
+                    .unreflectSpecial(method, declaringClass)
+                    .bindTo(proxy)
+                    .invokeWithArguments(args);
         } else {
+            // This Object is interface
             return run(method, args);
         }
-        return null;
     }
 
     /**
      * 实现接口的核心方法
-     * @param m
-     * @param args
-     * @return
      */
-    public Object run(Method m,Object[] args){
+    public Object run(Method m, Object[] args) {
         MethodConstruction method = new MethodConstruction(m, args);
         for (Annotation annotation : method.getMethodAnnotations()) {
             if (annotation instanceof Select) {

@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.jdbc;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
+import org.springframework.cglib.proxy.Proxy;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.LinkedHashMap;
@@ -10,7 +11,11 @@ import java.util.List;
 public interface DewDao<E> {
 
     default Class<E> getClazz() {
-        return (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        if (Proxy.class.isAssignableFrom(this.getClass())) {
+            return (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        } else {
+            return (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        }
     }
 
     default String ds() {

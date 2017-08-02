@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 
 public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOController<T, V, E> {
 
+    @Override
+    default boolean convertAble() {
+        return true;
+    }
+
     @GetMapping(value = "", params = {"enabled"})
     @ApiOperation(value = "根据状态获取记录列表")
     @ApiImplicitParams({
@@ -28,12 +33,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
         } else {
             result = getService().findDisabled();
         }
-        if (result.ok()) {
-            List<V> body = result.getBody().stream().map(this::entityToVO).collect(Collectors.toList());
-            return Resp.success(body);
-        } else {
-            return Resp.customFail(result.getCode(), result.getMessage());
-        }
+       return convertList(result);
     }
 
     @GetMapping(value = "{pageNumber}/{pageSize}", params = {"enabled"})
@@ -52,15 +52,8 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
         } else {
             result = getService().pagingDisabled(pageNumber, pageSize);
         }
-        if (result.ok()) {
-            List<V> body = result.getBody().getObjects().stream().map(this::entityToVO).collect(Collectors.toList());
-            Page<V> page = Page.build(pageNumber, pageSize, result.getBody().getRecordTotal(), body);
-            return Resp.success(page);
-        } else {
-            return Resp.customFail(result.getCode(), result.getMessage());
-        }
+        return convertPage(result);
     }
-
 
     @PutMapping("{id}/enable")
     @ApiOperation(value = "根据ID启用记录")

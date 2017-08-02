@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOController<T, V, E> {
 
+    @Override
+    default boolean convertAble() {
+        return true;
+    }
+
     @DeleteMapping(value = "{id}")
     @ApiOperation(value = "根据ID删除记录")
     @ApiImplicitParams({

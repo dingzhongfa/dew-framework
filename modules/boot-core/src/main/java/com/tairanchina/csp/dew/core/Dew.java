@@ -68,11 +68,12 @@ public class Dew {
         }
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
         // JDBC Scan
-        ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ( (GenericApplicationContext) Dew.applicationContext).getBeanFactory());
-        scanner.setResourceLoader(Dew.applicationContext);
-        scanner.registerFilters();
-        scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
-
+        if (StringUtils.hasLength(Dew.dewConfig.getDao().getBasePackage())) {
+            ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
+            scanner.setResourceLoader(Dew.applicationContext);
+            scanner.registerFilters();
+            scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+        }
     }
 
     public static class Constant {

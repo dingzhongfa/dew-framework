@@ -16,7 +16,7 @@ public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
     default Resp<Void> deleteById(@PathVariable long id) {
-        return getDewService().deleteById(id);
+        return getService().deleteById(id);
     }
 
     @DeleteMapping(value = "code/{code}")
@@ -25,7 +25,7 @@ public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "string", required = true),
     })
     default Resp<Void> deleteByCode(@PathVariable String code) {
-        return getDewService().deleteByCode(code);
+        return getService().deleteByCode(code);
     }
 
 }

@@ -17,7 +17,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
     @GetMapping("")
     @ApiOperation(value = "获取记录列表")
     default Resp<List<V>> find() {
-        Resp<List<E>> result = getDewService().find();
+        Resp<List<E>> result = getService().find();
         if (result.ok()) {
             List<V> body = result.getBody().stream().map(this::entityToVO).collect(Collectors.toList());
             return Resp.success(body);
@@ -33,7 +33,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "path", dataType = "int", required = true),
     })
     default Resp<Page<V>> paging(@PathVariable int pageNumber, @PathVariable int pageSize) {
-        Resp<Page<E>> result = getDewService().paging(pageNumber, pageSize);
+        Resp<Page<E>> result = getService().paging(pageNumber, pageSize);
         if (result.ok()) {
             List<V> body = result.getBody().getObjects().stream().map(this::entityToVO).collect(Collectors.toList());
             Page<V> page = Page.build(pageNumber, pageSize, result.getBody().getRecordTotal(), body);
@@ -49,7 +49,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
     default Resp<V> getById(@PathVariable long id) {
-        Resp<E> result = getDewService().getById(id);
+        Resp<E> result = getService().getById(id);
         if (result.ok()) {
             V body = entityToVO(result.getBody());
             return Resp.success(body);
@@ -64,7 +64,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "string", required = true),
     })
     default Resp<V> getByCode(@PathVariable String code) {
-        Resp<E> result = getDewService().getByCode(code);
+        Resp<E> result = getService().getByCode(code);
         if (result.ok()) {
             V body = entityToVO(result.getBody());
             return Resp.success(body);
@@ -79,7 +79,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
     default Resp<V> save(@RequestBody V vo) {
-        Resp<E> result = getDewService().save(voToEntity(vo));
+        Resp<E> result = getService().save(voToEntity(vo));
         if (result.ok()) {
             V body = entityToVO(result.getBody());
             return Resp.success(body);
@@ -95,7 +95,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
     default Resp<V> updateById(@PathVariable long id, @RequestBody V vo) {
-        Resp<E> result = getDewService().updateById(id, voToEntity(vo));
+        Resp<E> result = getService().updateById(id, voToEntity(vo));
         if (result.ok()) {
             V body = entityToVO(result.getBody());
             return Resp.success(body);
@@ -111,7 +111,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
     default Resp<V> updateByCode(@PathVariable String code, @RequestBody V vo) {
-        Resp<E> result = getDewService().updateByCode(code, voToEntity(vo));
+        Resp<E> result = getService().updateByCode(code, voToEntity(vo));
         if (result.ok()) {
             V body = entityToVO(result.getBody());
             return Resp.success(body);

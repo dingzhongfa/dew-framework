@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.ecfront.dew.common.Page;
+import com.tairanchina.csp.dew.core.Container;
 import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.cglib.proxy.Proxy;
 
@@ -11,11 +12,17 @@ import java.util.List;
 public interface DewDao<E> {
 
     default Class<E> getClazz() {
-        if (Proxy.class.isAssignableFrom(this.getClass())) {
-            return (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
-        } else {
-            return (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        Class<E> clazz = (Class<E>) Container.DAO_CONTAINER.get(this.getClass());
+        if (clazz != null) {
+            return clazz;
         }
+        if (Proxy.class.isAssignableFrom(this.getClass())) {
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        } else {
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+        }
+        Container.DAO_CONTAINER.put(this.getClass(), clazz);
+        return clazz;
     }
 
     default String ds() {

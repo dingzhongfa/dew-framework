@@ -90,5 +90,13 @@ public class ErrorController extends AbstractErrorController {
         }
     }
 
-
+    @RequestMapping("unauthorized")
+    public Object un(HttpServletRequest request) {
+        JsonNode jsonNode;
+        jsonNode = $.json.createObjectNode()
+                .set("error", $.json.createObjectNode()
+                        .put("code", 401)
+                        .put("message", "sssssss"));
+        return ResponseEntity.status(HttpStatus.valueOf(200)).body(jsonNode);
+    }
 }

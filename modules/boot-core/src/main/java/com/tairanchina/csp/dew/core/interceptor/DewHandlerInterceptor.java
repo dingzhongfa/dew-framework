@@ -5,6 +5,7 @@ import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +16,31 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(DewHandlerInterceptor.class);
 
+    private String applicationName;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestFrom = request.getHeader("Request-From");
+        if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
+            for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
+                if (!v.equalsIgnoreCase(requestFrom) && !applicationName.equalsIgnoreCase(requestFrom)) {
+                    return false;
+                }
+            }
+        }
+        if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
+            for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
+                if (v.equalsIgnoreCase(requestFrom)) {
+//                    response.sendError(HttpServletResponse.SC_NOT_FOUND,"sssss");
+//                    response.setContentType("application/json");
+//                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                    response.getWriter().write("{\"s\":\"ss\"}");
+////                    response.getWriter().flush();
+                    response.sendRedirect("/error/unauthorized");
+                    return false;
+                }
+            }
+        }
         response.addHeader("Access-Control-Allow-Origin", Dew.dewConfig.getSecurity().getCors().getAllowOrigin());
         response.addHeader("Access-Control-Allow-Methods", Dew.dewConfig.getSecurity().getCors().getAllowMethods());
         response.addHeader("Access-Control-Allow-Headers", Dew.dewConfig.getSecurity().getCors().getAllowHeaders());
@@ -53,4 +77,11 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         return super.preHandle(request, response, handler);
     }
 
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
 }

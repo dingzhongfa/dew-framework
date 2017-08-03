@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -44,9 +45,13 @@ public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
     @Autowired
     @Qualifier("dewConfig")
     private DewConfig innerDewConfig;
+
     @Autowired
     private ApplicationContext innerApplicationContext;
 
@@ -67,6 +72,8 @@ public class Dew {
             Dew.applicationContext.getBean(DSManager.class);
         }
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
+
+        EB.applicationName = applicationName;
         // JDBC Scan
         if (StringUtils.hasLength(Dew.dewConfig.getDao().getBasePackage())) {
             ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
@@ -151,6 +158,8 @@ public class Dew {
 
         private static RestTemplate serviceClient;
 
+        private static String applicationName;
+
         public static void setServiceClient(RestTemplate _serviceClient) {
             serviceClient = _serviceClient;
         }
@@ -207,6 +216,7 @@ public class Dew {
             try {
                 if (!$.field.isIPv4Address(new URL(url).getHost())) {
                     HttpHeaders headers = new HttpHeaders();
+                    headers.set("Request-From", applicationName.toUpperCase());
                     if (header != null) {
                         header.forEach(headers::add);
                     }

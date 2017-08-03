@@ -33,6 +33,7 @@
         <module>examples/mybatisplus-example</module>
         <module>examples/pressure-test-api</module>
         <module>examples/pressure-test-service</module>
+        <module>examples/service-cloud-example</module>
     </modules>
 
 </project>

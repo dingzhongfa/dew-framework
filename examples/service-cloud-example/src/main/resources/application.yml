@@ -7,22 +7,10 @@ server:
 dew:
   basic:
     name: service-cloud
-    version: 1.0
-    desc: desc
-    web-site: www.tairanchina.com
     format:
       use-unity-error: true
       reuse-http-state: true
-    doc:
-      base-package: com.tairanchina
-    entity:
-      base-packages:
-        - rest-cloud-example
-        - bb-ss
   security:
-    token-flag: X-API-AUTHORITY1
-    token-in-header: true
-    token-hash: true
     exclude-services:
       - rest-cloud-example
 
@@ -30,7 +18,5 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://registry:123456@localhost:10000/eureka
-logging:
-  path: ./logs
 
 

@@ -22,7 +22,8 @@ public class DaoFactoryBean<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
-        return Dew.applicationContext.containsBean(mapperInterface.getName()) ? null : (T) new ProxyInvoker().getInstance(mapperInterface);
+        return Dew.applicationContext.containsBean(mapperInterface.getName()) ?
+                (T) Dew.applicationContext.getBean(mapperInterface.getName()) : new ProxyInvoker().getInstance(mapperInterface);
     }
 
     @Override

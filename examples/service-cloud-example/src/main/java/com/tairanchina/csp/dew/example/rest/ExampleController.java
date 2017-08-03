@@ -12,7 +12,7 @@ public class ExampleController {
     @GetMapping("/example")
     @ApiOperation(value = "示例方式")
     public String example() {
-        return "enjoy!";
+        return "{}";
     }
 
 }

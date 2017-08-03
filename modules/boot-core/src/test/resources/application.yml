@@ -10,7 +10,6 @@ dew:
   dao:
     base-package: com.tairanchina.csp.dew.core
 
-
 spring:
   application:
     name: core-test

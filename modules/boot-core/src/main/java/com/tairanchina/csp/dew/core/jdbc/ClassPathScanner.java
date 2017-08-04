@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -29,6 +30,7 @@ public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
                 GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
                 definition.getPropertyValues().add("mapperInterface", definition.getBeanClassName());
                 definition.setBeanClass(DaoFactoryBean.class);
+                definition.setScope(BeanDefinition.SCOPE_SINGLETON);
             }
         }
         return beanDefinitions;

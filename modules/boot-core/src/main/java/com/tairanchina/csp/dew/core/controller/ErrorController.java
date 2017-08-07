@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,10 +48,21 @@ public class ErrorController extends AbstractErrorController {
     @ResponseBody
     public Object error(HttpServletRequest request) {
         Map<String, Object> error = getErrorAttributes(request, false);
+        String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
-        int code = (int) error.getOrDefault("status", -1);
+        String busCode = (int) error.getOrDefault("status", -1) + "";
+        int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
         String message = error.getOrDefault("message", "") + "";
+        if (MESSAGE_CHECK.matcher(message).matches()) {
+            JsonNode detail = $.json.toJson(message);
+            busCode = detail.get("code").asText();
+            message = detail.get("message").asText();
+            if (detail.has("customHttpCode") && detail.get("customHttpCode").asInt() != -1) {
+                // 使用自定义http状态码
+                httpCode = detail.get("customHttpCode").asInt();
+            }
+        }
         if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
             ArrayNode errorExt = $.json.createArrayNode();
             Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
@@ -65,30 +75,17 @@ public class ErrorController extends AbstractErrorController {
             }
             message += " Detail:" + $.json.toJsonString(errorExt);
         }
-        logger.error("Request [{}] from {} , error {} : {}", path, Dew.context().getSourceIP(), code, message);
+        logger.error("Request [{}] from [{}]{} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
-            return Resp.customFail(code + "", "[" + err + "]" + message);
+            Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
+            return ResponseEntity.status(200).body($.json.toJsonString(resp));
         } else {
-            JsonNode jsonNode;
-            if (MESSAGE_CHECK.matcher(message).matches()) {
-                JsonNode detail = $.json.toJson(message);
-                jsonNode = $.json.createObjectNode()
-                        .set("error", $.json.createObjectNode()
-                                .put("code", detail.get("code").asText())
-                                .put(Dew.dewConfig.getBasic().getFormat().getMessageFieldName(), detail.get("message").asText()));
-                if (detail.has("customHttpCode") && detail.get("customHttpCode").asInt() != -1) {
-                    // 使用自定义http状态码
-                    code = detail.get("customHttpCode").asInt();
-                }
-            } else {
-                jsonNode = $.json.createObjectNode()
-                        .set("error", $.json.createObjectNode()
-                                .put("code", code)
-                                .put("message", message));
-            }
-            return ResponseEntity.status(HttpStatus.valueOf(code)).body(jsonNode);
+            JsonNode jsonNode = $.json.createObjectNode()
+                    .set("error", $.json.createObjectNode()
+                            .put("code", busCode)
+                            .put("message", message));
+            return ResponseEntity.status(httpCode).body(jsonNode.toString());
         }
     }
-
 
 }

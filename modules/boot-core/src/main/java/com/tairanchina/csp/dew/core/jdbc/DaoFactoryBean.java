@@ -22,7 +22,8 @@ public class DaoFactoryBean<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
-        return Dew.applicationContext.containsBean(mapperInterface.getName()) ? null : (T) new ProxyInvoker().getInstance(mapperInterface);
+        return Dew.applicationContext.containsBean(mapperInterface.getName()) ?
+                Dew.applicationContext.getBean(mapperInterface) : new ProxyInvoker().getInstance(mapperInterface);
     }
 
     @Override
@@ -32,6 +33,6 @@ public class DaoFactoryBean<T> implements FactoryBean<T> {
 
     @Override
     public boolean isSingleton() {
-        return false;
+        return true;
     }
 }

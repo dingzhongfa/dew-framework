@@ -197,6 +197,25 @@ public class DewConfig {
 
         private boolean tokenHash = false;
 
+        private List<String> includeServices;
+        private List<String> excludeServices;
+
+        public List<String> getIncludeServices() {
+            return includeServices;
+        }
+
+        public void setIncludeServices(List<String> includeServices) {
+            this.includeServices = includeServices;
+        }
+
+        public List<String> getExcludeServices() {
+            return excludeServices;
+        }
+
+        public void setExcludeServices(List<String> excludeServices) {
+            this.excludeServices = excludeServices;
+        }
+
         public SecurityCORS getCors() {
             return cors;
         }

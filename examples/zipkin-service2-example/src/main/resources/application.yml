@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: zipkin-service2-example
+
+server:
+  port: 9092
+
+dew:
+  basic:
+    name: zipkin-service2
+    version: 1.0
+    desc: desc
+    web-site: www.tairanchina.com
+    doc:
+      base-package: com.tairanchina
+
+logging:
+  path: ./logs
+
+com:
+  zipkin:
+    serviceName: service3
+    url: http://192.168.111.224:9411
+    connectTimeout: 6000
+    readTimeout: 6000
+    flushInterval: 1
+    compressionEnabled: true

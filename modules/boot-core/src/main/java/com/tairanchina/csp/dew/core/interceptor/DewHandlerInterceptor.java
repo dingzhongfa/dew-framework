@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.security.auth.message.AuthException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
@@ -17,6 +18,21 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
+        if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
+            for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
+                if (!v.equalsIgnoreCase(requestFrom)) {
+                    throw Dew.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                }
+            }
+        }
+        if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
+            for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
+                if (v.equalsIgnoreCase(requestFrom)) {
+                    throw Dew.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                }
+            }
+        }
         response.addHeader("Access-Control-Allow-Origin", Dew.dewConfig.getSecurity().getCors().getAllowOrigin());
         response.addHeader("Access-Control-Allow-Methods", Dew.dewConfig.getSecurity().getCors().getAllowMethods());
         response.addHeader("Access-Control-Allow-Headers", Dew.dewConfig.getSecurity().getCors().getAllowHeaders());

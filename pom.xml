@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-beta4</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <modules>
         <module>modules/parent</module>
@@ -33,6 +33,7 @@
         <module>examples/mybatisplus-example</module>
         <module>examples/pressure-test-api</module>
         <module>examples/pressure-test-service</module>
+        <module>examples/service-cloud-example</module>
     </modules>
 
 </project>

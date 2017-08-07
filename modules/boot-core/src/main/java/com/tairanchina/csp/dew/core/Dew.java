@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -31,7 +32,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -44,9 +44,13 @@ public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
     @Autowired
     @Qualifier("dewConfig")
     private DewConfig innerDewConfig;
+
     @Autowired
     private ApplicationContext innerApplicationContext;
 
@@ -67,18 +71,22 @@ public class Dew {
             Dew.applicationContext.getBean(DSManager.class);
         }
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
+        Info.name = applicationName;
         // JDBC Scan
-        ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ( (GenericApplicationContext) Dew.applicationContext).getBeanFactory());
-        scanner.setResourceLoader(Dew.applicationContext);
-        scanner.registerFilters();
-        scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
-
+        if (StringUtils.hasLength(Dew.dewConfig.getDao().getBasePackage())) {
+            ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
+            scanner.setResourceLoader(Dew.applicationContext);
+            scanner.registerFilters();
+            scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+        }
     }
 
     public static class Constant {
         // token存储key
         public static final String TOKEN_INFO_FLAG = "dew:auth:token:info:";
         // Token Id 关联 key : dew:auth:token:id:rel:<code> value : <token Id>
+        public static final String HTTP_REQUEST_FROM_FLAG = "Request-From";
+
         public static final String TOKEN_ID_REL_FLAG = "dew:auth:token:id:rel:";
 
         public static final String MQ_AUTH_TENANT_ADD = "dew.auth.tenant.add";
@@ -109,7 +117,6 @@ public class Dew {
 
         static {
             try {
-                name = Dew.applicationContext.getId();
                 ip = InetAddress.getLocalHost().getHostAddress();
                 host = InetAddress.getLocalHost().getHostName();
                 instance = $.field.createUUID();
@@ -154,61 +161,63 @@ public class Dew {
             serviceClient = _serviceClient;
         }
 
-        public static HttpHelper.WrapHead get(String url) {
+        public static HttpHelper.WrapHead get(String url) throws Exception {
             return get(url, null);
         }
 
-        public static HttpHelper.WrapHead get(String url, Map<String, String> header) {
+        public static HttpHelper.WrapHead get(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.GET, url, null, header);
         }
 
-        public static HttpHelper.WrapHead delete(String url) {
+        public static HttpHelper.WrapHead delete(String url) throws Exception {
             return delete(url, null);
         }
 
-        public static HttpHelper.WrapHead delete(String url, Map<String, String> header) {
+        public static HttpHelper.WrapHead delete(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.DELETE, url, null, header);
         }
 
-        public static HttpHelper.WrapHead head(String url) {
+        public static HttpHelper.WrapHead head(String url) throws Exception {
             return head(url, null);
         }
 
-        public static HttpHelper.WrapHead head(String url, Map<String, String> header) {
+        public static HttpHelper.WrapHead head(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.HEAD, url, null, header);
         }
 
-        public static HttpHelper.WrapHead options(String url) {
+        public static HttpHelper.WrapHead options(String url) throws Exception {
             return options(url, null);
         }
 
-        public static HttpHelper.WrapHead options(String url, Map<String, String> header) {
+        public static HttpHelper.WrapHead options(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.OPTIONS, url, null, header);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body) {
+        public static HttpHelper.WrapHead post(String url, Object body) throws Exception {
             return post(url, body, null);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body, Map<String, String> header) {
+        public static HttpHelper.WrapHead post(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.POST, url, body, header);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body) {
+        public static HttpHelper.WrapHead put(String url, Object body) throws Exception {
             return put(url, body, null);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body, Map<String, String> header) {
+        public static HttpHelper.WrapHead put(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.PUT, url, body, header);
         }
 
-        private static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) {
+        private static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
             try {
+                if (header == null) {
+                    header = new HashMap<>();
+                    header.put(Constant.HTTP_REQUEST_FROM_FLAG, Info.name.toUpperCase());
+                }
                 if (!$.field.isIPv4Address(new URL(url).getHost())) {
                     HttpHeaders headers = new HttpHeaders();
-                    if (header != null) {
-                        header.forEach(headers::add);
-                    }
+                    header.forEach(headers::add);
                     tryAttachTokenToHeader(headers);
                     HttpEntity entity;
                     if (body != null) {
@@ -227,9 +236,9 @@ public class Dew {
                 } else {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.error("EB Process error.", e);
-                return null;
+                throw e;
             }
         }
 

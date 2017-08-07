@@ -1,5 +1,22 @@
 == 版本说明
 
+=== 1.0.0-RC
+
+==== Feature
+
+* 添加服务调用限制（可定义A服务不允许B服务调用，防止服务双向依赖） e.g.
+
+ dew.security.exclude-services:
+  - serviceB
+  - serviceC
+
+==== Improvement
+
+* 优化CURD脚手架
+* 优化注解自定义查询（ `@Select` ），通过测试
+
+==== Fixed
+
 === 1.0.0-beta4
 
 ==== Feature

@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 
 public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOController<T, V, E> {
 
+    @Override
+    default boolean convertAble() {
+        return true;
+    }
+
     @GetMapping(value = "", params = {"enabled"})
     @ApiOperation(value = "根据状态获取记录列表")
     @ApiImplicitParams({
@@ -22,18 +27,13 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     default Resp<List<V>> findByStatus(@RequestParam(required = false) Boolean enabled) {
         Resp<List<E>> result;
         if (enabled == null) {
-            result = getDewService().find();
+            result = getService().find();
         } else if (enabled) {
-            result = getDewService().findEnabled();
+            result = getService().findEnabled();
         } else {
-            result = getDewService().findDisabled();
+            result = getService().findDisabled();
         }
-        if (result.ok()) {
-            List<V> body = result.getBody().stream().map(this::entityToVO).collect(Collectors.toList());
-            return Resp.success(body);
-        } else {
-            return Resp.customFail(result.getCode(), result.getMessage());
-        }
+       return convertList(result);
     }
 
     @GetMapping(value = "{pageNumber}/{pageSize}", params = {"enabled"})
@@ -46,21 +46,14 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     default Resp<Page<V>> pagingByStatus(@PathVariable int pageNumber, @PathVariable int pageSize, @RequestParam(required = false) Boolean enabled) {
         Resp<Page<E>> result;
         if (enabled == null) {
-            result = getDewService().paging(pageNumber, pageSize);
+            result = getService().paging(pageNumber, pageSize);
         } else if (enabled) {
-            result = getDewService().pagingEnabled(pageNumber, pageSize);
+            result = getService().pagingEnabled(pageNumber, pageSize);
         } else {
-            result = getDewService().pagingDisabled(pageNumber, pageSize);
+            result = getService().pagingDisabled(pageNumber, pageSize);
         }
-        if (result.ok()) {
-            List<V> body = result.getBody().getObjects().stream().map(this::entityToVO).collect(Collectors.toList());
-            Page<V> page = Page.build(pageNumber, pageSize, result.getBody().getRecordTotal(), body);
-            return Resp.success(page);
-        } else {
-            return Resp.customFail(result.getCode(), result.getMessage());
-        }
+        return convertPage(result);
     }
-
 
     @PutMapping("{id}/enable")
     @ApiOperation(value = "根据ID启用记录")
@@ -68,7 +61,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
     default Resp<Void> enableById(@PathVariable long id) {
-        return getDewService().enableById(id);
+        return getService().enableById(id);
     }
 
     @DeleteMapping("{id}/disable")
@@ -77,7 +70,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
     default Resp<Void> disableById(@PathVariable long id) {
-        return getDewService().disableById(id);
+        return getService().disableById(id);
     }
 
     @PutMapping("code/{code}/enable")
@@ -86,7 +79,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "string", required = true),
     })
     default Resp<Void> enableByCode(@PathVariable String code) {
-        return getDewService().enableByCode(code);
+        return getService().enableByCode(code);
     }
 
     @DeleteMapping("code/{code}/disable")
@@ -95,7 +88,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "string", required = true),
     })
     default Resp<Void> disableByCode(@PathVariable String code) {
-        return getDewService().disableByCode(code);
+        return getService().disableByCode(code);
     }
 
 

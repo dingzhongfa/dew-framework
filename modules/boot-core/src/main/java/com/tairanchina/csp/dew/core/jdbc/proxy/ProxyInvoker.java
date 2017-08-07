@@ -8,8 +8,8 @@ import org.springframework.cglib.proxy.Proxy;
  */
 public class ProxyInvoker {
 
-    public Object getInstance(Class<?> cls) {
-        return Proxy.newProxyInstance(
+    public <T> T getInstance(Class<T> cls) {
+        return (T)Proxy.newProxyInstance(
                 cls.getClassLoader(),
                 new Class[]{cls},
                 new MethodProxy());

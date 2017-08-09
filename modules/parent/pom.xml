@@ -34,6 +34,8 @@
         <spring-boot-admin.version>1.5.2</spring-boot-admin.version>
         <sonar.version>3.3.0.603</sonar.version>
         <sonar.host.url>http://10.200.131.7:9000</sonar.host.url>
+        <thrift.version>0.10.0</thrift.version>
+        <commons.lang3.version>3.4</commons.lang3.version>
     </properties>
 
     <developers>
@@ -137,6 +139,17 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>${thrift.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons.lang3.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

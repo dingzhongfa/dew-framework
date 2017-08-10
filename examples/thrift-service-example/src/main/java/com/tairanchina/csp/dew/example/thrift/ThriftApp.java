@@ -1,12 +1,14 @@
 package com.tairanchina.csp.dew.example.thrift;
 
 import com.tairanchina.csp.dew.core.DewCloudApplication;
+import com.tairanchina.csp.dew.core.EnabledThriftDiscovery;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by 迹_Jason on 2017/08/09.
  */
+@EnabledThriftDiscovery
 public class ThriftApp extends DewCloudApplication {
 
     public static void main(String[] args) {

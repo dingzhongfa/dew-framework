@@ -1064,6 +1064,9 @@ TIP: 详见：`dubbo-example`
 thrift --gen <language> <Thrift filename>
 ----
 ==== Spring Cloud工程使用
+
+* 在启动类，添加`@EnabledThriftDiscovery`
+
 [source,xml]
 .引入依赖
 ----

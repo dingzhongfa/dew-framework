@@ -17,16 +17,14 @@ dew:
 logging:
   path: ./logs
 
-bbthriftserver:
-  connectTimeout: 3000
-  readTimeout: 3000
-  maxRetries: 1 # if call fail,it will try to recall times
-  endpoint:   # if in cloud env,should be set empty,if not,should be set a fixed address
-
 thrift:
   client:
-    max:
-      poolobject: 10 # pool object num,default is ten
+      maxThread: 10 # pool object num,default is ten
+  service:
+      connectTimeout: 2000
+      readTimeout: 50000
+      maxRetries: 3 #if in cloud env,should be set empty,if not,should be set a fixed address
+      endpoint: # if in cloud env,should be set empty,if not,should be set a fixed address
 
 eureka:
   client:

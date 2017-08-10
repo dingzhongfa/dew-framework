@@ -503,7 +503,10 @@ public class DS {
                 list.add(v);
             }
         }
-        return new Object[]{sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", ""), list.toArray()};
+        if (sql.contains("#{")) {
+            sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
+        }
+        return new Object[]{sql, list.toArray()};
     }
 
 

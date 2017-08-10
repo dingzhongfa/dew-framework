@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.core.client.pool;
 
+import com.tairanchina.csp.dew.core.client.ThriftProperty;
 import com.tairanchina.csp.dew.core.client.transport.TLoadBalancerClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
@@ -12,20 +13,16 @@ import org.apache.thrift.transport.THttpClient;
 import org.apache.thrift.transport.TTransport;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.core.env.PropertyResolver;
 
 /**
  * Created by 迹_Jason on 2017/08/09.
  */
 public class ThriftPooledObjectFactory extends BaseKeyedPooledObjectFactory<ThriftKey, TServiceClient> {
 
-    private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;
-    private static final int DEFAULT_READ_TIMEOUT = 30000;
-    private static final int DEFAULT_MAX_RETRIES = 1;
-
     private TProtocolFactory protocolFactory;
     private LoadBalancerClient loadBalancerClient;
-    private PropertyResolver propertyResolver;
+
+    private ThriftProperty thriftProperty;
 
     public void setProtocolFactory(TProtocolFactory protocolFactory) {
         this.protocolFactory = protocolFactory;
@@ -35,8 +32,8 @@ public class ThriftPooledObjectFactory extends BaseKeyedPooledObjectFactory<Thri
         this.loadBalancerClient = loadBalancerClient;
     }
 
-    public void setPropertyResolver(PropertyResolver propertyResolver) {
-        this.propertyResolver = propertyResolver;
+    public void setThriftProperty(ThriftProperty thriftProperty) {
+        this.thriftProperty = thriftProperty;
     }
 
     @Override
@@ -61,27 +58,22 @@ public class ThriftPooledObjectFactory extends BaseKeyedPooledObjectFactory<Thri
     @Override
     public TServiceClient create(ThriftKey thriftKey) throws Exception {
         String serviceName = thriftKey.getServiceName();
-        
-        String endpoint = propertyResolver.getProperty(serviceName + ".endpoint");
-        int connectTimeout = propertyResolver.getProperty(serviceName + ".connectTimeout", Integer.class, DEFAULT_CONNECTION_TIMEOUT);
-        int readTimeout = propertyResolver.getProperty(serviceName + ".readTimeout", Integer.class, DEFAULT_READ_TIMEOUT);
-        int maxRetries = propertyResolver.getProperty(serviceName + ".maxRetries", Integer.class, DEFAULT_MAX_RETRIES);
 
         TProtocol protocol;
-        if (StringUtils.isEmpty(endpoint)) {
+        if (StringUtils.isEmpty(thriftProperty.getService().getEndpoint())) {
             final TLoadBalancerClient loadBalancerClient = new TLoadBalancerClient(
                     this.loadBalancerClient,
                     serviceName,
-                    propertyResolver.getProperty(serviceName + ".path", "") + thriftKey.getPath()
+                    thriftProperty.getService().getPath() + thriftKey.getPath()
             );
-            loadBalancerClient.setConnectTimeout(connectTimeout);
-            loadBalancerClient.setReadTimeout(readTimeout);
-            loadBalancerClient.setMaxRetries(maxRetries);
+            loadBalancerClient.setConnectTimeout(thriftProperty.getService().getConnectTimeout());
+            loadBalancerClient.setReadTimeout(thriftProperty.getService().getReadTimeout());
+            loadBalancerClient.setMaxRetries(thriftProperty.getService().getMaxRetries());
             protocol = protocolFactory.getProtocol(loadBalancerClient);
         } else {
-            final THttpClient httpClient = new THttpClient(endpoint);
-            httpClient.setConnectTimeout(connectTimeout);
-            httpClient.setReadTimeout(readTimeout);
+            final THttpClient httpClient = new THttpClient(thriftProperty.getService().getEndpoint());
+            httpClient.setConnectTimeout(thriftProperty.getService().getConnectTimeout());
+            httpClient.setReadTimeout(thriftProperty.getService().getReadTimeout());
             protocol = protocolFactory.getProtocol(httpClient);
         }
 

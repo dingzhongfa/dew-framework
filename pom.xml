@@ -19,7 +19,7 @@
         <module>modules/cluster-ignite</module>
         <module>modules/boot-core</module>
         <module>modules/cloud-core</module>
-        <module>modules/boot-thrift-start</module>
+        <module>modules/boot-thrift-starter</module>
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>

@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Page;
+import com.tairanchina.csp.dew.core.dao.SystemConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootApplication
@@ -275,6 +277,26 @@ public class JDBCTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testPagePacking(){
+        Dew.ds().jdbc().execute("CREATE TABLE system_config\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "value varchar(255),\n" +
+                "description varchar(255) default null,\n" +
+                "level varchar(32) default null,\n" +
+
+                ")");
+        for (int i =0;i<20;i++){
+           Dew.ds("").insert(
+                    new SystemConfig()
+                            .setValue("test"));
+        }
+        LinkedHashMap<String,Object> where = new LinkedHashMap<>();
+        where.put("value","test");
+        Dew.ds("").pagingPackage(1,10,where,null, SystemConfig.class);
     }
 
 }

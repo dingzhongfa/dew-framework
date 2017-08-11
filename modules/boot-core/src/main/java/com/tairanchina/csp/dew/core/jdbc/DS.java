@@ -267,6 +267,20 @@ public class DS {
         return Page.build(pageNumber, pageSize, totalRecords, objects);
     }
 
+    public <E> Page<E> pagingPackage(long pageNumber, int pageSize, LinkedHashMap<String,Object> where,LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        //对where组装
+        where.entrySet().forEach(c->EntityContainer.camelToUnderline(c.getKey()));
+        Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
+        String countSql = wrapCountSql((String) packageSelect[0]);
+        String pagedSql = wrapPagingSql((String) packageSelect[0], pageNumber, pageSize);
+        long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) packageSelect[1], Long.class);
+        List<E> objects = jdbcTemplate.queryForList(pagedSql, (Object[]) packageSelect[1]).stream()
+                .map(row -> convertRsToObj(row, entityClazz))
+                .collect(Collectors.toList());
+        return Page.build(pageNumber, pageSize, totalRecords, objects);
+    }
+
     public String wrapPagingSql(String oriSql, long pageNumber, int pageSize) {
         return dialect.paging(oriSql, pageNumber, pageSize);
     }

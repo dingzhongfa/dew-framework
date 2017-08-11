@@ -446,6 +446,7 @@ Map<String,Object> getMapById(@Param("id") long id);
 . `@Select` 只能用于接口
 . `@Select` 暂不支持DSL SQL，比如（HQL）
 . `@ModelParam` 参数不支持 `null` 查询
+. `where` 语句之后请添加1=1，即：`where 1=1`
 
 
 === 多数据源支持
@@ -1034,3 +1035,84 @@ public @interface Service {
 ----
 
 TIP: 详见：`dubbo-example`
+
+=== 使用Thrift文档
+
+. 扩展TTransport支持从注册中心获取服务列表并根据既定策略进行负载，详见TLoadBalancerClient类，利用Netflix
+. 服务端添加Metrics支持，统计各服务响应时间及各方法调用次数
+. 封装TServiceClient支持超时熔断保护利用Hystrix
+
+==== 生成API
+安装Thrift [https://thrift.apache.org/]
+
+[source,xml]
+.引入依赖
+----
+<dependency>
+    <groupId>org.apache.thrift</groupId>
+    <artifactId>libthrift</artifactId>
+    <version>0.10.0</version>
+</dependency>
+----
+
+.编辑Thrift文件
+教程[http://www.jianshu.com/p/0f4113d6ec4b]
+
+[source,shell]
+.执行
+----
+thrift --gen <language> <Thrift filename>
+----
+==== Spring Cloud工程使用
+
+* 在启动类，添加`@EnabledThriftDiscovery`
+
+[source,xml]
+.引入依赖
+----
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>boot-thrift-start</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+<dependency>
+----
+
+===== Service
+
+[source,java]
+.实现Iface接口
+----
+@ThriftService(value = "/url")
+public class CalculatorController implements TCalculatorService.Iface {
+
+}
+----
+[source,yaml]
+.配置
+----
+thrift:
+  client:
+      maxThread: 10
+----
+
+===== Client
+
+[source,java]
+.实现Iface接口
+----
+@ThriftClient(serviceId = "thrift-service-example", path = "/url")
+TCalculatorService.Client tcalculatorClient;
+----
+
+[source,yaml]
+.配置
+----
+thrift:
+    service:
+          connectTimeout: 2000
+          readTimeout: 50000
+          maxRetries: 3
+          endpoint:
+----
+
+TIP: 详见：`thrift-service-example`

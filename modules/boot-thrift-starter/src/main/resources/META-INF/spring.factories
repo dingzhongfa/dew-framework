@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.tairanchina.csp.dew.core.server.ThriftServerAutoConfiguration,\
+com.tairanchina.csp.dew.core.client.ThriftPoolAutoConfiguration,\
+com.tairanchina.csp.dew.core.client.ThriftProperty,\
+com.tairanchina.csp.dew.core.client.ThriftClientAnnotationBeanPostProcessor

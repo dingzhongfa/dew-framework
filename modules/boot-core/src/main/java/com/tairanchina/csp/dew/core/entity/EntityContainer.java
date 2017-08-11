@@ -141,7 +141,7 @@ public class EntityContainer {
         return COLUMN_INFO.get(clazz.getName());
     }
 
-    private static String camelToUnderline(String name) {
+    public static String camelToUnderline(String name) {
         StringBuilder sb = new StringBuilder();
         if (name != null && name.length() > 0) {
             sb.append(name.substring(0, 1).toUpperCase());

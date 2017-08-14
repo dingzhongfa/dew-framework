@@ -145,5 +145,9 @@ public interface DewDao<E> {
         return Dew.ds(ds()).pagingDisabled(pageNumber, pageSize, orderDesc, getClazz());
     }
 
+    default Page<E> pagingPackage(long pageNumber, int pageSize, LinkedHashMap<String,Object> where, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz){
+        return Dew.ds(ds()).pagingPackage(pageNumber,pageSize,where,orderDesc,getClazz());
+    }
+
 }
 

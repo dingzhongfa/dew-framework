@@ -270,7 +270,7 @@ public class DS {
     public <E> Page<E> pagingPackage(long pageNumber, int pageSize, LinkedHashMap<String,Object> where,LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         //对where组装
-        where.entrySet().forEach(c->EntityContainer.camelToUnderline(c.getKey()));
+        where.forEach((key,value)->EntityContainer.camelToUnderline(key));
         Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
         String countSql = wrapCountSql((String) packageSelect[0]);
         String pagedSql = wrapPagingSql((String) packageSelect[0], pageNumber, pageSize);

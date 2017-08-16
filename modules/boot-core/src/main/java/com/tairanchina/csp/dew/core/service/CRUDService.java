@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface CRUDService<T extends DewDao<E>, E> extends CRUService<T, E> {
 
-    default Resp<Optional<Object>> preDeleteById(long id) throws RuntimeException {
+    default Resp<Optional<Object>> preDeleteById(Object id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
-    default void postDeleteById(long id, Optional<Object> preBody) throws RuntimeException {
+    default void postDeleteById(Object id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default Resp<Optional<Object>> preDeleteByCode(String code) throws RuntimeException {
@@ -23,7 +23,7 @@ public interface CRUDService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> deleteById(long id) throws RuntimeException {
+    default Resp<Void> deleteById(Object id) throws RuntimeException {
         logger.debug("[{}] DeleteById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDeleteById(id);
         if (preResult.ok()) {

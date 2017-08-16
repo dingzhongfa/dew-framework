@@ -20,7 +20,7 @@ public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> deleteById(@PathVariable long id) {
+    default Resp<Void> deleteById(@PathVariable Object id) {
         return getService().deleteById(id);
     }
 

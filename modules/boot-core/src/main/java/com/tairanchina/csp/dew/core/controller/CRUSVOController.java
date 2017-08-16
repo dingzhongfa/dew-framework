@@ -43,7 +43,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "enabled", value = "状态", paramType = "query", dataType = "boolean"),
     })
-    default Resp<Page<V>> pagingByStatus(@PathVariable int pageNumber, @PathVariable int pageSize, @RequestParam(required = false) Boolean enabled) {
+    default Resp<Page<V>> pagingByStatus(@PathVariable long pageNumber, @PathVariable int pageSize, @RequestParam(required = false) Boolean enabled) {
         Resp<Page<E>> result;
         if (enabled == null) {
             result = getService().paging(pageNumber, pageSize);
@@ -60,7 +60,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> enableById(@PathVariable long id) {
+    default Resp<Void> enableById(@PathVariable Object id) {
         return getService().enableById(id);
     }
 
@@ -69,7 +69,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> disableById(@PathVariable long id) {
+    default Resp<Void> disableById(@PathVariable Object id) {
         return getService().disableById(id);
     }
 

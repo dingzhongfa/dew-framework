@@ -1201,7 +1201,7 @@ Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
 // insert
 ExampleEntity entity = new ExampleEntity();
 entity.setFieldA("测试A");
-long id = Dew.ds().insert(entity);
+Object id = Dew.ds().insert(entity);
 // get
 logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());</code></pre>
 </div>
@@ -1290,7 +1290,7 @@ logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFie
 <p><strong>增加</strong> <code>Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable&lt;?&gt; entities)</code></p>
 </li>
 <li>
-<p><strong>更新</strong> <code>Dew.ds().updateById(long id, Object entity) / Dew.ds().updateByCode(String code, Object entity)</code></p>
+<p><strong>更新</strong> <code>Dew.ds().updateById(Object id, Object entity) / Dew.ds().updateByCode(String code, Object entity)</code></p>
 </li>
 <li>
 <p><strong>获取单条</strong> <code>Dew.ds().getById(long id, Class&lt;E&gt; entityClazz) / Dew.ds().getByCode(String code, Class&lt;E&gt; entityClazz)</code></p>

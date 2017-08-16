@@ -30,7 +30,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "pageNumber", value = "当前页（从0开始）", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Page<V>> paging(@PathVariable int pageNumber, @PathVariable int pageSize) {
+    default Resp<Page<V>> paging(@PathVariable long pageNumber, @PathVariable int pageSize) {
         return convertPage(getService().paging(pageNumber, pageSize));
     }
 
@@ -39,7 +39,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<V> getById(@PathVariable long id) {
+    default Resp<V> getById(@PathVariable Object id) {
         return convertObject(getService().getById(id));
     }
 
@@ -67,7 +67,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
-    default Resp<V> updateById(@PathVariable long id, @RequestBody V vo) {
+    default Resp<V> updateById(@PathVariable Object id, @RequestBody V vo) {
         return convertObject(getService().updateById(id, voToEntity(vo)));
     }
 

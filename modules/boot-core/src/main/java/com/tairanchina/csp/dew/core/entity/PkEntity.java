@@ -8,13 +8,13 @@ public abstract class PkEntity implements Serializable {
 
     @ApiModelProperty("主键")
     @PkColumn
-    protected long id;
+    protected Object id;
 
-    public long getId() {
+    public Object getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Object id) {
         this.id = id;
     }
 }

@@ -10,6 +10,9 @@
   - serviceB
   - serviceC
 
+* 添加对Thrift的支持
+* 支持UUID形式的主键
+
 ==== Improvement
 
 * 优化CURD脚手架

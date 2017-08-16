@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
 
-    default Resp<Optional<Object>> preEnableById(long id) throws RuntimeException {
+    default Resp<Optional<Object>> preEnableById(Object id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
@@ -20,17 +20,17 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.success(Optional.empty());
     }
 
-    default void postEnableById(long id, Optional<Object> preBody) throws RuntimeException {
+    default void postEnableById(Object id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default void postEnableByCode(String code, Optional<Object> preBody) throws RuntimeException {
     }
 
-    default Resp<Optional<Object>> preDisableById(long id) throws RuntimeException {
+    default Resp<Optional<Object>> preDisableById(Object id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
-    default void postDisableById(long id, Optional<Object> preBody) throws RuntimeException {
+    default void postDisableById(Object id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default Resp<Optional<Object>> preDisableByCode(String code) throws RuntimeException {
@@ -58,11 +58,11 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize) throws RuntimeException {
+    default Resp<Page<E>> pagingEnabled(long pageNumber, int pageSize) throws RuntimeException {
         return pagingEnabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+    default Resp<Page<E>> pagingEnabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
         logger.debug("[{}] PagingEnable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
@@ -71,11 +71,11 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize) throws RuntimeException {
+    default Resp<Page<E>> pagingDisabled(long pageNumber, int pageSize) throws RuntimeException {
         return pagingDisabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+    default Resp<Page<E>> pagingDisabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
         logger.debug("[{}] PagingDisable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
@@ -85,7 +85,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> enableById(long id) throws RuntimeException {
+    default Resp<Void> enableById(Object id) throws RuntimeException {
         logger.debug("[{}] EnableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preEnableById(id);
         if (preResult.ok()) {
@@ -109,7 +109,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> disableById(long id) throws RuntimeException {
+    default Resp<Void> disableById(Object id) throws RuntimeException {
         logger.debug("[{}] DisableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDisableById(id);
         if (preResult.ok()) {

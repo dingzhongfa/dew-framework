@@ -35,17 +35,20 @@ public class DS {
         return jdbcTemplate;
     }
 
-    public long insert(Object entity) {
+    public Object insert(Object entity) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entity.getClass());
         Object[] packageInsert = packageInsert(new ArrayList<Object>() {{
             add(entity);
         }}, true);
         return transactionTemplate.execute(status -> {
             jdbcTemplate.update((String) packageInsert[0], ((List<Object[]>) packageInsert[1]).get(0));
-            if (entityClassInfo.pkFieldNameOpt.isPresent()) {
+            if (entityClassInfo.pkFieldNameOpt.isPresent() &&
+                    entityClassInfo.pkUUIDOpt.isPresent() && entityClassInfo.pkUUIDOpt.get()) {
+                return ((Optional<String>)packageInsert[2]).get();
+            } else if (entityClassInfo.pkFieldNameOpt.isPresent()) {
                 // Has private key , return generated key
                 // TODO use http://docs.spring.io/spring/docs/3.0.x/reference/jdbcTemplate.html#jdbc-auto-genereted-keys
-                return jdbcTemplate.queryForObject("SELECT last_insert_id()", Long.class);
+                return jdbcTemplate.queryForObject("SELECT last_insert_id()", Object.class);
             } else {
                 return 0L;
             }
@@ -57,7 +60,7 @@ public class DS {
         transactionTemplate.execute(status -> jdbcTemplate.batchUpdate((String) packageInsert[0], (List<Object[]>) packageInsert[1]));
     }
 
-    public void updateById(long id, Object entity) {
+    public void updateById(Object id, Object entity) {
         try {
             $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).pkFieldNameOpt.get(), id);
             Object[] packageUpdate = packageUpdate(entity, true);
@@ -79,7 +82,7 @@ public class DS {
         }
     }
 
-    public <E> E getById(long id, Class<E> entityClazz) {
+    public <E> E getById(Object id, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         Object[] packageSelect = packageSelect(entityClazz, new LinkedHashMap<String, Object>() {{
             put(entityClassInfo.pkFieldNameOpt.get(), id);
@@ -95,7 +98,7 @@ public class DS {
         return convertRsToObj(jdbcTemplate.queryForMap((String) packageSelect[0], (Object[]) packageSelect[1]), entityClazz);
     }
 
-    public void deleteById(long id, Class<?> entityClazz) {
+    public void deleteById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
@@ -111,7 +114,7 @@ public class DS {
                         code));
     }
 
-    public void enableById(long id, Class<?> entityClazz) {
+    public void enableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
@@ -131,7 +134,7 @@ public class DS {
                         true, code));
     }
 
-    public void disableById(long id, Class<?> entityClazz) {
+    public void disableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         transactionTemplate.execute(status ->
                 jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
@@ -151,7 +154,7 @@ public class DS {
                         false, code));
     }
 
-    public boolean existById(long id, Class<?> entityClazz) {
+    public boolean existById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE `%s` = ?",
                 entityClassInfo.tableName,
@@ -235,19 +238,19 @@ public class DS {
         return paging(pageNumber, pageSize, null, orderDesc, entityClazz);
     }
 
-    public <E> Page<E> pagingEnabled(int pageNumber, int pageSize, Class<E> entityClazz) {
+    public <E> Page<E> pagingEnabled(long pageNumber, int pageSize, Class<E> entityClazz) {
         return paging(pageNumber, pageSize, true, null, entityClazz);
     }
 
-    public <E> Page<E> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
+    public <E> Page<E> pagingEnabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
         return paging(pageNumber, pageSize, true, orderDesc, entityClazz);
     }
 
-    public <E> Page<E> pagingDisabled(int pageNumber, int pageSize, Class<E> entityClazz) {
+    public <E> Page<E> pagingDisabled(long pageNumber, int pageSize, Class<E> entityClazz) {
         return paging(pageNumber, pageSize, false, null, entityClazz);
     }
 
-    public <E> Page<E> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
+    public <E> Page<E> pagingDisabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
         return paging(pageNumber, pageSize, false, orderDesc, entityClazz);
     }
 
@@ -258,24 +261,14 @@ public class DS {
             where.put(entityClassInfo.enabledFieldNameOpt.get(), enable);
         }
         Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
-        String countSql = wrapCountSql((String) packageSelect[0]);
-        String pagedSql = wrapPagingSql((String) packageSelect[0], pageNumber, pageSize);
-        long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) packageSelect[1], Long.class);
-        List<E> objects = jdbcTemplate.queryForList(pagedSql, (Object[]) packageSelect[1]).stream()
-                .map(row -> convertRsToObj(row, entityClazz))
-                .collect(Collectors.toList());
-        return Page.build(pageNumber, pageSize, totalRecords, objects);
+        return paging((String) packageSelect[0], (Object[]) packageSelect[1], pageNumber, pageSize, entityClazz);
     }
 
-    public <E> Page<E> pagingPackage(long pageNumber, int pageSize, LinkedHashMap<String,Object> where,LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        //对where组装
-        where.forEach((key,value)->EntityContainer.camelToUnderline(key));
-        Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
-        String countSql = wrapCountSql((String) packageSelect[0]);
-        String pagedSql = wrapPagingSql((String) packageSelect[0], pageNumber, pageSize);
-        long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) packageSelect[1], Long.class);
-        List<E> objects = jdbcTemplate.queryForList(pagedSql, (Object[]) packageSelect[1]).stream()
+    public <E> Page<E> paging(String sql, Object[] params, long pageNumber, int pageSize, Class<E> entityClazz) {
+        String countSql = wrapCountSql(sql);
+        String pagedSql = wrapPagingSql(sql, pageNumber, pageSize);
+        long totalRecords = jdbcTemplate.queryForObject(countSql, params, Long.class);
+        List<E> objects = jdbcTemplate.queryForList(pagedSql, params).stream()
                 .map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
         return Page.build(pageNumber, pageSize, totalRecords, objects);
@@ -293,7 +286,7 @@ public class DS {
      * 组装插入SQL
      *
      * @param entities 实体集合
-     * @return 格式 Object[]{Sql:String,params:List<Object[]>}
+     * @return 格式 Object[]{Sql:String,params:List<Object[]>,id:UUID}
      */
     private Object[] packageInsert(Iterable<?> entities, boolean ignoreNullValue) {
         if (!entities.iterator().hasNext()) {
@@ -301,12 +294,24 @@ public class DS {
         }
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entities.iterator().next().getClass());
         String sql = null;
+        Optional<String> lastIdOpt = Optional.empty();
         List<Object[]> params = new ArrayList<>();
         for (Object entity : entities) {
+
             Map<String, Object> values = $.bean.findValues(entity, null, null, entityClassInfo.columns.keySet(), null);
-            // Remove private key field
-            if (entityClassInfo.pkFieldNameOpt.isPresent() && values.containsKey(entityClassInfo.pkFieldNameOpt.get())) {
-                values.remove(entityClassInfo.pkFieldNameOpt.get());
+            if (entityClassInfo.pkFieldNameOpt.isPresent() && entityClassInfo.pkUUIDOpt.get() &&
+                    (!values.containsKey(entityClassInfo.pkFieldNameOpt.get()) ||
+                            values.get(entityClassInfo.pkFieldNameOpt.get()) == null ||
+                            values.get(entityClassInfo.pkFieldNameOpt.get()).toString().isEmpty())) {
+                lastIdOpt = Optional.of($.field.createUUID());
+                values.put(entityClassInfo.pkFieldNameOpt.get(), lastIdOpt.get());
+            } else if (entityClassInfo.pkFieldNameOpt.isPresent() &&
+                    values.containsKey(entityClassInfo.pkFieldNameOpt.get())) {
+                Object id = values.get(entityClassInfo.pkFieldNameOpt.get());
+                if (id == null || id instanceof Number && (Long) id == 0) {
+                    // Remove private key field
+                    values.remove(entityClassInfo.pkFieldNameOpt.get());
+                }
             }
             // Add ext values
             if (entityClassInfo.codeFieldNameOpt.isPresent() && entityClassInfo.codeUUIDOpt.get() &&
@@ -359,7 +364,7 @@ public class DS {
             }
             params.add(values.values().toArray());
         }
-        return new Object[]{sql, params};
+        return new Object[]{sql, params, lastIdOpt};
     }
 
     /**

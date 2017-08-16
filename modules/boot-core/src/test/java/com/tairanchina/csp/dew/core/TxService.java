@@ -15,8 +15,8 @@ public class TxService {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA1");
         basicEntity.setFieldB("TransactionA1");
-        long id = Dew.ds().insert(basicEntity);
-        Assert.assertTrue(id != 0);
+        Object id = Dew.ds().insert(basicEntity);
+        Assert.assertTrue((long)id != 0);
     }
 
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
@@ -24,8 +24,8 @@ public class TxService {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
-        long id = Dew.ds().insert(basicEntity);
-        Assert.assertTrue(id != 0);
+        Object id = Dew.ds().insert(basicEntity);
+        Assert.assertTrue((long)id != 0);
         throw new Exception("");
     }
 
@@ -34,8 +34,8 @@ public class TxService {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA1");
         basicEntity.setFieldB("TransactionA1");
-        long id = Dew.ds("test2").insert(basicEntity);
-        Assert.assertTrue(id != 0);
+        Object id = Dew.ds("test2").insert(basicEntity);
+        Assert.assertTrue((long)id != 0);
     }
 
     @Transactional(value = ("test2TransactionManager"), rollbackFor = {Exception.class,RuntimeException.class,NullPointerException.class})
@@ -43,8 +43,8 @@ public class TxService {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
-        long id = Dew.ds("test2").insert(basicEntity);
-        Assert.assertTrue(id != 0);
+        Object id = Dew.ds("test2").insert(basicEntity);
+        Assert.assertTrue((long)id != 0);
         throw new Exception("");
     }
 

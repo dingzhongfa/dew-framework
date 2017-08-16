@@ -29,7 +29,7 @@ public interface DewDao<E> {
         return "";
     }
 
-    default long insert(Object entity) {
+    default Object insert(Object entity) {
         return Dew.ds(ds()).insert(entity);
     }
 
@@ -37,7 +37,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).insert(entities);
     }
 
-    default void updateById(long id, Object entity) {
+    default void updateById(Object id, Object entity) {
         Dew.ds(ds()).updateById(id, entity);
     }
 
@@ -45,7 +45,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).updateByCode(code, entity);
     }
 
-    default E getById(long id) {
+    default E getById(Object id) {
         return Dew.ds(ds()).getById(id, getClazz());
     }
 
@@ -53,7 +53,7 @@ public interface DewDao<E> {
         return Dew.ds(ds()).getByCode(code, getClazz());
     }
 
-    default void deleteById(long id) {
+    default void deleteById(Object id) {
         Dew.ds(ds()).deleteById(id, getClazz());
     }
 
@@ -61,7 +61,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).deleteByCode(code, getClazz());
     }
 
-    default void enableById(long id) {
+    default void enableById(Object id) {
         Dew.ds(ds()).enableById(id, getClazz());
     }
 
@@ -69,7 +69,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).enableByCode(code, getClazz());
     }
 
-    default void disableById(long id) {
+    default void disableById(Object id) {
         Dew.ds(ds()).disableById(id, getClazz());
     }
 
@@ -77,7 +77,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).disableByCode(code, getClazz());
     }
 
-    default boolean existById(long id) {
+    default boolean existById(Object id) {
         return Dew.ds(ds()).existById(id, getClazz());
     }
 
@@ -129,24 +129,28 @@ public interface DewDao<E> {
         return Dew.ds(ds()).paging(pageNumber, pageSize, orderDesc, getClazz());
     }
 
-    default Page<E> pagingEnabled(int pageNumber, int pageSize) {
+    default Page<E> pagingEnabled(long pageNumber, int pageSize) {
         return pagingEnabled(pageNumber, pageSize, null);
     }
 
-    default Page<E> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
+    default Page<E> pagingEnabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
         return Dew.ds(ds()).pagingEnabled(pageNumber, pageSize, orderDesc, getClazz());
     }
 
-    default Page<E> pagingDisabled(int pageNumber, int pageSize) {
+    default Page<E> pagingDisabled(long pageNumber, int pageSize) {
         return pagingDisabled(pageNumber, pageSize, null);
     }
 
-    default Page<E> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
+    default Page<E> pagingDisabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) {
         return Dew.ds(ds()).pagingDisabled(pageNumber, pageSize, orderDesc, getClazz());
     }
 
-    default Page<E> pagingPackage(long pageNumber, int pageSize, LinkedHashMap<String,Object> where, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz){
-        return Dew.ds(ds()).pagingPackage(pageNumber,pageSize,where,orderDesc,getClazz());
+    default Page<E> paging(String sql, Object[] params, long pageNumber, int pageSize) {
+        return Dew.ds(ds()).paging(sql, params, pageNumber, pageSize, getClazz());
+    }
+
+    default <T> Page<T> paging(String sql, Object[] params, long pageNumber, int pageSize, Class<T> dtoClazz) {
+        return Dew.ds(ds()).paging(sql, params, pageNumber, pageSize, dtoClazz);
     }
 
 }

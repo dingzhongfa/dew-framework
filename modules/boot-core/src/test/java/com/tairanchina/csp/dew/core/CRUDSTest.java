@@ -50,7 +50,7 @@ public class CRUDSTest {
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
         Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
         Assert.assertTrue(entityResp.getBody().getEnabled());
-        long id = entityResp.getBody().getId();
+        Object id = entityResp.getBody().getId();
         String code = entityResp.getBody().getCode();
         // getById
         entityResp = Resp.generic($.http.get(url + "/" + id), CRUDSTestEntity.class);
@@ -145,7 +145,7 @@ public class CRUDSTest {
         entity.setFieldB("测试B");
         entity.setEnabled(true);
         Resp<CRUDSTestEntity> entityResp = Resp.generic($.http.post(url + "/", entity), CRUDSTestEntity.class);
-        long oneId = entityResp.getBody().getId();
+        Object oneId = entityResp.getBody().getId();
         String oneCode = entityResp.getBody().getCode();
         // save
         CRUDSTestEntity otherEntity = new CRUDSTestEntity();
@@ -153,7 +153,7 @@ public class CRUDSTest {
         otherEntity.setFieldB("测试D");
         otherEntity.setEnabled(false);
         entityResp = Resp.generic($.http.post(url + "/", otherEntity), CRUDSTestEntity.class);
-        long otherId = entityResp.getBody().getId();
+        Object otherId = entityResp.getBody().getId();
         String otherCode = entityResp.getBody().getCode();
         // getById
         entityResp = Resp.generic($.http.get(url + "/" + oneId), CRUDSTestEntity.class);

@@ -27,7 +27,7 @@ public class JDBCExampleInitiator {
         // insert
         ExampleEntity entity = new ExampleEntity();
         entity.setFieldA("测试A");
-        long id = Dew.ds().insert(entity);
+        Object id = Dew.ds().insert(entity);
         // get
         logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 

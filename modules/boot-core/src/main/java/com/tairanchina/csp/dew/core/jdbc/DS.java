@@ -528,7 +528,7 @@ public class DS {
             }
         }
         if (sql.contains("#{")) {
-            sql = sql.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
+            sql = sql.replaceAll("((and)|(or)|(AND)|(OR))((?!\\?).)*\\#(\\s*\\S*)*\\}", "");
         }
         return new Object[]{sql, list.toArray()};
     }

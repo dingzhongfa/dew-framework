@@ -4,17 +4,17 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-public abstract class PkEntity implements Serializable {
+public abstract class PkEntity<P> implements Serializable {
 
     @ApiModelProperty("主键")
     @PkColumn
-    protected Object id;
+    protected P id;
 
-    public Object getId() {
+    public P getId() {
         return id;
     }
 
-    public void setId(Object id) {
+    public void setId(P id) {
         this.id = id;
     }
 }

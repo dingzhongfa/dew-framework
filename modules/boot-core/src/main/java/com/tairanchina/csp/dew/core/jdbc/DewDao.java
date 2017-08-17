@@ -9,7 +9,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public interface DewDao<E> {
+public interface DewDao<P,E> {
 
     default Class<E> getClazz() {
         Class<E> clazz = (Class<E>) Container.DAO_CONTAINER.get(this.getClass());
@@ -17,9 +17,9 @@ public interface DewDao<E> {
             return clazz;
         }
         if (Proxy.class.isAssignableFrom(this.getClass())) {
-            clazz = (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[1]);
         } else {
-            clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1]);
         }
         Container.DAO_CONTAINER.put(this.getClass(), clazz);
         return clazz;
@@ -29,15 +29,15 @@ public interface DewDao<E> {
         return "";
     }
 
-    default Object insert(Object entity) {
-        return Dew.ds(ds()).insert(entity);
+    default P insert(Object entity) {
+        return (P)Dew.ds(ds()).insert(entity);
     }
 
     default void insert(Iterable<?> entities) {
         Dew.ds(ds()).insert(entities);
     }
 
-    default void updateById(Object id, Object entity) {
+    default void updateById(P id, Object entity) {
         Dew.ds(ds()).updateById(id, entity);
     }
 
@@ -45,7 +45,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).updateByCode(code, entity);
     }
 
-    default E getById(Object id) {
+    default E getById(P id) {
         return Dew.ds(ds()).getById(id, getClazz());
     }
 
@@ -53,7 +53,7 @@ public interface DewDao<E> {
         return Dew.ds(ds()).getByCode(code, getClazz());
     }
 
-    default void deleteById(Object id) {
+    default void deleteById(P id) {
         Dew.ds(ds()).deleteById(id, getClazz());
     }
 
@@ -61,7 +61,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).deleteByCode(code, getClazz());
     }
 
-    default void enableById(Object id) {
+    default void enableById(P id) {
         Dew.ds(ds()).enableById(id, getClazz());
     }
 
@@ -69,7 +69,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).enableByCode(code, getClazz());
     }
 
-    default void disableById(Object id) {
+    default void disableById(P id) {
         Dew.ds(ds()).disableById(id, getClazz());
     }
 
@@ -77,7 +77,7 @@ public interface DewDao<E> {
         Dew.ds(ds()).disableByCode(code, getClazz());
     }
 
-    default boolean existById(Object id) {
+    default boolean existById(P id) {
         return Dew.ds(ds()).existById(id, getClazz());
     }
 

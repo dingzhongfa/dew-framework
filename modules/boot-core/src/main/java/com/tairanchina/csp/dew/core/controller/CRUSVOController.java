@@ -10,9 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOController<T, V, E> {
+public interface CRUSVOController<T extends CRUSService, P, V, E> extends CRUVOController<T, P, V, E> {
 
     @Override
     default boolean convertAble() {
@@ -33,7 +32,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
         } else {
             result = getService().findDisabled();
         }
-       return convertList(result);
+        return convertList(result);
     }
 
     @GetMapping(value = "{pageNumber}/{pageSize}", params = {"enabled"})
@@ -60,7 +59,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> enableById(@PathVariable Object id) {
+    default Resp<Void> enableById(@PathVariable P id) {
         return getService().enableById(id);
     }
 
@@ -69,7 +68,7 @@ public interface CRUSVOController<T extends CRUSService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> disableById(@PathVariable Object id) {
+    default Resp<Void> disableById(@PathVariable P id) {
         return getService().disableById(id);
     }
 

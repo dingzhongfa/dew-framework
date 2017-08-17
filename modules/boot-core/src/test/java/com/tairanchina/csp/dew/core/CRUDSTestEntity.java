@@ -6,7 +6,7 @@ import com.tairanchina.csp.dew.core.entity.Entity;
 import com.tairanchina.csp.dew.core.entity.SafeStatusEntity;
 
 @Entity(tableName = "t_test_crud_s_entity")
-public class CRUDSTestEntity extends SafeStatusEntity {
+public class CRUDSTestEntity extends SafeStatusEntity<Integer> {
 
     @CodeColumn
     private String code;

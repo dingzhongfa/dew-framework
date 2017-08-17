@@ -75,7 +75,7 @@ public class ErrorController extends AbstractErrorController {
             }
             message += " Detail:" + $.json.toJsonString(errorExt);
         }
-        logger.error("Request [{}] from [{}]{} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
+        logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
             return ResponseEntity.status(200).body($.json.toJsonString(resp));

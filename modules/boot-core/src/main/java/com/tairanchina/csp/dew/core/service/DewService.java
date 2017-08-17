@@ -9,7 +9,7 @@ import org.springframework.cglib.proxy.Proxy;
 
 import java.lang.reflect.ParameterizedType;
 
-public interface DewService<T extends DewDao<E>, E> {
+public interface DewService<T extends DewDao<P, E>, P, E> {
 
     Logger logger = LoggerFactory.getLogger(DewService.class);
 
@@ -19,9 +19,9 @@ public interface DewService<T extends DewDao<E>, E> {
             return clazz;
         }
         if (Proxy.class.isAssignableFrom(this.getClass())) {
-            clazz = (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[1]);
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[2]);
         } else {
-            clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[1]);
+            clazz = (Class<E>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[2]);
         }
         Container.SERVICE_ENTITY_CONTAINER.put(this.getClass(), clazz);
         return clazz;
@@ -32,11 +32,11 @@ public interface DewService<T extends DewDao<E>, E> {
         if (dao != null) {
             return dao;
         }
-        Class<DewDao<E>> dewDaoClass;
+        Class<DewDao<P, E>> dewDaoClass;
         if (Proxy.class.isAssignableFrom(this.getClass())) {
-            dewDaoClass = (Class<DewDao<E>>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+            dewDaoClass = (Class<DewDao<P, E>>) (((ParameterizedType) this.getClass().getInterfaces()[0].getGenericInterfaces()[0]).getActualTypeArguments()[0]);
         } else {
-            dewDaoClass = (Class<DewDao<E>>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+            dewDaoClass = (Class<DewDao<P, E>>) (((ParameterizedType) this.getClass().getGenericInterfaces()[0]).getActualTypeArguments()[0]);
         }
         dao = (T) Dew.applicationContext.getBean(dewDaoClass);
         Container.SERVICE_DAO_BEAN_CONTAINER.put(this.getClass(), dao);

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-public interface CRUVOController<T extends CRUService, V, E> extends DewVOController<T, V, E> {
+public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOController<T, P, V, E> {
 
     @Override
     default boolean convertAble() {
@@ -39,7 +39,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<V> getById(@PathVariable Object id) {
+    default Resp<V> getById(@PathVariable P id) {
         return convertObject(getService().getById(id));
     }
 
@@ -49,7 +49,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "string", required = true),
     })
     default Resp<V> getByCode(@PathVariable String code) {
-       return convertObject(getService().getByCode(code));
+        return convertObject(getService().getByCode(code));
     }
 
     @PostMapping(value = "")
@@ -67,7 +67,7 @@ public interface CRUVOController<T extends CRUService, V, E> extends DewVOContro
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
-    default Resp<V> updateById(@PathVariable Object id, @RequestBody V vo) {
+    default Resp<V> updateById(@PathVariable P id, @RequestBody V vo) {
         return convertObject(getService().updateById(id, voToEntity(vo)));
     }
 

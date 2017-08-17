@@ -10,7 +10,7 @@ import org.springframework.cglib.proxy.Proxy;
 
 import java.lang.reflect.ParameterizedType;
 
-public interface DewVOController<T extends DewService, V, E> extends VOAssembler<V, E> {
+public interface DewVOController<T extends DewService,P, V, E> extends VOAssembler<V, E> {
 
     Logger logger = LoggerFactory.getLogger(DewVOController.class);
 

@@ -10,9 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
+public interface CRUService<T extends DewDao<P, E>, P, E> extends DewService<T, P, E> {
 
-    default Resp<Optional<Object>> preGetById(Object id) throws RuntimeException {
+    default Resp<Optional<Object>> preGetById(P id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
@@ -40,11 +40,11 @@ public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
         return entities;
     }
 
-    default Resp<Optional<Object>> preExistById(Object id) throws RuntimeException {
+    default Resp<Optional<Object>> preExistById(P id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
-    default void postExistById(Object id, Optional<Object> preBody) throws RuntimeException {
+    default void postExistById(P id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default Resp<Optional<Object>> preExistByCode(String code) throws RuntimeException {
@@ -62,7 +62,7 @@ public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
         return entity;
     }
 
-    default Resp<Optional<Object>> preUpdateById(Object id, E entity) throws RuntimeException {
+    default Resp<Optional<Object>> preUpdateById(P id, E entity) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
@@ -74,7 +74,7 @@ public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
         return entity;
     }
 
-    default Resp<E> getById(Object id) throws RuntimeException {
+    default Resp<E> getById(P id) throws RuntimeException {
         logger.debug("[{}] GetById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preGetById(id);
         if (preResult.ok()) {
@@ -125,7 +125,7 @@ public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
     }
 
     @Transactional
-    default Resp<E> updateById(Object id, E entity) throws RuntimeException {
+    default Resp<E> updateById(P id, E entity) throws RuntimeException {
         logger.debug("[{}] UpdateById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preUpdateById(id, entity);
         if (preResult.ok()) {
@@ -146,7 +146,7 @@ public interface CRUService<T extends DewDao<E>, E> extends DewService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Boolean> existById(Object id) throws RuntimeException {
+    default Resp<Boolean> existById(P id) throws RuntimeException {
         logger.debug("[{}] ExistById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preExistById(id);
         if (preResult.ok()) {

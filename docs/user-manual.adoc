@@ -355,7 +355,7 @@ Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
 // insert
 ExampleEntity entity = new ExampleEntity();
 entity.setFieldA("测试A");
-Object id = Dew.ds().insert(entity);
+P id = Dew.ds().insert(entity);
 // get
 logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 ----
@@ -384,15 +384,15 @@ TIP: 为方便操作，框架提供了`PkEntity` `SafeEntity` `StatusEntity` `Sa
 * 支持常用操作
 
 ** *增加* `Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable<?> entities)`
-** *更新* `Dew.ds().updateById(Object id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
-** *获取单条* `Dew.ds().getById(Object id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
+** *更新* `Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
+** *获取单条* `Dew.ds().getById(P id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
 ** *获取多条* `Dew.ds().findAll(Class<E> entityClazz) / Dew.ds().findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)`
 ** *获取分页* `Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…)`
 ** *计数* `Dew.ds().countAll(Class<?> entityClazz) / Dew.ds().countEnabled(Class<?> entityClazz) / Dew.ds().countDisabled(Class<?> entityClazz)`
-** *启用* `Dew.ds().enableById(Object id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
-** *禁用* `Dew.ds().disableById(Object id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
-** *是否存在* `Dew.ds().existById(Object id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
-** *物理删除* `Dew.ds().deleteById(Object id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
+** *启用* `Dew.ds().enableById(P id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
+** *禁用* `Dew.ds().disableById(P id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
+** *是否存在* `Dew.ds().existById(P id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
+** *物理删除* `Dew.ds().deleteById(P id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
 
 TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
 
@@ -431,14 +431,14 @@ Page<CRUDSTestEntity> queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Pa
 .返回Bean类型数据
 ----
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
-CRUDSTestEntity getById(@Param("id") Object id);
+CRUDSTestEntity getById(@Param("id") P id);
 ----
 
 [source,java]
 .返回Map类型数据
 ----
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}")
-Map<String,Object> getMapById(@Param("id") Object id);
+Map<String,Object> getMapById(@Param("id") P id);
 ----
 
 * 限定

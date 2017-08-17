@@ -10,9 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
+public interface CRUSService<T extends DewDao<P, E>, P, E> extends CRUService<T, P, E> {
 
-    default Resp<Optional<Object>> preEnableById(Object id) throws RuntimeException {
+    default Resp<Optional<Object>> preEnableById(P id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
@@ -20,17 +20,17 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.success(Optional.empty());
     }
 
-    default void postEnableById(Object id, Optional<Object> preBody) throws RuntimeException {
+    default void postEnableById(P id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default void postEnableByCode(String code, Optional<Object> preBody) throws RuntimeException {
     }
 
-    default Resp<Optional<Object>> preDisableById(Object id) throws RuntimeException {
+    default Resp<Optional<Object>> preDisableById(P id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
-    default void postDisableById(Object id, Optional<Object> preBody) throws RuntimeException {
+    default void postDisableById(P id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default Resp<Optional<Object>> preDisableByCode(String code) throws RuntimeException {
@@ -85,7 +85,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> enableById(Object id) throws RuntimeException {
+    default Resp<Void> enableById(P id) throws RuntimeException {
         logger.debug("[{}] EnableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preEnableById(id);
         if (preResult.ok()) {
@@ -109,7 +109,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> disableById(Object id) throws RuntimeException {
+    default Resp<Void> disableById(P id) throws RuntimeException {
         logger.debug("[{}] DisableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDisableById(id);
         if (preResult.ok()) {

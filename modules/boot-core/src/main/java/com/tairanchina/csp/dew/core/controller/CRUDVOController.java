@@ -8,7 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOController<T, V, E> {
+public interface CRUDVOController<T extends CRUDService, P, V, E> extends CRUVOController<T, P, V, E> {
 
     @Override
     default boolean convertAble() {
@@ -20,7 +20,7 @@ public interface CRUDVOController<T extends CRUDService, V, E> extends CRUVOCont
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
     })
-    default Resp<Void> deleteById(@PathVariable Object id) {
+    default Resp<Void> deleteById(@PathVariable P id) {
         return getService().deleteById(id);
     }
 

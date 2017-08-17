@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-public interface CRUDService<T extends DewDao<E>, E> extends CRUService<T, E> {
+public interface CRUDService<T extends DewDao<P, E>, P, E> extends CRUService<T, P, E> {
 
-    default Resp<Optional<Object>> preDeleteById(Object id) throws RuntimeException {
+    default Resp<Optional<Object>> preDeleteById(P id) throws RuntimeException {
         return Resp.success(Optional.empty());
     }
 
-    default void postDeleteById(Object id, Optional<Object> preBody) throws RuntimeException {
+    default void postDeleteById(P id, Optional<Object> preBody) throws RuntimeException {
     }
 
     default Resp<Optional<Object>> preDeleteByCode(String code) throws RuntimeException {
@@ -23,7 +23,7 @@ public interface CRUDService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> deleteById(Object id) throws RuntimeException {
+    default Resp<Void> deleteById(P id) throws RuntimeException {
         logger.debug("[{}] DeleteById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDeleteById(id);
         if (preResult.ok()) {

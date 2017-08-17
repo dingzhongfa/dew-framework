@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-public abstract class SafeEntity extends PkEntity {
+public abstract class SafeEntity<P> extends PkEntity<P> {
 
     @ApiModelProperty("创建时间")
     @CreateTimeColumn

@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/crud/")
-public class CRUDSTestController implements CRUDSController<CRUDSTestService, CRUDSTestEntity> {
+public class CRUDSTestController implements CRUDSController<CRUDSTestService,Integer, CRUDSTestEntity> {
 
 }

@@ -50,7 +50,7 @@ public class DS {
                 // TODO use http://docs.spring.io/spring/docs/3.0.x/reference/jdbcTemplate.html#jdbc-auto-genereted-keys
                 return jdbcTemplate.queryForObject("SELECT last_insert_id()", Object.class);
             } else {
-                return 0L;
+                return 0;
             }
         });
     }
@@ -453,16 +453,21 @@ public class DS {
         StringBuilder sb = new StringBuilder();
         Object[] params = new Object[]{};
         sb.append("SELECT ");
-        sb.append(entityClassInfo.columns.values().stream().map(col -> "`" + col.columnName + "`").collect(Collectors.joining(", ")));
+        sb.append(entityClassInfo.columns.values().stream()
+                .map(col -> "`" + col.columnName + "`").collect(Collectors.joining(", ")));
         sb.append(" FROM ").append(entityClassInfo.tableName);
         if (where != null && !where.isEmpty()) {
             sb.append(" WHERE ");
-            sb.append(where.entrySet().stream().map(col -> "`" + entityClassInfo.columns.get(col.getKey()).columnName + "` = ? ").collect(Collectors.joining("AND")));
+            sb.append(where.entrySet().stream()
+                    .map(col -> "`" + entityClassInfo.columns.get(col.getKey()).columnName + "` = ? ")
+                    .collect(Collectors.joining("AND")));
             params = where.values().toArray();
         }
         if (orderDesc != null && !orderDesc.isEmpty()) {
             sb.append(" ORDER BY ");
-            sb.append(orderDesc.entrySet().stream().map(col -> "`" + entityClassInfo.columns.get(col.getKey()).columnName + "` " + (col.getValue() ? "DESC" : "ASC")).collect(Collectors.joining(" ")));
+            sb.append(orderDesc.entrySet().stream()
+                    .map(col -> "`" + entityClassInfo.columns.get(col.getKey()).columnName + "` " + (col.getValue() ? "DESC" : "ASC"))
+                    .collect(Collectors.joining(" ")));
         }
         return new Object[]{sb.toString(), params};
     }

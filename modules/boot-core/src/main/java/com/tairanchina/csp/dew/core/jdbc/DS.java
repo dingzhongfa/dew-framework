@@ -417,8 +417,14 @@ public class DS {
                 values.put(entityClassInfo.updateUserFieldNameOpt.get(), "");
             }
         }
+        if (entityClassInfo.createUserFieldNameOpt.isPresent()) {
+            values.remove(entityClassInfo.createUserFieldNameOpt.get());
+        }
         if (entityClassInfo.updateTimeFieldNameOpt.isPresent()) {
             values.put(entityClassInfo.updateTimeFieldNameOpt.get(), new Date());
+        }
+        if (entityClassInfo.createTimeFieldNameOpt.isPresent()) {
+            values.remove(entityClassInfo.createTimeFieldNameOpt.get());
         }
         // Check null
         if (values.entrySet().stream()
@@ -519,7 +525,7 @@ public class DS {
             matchRegexList.add(m.group());
         }
         List<Object> list = new ArrayList<>();
-        //将值不为空的key用？替换
+        //将值不为空的key用?替换
         for (String key : matchRegexList) {
             Object v = params.get(key.substring(2, key.length() - 1).replace(" ", ""));
             if (v != null) {

@@ -35,10 +35,11 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
-    tomcat:
-      initial-size: 1
-      max-idle: 1
-      max-active: 1
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
   multi-datasources:
     test1:
       driver-class-name: org.h2.Driver

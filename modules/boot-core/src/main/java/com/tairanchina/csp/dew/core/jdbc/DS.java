@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class DS {
 
-    private final static String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\w+\\}";
+    private final static String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}";
     private final static Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
     private JdbcTemplate jdbcTemplate;

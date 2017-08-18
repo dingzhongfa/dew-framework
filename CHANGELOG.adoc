@@ -16,6 +16,7 @@
 ==== Improvement
 
 * 优化CURD脚手架
+* 使用Druid数据库连接池（注意配置文件变更）
 * 优化注解自定义查询（ `@Select` ），通过测试
 * 删除 `DaoImpl` 兼容性类
 

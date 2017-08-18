@@ -1,5 +1,10 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.*;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.StandardCode;
@@ -18,8 +23,8 @@ import java.util.stream.Collectors;
 
 public class DS {
 
-    private final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\S*\\s*\\}";
-    private final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
+    private final static String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\w+\\}";
+    private final static Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
     private JdbcTemplate jdbcTemplate;
     private TransactionTemplate transactionTemplate;
@@ -44,7 +49,7 @@ public class DS {
             jdbcTemplate.update((String) packageInsert[0], ((List<Object[]>) packageInsert[1]).get(0));
             if (entityClassInfo.pkFieldNameOpt.isPresent() &&
                     entityClassInfo.pkUUIDOpt.isPresent() && entityClassInfo.pkUUIDOpt.get()) {
-                return ((Optional<String>)packageInsert[2]).get();
+                return ((Optional<String>) packageInsert[2]).get();
             } else if (entityClassInfo.pkFieldNameOpt.isPresent()) {
                 // Has private key , return generated key
                 // TODO use http://docs.spring.io/spring/docs/3.0.x/reference/jdbcTemplate.html#jdbc-auto-genereted-keys
@@ -534,11 +539,47 @@ public class DS {
             }
         }
         if (sql.contains("#{")) {
-            sql = sql.replaceAll("((and)|(or)|(AND)|(OR))((?!\\?).)*\\#(\\s*\\S*)*\\}", "");
+            SQLStatementParser parser = new SQLStatementParser(sql);
+            SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
+            SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
+            formatWhere(sqlExpr);
+            sql = statement.toString();
         }
         return new Object[]{sql, list.toArray()};
     }
 
+    public static void formatWhere(SQLExpr sqlExpr) {
+        if (sqlExpr == null) {
+            return;
+        }
+        if (sqlExpr instanceof SQLBetweenExpr
+                || sqlExpr instanceof SQLInListExpr
+                || ((SQLBinaryOpExpr) sqlExpr).getLeft() instanceof SQLIdentifierExpr
+                || ((SQLBinaryOpExpr) sqlExpr).getLeft() instanceof SQLPropertyExpr) {
+            doFormatWhere(sqlExpr);
+        } else {
+            formatWhere(((SQLBinaryOpExpr) sqlExpr).getRight());
+            formatWhere(((SQLBinaryOpExpr) sqlExpr).getLeft());
+        }
+    }
+
+    private static void doFormatWhere(SQLExpr sqlExpr) {
+        String itemStr;
+        if (sqlExpr instanceof SQLBetweenExpr) {
+            itemStr = ((SQLBetweenExpr) sqlExpr).getBeginExpr().toString() + ((SQLBetweenExpr) sqlExpr).getEndExpr().toString();
+        } else if (sqlExpr instanceof SQLInListExpr) {
+            itemStr = ((SQLInListExpr) sqlExpr).getTargetList().toString();
+        } else {
+            itemStr = sqlExpr.toString();
+        }
+        if (FIELD_PLACE_HOLDER_PATTERN.matcher(itemStr).find()) {
+            if (sqlExpr.getParent() instanceof SQLBinaryOpExpr) {
+                ((SQLBinaryOpExpr) sqlExpr.getParent()).replace(sqlExpr, null);
+            } else if (sqlExpr.getParent() instanceof SQLSelectQueryBlock) {
+                ((SQLSelectQueryBlock) sqlExpr.getParent()).replace(sqlExpr, null);
+            }
+        }
+    }
 
     public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;

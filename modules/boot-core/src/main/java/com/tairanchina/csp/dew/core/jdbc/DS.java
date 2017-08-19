@@ -516,7 +516,7 @@ public class DS {
         String countSql = wrapCountSql((String) result[0]);
         String pagedSql = wrapPagingSql((String) result[0], method.getPageNumber(), method.getPageSize());
         long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) result[1], Long.class);
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(pagedSql, result[1]);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(pagedSql, (Object[]) result[1]);
         List<E> objects = entityClazz.isAssignableFrom(Map.class) ? (List<E>) list : list.stream().map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);

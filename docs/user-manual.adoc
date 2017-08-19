@@ -450,7 +450,6 @@ Map<String,Object> getMapById(@Param("id") P id);
 . `@Select` 只能用于接口
 . `@Select` 暂不支持DSL SQL，比如（HQL）
 . `@ModelParam` 参数不支持 `null` 查询
-. `where` 语句之后请添加1=1，即：`where 1=1`
 
 
 === 多数据源支持

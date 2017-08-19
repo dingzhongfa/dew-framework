@@ -7,6 +7,8 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import org.junit.Test;
 
+import java.util.LinkedHashMap;
+
 public class MiscTest {
 
     @Test
@@ -14,6 +16,19 @@ public class MiscTest {
         String str = "select * from t_test_crud_s_entity where 1 =1 and  field_a= #{ fieldA } and field_c = #{fc} order by code desc";
         str = str.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
         System.out.println(str);
+    }
+
+    @Test
+    public void testSqlReplace() {
+        String sql = "select * from table where" +
+                " id = #{b} and ( name1= #{a} or name2 = #{c} or name3 = #{d} ) " +
+                "and no1 like #{ ee } and no2 like #{f} ";
+        Object[] result = DS.packageSelect(sql,new LinkedHashMap<String,Object>(){{
+            put("a","1");
+            put("c","3");
+            put("ee","5");
+        }});
+        System.out.println(result);
     }
 
     @Test

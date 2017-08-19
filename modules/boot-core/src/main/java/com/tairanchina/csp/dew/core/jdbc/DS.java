@@ -522,7 +522,7 @@ public class DS {
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
     }
 
-    public Object[] packageSelect(String sql, Map<String, Object> params) {
+    public static Object[] packageSelect(String sql, Map<String, Object> params) {
         Matcher m = FIELD_PLACE_HOLDER_PATTERN.matcher(sql);
         List<String> matchRegexList = new ArrayList<>();
         //将#{...}抠出来
@@ -532,9 +532,10 @@ public class DS {
         List<Object> list = new ArrayList<>();
         //将值不为空的key用?替换
         for (String key : matchRegexList) {
-            Object v = params.get(key.substring(2, key.length() - 1).replace(" ", ""));
+            key = key.substring(2, key.length() - 1).replace(" ", "");
+            Object v = params.get(key);
             if (v != null) {
-                sql = sql.replaceFirst(FIELD_PLACE_HOLDER_REGEX, "?");
+                sql = sql.replaceFirst("\\#\\{\\s*" + key + "\\s*\\}", "?");
                 list.add(v);
             }
         }

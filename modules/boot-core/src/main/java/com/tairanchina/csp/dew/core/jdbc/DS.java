@@ -26,6 +26,7 @@ public class DS {
     private final static String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}";
     private final static Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
+    private char UNDERLINE = '_';
     private JdbcTemplate jdbcTemplate;
     private TransactionTemplate transactionTemplate;
     private String jdbcUrl;
@@ -494,14 +495,39 @@ public class DS {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         try {
             E entity = entityClazz.newInstance();
-            for (Map.Entry<String, Object> entry : rs.entrySet()) {
-                $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), entry.getValue());
+            if (entityClassInfo == null) {
+                for (Map.Entry<String, Object> entry : rs.entrySet()) {
+                    $.bean.setValue(entity, underlineToCamel(entry.getKey()), entry.getValue());
+                }
+            } else {
+                for (Map.Entry<String, Object> entry : rs.entrySet()) {
+                    $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), entry.getValue());
+                }
             }
             return entity;
         } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
             Dew.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
             return null;
         }
+    }
+
+    public String underlineToCamel(String param) {
+        if (param == null || "".equals(param.trim())) {
+            return "";
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = param.charAt(i);
+            if (c == UNDERLINE) {
+                if (++i < len) {
+                    sb.append(Character.toUpperCase(param.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {

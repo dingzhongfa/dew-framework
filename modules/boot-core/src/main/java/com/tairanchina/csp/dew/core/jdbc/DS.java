@@ -305,12 +305,15 @@ public class DS {
         for (Object entity : entities) {
 
             Map<String, Object> values = $.bean.findValues(entity, null, null, entityClassInfo.columns.keySet(), null);
-            if (entityClassInfo.pkFieldNameOpt.isPresent() && entityClassInfo.pkUUIDOpt.get() &&
-                    (!values.containsKey(entityClassInfo.pkFieldNameOpt.get()) ||
-                            values.get(entityClassInfo.pkFieldNameOpt.get()) == null ||
-                            values.get(entityClassInfo.pkFieldNameOpt.get()).toString().isEmpty())) {
-                lastIdOpt = Optional.of($.field.createUUID());
-                values.put(entityClassInfo.pkFieldNameOpt.get(), lastIdOpt.get());
+            if (entityClassInfo.pkFieldNameOpt.isPresent() && entityClassInfo.pkUUIDOpt.get()) {
+                if (!values.containsKey(entityClassInfo.pkFieldNameOpt.get()) ||
+                        values.get(entityClassInfo.pkFieldNameOpt.get()) == null ||
+                        values.get(entityClassInfo.pkFieldNameOpt.get()).toString().isEmpty()) {
+                    lastIdOpt = Optional.of($.field.createUUID());
+                    values.put(entityClassInfo.pkFieldNameOpt.get(), lastIdOpt.get());
+                } else {
+                    lastIdOpt = Optional.of(values.get(entityClassInfo.pkFieldNameOpt.get()).toString());
+                }
             } else if (entityClassInfo.pkFieldNameOpt.isPresent() &&
                     values.containsKey(entityClassInfo.pkFieldNameOpt.get())) {
                 Object id = values.get(entityClassInfo.pkFieldNameOpt.get());

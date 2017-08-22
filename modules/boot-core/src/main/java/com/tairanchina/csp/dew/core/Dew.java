@@ -209,7 +209,7 @@ public class Dew {
             return exchange(HttpMethod.PUT, url, body, header);
         }
 
-        private static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
             try {
                 if (header == null) {
                     header = new HashMap<>();

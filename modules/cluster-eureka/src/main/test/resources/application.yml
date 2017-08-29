@@ -1,0 +1,12 @@
+dew:
+  cluster:
+    election: eureka
+
+spring:
+  application:
+    name: eureka-test
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://registry:123456@localhost:10000/eureka

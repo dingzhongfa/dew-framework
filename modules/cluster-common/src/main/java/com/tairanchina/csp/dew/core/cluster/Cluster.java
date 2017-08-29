@@ -12,4 +12,6 @@ public class Cluster {
 
     public ClusterCache cache;
 
+    public ClusterElection election;
+
 }

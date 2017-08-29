@@ -161,6 +161,7 @@ public class DewConfig {
         private String mq = "redis";
         private String cache = "redis";
         private String dist = "redis";
+        private String election = "eureka";
 
         public String getMq() {
             return mq;
@@ -184,6 +185,14 @@ public class DewConfig {
 
         public void setDist(String dist) {
             this.dist = dist;
+        }
+
+        public String getElection() {
+            return election;
+        }
+
+        public void setElection(String election) {
+            this.election = election;
         }
     }
 

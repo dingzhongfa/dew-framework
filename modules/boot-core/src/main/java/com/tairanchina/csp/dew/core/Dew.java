@@ -3,10 +3,7 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.ecfront.dew.common.StandardCode;
-import com.tairanchina.csp.dew.core.cluster.Cluster;
-import com.tairanchina.csp.dew.core.cluster.ClusterCache;
-import com.tairanchina.csp.dew.core.cluster.ClusterDist;
-import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
+import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
@@ -65,6 +62,9 @@ public class Dew {
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getMq() + "ClusterMQ")) {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(innerDewConfig.getCluster().getMq() + "ClusterMQ");
+        }
+        if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getElection() + "ClusterElection")) {
+            Dew.cluster.election = (ClusterElection) Dew.applicationContext.getBean(innerDewConfig.getCluster().getElection() + "ClusterElection");
         }
         Dew.dewConfig = innerDewConfig;
         if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {

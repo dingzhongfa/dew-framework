@@ -11,12 +11,13 @@
   - serviceC
 
 * 添加对Thrift的支持
-* 支持UUID形式的主键
+* 支持集群Master选举（非严格模式）
 
 ==== Improvement
 
 * 优化CURD脚手架
 * 使用Druid数据库连接池（注意配置文件变更）
+* 支持UUID形式的主键
 * 优化注解自定义查询（ `@Select` ），通过测试
 * 删除 `DaoImpl` 兼容性类
 

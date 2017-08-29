@@ -161,55 +161,55 @@ public class Dew {
             serviceClient = _serviceClient;
         }
 
-        public static HttpHelper.WrapHead get(String url) throws Exception {
+        public static HttpHelper.ResponseWrap get(String url) throws Exception {
             return get(url, null);
         }
 
-        public static HttpHelper.WrapHead get(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap get(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.GET, url, null, header);
         }
 
-        public static HttpHelper.WrapHead delete(String url) throws Exception {
+        public static HttpHelper.ResponseWrap delete(String url) throws Exception {
             return delete(url, null);
         }
 
-        public static HttpHelper.WrapHead delete(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap delete(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.DELETE, url, null, header);
         }
 
-        public static HttpHelper.WrapHead head(String url) throws Exception {
+        public static HttpHelper.ResponseWrap head(String url) throws Exception {
             return head(url, null);
         }
 
-        public static HttpHelper.WrapHead head(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap head(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.HEAD, url, null, header);
         }
 
-        public static HttpHelper.WrapHead options(String url) throws Exception {
+        public static HttpHelper.ResponseWrap options(String url) throws Exception {
             return options(url, null);
         }
 
-        public static HttpHelper.WrapHead options(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap options(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.OPTIONS, url, null, header);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body) throws Exception {
+        public static HttpHelper.ResponseWrap post(String url, Object body) throws Exception {
             return post(url, body, null);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap post(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.POST, url, body, header);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body) throws Exception {
+        public static HttpHelper.ResponseWrap put(String url, Object body) throws Exception {
             return put(url, body, null);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap put(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.PUT, url, body, header);
         }
 
-        public static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
             try {
                 if (header == null) {
                     header = new HashMap<>();
@@ -226,13 +226,13 @@ public class Dew {
                         entity = new HttpEntity(headers);
                     }
                     ResponseEntity resp = serviceClient.exchange(tryAttachTokenToUrl(url), httpMethod, entity, Object.class);
-                    HttpHelper.WrapHead wrapHead = new HttpHelper.WrapHead();
-                    wrapHead.head = new HashMap<>();
+                    HttpHelper.ResponseWrap ResponseWrap = new HttpHelper.ResponseWrap();
+                    ResponseWrap.head = new HashMap<>();
                     for (Map.Entry<String, List<String>> entry : resp.getHeaders().entrySet()) {
-                        wrapHead.head.put(entry.getKey(), entry.getValue().size() > 0 ? entry.getValue().get(0) : "");
+                        ResponseWrap.head.put(entry.getKey(), entry.getValue().size() > 0 ? entry.getValue().get(0) : "");
                     }
-                    wrapHead.result = $.json.toJsonString(resp.getBody());
-                    return wrapHead;
+                    ResponseWrap.result = $.json.toJsonString(resp.getBody());
+                    return ResponseWrap;
                 } else {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }

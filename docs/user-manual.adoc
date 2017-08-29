@@ -629,7 +629,7 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 
 === 启用集群功能
 
-Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
+Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` `Master Election`，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
 
 [source,xml]
 .引入依赖
@@ -651,6 +651,10 @@ Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并�
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-rabbit</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cluster-spi-eureka</artifactId>
 </dependency>
 ----
 
@@ -682,6 +686,7 @@ dew:
     cache: redis
     dist: hazelcast # 可选 redis/hazelcast
     mq: hazelcast # 可选 redis/hazelcast/rabbit
+    election: eureka
 ----
 
 [source,java]
@@ -737,7 +742,6 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 === 服务脚手架
 
 一般的，我们对实体对象的操作可以有 `增C删D改U查R` 外加`状态变更S`，`服务脚手架`从`DAO`到`Service`再到`Controller`实现了上述操作。
-
 
 * CRUController: 支持增改查操作
 * CRUDController: 支持增删改查操作

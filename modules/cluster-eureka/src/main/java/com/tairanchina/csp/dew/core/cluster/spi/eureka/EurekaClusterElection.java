@@ -1,22 +1,22 @@
 package com.tairanchina.csp.dew.core.cluster.spi.eureka;
 
 import com.ecfront.dew.common.$;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.appinfo.LeaseInfo;
 import com.tairanchina.csp.dew.core.cluster.ClusterElection;
 import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Component
 @ConditionalOnExpression("#{'${dew.cluster.election}'=='eureka'}")
@@ -29,36 +29,20 @@ public class EurekaClusterElection implements ClusterElection {
     @Value("${spring.application.name}")
     private String applicationName;
     @Autowired
-    private EurekaClientConfigBean eurekaClientConfigBean;
+    private DiscoveryClient discoveryClient;
+    @Autowired
+    private EurekaRegistration eurekaRegistration;
 
     @Override
     @PostConstruct
     public void election() throws Exception {
         $.timer.periodic(electionPeriodSec, false, () -> {
-            List<String> urls = eurekaClientConfigBean.getServiceUrl().values().stream()
-                    .flatMap(url -> Arrays.stream(url.split(","))).collect(Collectors.toList());
-            for (String url : urls) {
-                try {
-                    String res = $.http.get(url + "/apps/" + applicationName + "/", new HashMap<String, String>() {{
-                        put("Content-Type", "application/json");
-                        put("Accept", "application/json");
-                    }});
-                    logger.trace("Fetch cluster data:" + res);
-                    if (!StringUtils.isEmpty(res)) {
-                       JsonNode instances= $.json.toJson(res).get("application").get("instance");
-                       for (JsonNode instance : instances){
-                           if(instance.get("status").asText("").equals("UP")){
-                               // First online instance
-
-                           }
-                       }
-                        break;
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            Optional<InstanceInfo> firstInstanceR = discoveryClient.getInstances(applicationName).stream()
+                    .map(instance -> ((EurekaDiscoveryClient.EurekaServiceInstance) instance).getInstanceInfo())
+                    .filter(instance -> instance.getStatus() == InstanceInfo.InstanceStatus.UP)
+                    .sorted(Comparator.comparingLong(inst -> inst.getLeaseInfo().getRegistrationTimestamp()))
+                    .findFirst();
+            leader = firstInstanceR.isPresent() && eurekaRegistration.getInstanceConfig().getInstanceId().equals(firstInstanceR.get().getInstanceId());
         });
     }
 

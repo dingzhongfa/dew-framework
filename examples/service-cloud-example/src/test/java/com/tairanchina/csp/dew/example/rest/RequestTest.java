@@ -18,7 +18,7 @@ public class RequestTest {
 
     @Test
     public void testAll() throws Exception {
-        HttpHelper.WrapHead result = Dew.EB.get("http://SERVICE-CLOUD-EXAMPLE/example");
+        HttpHelper.ResponseWrap result = Dew.EB.get("http://SERVICE-CLOUD-EXAMPLE/example");
         Assert.assertEquals(null, result);
     }
 

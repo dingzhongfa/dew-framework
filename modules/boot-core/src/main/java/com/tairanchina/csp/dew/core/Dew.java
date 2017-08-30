@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -56,6 +58,15 @@ public class Dew {
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
+            CacheProperties cacheProperties = Dew.applicationContext.getBean(CacheProperties.class);
+            switch (innerDewConfig.getCluster().getCache().toUpperCase()) {
+                case "REDIS":
+                    cacheProperties.setType(CacheType.REDIS);
+                    break;
+                case "HAZELCAST":
+                    cacheProperties.setType(CacheType.HAZELCAST);
+                    break;
+            }
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getDist() + "ClusterDist")) {
             Dew.cluster.dist = (ClusterDist) Dew.applicationContext.getBean(innerDewConfig.getCluster().getDist() + "ClusterDist");

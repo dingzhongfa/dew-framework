@@ -11,6 +11,8 @@ dew:
     base-package: com.tairanchina.csp.dew.core
 
 spring:
+  cache:
+    type: redis
   application:
     name: core-test
   redis:

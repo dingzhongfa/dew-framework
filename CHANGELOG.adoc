@@ -11,7 +11,8 @@
   - serviceC
 
 * 添加对Thrift的支持
-* 支持集群Master选举（非严格模式）
+* 支持集群Leader Election（非严格模式）
+* 整合Spring Boot Cache
 
 ==== Improvement
 

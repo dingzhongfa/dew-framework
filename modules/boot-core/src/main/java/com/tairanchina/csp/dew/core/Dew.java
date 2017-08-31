@@ -460,7 +460,7 @@ public class Dew {
             check(() -> obj == null, ex);
         }
 
-        public static <E extends RuntimeException> void checkNotEmpty(Iterable objects, E ex) {
+        public static <E extends RuntimeException> void checkNotEmpty(Iterable<?> objects, E ex) {
             check(() -> !objects.iterator().hasNext(), ex);
         }
 

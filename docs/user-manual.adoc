@@ -814,12 +814,26 @@ public Resp<String> test(){
 // 重用http状态码
 // 与协议无关格式区别在于：
 // 1. throws 对应的异常
-// 2. 使用Dew.e(<code>,<Exception Instance>)来抛出异常
+// 2. 使用Dew.E.e(<code>,<Exception Instance>)来抛出异常
 public String test() throws IOException{
     return "enjoy!";
-    // or throw Dew.e("A000", new IOException("io error"));
-    // or throw Dew.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
+    // or throw Dew.E.e("A000", new IOException("io error"));
+    // or throw Dew.E.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
 }
+----
+
+=== 异常处理
+
+Dew 会把程序没有捕获的异常统一转成 `500` 异常上抛，同时框架提供了常用的异常检查：
+
+[source,java]
+.异常检查，异常类型要求为RuntimeException及其子类
+----
+Dew.E.check(VoidPredicate notExpected, E ex)
+Dew.E.check(boolean notExpected, E ex)
+Dew.E.checkNotEmpty(Map<?, ?> objects, E ex)
+Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
+Dew.E.checkNotNull(Object obj, E ex)
 ----
 
 === 认证缓存

@@ -7,7 +7,9 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MiscTest {
 
@@ -69,6 +71,16 @@ public class MiscTest {
         sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
         DS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
+    }
+
+    @Test
+    public void testError(){
+        Map<String,String> a=new HashMap<>();
+        a.put("1","1");
+        Dew.E.checkNotEmpty(a,new RuntimeException());
+        a.clear();
+        Dew.E.checkNotEmpty(a,Dew.E.e("1001",new RuntimeException("")));
+        a.put("1","1");
     }
 
 }

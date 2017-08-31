@@ -53,6 +53,7 @@ public class ErrorController extends AbstractErrorController {
         String busCode = (int) error.getOrDefault("status", -1) + "";
         int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
+        String exception = (String) error.getOrDefault("exception", "");
         String message = error.getOrDefault("message", "") + "";
         if (MESSAGE_CHECK.matcher(message).matches()) {
             JsonNode detail = $.json.toJson(message);

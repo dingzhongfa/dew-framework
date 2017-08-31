@@ -73,7 +73,7 @@ public class DS {
             transactionTemplate.execute(status ->
                     jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
         } catch (NoSuchFieldException e) {
-            Dew.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
         }
     }
 
@@ -84,7 +84,7 @@ public class DS {
             transactionTemplate.execute(status ->
                     jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
         } catch (NoSuchFieldException e) {
-            Dew.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
         }
     }
 
@@ -296,7 +296,7 @@ public class DS {
      */
     private Object[] packageInsert(Iterable<?> entities, boolean ignoreNullValue) {
         if (!entities.iterator().hasNext()) {
-            throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Entity List is empty."));
+            throw Dew.E.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Entity List is empty."));
         }
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entities.iterator().next().getClass());
         String sql = null;
@@ -353,7 +353,7 @@ public class DS {
             // Check null
             if (values.entrySet().stream()
                     .anyMatch(entry -> entityClassInfo.columns.get(entry.getKey()).notNull && entry.getValue() == null)) {
-                throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Not Null check fail."));
+                throw Dew.E.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Not Null check fail."));
             }
             // Filter null value if ignoreNullValue=true
             if (ignoreNullValue) {
@@ -389,7 +389,7 @@ public class DS {
         Map<String, Object> values = $.bean.findValues(entity, null, null, entityClassInfo.columns.keySet(), null);
         // Check id or code Not empty
         if (!entityClassInfo.pkFieldNameOpt.isPresent() && !entityClassInfo.codeFieldNameOpt.isPresent()) {
-            throw Dew.e(StandardCode.NOT_FOUND.toString(), new RuntimeException("Need @PkColumn or @CodeColumn field."));
+            throw Dew.E.e(StandardCode.NOT_FOUND.toString(), new RuntimeException("Need @PkColumn or @CodeColumn field."));
         }
         String whereColumnName = null;
         Object whereValue = null;
@@ -410,7 +410,7 @@ public class DS {
                 whereValue = values.get(entityClassInfo.codeFieldNameOpt.get());
                 values.remove(entityClassInfo.codeFieldNameOpt.get());
             } else {
-                throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Need Private Key or Code value."));
+                throw Dew.E.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Need Private Key or Code value."));
             }
         }
         // Filter null value if ignoreNullValue=true
@@ -438,7 +438,7 @@ public class DS {
         // Check null
         if (values.entrySet().stream()
                 .anyMatch(entry -> entityClassInfo.columns.get(entry.getKey()).notNull && entry.getValue() == null)) {
-            throw Dew.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Not Null check fail."));
+            throw Dew.E.e(StandardCode.BAD_REQUEST.toString(), new RuntimeException("Not Null check fail."));
         }
         // Package
         StringBuilder sb = new StringBuilder();
@@ -509,7 +509,7 @@ public class DS {
             }
             return entity;
         } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-            Dew.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
             return null;
         }
     }

@@ -7,6 +7,7 @@ import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
+import com.tairanchina.csp.dew.core.fun.VoidPredicate;
 import com.tairanchina.csp.dew.core.jdbc.ClassPathScanner;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
@@ -412,45 +413,83 @@ public class Dew {
 
     }
 
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code 异常编码
-     * @param ex   异常类型
-     */
-    public static <E extends Throwable> E e(String code, E ex) {
-        return e(code, ex, -1);
-    }
+    public static class E {
 
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code           异常编码
-     * @param ex             异常类型
-     * @param customHttpCode 自定义Http状态码
-     */
-    public static <E extends Throwable> E e(String code, E ex, StandardCode customHttpCode) {
-        return e(code, ex, Integer.valueOf(customHttpCode.toString()));
-    }
-
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code           异常编码
-     * @param ex             异常类型
-     * @param customHttpCode 自定义Http状态码
-     */
-    public static <E extends Throwable> E e(String code, E ex, int customHttpCode) {
-        try {
-            $.bean.setValue(ex, "detailMessage", $.json.createObjectNode()
-                    .put("code", code)
-                    .put("message", ex.getLocalizedMessage())
-                    .put("customHttpCode", customHttpCode)
-                    .toString());
-        } catch (NoSuchFieldException e1) {
-            logger.error("Throw Exception Convert error", ex);
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code 异常编码
+         * @param ex   异常类型
+         */
+        public static <E extends Throwable> E e(String code, E ex) {
+            return e(code, ex, -1);
         }
-        return ex;
+
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code           异常编码
+         * @param ex             异常类型
+         * @param customHttpCode 自定义Http状态码
+         */
+        public static <E extends Throwable> E e(String code, E ex, StandardCode customHttpCode) {
+            return e(code, ex, Integer.valueOf(customHttpCode.toString()));
+        }
+
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code           异常编码
+         * @param ex             异常类型
+         * @param customHttpCode 自定义Http状态码
+         */
+        public static <E extends Throwable> E e(String code, E ex, int customHttpCode) {
+            try {
+                $.bean.setValue(ex, "detailMessage", $.json.createObjectNode()
+                        .put("code", code)
+                        .put("message", ex.getLocalizedMessage())
+                        .put("customHttpCode", customHttpCode)
+                        .toString());
+            } catch (NoSuchFieldException e1) {
+                logger.error("Throw Exception Convert error", ex);
+            }
+            return ex;
+        }
+
+        public static <E extends RuntimeException> void checkNotNull(Object obj, E ex) {
+            check(() -> obj == null, ex);
+        }
+
+        public static <E extends RuntimeException> void checkNotEmpty(Iterable objects, E ex) {
+            check(() -> !objects.iterator().hasNext(), ex);
+        }
+
+        public static <E extends RuntimeException> void checkNotEmpty(Map<?, ?> objects, E ex) {
+            check(() -> objects.size() == 0, ex);
+        }
+
+        /**
+         * 抛出不符合预期异常
+         *
+         * @param notExpected 不符合预期的情况
+         * @param ex          异常
+         */
+        public static <E extends RuntimeException> void check(boolean notExpected, E ex) {
+            check(() -> notExpected, ex);
+        }
+
+        /**
+         * 抛出不符合预期异常
+         *
+         * @param notExpected 不符合预期的情况
+         * @param ex          异常
+         */
+        public static <E extends RuntimeException> void check(VoidPredicate notExpected, E ex) {
+            if (notExpected.test()) {
+                throw ex;
+            }
+        }
+
     }
 
 }

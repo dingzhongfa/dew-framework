@@ -127,6 +127,9 @@ public class DewConfig {
             public void setMessageFieldName(String messageFieldName) {
                 this.messageFieldName = messageFieldName;
             }
+
+
+
         }
 
         public Doc getDoc() {

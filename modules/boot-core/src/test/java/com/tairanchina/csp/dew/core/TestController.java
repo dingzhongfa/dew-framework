@@ -45,7 +45,7 @@ public class TestController {
             @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
     })
     public String t3(@RequestParam String q) throws Exception {
-        throw Dew.e("A000", new Exception("io error"));
+        throw Dew.E.e("A000", new Exception("io error"));
     }
 
     @GetMapping(value = "t4")
@@ -54,7 +54,7 @@ public class TestController {
             @ApiImplicitParam(name = "q", value = "query", paramType = "query", dataType = "string", required = true),
     })
     public String t4(@RequestParam String q) throws IOException {
-        throw Dew.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
+        throw Dew.E.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
     }
 
     @PostMapping(value = "t5")

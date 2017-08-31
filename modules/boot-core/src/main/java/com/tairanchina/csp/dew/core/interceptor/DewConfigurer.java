@@ -10,11 +10,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ConditionalOnWebApplication
 public class DewConfigurer extends WebMvcConfigurerAdapter {
 
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         DewHandlerInterceptor dewHandlerInterceptor = new DewHandlerInterceptor();
-        registry.addInterceptor(dewHandlerInterceptor);
+        registry.addInterceptor(dewHandlerInterceptor).excludePathPatterns("/error/**");
         super.addInterceptors(registry);
     }
 

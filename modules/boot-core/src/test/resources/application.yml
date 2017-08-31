@@ -2,13 +2,15 @@ dew:
   basic:
     format:
       use-unity-error: true
-      reuse-http-state: true
+      reuse-http-state: false
   cluster:
     cache: redis
     dist: redis
     mq: rabbit
   dao:
     base-package: com.tairanchina.csp.dew.core
+  security:
+    includeServices: ["a-serv"]
 
 spring:
   cache:

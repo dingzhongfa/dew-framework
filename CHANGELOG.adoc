@@ -21,6 +21,7 @@
 * 支持UUID形式的主键
 * 优化注解自定义查询（ `@Select` ），通过测试
 * 删除 `DaoImpl` 兼容性类
+* 将 `Dew.e` 移到 `Dew.E.e`，添加 `Dew.E.checkXX`异常检查方法，见 `异常处理` 章节
 
 ==== Fixed
 

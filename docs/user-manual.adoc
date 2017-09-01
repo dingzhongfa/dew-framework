@@ -836,6 +836,31 @@ Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
 Dew.E.checkNotNull(Object obj, E ex)
 ----
 
+[source,xml]
+.自定义异常配置
+----
+dew:
+  basic:
+    format:
+      use-unity-error: true // 这个必须为true
+    error-mapping:
+      "[<异常类名>]":
+        http-code: <http状态码>
+        business-code: <业务编码>
+        message: <错误描述>
+
+<!--示例-->
+dew:
+  basic:
+    format:
+      use-unity-error: true
+    error-mapping:
+      "[com.tairanchina.csp.dew.core.AuthException]":
+        http-code: 401
+        business-code: x00010
+        message: 认证错误
+----
+
 === 认证缓存
 
 [quote,]

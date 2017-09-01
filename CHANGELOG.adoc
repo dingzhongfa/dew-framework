@@ -23,6 +23,7 @@
 * 添加 `Sonar` 代码质量检查，配置 `sonar.host.url` 执行 `mvn clean verify sonar:sonar`
 * 删除 `DaoImpl` 兼容性类
 * 将 `Dew.e` 移到 `Dew.E.e`，添加 `Dew.E.checkXX`异常检查方法，见 `异常处理` 章节
+* 支持自定义异常配置
 
 ==== Fixed
 

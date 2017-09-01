@@ -3,6 +3,11 @@ dew:
     format:
       use-unity-error: true
       reuse-http-state: false
+    error-mapping:
+      "[com.tairanchina.csp.dew.core.AuthException]":
+        http-code: 401
+        business-code: x00010
+        message: 认证错误
   cluster:
     cache: redis
     dist: redis

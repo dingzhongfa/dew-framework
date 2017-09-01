@@ -5,6 +5,7 @@ import com.ecfront.dew.common.Resp;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,8 +55,21 @@ public class ErrorController extends AbstractErrorController {
         String busCode = (int) error.getOrDefault("status", -1) + "";
         int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
-        String exception = (String) error.getOrDefault("exception", "");
         String message = error.getOrDefault("message", "").toString();
+        String exception = (String) error.getOrDefault("exception", "");
+        if (!StringUtils.isEmpty(exception) && Dew.dewConfig.getBasic().getErrorMapping().containsKey(exception)) {
+            // Found Error Mapping
+            DewConfig.Basic.ErrorMapping errorMapping = Dew.dewConfig.getBasic().getErrorMapping().get(exception);
+            if (!StringUtils.isEmpty(errorMapping.getHttpCode())) {
+                httpCode = errorMapping.getHttpCode();
+            }
+            if (!StringUtils.isEmpty(errorMapping.getBusinessCode())) {
+                busCode = errorMapping.getBusinessCode();
+            }
+            if (!StringUtils.isEmpty(errorMapping.getMessage())) {
+                message = errorMapping.getMessage();
+            }
+        }
         if (MESSAGE_CHECK.matcher(message).matches()) {
             JsonNode detail = $.json.toJson(message);
             busCode = detail.get("code").asText();

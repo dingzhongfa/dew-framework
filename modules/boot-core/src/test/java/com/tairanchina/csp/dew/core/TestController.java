@@ -62,6 +62,11 @@ public class TestController {
         return "";
     }
 
+    @GetMapping(value = "error-mapping")
+    public String errorMapping() {
+        throw new AuthException("400","auth error");
+    }
+
     public static class SomeReq {
         @NotNull
         @Length(min = 2)

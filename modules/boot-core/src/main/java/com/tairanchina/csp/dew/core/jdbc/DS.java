@@ -13,9 +13,13 @@ import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
+import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +32,6 @@ public class DS {
 
     private char UNDERLINE = '_';
     private JdbcTemplate jdbcTemplate;
-    private TransactionTemplate transactionTemplate;
     private String jdbcUrl;
 
     private Dialect dialect;
@@ -46,32 +49,37 @@ public class DS {
         Object[] packageInsert = packageInsert(new ArrayList<Object>() {{
             add(entity);
         }}, true);
-        return transactionTemplate.execute(status -> {
-            jdbcTemplate.update((String) packageInsert[0], ((List<Object[]>) packageInsert[1]).get(0));
-            if (entityClassInfo.pkFieldNameOpt.isPresent() &&
-                    entityClassInfo.pkUUIDOpt.isPresent() && entityClassInfo.pkUUIDOpt.get()) {
-                return ((Optional<String>) packageInsert[2]).get();
-            } else if (entityClassInfo.pkFieldNameOpt.isPresent()) {
-                // Has private key , return generated key
-                // TODO use http://docs.spring.io/spring/docs/3.0.x/reference/jdbcTemplate.html#jdbc-auto-genereted-keys
-                return jdbcTemplate.queryForObject("SELECT last_insert_id()", Object.class);
-            } else {
-                return 0;
-            }
-        });
+        String sql = (String) packageInsert[0];
+        Object[] args = ((List<Object[]>) packageInsert[1]).get(0);
+        if (entityClassInfo.pkFieldNameOpt.isPresent() &&
+                entityClassInfo.pkUUIDOpt.isPresent() && entityClassInfo.pkUUIDOpt.get()) {
+            jdbcTemplate.update(sql, args);
+            return ((Optional<String>) packageInsert[2]).get();
+        } else if (entityClassInfo.pkFieldNameOpt.isPresent()) {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(con -> {
+                PreparedStatement ps = con.prepareStatement(sql, new String[]{entityClassInfo.pkFieldNameOpt.get()});
+                PreparedStatementSetter pss = new ArgumentPreparedStatementSetter(args);
+                pss.setValues(ps);
+                return ps;
+            }, keyHolder);
+            return keyHolder.getKey();
+        } else {
+            jdbcTemplate.update(sql, args);
+            return 0;
+        }
     }
 
     public void insert(Iterable<?> entities) {
         Object[] packageInsert = packageInsert(entities, false);
-        transactionTemplate.execute(status -> jdbcTemplate.batchUpdate((String) packageInsert[0], (List<Object[]>) packageInsert[1]));
+        jdbcTemplate.batchUpdate((String) packageInsert[0], (List<Object[]>) packageInsert[1]);
     }
 
     public void updateById(Object id, Object entity) {
         try {
             $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).pkFieldNameOpt.get(), id);
             Object[] packageUpdate = packageUpdate(entity, true);
-            transactionTemplate.execute(status ->
-                    jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
+            jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
         } catch (NoSuchFieldException e) {
             Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
         }
@@ -81,8 +89,7 @@ public class DS {
         try {
             $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).codeFieldNameOpt.get(), code);
             Object[] packageUpdate = packageUpdate(entity, true);
-            transactionTemplate.execute(status ->
-                    jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]));
+            jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
         } catch (NoSuchFieldException e) {
             Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
         }
@@ -106,58 +113,52 @@ public class DS {
 
     public void deleteById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
-                        entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                        id));
+        jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
+                entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
+                id);
     }
 
     public void deleteByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
-                        entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                        code));
+        jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
+                entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
+                code);
     }
 
     public void enableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
-                        entityClassInfo.tableName,
-                        entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
-                        entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                        true, id));
+        jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
+                entityClassInfo.tableName,
+                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
+                true, id);
     }
 
     public void enableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
-                        entityClassInfo.tableName,
-                        entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
-                        entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                        true, code));
+        jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
+                entityClassInfo.tableName,
+                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
+                true, code);
     }
 
     public void disableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
-                        entityClassInfo.tableName,
-                        entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
-                        entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                        false, id));
+        jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
+                entityClassInfo.tableName,
+                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
+                false, id);
     }
 
     public void disableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        transactionTemplate.execute(status ->
-                jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
-                        entityClassInfo.tableName,
-                        entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
-                        entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                        false, code));
+        jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
+                entityClassInfo.tableName,
+                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
+                false, code);
     }
 
     public boolean existById(Object id, Class<?> entityClazz) {
@@ -617,14 +618,6 @@ public class DS {
 
     public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public TransactionTemplate getTransactionTemplate() {
-        return transactionTemplate;
-    }
-
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
     }
 
     public String getJdbcUrl() {

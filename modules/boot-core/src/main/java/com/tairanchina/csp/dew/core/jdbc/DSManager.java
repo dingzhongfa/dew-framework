@@ -54,7 +54,6 @@ public class DSManager {
         // Register primary DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyValue("jdbcTemplate", primaryJdbcTemplate)
-                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean("transactionManager")))
                 .addPropertyValue("jdbcUrl", primaryJdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");
@@ -110,7 +109,6 @@ public class DSManager {
         // Register DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyReference("jdbcTemplate", dsName + "JdbcTemplate")
-                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean(dsName + "TransactionManager")))
                 .addPropertyValue("jdbcUrl", jdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");

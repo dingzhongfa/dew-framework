@@ -62,7 +62,6 @@ public class RabbitClusterMQ implements ClusterMQ {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error("[MQ] Rabbit response error.", e);
         }
     }
@@ -106,7 +105,6 @@ public class RabbitClusterMQ implements ClusterMQ {
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error("[MQ] Rabbit response error.", e);
         }
     }

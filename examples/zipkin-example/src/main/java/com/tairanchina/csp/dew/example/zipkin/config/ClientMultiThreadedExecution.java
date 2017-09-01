@@ -8,19 +8,21 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
  * Created by 迹_Jason on 2017/8/1.
  */
 public class ClientMultiThreadedExecution {
+
+    private static final Logger logger = LoggerFactory.getLogger(ClientMultiThreadedExecution.class);
 
     private static PoolingClientConnectionManager conMgr = null;
 
@@ -54,7 +56,7 @@ public class ClientMultiThreadedExecution {
         // 发送get请求
         try {
             // 用get方法发送http请求
-            HttpGet get = new HttpGet(url );
+            HttpGet get = new HttpGet(url);
 //            HttpGet get = new HttpGet(url + param);
 //            get.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
 //            get.setHeader("Accept-Encoding", "gzip, deflate, sdch");
@@ -83,15 +85,14 @@ public class ClientMultiThreadedExecution {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("httpclient请求失败");
+            logger.error("httpclient请求失败");
             return null;
         } finally {
             if (httpResponse != null) {
                 try {
                     EntityUtils.consume(httpResponse.getEntity()); //会自动释放连接
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("Has error",e);
                 }
             }
         }
@@ -99,6 +100,6 @@ public class ClientMultiThreadedExecution {
     }
 
     public static void main(String[] args) {
-        get("http://192.168.111.224:8891/start",null);
+        get("http://192.168.111.224:8891/start", null);
     }
 }

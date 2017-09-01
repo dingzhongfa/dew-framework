@@ -2,7 +2,6 @@ package com.tairanchina.csp.dew.core.cluster.spi.eureka;
 
 import com.ecfront.dew.common.$;
 import com.netflix.appinfo.InstanceInfo;
-import com.netflix.appinfo.LeaseInfo;
 import com.tairanchina.csp.dew.core.cluster.ClusterElection;
 import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistrati
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Optional;
 

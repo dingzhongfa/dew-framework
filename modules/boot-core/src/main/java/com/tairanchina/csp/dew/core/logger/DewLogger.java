@@ -12,12 +12,12 @@ public class DewLogger implements Logger {
 
     private Logger logger;
 
-    public static Logger getLogger(Class<?> clazz) {
-        return new DewLogger(clazz);
-    }
-
     public DewLogger(Class<?> clazz) {
         logger = LoggerFactory.getLogger(clazz.getName());
+    }
+
+    public static Logger getLogger(Class<?> clazz) {
+        return new DewLogger(clazz);
     }
 
     private String mixInfo(String msg) {

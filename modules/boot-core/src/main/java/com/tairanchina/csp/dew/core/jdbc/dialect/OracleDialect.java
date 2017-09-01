@@ -1,7 +1,5 @@
 package com.tairanchina.csp.dew.core.jdbc.dialect;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class OracleDialect implements Dialect {
 
     @Override
@@ -17,7 +15,7 @@ public class OracleDialect implements Dialect {
     @Override
     public String getTableInfo(String tableName) {
         //TODO
-        throw new NotImplementedException();
+        throw new RuntimeException("NotImplemented");
     }
 
     @Override

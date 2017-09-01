@@ -63,7 +63,7 @@ public class MethodProxy implements InvocationHandler {
                 } else {
                     List list = Dew.ds().selectForList(((Select) annotation).entityClass(), method.getParamsMap(), ((Select) annotation).value());
                     if (!method.getReturnType().isAssignableFrom(List.class)) {
-                        return list.size() > 0 ? list.get(0) : null;
+                        return !list.isEmpty() ? list.get(0) : null;
                     } else {
                         return list;
                     }

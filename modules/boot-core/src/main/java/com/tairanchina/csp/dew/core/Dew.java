@@ -44,6 +44,10 @@ public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
 
+    public static Cluster cluster = new Cluster();
+    public static ApplicationContext applicationContext;
+    public static DewConfig dewConfig;
+
     @Value("${spring.application.name}")
     private String applicationName;
 
@@ -67,6 +71,8 @@ public class Dew {
                         break;
                     case "HAZELCAST":
                         cacheProperties.setType(CacheType.HAZELCAST);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -141,10 +147,6 @@ public class Dew {
 
     }
 
-    public static Cluster cluster = new Cluster();
-
-    public static ApplicationContext applicationContext;
-
     public static DS ds() {
         return DSManager.select("");
     }
@@ -152,8 +154,6 @@ public class Dew {
     public static DS ds(String dsName) {
         return DSManager.select(dsName);
     }
-
-    public static DewConfig dewConfig;
 
     /**
      * 获取请求上下文信息
@@ -171,8 +171,8 @@ public class Dew {
 
         private static RestTemplate serviceClient;
 
-        public static void setServiceClient(RestTemplate _serviceClient) {
-            serviceClient = _serviceClient;
+        public static void setServiceClient(RestTemplate inputServiceClient) {
+            serviceClient = inputServiceClient;
         }
 
         public static HttpHelper.ResponseWrap get(String url) throws Exception {
@@ -240,13 +240,13 @@ public class Dew {
                         entity = new HttpEntity(headers);
                     }
                     ResponseEntity resp = serviceClient.exchange(tryAttachTokenToUrl(url), httpMethod, entity, Object.class);
-                    HttpHelper.ResponseWrap ResponseWrap = new HttpHelper.ResponseWrap();
-                    ResponseWrap.head = new HashMap<>();
+                    HttpHelper.ResponseWrap responseWrap = new HttpHelper.ResponseWrap();
+                    responseWrap.head = new HashMap<>();
                     for (Map.Entry<String, List<String>> entry : resp.getHeaders().entrySet()) {
-                        ResponseWrap.head.put(entry.getKey(), entry.getValue().size() > 0 ? entry.getValue().get(0) : "");
+                        responseWrap.head.put(entry.getKey(), !entry.getValue().isEmpty() ? entry.getValue().get(0) : "");
                     }
-                    ResponseWrap.result = $.json.toJsonString(resp.getBody());
-                    return ResponseWrap;
+                    responseWrap.result = $.json.toJsonString(resp.getBody());
+                    return responseWrap;
                 } else {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }
@@ -311,13 +311,14 @@ public class Dew {
                 }
             });
         }
-
     }
 
     /**
      * 常用工具
      */
     public static class Util {
+
+        private static ExecutorService executorService = Executors.newCachedThreadPool();
 
         public static String getRealIP(HttpServletRequest request) {
             Map<String, String> requestHeader = new HashMap<>();
@@ -341,8 +342,6 @@ public class Dew {
             }
             return remoteAddr;
         }
-
-        private static ExecutorService executorService = Executors.newCachedThreadPool();
 
         public static void newThread(Runnable fun) {
             executorService.execute(fun);
@@ -453,7 +452,7 @@ public class Dew {
                         .put("customHttpCode", customHttpCode)
                         .toString());
             } catch (NoSuchFieldException e1) {
-                logger.error("Throw Exception Convert error", ex);
+                logger.error("Throw Exception Convert error", e1);
             }
             return ex;
         }

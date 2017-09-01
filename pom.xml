@@ -43,6 +43,10 @@
         <module>examples/service-cloud-example</module>
         <module>examples/thrift-definition-example</module>
         <module>examples/thrift-service-example</module>
+        <module>examples/zipkin-example</module>
+        <module>examples/zipkin-service-example</module>
+        <module>examples/zipkin-service2-example</module>
+        <module>examples/zipkin-service3-example</module>
     </modules>
 
 </project>

@@ -6,6 +6,8 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +37,8 @@ import java.lang.reflect.Constructor;
 @ConditionalOnClass(value = {ThriftService.class})
 @ConditionalOnWebApplication
 public class ThriftServerAutoConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ThriftServerAutoConfiguration.class);
 
     public interface ThriftConfigurer {
         void configureProxyFactory(ProxyFactory proxyFactory);
@@ -87,7 +91,7 @@ public class ThriftServerAutoConfiguration {
                 try {
                     register(servletContext, annotation.value(), protocolFactory.getClass(), applicationContext.getBean(beanName));
                 } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    logger.error("Startup error", e);
                 }
             }
         }

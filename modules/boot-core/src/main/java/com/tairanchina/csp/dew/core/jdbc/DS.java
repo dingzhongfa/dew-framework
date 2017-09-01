@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 
 public class DS {
 
-    private final static String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}";
-    private final static Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
+    private static final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}";
+    private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
-    private char UNDERLINE = '_';
+    private static final char UNDERLINE = '_';
     private JdbcTemplate jdbcTemplate;
     private String jdbcUrl;
 

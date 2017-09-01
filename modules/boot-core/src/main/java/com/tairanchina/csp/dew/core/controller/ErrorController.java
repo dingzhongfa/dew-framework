@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 @ConditionalOnProperty(prefix = "dew.basic.format", name = "useUnityError", havingValue = "true")
 public class ErrorController extends AbstractErrorController {
 
-    protected static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-    private static Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
+    private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     @Value("${error.path:/error}")
     private String errorPath;
@@ -54,7 +54,7 @@ public class ErrorController extends AbstractErrorController {
         int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
         String exception = (String) error.getOrDefault("exception", "");
-        String message = error.getOrDefault("message", "") + "";
+        String message = error.getOrDefault("message", "").toString();
         if (MESSAGE_CHECK.matcher(message).matches()) {
             JsonNode detail = $.json.toJson(message);
             busCode = detail.get("code").asText();

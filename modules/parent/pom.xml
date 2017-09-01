@@ -33,7 +33,7 @@
         <mysql.version>5.1.42</mysql.version>
         <h2.version>1.4.195</h2.version>
         <spring-boot-admin.version>1.5.2</spring-boot-admin.version>
-        <sonar.host.url>http://10.200.131.7:9000</sonar.host.url>
+        <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.version>3.3.0.603</sonar.version>

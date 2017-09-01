@@ -86,13 +86,7 @@ public class ThriftServerAutoConfiguration {
                 ThriftService annotation = applicationContext.findAnnotationOnBean(beanName, ThriftService.class);
                 try {
                     register(servletContext, annotation.value(), protocolFactory.getClass(), applicationContext.getBean(beanName));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -137,6 +131,10 @@ public class ThriftServerAutoConfiguration {
 
             if (ifaceClass == null) {
                 throw new IllegalStateException("No Thrift Ifaces found on handler");
+            }
+
+            if (serviceClass == null) {
+                throw new IllegalStateException("No Thrift Service Class found on handler");
             }
 
             handler = wrapHandler(ifaceClass, handler);

@@ -29,7 +29,7 @@ public class MetricsThriftMethodInterceptor implements MethodInterceptor {
                 counterService.increment(invocation.getMethod().getName());
             }
             if (this.gaugeService != null) {
-                gaugeService.submit("timer.thrift." + invocation.getThis().getClass().getCanonicalName() + "." + invocation.getMethod().getName(), endTime - startTime);
+                gaugeService.submit("timer.thrift." + invocation.getThis().getClass().getCanonicalName() + "." + invocation.getMethod().getName(), 0d + endTime - startTime);
             }
         }
     }

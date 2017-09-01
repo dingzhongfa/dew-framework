@@ -910,6 +910,14 @@ public class OptInfo {
 如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
 
+=== 代码质量检查
+
+Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar` 即可。
+
+TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
+
+TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
+
 === Dubbo协同
 
 [source,xml]

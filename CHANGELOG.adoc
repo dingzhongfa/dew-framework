@@ -1,5 +1,20 @@
 == 版本说明
 
+=== 1.0.0-rc
+
+==== Feature
+
+==== Improvement
+
+* 支持rabbit confirm(音箱)模式
+
+  ((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)
+  ((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)
+
+==== Fixed
+
+* 修正jacoco单元测试覆盖率偏少的问题
+
 === 1.0.0-beta5
 
 ==== Feature

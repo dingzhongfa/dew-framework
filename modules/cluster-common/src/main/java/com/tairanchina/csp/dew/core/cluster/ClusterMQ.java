@@ -9,12 +9,38 @@ public interface ClusterMQ {
 
     Logger logger = LoggerFactory.getLogger(ClusterMQ.class);
 
-    void publish(String topic, String message);
+    /**
+     * MQ 发布订阅模式 之 发布
+     *
+     * @param topic   主题
+     * @param message 消息内容
+     * @return 是否发布成功，此返回值仅在rabbit confirm 模式下才能保证严格准确！
+     */
+    boolean publish(String topic, String message);
 
+    /**
+     * MQ 发布订阅模式 之 订阅
+     *
+     * @param topic    主题
+     * @param consumer 订阅处理方法
+     */
     void subscribe(String topic, Consumer<String> consumer);
 
-    void request(String address, String message);
+    /**
+     * MQ 请求响应模式 之 请求
+     *
+     * @param address 请求地址
+     * @param message 消息内容
+     * @return 是否请求成功
+     */
+    boolean request(String address, String message);
 
+    /**
+     * MQ 请求响应模式 之 响应
+     *
+     * @param address  请求对应的地址
+     * @param consumer 响应处理方法
+     */
     void response(String address, Consumer<String> consumer);
 
 }

@@ -3,6 +3,7 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
+import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -279,6 +280,15 @@ public class ClusterTest {
         Dew.cluster.mq.request("test_rep_resp", "msg2");
 
         Thread.sleep(1000);
+
+        // rabbit confirm
+        if(Dew.cluster.mq instanceof RabbitClusterMQ) {
+            boolean success = ((RabbitClusterMQ) Dew.cluster.mq).publish("test_pub_sub", "confirm message", true);
+            Assert.assertTrue(success);
+            success = ((RabbitClusterMQ) Dew.cluster.mq).request("test_rep_resp", "confirm message", true);
+            Assert.assertTrue(success);
+        }
+
     }
 
     /**

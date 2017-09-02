@@ -2,16 +2,17 @@ package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
+import com.tairanchina.csp.dew.core.validation.CreateGroup;
 import com.tairanchina.csp.dew.core.validation.IdNumber;
 import com.tairanchina.csp.dew.core.validation.Phone;
+import com.tairanchina.csp.dew.core.validation.UpdateGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -57,48 +58,55 @@ public class TestController {
         throw Dew.E.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
     }
 
-    @PostMapping(value = "t5")
-    public String t5(@RequestBody @Valid SomeReq someReq) throws IOException {
+    @PostMapping(value = "valid-create")
+    public String validCreate(@Validated(CreateGroup.class) @RequestBody User user) {
+        return "";
+    }
+
+    @PutMapping(value = "valid-update")
+    public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user) {
         return "";
     }
 
     @GetMapping(value = "error-mapping")
     public String errorMapping() {
-        throw new AuthException("400","auth error");
+        throw new AuthException("400", "auth error");
     }
 
-    public static class SomeReq {
-        @NotNull
-        @Length(min = 2)
-        @IdNumber(message = "身份证号错误")
-        private String a;
-        @Min(10)
-        private int b;
-        @Phone(message = "手机号错误")
-        private String c;
+    public static class User {
 
-        public String getA() {
-            return a;
+        @NotNull(groups = CreateGroup.class)
+        @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
+        private String idCard;
+
+        @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
+        private int age;
+
+        @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
+        private String phone;
+
+        public String getIdCard() {
+            return idCard;
         }
 
-        public void setA(String a) {
-            this.a = a;
+        public void setIdCard(String idCard) {
+            this.idCard = idCard;
         }
 
-        public int getB() {
-            return b;
+        public int getAge() {
+            return age;
         }
 
-        public void setB(int b) {
-            this.b = b;
+        public void setAge(int age) {
+            this.age = age;
         }
 
-        public String getC() {
-            return c;
+        public String getPhone() {
+            return phone;
         }
 
-        public void setC(String c) {
-            this.c = c;
+        public void setPhone(String phone) {
+            this.phone = phone;
         }
     }
 

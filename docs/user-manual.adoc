@@ -787,7 +787,7 @@ TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-com
 
 * 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
 
-TIP: 如果启用了字段检查（ `@RequestBody @Valid ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
+TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
      `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
 
 启用统一响应格式支持：
@@ -834,6 +834,48 @@ Dew.E.check(boolean notExpected, E ex)
 Dew.E.checkNotEmpty(Map<?, ?> objects, E ex)
 Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
 Dew.E.checkNotNull(Object obj, E ex)
+----
+
+==== 使用validation进行Bean校验
+
+* 在 java bean 中添加各项validation，支持标准`javax.validation.constraints`包下的诸如：`NotNull` ，同时框架扩展了几个检查，如：
+   IdNumber、Phone
+* 在Controller中添加 `@Validated` 注解 ( Spring还支持@Vaild，但这一注解不支持分组 )
+* 支持Spring原生分组校验
+
+[source,java]
+.Bean校验示例
+----
+// Controller
+// 保存请求，校验组为CreateGroup，这只一个标识，可为任意类或接口
+@PostMapping(value = "valid-create")
+public String validCreate(@Validated(CreateGroup.class) @RequestBody User user){
+    return "";
+}
+// 更新请求，校验组为UpdateGroup
+@PutMapping(value = "valid-update")
+public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user){
+    return "";
+}
+
+// User类
+public static class User {
+
+    // 仅在CreateGroup组下才校验
+    @NotNull(groups = CreateGroup.class)
+    @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
+    private String idCard;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
+    private int age;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
+    private String phone;
+
+    // Get/Set...
+}
 ----
 
 [source,xml]

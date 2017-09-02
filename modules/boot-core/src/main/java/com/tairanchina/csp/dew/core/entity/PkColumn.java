@@ -10,4 +10,6 @@ public @interface PkColumn {
     // 默认为类名（驼峰转下划线）
     String columnName() default "";
 
+    boolean uuid() default false;
+
 }

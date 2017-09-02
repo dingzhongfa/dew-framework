@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
-import com.ecfront.dew.common.$;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,21 +8,23 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @ConditionalOnClass(JdbcTemplate.class)
 public class DSManager {
+
+    private final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
 
     @Autowired
     private DSConfig dsConfig;
@@ -50,7 +52,6 @@ public class DSManager {
         // Register primary DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyValue("jdbcTemplate", primaryJdbcTemplate)
-                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean("transactionManager")))
                 .addPropertyValue("jdbcUrl", primaryJdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");
@@ -60,9 +61,32 @@ public class DSManager {
         if (dsConfig.getMultiDatasources() != null && !dsConfig.getMultiDatasources().isEmpty()) {
             for (Map.Entry<String, Map<String, String>> entry : dsConfig.getMultiDatasources().entrySet()) {
                 String dsName = entry.getKey();
-                DataSourceBuilder builder = DataSourceBuilder.create();
-                $.bean.setValue(builder, "properties", entry.getValue());
-                register(dsName, entry.getValue().get("url"), builder.build());
+                DruidDataSource ds = new DruidDataSource();
+                Properties properties = new Properties();
+                entry.getValue().forEach((k, v) -> {
+                    Matcher m = LINE_TO_CAMEL_REGEX.matcher(k);
+                    while (m.find()) {
+                        String str = m.group();
+                        k = k.replace(str, str.substring(1).toUpperCase());
+                    }
+                    switch (k) {
+                        case "maxActive":
+                            ds.setMaxActive(Integer.valueOf(v));
+                            break;
+                        case "minIdle":
+                            ds.setMinIdle(Integer.valueOf(v));
+                            break;
+                        case "maxIdle":
+                            ds.setMaxIdle(Integer.valueOf(v));
+                            break;
+                        case "maxWait":
+                            ds.setMaxWait(Integer.valueOf(v));
+                            break;
+                    }
+                    properties.put("druid." + k, v);
+                });
+                ds.setConnectProperties(properties);
+                register(dsName, entry.getValue().get("url"), ds);
             }
         }
     }
@@ -83,7 +107,6 @@ public class DSManager {
         // Register DS
         AbstractBeanDefinition dsBean = BeanDefinitionBuilder.rootBeanDefinition(DS.class)
                 .addPropertyReference("jdbcTemplate", dsName + "JdbcTemplate")
-                .addPropertyValue("transactionTemplate", new TransactionTemplate((PlatformTransactionManager) beanFactory.getBean(dsName + "TransactionManager")))
                 .addPropertyValue("jdbcUrl", jdbcUrl)
                 .setInitMethodName("init").getBeanDefinition();
         dsBean.setScope("singleton");

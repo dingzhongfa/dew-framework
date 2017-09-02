@@ -8,8 +8,8 @@ spring:
           uri: https://rep.360taihe.com/env/fake.git
           repos:
             crm:
-              pattern: crm*
-              uri: https://rep.360taihe.com/env/crm.git
+              pattern: x*
+              uri: https://rep.360taihe.com/env/x.git
           username: cdman
           password: cdman123
 
@@ -17,19 +17,19 @@ server:
   port: 9000
 
 encrypt:
-  key: dsffjsske4wku^%&*&
+  key: dsffjsskeSwku^%&*&
 
 security:
   basic:
     enabled: true
   user:
-    name: tr
-    password: 123456
+    name: trc
+    password: conf!_#123
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://tr:123456@localhost:10000/eureka
+      defaultZone: http://trc:reg!_#123@localhost:10000/eureka
 
 logging:
   path: ../../logs

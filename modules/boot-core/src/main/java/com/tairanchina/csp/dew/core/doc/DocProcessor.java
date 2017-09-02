@@ -46,6 +46,10 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
 
     private static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
+    // FIXME 此设置可能无效
+    @Value("${server.ssl.key-store:}")
+    private String sslKeyStore;
+
     @Autowired
     private DewConfig dewConfig;
 
@@ -72,15 +76,11 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                 }});
     }
 
-    // FIXME 此设置可能无效
-    @Value("${server.ssl.key-store:}")
-    private String sslKeyStore;
-
     @Override
     public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
         int port = event.getEmbeddedServletContainer().getPort();
         String generate = System.getProperty("dew.doc.generate");
-        if (generate != null && generate.toLowerCase().equals("true")) {
+        if (generate != null && generate.equalsIgnoreCase("true")) {
             String outputDir = System.getProperty("dew.doc.outputDir");
             String swaggerDir = System.getProperty("dew.doc.swaggerDir");
             logger.info("Generating Doc to :" + outputDir);
@@ -103,7 +103,7 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                     writer.write(swaggerJson);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Has error",e);
             }
         }
     }

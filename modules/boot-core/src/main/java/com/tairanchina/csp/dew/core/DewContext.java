@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public class DewContext {
 
+    private static ThreadLocal<DewContext> context = new ThreadLocal<>();
+
     private String id;
     private String sourceIP;
     private String requestUri;
@@ -24,8 +26,6 @@ public class DewContext {
         }
         return innerOptInfo;
     }
-
-    private static ThreadLocal<DewContext> context = new ThreadLocal<>();
 
     public static DewContext getContext() {
         DewContext cxt = context.get();

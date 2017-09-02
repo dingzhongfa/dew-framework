@@ -11,9 +11,10 @@ import javax.validation.ConstraintValidatorContext;
  * Validation of the IdNumber.
  */
 public class IdNumberValidator implements ConstraintValidator<IdNumber, String> {
+
     @Override
     public void initialize(IdNumber constraintAnnotation) {
-
+        // doNothing
     }
 
     @Override

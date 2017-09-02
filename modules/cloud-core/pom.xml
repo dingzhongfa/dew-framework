@@ -26,6 +26,11 @@
             <artifactId>boot-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>cluster-spi-eureka</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>

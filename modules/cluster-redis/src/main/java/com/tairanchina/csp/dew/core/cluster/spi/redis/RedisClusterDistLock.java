@@ -5,8 +5,6 @@ import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisCommands;
 
 import java.util.Date;
@@ -51,7 +49,7 @@ public class RedisClusterDistLock implements ClusterDistLock {
 
     @Override
     public void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception {
-        if (tryLock(waitMillSec,leaseMillSec)) {
+        if (tryLock(waitMillSec, leaseMillSec)) {
             try {
                 fun.exec();
             } finally {
@@ -74,10 +72,12 @@ public class RedisClusterDistLock implements ClusterDistLock {
     public boolean tryLock(long waitMillSec) throws InterruptedException {
         long now = new Date().getTime();
         while (new Date().getTime() - now < waitMillSec) {
-            if(isLock()){
+            if (isLock()) {
                 Thread.sleep(100);
             } else {
-                if(tryLock()) return Boolean.TRUE;
+                if (tryLock()) {
+                    return Boolean.TRUE;
+                }
             }
 
         }
@@ -95,10 +95,10 @@ public class RedisClusterDistLock implements ClusterDistLock {
         } else {
             long now = new Date().getTime();
             while (new Date().getTime() - now < waitMillSec) {
-                if(isLock()) {
+                if (isLock()) {
                     Thread.sleep(100);
-                } else {
-                    if(putLockKey(leaseMillSec)) return Boolean.TRUE;
+                } else if (putLockKey(leaseMillSec)) {
+                    return Boolean.TRUE;
                 }
             }
             return putLockKey(leaseMillSec);
@@ -124,10 +124,10 @@ public class RedisClusterDistLock implements ClusterDistLock {
         redisTemplate.delete(key);
     }
 
-    private Boolean putLockKey(long leaseMillSec){
+    private Boolean putLockKey(long leaseMillSec) {
         RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
-        String res=((JedisCommands)redisConnection.getNativeConnection()).set(key,currThreadId,"NX","PX", leaseMillSec);
+        String res = ((JedisCommands) redisConnection.getNativeConnection()).set(key, currThreadId, "NX", "PX", leaseMillSec);
         redisConnection.close();
-        return res!= null && "OK".equals(res.toUpperCase());
+        return res != null && "OK".equalsIgnoreCase(res);
     }
 }

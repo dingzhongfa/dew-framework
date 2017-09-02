@@ -10,37 +10,37 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
+public interface CRUSService<T extends DewDao<P, E>, P, E> extends CRUService<T, P, E> {
 
-    default Resp<Optional<Object>> preEnableById(long id) throws RuntimeException {
+    default Resp<Optional<Object>> preEnableById(P id){
         return Resp.success(Optional.empty());
     }
 
-    default Resp<Optional<Object>> preEnableByCode(String code) throws RuntimeException {
+    default Resp<Optional<Object>> preEnableByCode(String code){
         return Resp.success(Optional.empty());
     }
 
-    default void postEnableById(long id, Optional<Object> preBody) throws RuntimeException {
+    default void postEnableById(P id, Optional<Object> preBody){
     }
 
-    default void postEnableByCode(String code, Optional<Object> preBody) throws RuntimeException {
+    default void postEnableByCode(String code, Optional<Object> preBody){
     }
 
-    default Resp<Optional<Object>> preDisableById(long id) throws RuntimeException {
+    default Resp<Optional<Object>> preDisableById(P id){
         return Resp.success(Optional.empty());
     }
 
-    default void postDisableById(long id, Optional<Object> preBody) throws RuntimeException {
+    default void postDisableById(P id, Optional<Object> preBody){
     }
 
-    default Resp<Optional<Object>> preDisableByCode(String code) throws RuntimeException {
+    default Resp<Optional<Object>> preDisableByCode(String code){
         return Resp.success(Optional.empty());
     }
 
-    default void postDisableByCode(String code, Optional<Object> preBody) throws RuntimeException {
+    default void postDisableByCode(String code, Optional<Object> preBody){
     }
 
-    default Resp<List<E>> findEnabled() throws RuntimeException {
+    default Resp<List<E>> findEnabled(){
         logger.debug("[{}] FindEnable.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
@@ -49,7 +49,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<List<E>> findDisabled() throws RuntimeException {
+    default Resp<List<E>> findDisabled(){
         logger.debug("[{}] FindDisable.", getModelClazz().getSimpleName());
         Resp<Optional<Object>> preResult = preFind();
         if (preResult.ok()) {
@@ -58,11 +58,11 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize) throws RuntimeException {
+    default Resp<Page<E>> pagingEnabled(long pageNumber, int pageSize){
         return pagingEnabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingEnabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+    default Resp<Page<E>> pagingEnabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc){
         logger.debug("[{}] PagingEnable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
@@ -71,11 +71,11 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
         return Resp.customFail(preResult.getCode(), preResult.getMessage());
     }
 
-    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize) throws RuntimeException {
+    default Resp<Page<E>> pagingDisabled(long pageNumber, int pageSize){
         return pagingDisabled(pageNumber, pageSize, null);
     }
 
-    default Resp<Page<E>> pagingDisabled(int pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc) throws RuntimeException {
+    default Resp<Page<E>> pagingDisabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc){
         logger.debug("[{}] PagingDisable {} {} {}.", getModelClazz().getSimpleName(), pageNumber, pageSize, orderDesc != null ? $.json.toJsonString(orderDesc) : "");
         Resp<Optional<Object>> preResult = prePaging();
         if (preResult.ok()) {
@@ -85,7 +85,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> enableById(long id) throws RuntimeException {
+    default Resp<Void> enableById(P id){
         logger.debug("[{}] EnableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preEnableById(id);
         if (preResult.ok()) {
@@ -97,7 +97,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> enableByCode(String code) throws RuntimeException {
+    default Resp<Void> enableByCode(String code){
         logger.debug("[{}] EnableByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preEnableByCode(code);
         if (preResult.ok()) {
@@ -109,7 +109,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> disableById(long id) throws RuntimeException {
+    default Resp<Void> disableById(P id){
         logger.debug("[{}] DisableById:{}.", getModelClazz().getSimpleName(), id);
         Resp<Optional<Object>> preResult = preDisableById(id);
         if (preResult.ok()) {
@@ -121,7 +121,7 @@ public interface CRUSService<T extends DewDao<E>, E> extends CRUService<T, E> {
     }
 
     @Transactional
-    default Resp<Void> disableByCode(String code) throws RuntimeException {
+    default Resp<Void> disableByCode(String code){
         logger.debug("[{}] DisableByCode:{}.", getModelClazz().getSimpleName(), code);
         Resp<Optional<Object>> preResult = preDisableByCode(code);
         if (preResult.ok()) {

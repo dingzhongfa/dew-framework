@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: cache-example
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+
+server:
+  port: 8080
+
+dew:
+  cluster:
+    cache: redis

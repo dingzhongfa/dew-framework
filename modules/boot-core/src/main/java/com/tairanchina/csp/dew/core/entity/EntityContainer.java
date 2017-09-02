@@ -68,6 +68,7 @@ public class EntityContainer {
                     // private key column
                     PkColumn pkColumn = (PkColumn) field.getAnnotations().stream().filter(ann -> ann.annotationType() == PkColumn.class).findAny().get();
                     entityClassInfo.pkFieldNameOpt = Optional.of(field.getName());
+                    entityClassInfo.pkUUIDOpt = Optional.of(pkColumn.uuid());
                     entityClassInfo.columns.put(field.getName(),
                             EntityClassInfo.Column.build(pkColumn.columnName().isEmpty() ? camelToUnderline(field.getName()) : pkColumn.columnName(), true));
                     isContinue = true;
@@ -160,6 +161,7 @@ public class EntityContainer {
         public String tableName;
 
         public Optional<String> pkFieldNameOpt = Optional.empty();
+        public Optional<Boolean> pkUUIDOpt = Optional.empty();
 
         public Optional<String> codeFieldNameOpt = Optional.empty();
         public Optional<Boolean> codeUUIDOpt = Optional.empty();

@@ -22,14 +22,14 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
                 if (!v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
                 }
             }
         }
         if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
                 if (v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
                 }
             }
         }

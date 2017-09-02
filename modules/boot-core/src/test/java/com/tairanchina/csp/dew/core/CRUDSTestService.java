@@ -5,6 +5,6 @@ import com.tairanchina.csp.dew.core.service.CRUDSService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CRUDSTestService implements CRUDSService<TestInterfaceDao, CRUDSTestEntity> {
+public class CRUDSTestService implements CRUDSService<TestInterfaceDao, Integer, CRUDSTestEntity> {
 
 }

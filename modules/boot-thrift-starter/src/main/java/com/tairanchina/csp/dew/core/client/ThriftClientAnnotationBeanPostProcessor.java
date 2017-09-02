@@ -10,11 +10,12 @@ import org.apache.commons.pool2.KeyedObjectPool;
 import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TProtocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -35,6 +36,8 @@ import java.util.Map;
  */
 public class ThriftClientAnnotationBeanPostProcessor implements BeanPostProcessor {
 
+    private static final Logger logger = LoggerFactory.getLogger(ThriftClientAnnotationBeanPostProcessor.class);
+
     @Autowired
     private DefaultListableBeanFactory beanFactory;
     @Autowired
@@ -43,7 +46,7 @@ public class ThriftClientAnnotationBeanPostProcessor implements BeanPostProcesso
     private Map<String, List<Class>> beansToProcess = new HashMap<>();
 
     @Override
-    public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {
+    public Object postProcessBeforeInitialization(Object o, String s) {
         Class clazz = o.getClass();
         do {
             for (Field field : clazz.getDeclaredFields()) {
@@ -61,19 +64,17 @@ public class ThriftClientAnnotationBeanPostProcessor implements BeanPostProcesso
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object o, String s) throws BeansException {
+    public Object postProcessAfterInitialization(Object o, String s) {
         if (beansToProcess.containsKey(s)) {
             Object target = getTargetBean(o);
             for (Class clazz : beansToProcess.get(s)) {
                 for (Field field : clazz.getDeclaredFields()) {
                     ThriftClient annotation = AnnotationUtils.getAnnotation(field, ThriftClient.class);
                     if (null != annotation) {
-
                         Class<?> filedClass = field.getType();
                         if (!filedClass.getSuperclass().getSimpleName().equalsIgnoreCase(TServiceClient.class.getSimpleName())) {
                             throw new RuntimeException("ThriftClient Annotation Should only using in subclass of TServiceClient");
                         }
-
                         if (beanFactory.containsBean(field.getName())) {
                             ReflectionUtils.makeAccessible(field);
                             ReflectionUtils.setField(field, target, beanFactory.getBean(field.getName()));
@@ -98,7 +99,7 @@ public class ThriftClientAnnotationBeanPostProcessor implements BeanPostProcesso
             try {
                 target = ((Advised) target).getTargetSource().getTarget();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Has error", e);
             }
         }
         return target;

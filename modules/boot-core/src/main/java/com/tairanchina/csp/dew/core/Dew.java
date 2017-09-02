@@ -3,13 +3,11 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.ecfront.dew.common.StandardCode;
-import com.tairanchina.csp.dew.core.cluster.Cluster;
-import com.tairanchina.csp.dew.core.cluster.ClusterCache;
-import com.tairanchina.csp.dew.core.cluster.ClusterDist;
-import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
+import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
+import com.tairanchina.csp.dew.core.fun.VoidPredicate;
 import com.tairanchina.csp.dew.core.jdbc.ClassPathScanner;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
@@ -19,8 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -44,6 +46,10 @@ public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
 
+    public static Cluster cluster = new Cluster();
+    public static ApplicationContext applicationContext;
+    public static DewConfig dewConfig;
+
     @Value("${spring.application.name}")
     private String applicationName;
 
@@ -54,17 +60,38 @@ public class Dew {
     @Autowired
     private ApplicationContext innerApplicationContext;
 
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        return new MethodValidationPostProcessor();
+    }
+
     @PostConstruct
     private void init() {
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
+            if (Dew.applicationContext.containsBean("cacheProperties")) {
+                CacheProperties cacheProperties = Dew.applicationContext.getBean(CacheProperties.class);
+                switch (innerDewConfig.getCluster().getCache().toUpperCase()) {
+                    case "REDIS":
+                        cacheProperties.setType(CacheType.REDIS);
+                        break;
+                    case "HAZELCAST":
+                        cacheProperties.setType(CacheType.HAZELCAST);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getDist() + "ClusterDist")) {
             Dew.cluster.dist = (ClusterDist) Dew.applicationContext.getBean(innerDewConfig.getCluster().getDist() + "ClusterDist");
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getMq() + "ClusterMQ")) {
             Dew.cluster.mq = (ClusterMQ) Dew.applicationContext.getBean(innerDewConfig.getCluster().getMq() + "ClusterMQ");
+        }
+        if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getElection() + "ClusterElection")) {
+            Dew.cluster.election = (ClusterElection) Dew.applicationContext.getBean(innerDewConfig.getCluster().getElection() + "ClusterElection");
         }
         Dew.dewConfig = innerDewConfig;
         if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {
@@ -127,10 +154,6 @@ public class Dew {
 
     }
 
-    public static Cluster cluster = new Cluster();
-
-    public static ApplicationContext applicationContext;
-
     public static DS ds() {
         return DSManager.select("");
     }
@@ -138,8 +161,6 @@ public class Dew {
     public static DS ds(String dsName) {
         return DSManager.select(dsName);
     }
-
-    public static DewConfig dewConfig;
 
     /**
      * 获取请求上下文信息
@@ -157,59 +178,59 @@ public class Dew {
 
         private static RestTemplate serviceClient;
 
-        public static void setServiceClient(RestTemplate _serviceClient) {
-            serviceClient = _serviceClient;
+        public static void setServiceClient(RestTemplate inputServiceClient) {
+            serviceClient = inputServiceClient;
         }
 
-        public static HttpHelper.WrapHead get(String url) throws Exception {
+        public static HttpHelper.ResponseWrap get(String url) throws Exception {
             return get(url, null);
         }
 
-        public static HttpHelper.WrapHead get(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap get(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.GET, url, null, header);
         }
 
-        public static HttpHelper.WrapHead delete(String url) throws Exception {
+        public static HttpHelper.ResponseWrap delete(String url) throws Exception {
             return delete(url, null);
         }
 
-        public static HttpHelper.WrapHead delete(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap delete(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.DELETE, url, null, header);
         }
 
-        public static HttpHelper.WrapHead head(String url) throws Exception {
+        public static HttpHelper.ResponseWrap head(String url) throws Exception {
             return head(url, null);
         }
 
-        public static HttpHelper.WrapHead head(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap head(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.HEAD, url, null, header);
         }
 
-        public static HttpHelper.WrapHead options(String url) throws Exception {
+        public static HttpHelper.ResponseWrap options(String url) throws Exception {
             return options(url, null);
         }
 
-        public static HttpHelper.WrapHead options(String url, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap options(String url, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.OPTIONS, url, null, header);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body) throws Exception {
+        public static HttpHelper.ResponseWrap post(String url, Object body) throws Exception {
             return post(url, body, null);
         }
 
-        public static HttpHelper.WrapHead post(String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap post(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.POST, url, body, header);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body) throws Exception {
+        public static HttpHelper.ResponseWrap put(String url, Object body) throws Exception {
             return put(url, body, null);
         }
 
-        public static HttpHelper.WrapHead put(String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap put(String url, Object body, Map<String, String> header) throws Exception {
             return exchange(HttpMethod.PUT, url, body, header);
         }
 
-        private static HttpHelper.WrapHead exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
+        public static HttpHelper.ResponseWrap exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
             try {
                 if (header == null) {
                     header = new HashMap<>();
@@ -226,13 +247,13 @@ public class Dew {
                         entity = new HttpEntity(headers);
                     }
                     ResponseEntity resp = serviceClient.exchange(tryAttachTokenToUrl(url), httpMethod, entity, Object.class);
-                    HttpHelper.WrapHead wrapHead = new HttpHelper.WrapHead();
-                    wrapHead.head = new HashMap<>();
+                    HttpHelper.ResponseWrap responseWrap = new HttpHelper.ResponseWrap();
+                    responseWrap.head = new HashMap<>();
                     for (Map.Entry<String, List<String>> entry : resp.getHeaders().entrySet()) {
-                        wrapHead.head.put(entry.getKey(), entry.getValue().size() > 0 ? entry.getValue().get(0) : "");
+                        responseWrap.head.put(entry.getKey(), !entry.getValue().isEmpty() ? entry.getValue().get(0) : "");
                     }
-                    wrapHead.result = $.json.toJsonString(resp.getBody());
-                    return wrapHead;
+                    responseWrap.result = $.json.toJsonString(resp.getBody());
+                    return responseWrap;
                 } else {
                     return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
                 }
@@ -297,13 +318,14 @@ public class Dew {
                 }
             });
         }
-
     }
 
     /**
      * 常用工具
      */
     public static class Util {
+
+        private static ExecutorService executorService = Executors.newCachedThreadPool();
 
         public static String getRealIP(HttpServletRequest request) {
             Map<String, String> requestHeader = new HashMap<>();
@@ -327,8 +349,6 @@ public class Dew {
             }
             return remoteAddr;
         }
-
-        private static ExecutorService executorService = Executors.newCachedThreadPool();
 
         public static void newThread(Runnable fun) {
             executorService.execute(fun);
@@ -401,45 +421,83 @@ public class Dew {
 
     }
 
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code 异常编码
-     * @param ex   异常类型
-     */
-    public static <E extends Throwable> E e(String code, E ex) {
-        return e(code, ex, -1);
-    }
+    public static class E {
 
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code           异常编码
-     * @param ex             异常类型
-     * @param customHttpCode 自定义Http状态码
-     */
-    public static <E extends Throwable> E e(String code, E ex, StandardCode customHttpCode) {
-        return e(code, ex, Integer.valueOf(customHttpCode.toString()));
-    }
-
-    /**
-     * 异常处理-重用Http状态
-     *
-     * @param code           异常编码
-     * @param ex             异常类型
-     * @param customHttpCode 自定义Http状态码
-     */
-    public static <E extends Throwable> E e(String code, E ex, int customHttpCode) {
-        try {
-            $.bean.setValue(ex, "detailMessage", $.json.createObjectNode()
-                    .put("code", code)
-                    .put("message", ex.getLocalizedMessage())
-                    .put("customHttpCode", customHttpCode)
-                    .toString());
-        } catch (NoSuchFieldException e1) {
-            logger.error("Throw Exception Convert error", ex);
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code 异常编码
+         * @param ex   异常类型
+         */
+        public static <E extends Throwable> E e(String code, E ex) {
+            return e(code, ex, -1);
         }
-        return ex;
+
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code           异常编码
+         * @param ex             异常类型
+         * @param customHttpCode 自定义Http状态码
+         */
+        public static <E extends Throwable> E e(String code, E ex, StandardCode customHttpCode) {
+            return e(code, ex, Integer.valueOf(customHttpCode.toString()));
+        }
+
+        /**
+         * 异常处理-重用Http状态
+         *
+         * @param code           异常编码
+         * @param ex             异常类型
+         * @param customHttpCode 自定义Http状态码
+         */
+        public static <E extends Throwable> E e(String code, E ex, int customHttpCode) {
+            try {
+                $.bean.setValue(ex, "detailMessage", $.json.createObjectNode()
+                        .put("code", code)
+                        .put("message", ex.getLocalizedMessage())
+                        .put("customHttpCode", customHttpCode)
+                        .toString());
+            } catch (NoSuchFieldException e1) {
+                logger.error("Throw Exception Convert error", e1);
+            }
+            return ex;
+        }
+
+        public static <E extends RuntimeException> void checkNotNull(Object obj, E ex) {
+            check(() -> obj == null, ex);
+        }
+
+        public static <E extends RuntimeException> void checkNotEmpty(Iterable<?> objects, E ex) {
+            check(() -> !objects.iterator().hasNext(), ex);
+        }
+
+        public static <E extends RuntimeException> void checkNotEmpty(Map<?, ?> objects, E ex) {
+            check(() -> objects.size() == 0, ex);
+        }
+
+        /**
+         * 抛出不符合预期异常
+         *
+         * @param notExpected 不符合预期的情况
+         * @param ex          异常
+         */
+        public static <E extends RuntimeException> void check(boolean notExpected, E ex) {
+            check(() -> notExpected, ex);
+        }
+
+        /**
+         * 抛出不符合预期异常
+         *
+         * @param notExpected 不符合预期的情况
+         * @param ex          异常
+         */
+        public static <E extends RuntimeException> void check(VoidPredicate notExpected, E ex) {
+            if (notExpected.test()) {
+                throw ex;
+            }
+        }
+
     }
 
 }

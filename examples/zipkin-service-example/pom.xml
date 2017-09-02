@@ -18,6 +18,7 @@
     <version>1.0.0-beta4</version>
 
     <properties>
+        <sonar.skip>true</sonar.skip>
     </properties>
 
     <dependencies>

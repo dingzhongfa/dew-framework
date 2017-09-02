@@ -5,7 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @ConfigurationProperties(prefix = "dew")
@@ -38,6 +40,7 @@ public class DewConfig {
         private Doc doc = new Doc();
         private Entity entity = new Entity();
         private Format format = new Format();
+        private Map<String,ErrorMapping> errorMapping = new HashMap<>();
 
         public String getName() {
             return name;
@@ -127,6 +130,39 @@ public class DewConfig {
             public void setMessageFieldName(String messageFieldName) {
                 this.messageFieldName = messageFieldName;
             }
+
+
+        }
+
+        public static class ErrorMapping {
+
+            private int httpCode;
+            private String businessCode;
+            private String message;
+
+            public int getHttpCode() {
+                return httpCode;
+            }
+
+            public void setHttpCode(int httpCode) {
+                this.httpCode = httpCode;
+            }
+
+            public String getBusinessCode() {
+                return businessCode;
+            }
+
+            public void setBusinessCode(String businessCode) {
+                this.businessCode = businessCode;
+            }
+
+            public String getMessage() {
+                return message;
+            }
+
+            public void setMessage(String message) {
+                this.message = message;
+            }
         }
 
         public Doc getDoc() {
@@ -153,7 +189,13 @@ public class DewConfig {
             this.format = format;
         }
 
+        public Map<String, ErrorMapping> getErrorMapping() {
+            return errorMapping;
+        }
 
+        public void setErrorMapping(Map<String, ErrorMapping> errorMapping) {
+            this.errorMapping = errorMapping;
+        }
     }
 
     public static class Cluster {
@@ -161,6 +203,7 @@ public class DewConfig {
         private String mq = "redis";
         private String cache = "redis";
         private String dist = "redis";
+        private String election = "eureka";
 
         public String getMq() {
             return mq;
@@ -184,6 +227,14 @@ public class DewConfig {
 
         public void setDist(String dist) {
             this.dist = dist;
+        }
+
+        public String getElection() {
+            return election;
+        }
+
+        public void setElection(String election) {
+            this.election = election;
         }
     }
 

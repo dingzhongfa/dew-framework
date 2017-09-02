@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public abstract class StatusEntity extends PkEntity {
+public abstract class StatusEntity<P> extends PkEntity<P> {
 
     @ApiModelProperty("是否启用")
     @EnabledColumn

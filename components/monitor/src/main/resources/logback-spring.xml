@@ -23,8 +23,7 @@
         <appender-ref ref="dailyRollingFileAppender"/>
     </root>
 
-    <logger name="com.ecfront" level="TRACE"/>
-    <logger name="org.hibernate.SQL" level="DEBUG"/>
-    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <logger name="com.tairanchina" level="TRACE"/>
+    <logger name="org.springframework.jdbc.core" level="TRACE"/>
 
 </configuration>

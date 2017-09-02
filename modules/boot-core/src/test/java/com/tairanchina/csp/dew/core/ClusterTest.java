@@ -70,17 +70,19 @@ public class ClusterTest {
 
         Dew.cluster.cache.del("int_test");
         Assert.assertEquals(0, Dew.cluster.cache.incrBy("int_test", 0));
-        Dew.cluster.cache.incrBy("int_test", 10);
-        Assert.assertEquals("10", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.incrBy("int_test", 0);
+        Dew.cluster.cache.set("int_test", "10");
         Assert.assertEquals("10", Dew.cluster.cache.get("int_test"));
         Dew.cluster.cache.incrBy("int_test", 10);
         Assert.assertEquals("20", Dew.cluster.cache.get("int_test"));
+        Dew.cluster.cache.incrBy("int_test", 0);
+        Assert.assertEquals("20", Dew.cluster.cache.get("int_test"));
+        Dew.cluster.cache.incrBy("int_test", 10);
+        Assert.assertEquals("30", Dew.cluster.cache.get("int_test"));
         Dew.cluster.cache.decrBy("int_test", 4);
         Dew.cluster.cache.decrBy("int_test", 2);
-        Assert.assertEquals("14", Dew.cluster.cache.get("int_test"));
+        Assert.assertEquals("24", Dew.cluster.cache.get("int_test"));
         Dew.cluster.cache.expire("int_test", 1);
-        Assert.assertEquals("14", Dew.cluster.cache.get("int_test"));
+        Assert.assertEquals("24", Dew.cluster.cache.get("int_test"));
         Thread.sleep(1100);
         Assert.assertEquals(null, Dew.cluster.cache.get("int_test"));
     }

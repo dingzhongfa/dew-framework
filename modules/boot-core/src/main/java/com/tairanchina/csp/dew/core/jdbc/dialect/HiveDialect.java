@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.core.jdbc.dialect;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 class HiveDialect implements Dialect {
 
@@ -17,7 +16,7 @@ class HiveDialect implements Dialect {
     @Override
     public String getTableInfo(String tableName) {
         //TODO
-        throw new NotImplementedException();
+        throw new RuntimeException("NotImplemented");
     }
 
     @Override

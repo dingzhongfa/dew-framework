@@ -1,7 +1,5 @@
 package com.tairanchina.csp.dew.core.jdbc.dialect;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 class MySQLDialect implements Dialect {
 
     @Override
@@ -11,13 +9,13 @@ class MySQLDialect implements Dialect {
 
     @Override
     public String count(String sql) {
-        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + sql.hashCode();
+        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + (Math.abs(sql.hashCode()) & 0x7fffffff);
     }
 
     @Override
     public String getTableInfo(String tableName) {
         //TODO
-        throw new NotImplementedException();
+        throw new RuntimeException("NotImplemented");
     }
 
     @Override

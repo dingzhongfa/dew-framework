@@ -7,9 +7,9 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 public @interface CodeColumn {
 
-    boolean uuid() default true;
-
     // 默认为字段名（驼峰转下划线）
     String columnName() default "";
+
+    boolean uuid() default true;
 
 }

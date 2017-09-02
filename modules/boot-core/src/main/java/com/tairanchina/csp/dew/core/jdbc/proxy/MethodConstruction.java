@@ -18,10 +18,10 @@ import java.util.Map;
  */
 public class MethodConstruction {
 
-    private final String PAGE_NUMBER_FLAG = "pageNumber";
-    private final String PAGE_SIZE_FLAG = "pageSize";
-    private final int DEFAULT_PAGE_NUMBER = 1;
-    private final int DEFAULT_PAGE_SIZE = 10;
+    private static final String PAGE_NUMBER_FLAG = "pageNumber";
+    private static final String PAGE_SIZE_FLAG = "pageSize";
+    private static final int DEFAULT_PAGE_NUMBER = 1;
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     private Method method;
 

@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by 迹_Jason on 2017/7/27.
  */
-public interface TestInterfaceDao extends DewDao<CRUDSTestEntity>{
+public interface TestInterfaceDao extends DewDao<Integer,CRUDSTestEntity>{
 
     @Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
     Page<CRUDSTestEntity> queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Param("pageNumber") Long pageNumber, @Param("pageSize") Integer pageSize);

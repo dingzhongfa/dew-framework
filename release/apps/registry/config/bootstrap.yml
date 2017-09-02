@@ -3,23 +3,21 @@ spring:
     name: registry
 
 server:
-  port: 10000
+  port: 8000
 
 security:
   basic:
     enabled: true
   user:
-    name: tr
-    password: 123456
+    name: trc
+    password: reg123
 
 eureka:
-  server:
-    enable-self-preservation: false
   client:
     register-with-eureka: false
     fetch-registry: false
     serviceUrl:
-      defaultZone: http://tr:123456@localhost:${server.port}/eureka
+      defaultZone: http://trc:reg123@localhost:${server.port}/eureka
 
 logging:
   path: ../../logs

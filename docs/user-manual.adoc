@@ -7,7 +7,7 @@ TIP: 所有模块均为Maven结构
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 </parent>
 ...
 <dependencies>
@@ -76,7 +76,7 @@ public class BoneExampleApplication {
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 </parent>
 …
 <dependencies>
@@ -283,6 +283,10 @@ mvn -Dtest=DocTest clean test -P doc
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-jdbc</artifactId>
     </dependency>
+    <dependency>
+         <groupId>com.alibaba</groupId>
+         <artifactId>druid-spring-boot-starter</artifactId>
+    </dependency>
     <!-- 对应的数据库JDBC驱动 -->
 </dependencies>
 ----
@@ -355,7 +359,7 @@ Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
 // insert
 ExampleEntity entity = new ExampleEntity();
 entity.setFieldA("测试A");
-long id = Dew.ds().insert(entity);
+P id = Dew.ds().insert(entity);
 // get
 logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
 ----
@@ -384,15 +388,15 @@ TIP: 为方便操作，框架提供了`PkEntity` `SafeEntity` `StatusEntity` `Sa
 * 支持常用操作
 
 ** *增加* `Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable<?> entities)`
-** *更新* `Dew.ds().updateById(long id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
-** *获取单条* `Dew.ds().getById(long id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
+** *更新* `Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
+** *获取单条* `Dew.ds().getById(P id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
 ** *获取多条* `Dew.ds().findAll(Class<E> entityClazz) / Dew.ds().findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)`
 ** *获取分页* `Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…)`
 ** *计数* `Dew.ds().countAll(Class<?> entityClazz) / Dew.ds().countEnabled(Class<?> entityClazz) / Dew.ds().countDisabled(Class<?> entityClazz)`
-** *启用* `Dew.ds().enableById(long id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
-** *禁用* `Dew.ds().disableById(long id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
-** *是否存在* `Dew.ds().existById(long id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
-** *物理删除* `Dew.ds().deleteById(long id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
+** *启用* `Dew.ds().enableById(P id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
+** *禁用* `Dew.ds().disableById(P id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
+** *是否存在* `Dew.ds().existById(P id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
+** *物理删除* `Dew.ds().deleteById(P id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
 
 TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
 
@@ -431,14 +435,14 @@ Page<CRUDSTestEntity> queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Pa
 .返回Bean类型数据
 ----
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
-CRUDSTestEntity getById(@Param("id") long id);
+CRUDSTestEntity getById(@Param("id") P id);
 ----
 
 [source,java]
 .返回Map类型数据
 ----
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}")
-Map<String,Object> getMapById(@Param("id") long id);
+Map<String,Object> getMapById(@Param("id") P id);
 ----
 
 * 限定
@@ -446,7 +450,6 @@ Map<String,Object> getMapById(@Param("id") long id);
 . `@Select` 只能用于接口
 . `@Select` 暂不支持DSL SQL，比如（HQL）
 . `@ModelParam` 参数不支持 `null` 查询
-. `where` 语句之后请添加1=1，即：`where 1=1`
 
 
 === 多数据源支持
@@ -461,14 +464,14 @@ spring.datasource.url=…
 spring.datasource.username=…
 spring.datasource.password=…
 spring.datasource.driver-class-name=…
-spring.datasource.tomcat.max-idle=…
+spring.datasource.druid.max-idle=…
 …
 # 其它数据源
 spring.datasource.secondary.url=…
 spring.datasource.secondary.username=…
 spring.datasource.secondary.password=…
 spring.datasource.secondary.driver-class-name=…
-spring.datasource.secondary.tomcat.max-idle=…
+spring.datasource.secondary.max-idle=…
 …
 ----
 
@@ -558,7 +561,7 @@ spring.datasource.url=…
 spring.datasource.username=…
 spring.datasource.password=…
 spring.datasource.driver-class-name=…
-spring.datasource.tomcat.max-idle=…
+spring.datasource.druid.max-idle=…
 …
 # 其它数据源1
 spring.datasource.multi-datasources.other1.url=…
@@ -573,7 +576,7 @@ spring.datasource.multi-datasources.other2.url=…
 
 IMPORTANT: 其它数据源务必配置在 `spring.datasource.multi-datasources` 下，格式是 `spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
 
-IMPORTANT: 主数据源连接池要加上 `tomcat` 或其它类型，其它数据源与 `url` 、 `username` 同级即可。
+IMPORTANT: 主数据源连接池要加上 `druid` 或其它类型，其它数据源与 `url` 、 `username` 同级即可。
 
 [source,java]
 .使用
@@ -626,7 +629,7 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 
 === 启用集群功能
 
-Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
+Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` `Master Election`，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
 
 [source,xml]
 .引入依赖
@@ -648,6 +651,10 @@ Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` ，并�
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-rabbit</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cluster-spi-eureka</artifactId>
 </dependency>
 ----
 
@@ -679,6 +686,7 @@ dew:
     cache: redis
     dist: hazelcast # 可选 redis/hazelcast
     mq: hazelcast # 可选 redis/hazelcast/rabbit
+    election: eureka
 ----
 
 [source,java]
@@ -708,6 +716,7 @@ ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
 lock.delete();
 lock.lock();
 assert !lock.tryLock();
+lock.unLock();
 
 // MQ:发布-订阅模型
 Dew.cluster.mq.subscribe("test_pub_sub", message ->
@@ -734,7 +743,6 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 === 服务脚手架
 
 一般的，我们对实体对象的操作可以有 `增C删D改U查R` 外加`状态变更S`，`服务脚手架`从`DAO`到`Service`再到`Controller`实现了上述操作。
-
 
 * CRUController: 支持增改查操作
 * CRUDController: 支持增删改查操作
@@ -780,7 +788,7 @@ TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-com
 
 * 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
 
-TIP: 如果启用了字段检查（ `@RequestBody @Valid ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
+TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
      `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
 
 启用统一响应格式支持：
@@ -807,12 +815,93 @@ public Resp<String> test(){
 // 重用http状态码
 // 与协议无关格式区别在于：
 // 1. throws 对应的异常
-// 2. 使用Dew.e(<code>,<Exception Instance>)来抛出异常
+// 2. 使用Dew.E.e(<code>,<Exception Instance>)来抛出异常
 public String test() throws IOException{
     return "enjoy!";
-    // or throw Dew.e("A000", new IOException("io error"));
-    // or throw Dew.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
+    // or throw Dew.E.e("A000", new IOException("io error"));
+    // or throw Dew.E.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
 }
+----
+
+=== 异常处理
+
+Dew 会把程序没有捕获的异常统一转成 `500` 异常上抛，同时框架提供了常用的异常检查：
+
+[source,java]
+.异常检查，异常类型要求为RuntimeException及其子类
+----
+Dew.E.check(VoidPredicate notExpected, E ex)
+Dew.E.check(boolean notExpected, E ex)
+Dew.E.checkNotEmpty(Map<?, ?> objects, E ex)
+Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
+Dew.E.checkNotNull(Object obj, E ex)
+----
+
+==== 使用validation进行Bean校验
+
+* 在 java bean 中添加各项validation，支持标准`javax.validation.constraints`包下的诸如：`NotNull` ，同时框架扩展了几个检查，如：
+   IdNumber、Phone
+* 在Controller中添加 `@Validated` 注解 ( Spring还支持@Vaild，但这一注解不支持分组 )
+* 支持Spring原生分组校验
+
+[source,java]
+.Bean校验示例
+----
+// Controller
+// 保存请求，校验组为CreateGroup，这只一个标识，可为任意类或接口
+@PostMapping(value = "valid-create")
+public String validCreate(@Validated(CreateGroup.class) @RequestBody User user){
+    return "";
+}
+// 更新请求，校验组为UpdateGroup
+@PutMapping(value = "valid-update")
+public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user){
+    return "";
+}
+
+// User类
+public static class User {
+
+    // 仅在CreateGroup组下才校验
+    @NotNull(groups = CreateGroup.class)
+    @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
+    private String idCard;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
+    private int age;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
+    private String phone;
+
+    // Get/Set...
+}
+----
+
+[source,xml]
+.自定义异常配置
+----
+dew:
+  basic:
+    format:
+      use-unity-error: true // 这个必须为true
+    error-mapping:
+      "[<异常类名>]":
+        http-code: <http状态码>
+        business-code: <业务编码>
+        message: <错误描述>
+
+<!--示例-->
+dew:
+  basic:
+    format:
+      use-unity-error: true
+    error-mapping:
+      "[com.tairanchina.csp.dew.core.AuthException]":
+        http-code: 401
+        business-code: x00010
+        message: 认证错误
 ----
 
 === 认证缓存
@@ -888,6 +977,14 @@ public class OptInfo {
 在服务调用时使用 `Dew.EB.post/get/put/delete/options/head` 方法，Dew会根据传入的 `URL` 判断，
 如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
+
+=== 代码质量检查
+
+Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar` 即可。
+
+TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
+
+TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
 
 === Dubbo协同
 
@@ -1073,7 +1170,7 @@ thrift --gen <language> <Thrift filename>
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>boot-thrift-start</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 <dependency>
 ----
 

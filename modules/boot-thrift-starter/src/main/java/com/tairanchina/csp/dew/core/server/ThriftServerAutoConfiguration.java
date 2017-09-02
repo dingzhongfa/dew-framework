@@ -6,6 +6,8 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.beans.BeanUtils;
@@ -35,6 +37,8 @@ import java.lang.reflect.Constructor;
 @ConditionalOnClass(value = {ThriftService.class})
 @ConditionalOnWebApplication
 public class ThriftServerAutoConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ThriftServerAutoConfiguration.class);
 
     public interface ThriftConfigurer {
         void configureProxyFactory(ProxyFactory proxyFactory);
@@ -86,14 +90,8 @@ public class ThriftServerAutoConfiguration {
                 ThriftService annotation = applicationContext.findAnnotationOnBean(beanName, ThriftService.class);
                 try {
                     register(servletContext, annotation.value(), protocolFactory.getClass(), applicationContext.getBean(beanName));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                    logger.error("Startup error", e);
                 }
             }
         }
@@ -137,6 +135,10 @@ public class ThriftServerAutoConfiguration {
 
             if (ifaceClass == null) {
                 throw new IllegalStateException("No Thrift Ifaces found on handler");
+            }
+
+            if (serviceClass == null) {
+                throw new IllegalStateException("No Thrift Service Class found on handler");
             }
 
             handler = wrapHandler(ifaceClass, handler);

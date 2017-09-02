@@ -83,7 +83,7 @@ public class JDBCTest {
         BasicEntity basicEntity = new BasicEntity();
         basicEntity.setFieldA("测试A");
         basicEntity.setFieldB("测试B");
-        long id = Dew.ds().insert(basicEntity);
+        Object id = Dew.ds().insert(basicEntity);
         // getById
         Assert.assertEquals("测试A", Dew.ds().getById(id, BasicEntity.class).getFieldA());
         // updateById

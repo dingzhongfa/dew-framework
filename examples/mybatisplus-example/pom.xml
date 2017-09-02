@@ -20,6 +20,7 @@
 
 	<properties>
 		<mybatisplus-spring-boot-starter.version>1.0.2</mybatisplus-spring-boot-starter.version>
+		<sonar.skip>true</sonar.skip>
 	</properties>
 
 	<dependencies>

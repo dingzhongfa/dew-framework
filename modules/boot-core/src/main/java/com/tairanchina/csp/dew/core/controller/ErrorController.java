@@ -5,6 +5,7 @@ import com.ecfront.dew.common.Resp;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +29,9 @@ import java.util.regex.Pattern;
 @ConditionalOnProperty(prefix = "dew.basic.format", name = "useUnityError", havingValue = "true")
 public class ErrorController extends AbstractErrorController {
 
-    protected static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-    private static Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
+    private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     @Value("${error.path:/error}")
     private String errorPath;
@@ -53,7 +55,21 @@ public class ErrorController extends AbstractErrorController {
         String busCode = (int) error.getOrDefault("status", -1) + "";
         int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
-        String message = error.getOrDefault("message", "") + "";
+        String message = error.getOrDefault("message", "").toString();
+        String exception = (String) error.getOrDefault("exception", "");
+        if (!StringUtils.isEmpty(exception) && Dew.dewConfig.getBasic().getErrorMapping().containsKey(exception)) {
+            // Found Error Mapping
+            DewConfig.Basic.ErrorMapping errorMapping = Dew.dewConfig.getBasic().getErrorMapping().get(exception);
+            if (!StringUtils.isEmpty(errorMapping.getHttpCode())) {
+                httpCode = errorMapping.getHttpCode();
+            }
+            if (!StringUtils.isEmpty(errorMapping.getBusinessCode())) {
+                busCode = errorMapping.getBusinessCode();
+            }
+            if (!StringUtils.isEmpty(errorMapping.getMessage())) {
+                message = errorMapping.getMessage();
+            }
+        }
         if (MESSAGE_CHECK.matcher(message).matches()) {
             JsonNode detail = $.json.toJson(message);
             busCode = detail.get("code").asText();
@@ -75,7 +91,7 @@ public class ErrorController extends AbstractErrorController {
             }
             message += " Detail:" + $.json.toJsonString(errorExt);
         }
-        logger.error("Request [{}] from [{}]{} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
+        logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
             return ResponseEntity.status(200).body($.json.toJsonString(resp));

@@ -980,7 +980,7 @@ public class OptInfo {
 
 === 代码质量检查
 
-Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar` 即可。
+Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar -P qa` 即可。
 
 TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
 

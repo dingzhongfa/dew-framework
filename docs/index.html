@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="v1.0.0-SNAPSHOT,2017-07-28">
+<meta name="author" content="v1.0.0-beta5,2017-09-2">
 <title>Dew-Framework（轻量服务框架）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Dew-Framework（轻量服务框架）</h1>
 <div class="details">
-<span id="author" class="author">v1.0.0-SNAPSHOT,2017-07-28</span><br>
+<span id="author" class="author">v1.0.0-beta5,2017-09-2</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -482,9 +482,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#true--13">2.8. 服务脚手架</a></li>
 <li><a href="#truecors">2.9. CORS支持</a></li>
 <li><a href="#true--14">2.10. 统一响应格式</a></li>
-<li><a href="#true--15">2.11. 认证缓存</a></li>
-<li><a href="#true--16">2.12. 服务调用开发期优化</a></li>
-<li><a href="#truedubbo">2.13. Dubbo协同</a></li>
+<li><a href="#true--15">2.11. 异常处理</a>
+<ul class="sectlevel3">
+<li><a href="#true-validation-bean">2.11.1. 使用validation进行Bean校验</a></li>
+</ul>
+</li>
+<li><a href="#true--16">2.12. 认证缓存</a></li>
+<li><a href="#true--17">2.13. 服务调用开发期优化</a></li>
+<li><a href="#true--18">2.14. 代码质量检查</a></li>
+<li><a href="#truedubbo">2.15. Dubbo协同</a></li>
+<li><a href="#true-thrift">2.16. 使用Thrift文档</a>
+<ul class="sectlevel3">
+<li><a href="#true-api-2">2.16.1. 生成API</a></li>
+<li><a href="#truespring-cloud">2.16.2. Spring Cloud工程使用</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#true-tbd">3. 最佳实践（TBD）</a>
@@ -494,56 +506,63 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#true-tbd-2">4. 技术指标(TBD)</a>
 <ul class="sectlevel2">
-<li><a href="#true--17">4.1. 可靠性</a></li>
-<li><a href="#true--18">4.2. 性能</a></li>
+<li><a href="#true--19">4.1. 可靠性</a></li>
+<li><a href="#true--20">4.2. 性能</a></li>
 </ul>
 </li>
-<li><a href="#true--19">5. 贡献</a>
+<li><a href="#true--21">5. 贡献</a>
 <ul class="sectlevel3">
 <li><a href="#truescm">5.1. SCM</a></li>
 </ul>
 </li>
-<li><a href="#true--20">6. 编译部署</a>
+<li><a href="#true--22">6. 编译部署</a>
 <ul class="sectlevel2">
-<li><a href="#true--21">6.1. 开发期热部署</a></li>
-<li><a href="#true--22">6.2. 打包</a></li>
-<li><a href="#true--23">6.3. 部署</a>
+<li><a href="#true--23">6.1. 开发期热部署</a></li>
+<li><a href="#true--24">6.2. 打包</a></li>
+<li><a href="#true--25">6.3. 部署</a>
 <ul class="sectlevel3">
-<li><a href="#true--24">6.3.1. 准备</a></li>
-<li><a href="#true--25">6.3.2. 手工发布</a></li>
+<li><a href="#true--26">6.3.1. 准备</a></li>
+<li><a href="#true--27">6.3.2. 手工发布</a></li>
 <li><a href="#trueci">6.3.3. CI</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#true--26">7. 版本说明</a>
+<li><a href="#true--28">7. 版本说明</a>
 <ul class="sectlevel2">
-<li><a href="#true1.0.0-SNAPSHOT">7.1. 1.0.0-SNAPSHOT</a>
+<li><a href="#true1-0-0-beta5">7.1. 1.0.0-beta5</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature">7.1.1. Feature</a></li>
 <li><a href="#trueimprovement">7.1.2. Improvement</a></li>
 <li><a href="#truefixed">7.1.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta3">7.2. 1.0.0-beta3</a>
+<li><a href="#true1-0-0-beta4">7.2. 1.0.0-beta4</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature-2">7.2.1. Feature</a></li>
 <li><a href="#trueimprovement-2">7.2.2. Improvement</a></li>
 <li><a href="#truefixed-2">7.2.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta2">7.3. 1.0.0-Beta2</a>
+<li><a href="#true1-0-0-beta3">7.3. 1.0.0-beta3</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature-3">7.3.1. Feature</a></li>
 <li><a href="#trueimprovement-3">7.3.2. Improvement</a></li>
 <li><a href="#truefixed-3">7.3.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta1">7.4. 1.0.0-beta1</a>
+<li><a href="#true1-0-0-beta2">7.4. 1.0.0-Beta2</a>
 <ul class="sectlevel3">
 <li><a href="#truefeature-4">7.4.1. Feature</a></li>
 <li><a href="#trueimprovement-4">7.4.2. Improvement</a></li>
 <li><a href="#truefixed-4">7.4.3. Fixed</a></li>
+</ul>
+</li>
+<li><a href="#true1-0-0-beta1">7.5. 1.0.0-beta1</a>
+<ul class="sectlevel3">
+<li><a href="#truefeature-5">7.5.1. Feature</a></li>
+<li><a href="#trueimprovement-5">7.5.2. Improvement</a></li>
+<li><a href="#truefixed-5">7.5.3. Fixed</a></li>
 </ul>
 </li>
 </ul>
@@ -703,7 +722,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;parent&gt;
     &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
     &lt;artifactId&gt;parent&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-beta5&lt;/version&gt;
 &lt;/parent&gt;
 ...
 &lt;dependencies&gt;
@@ -793,7 +812,7 @@ public class BoneExampleApplication {
 <pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;parent&gt;
     &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
     &lt;artifactId&gt;parent&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;1.0.0-beta5&lt;/version&gt;
 &lt;/parent&gt;
 …
 &lt;dependencies&gt;
@@ -1113,6 +1132,10 @@ public class DocTest {
         &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
         &lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;
     &lt;/dependency&gt;
+    &lt;dependency&gt;
+         &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+         &lt;artifactId&gt;druid-spring-boot-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
     &lt;!-- 对应的数据库JDBC驱动 --&gt;
 &lt;/dependencies&gt;</code></pre>
 </div>
@@ -1201,7 +1224,7 @@ Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
 // insert
 ExampleEntity entity = new ExampleEntity();
 entity.setFieldA("测试A");
-Object id = Dew.ds().insert(entity);
+P id = Dew.ds().insert(entity);
 // get
 logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());</code></pre>
 </div>
@@ -1290,10 +1313,10 @@ logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFie
 <p><strong>增加</strong> <code>Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable&lt;?&gt; entities)</code></p>
 </li>
 <li>
-<p><strong>更新</strong> <code>Dew.ds().updateById(Object id, Object entity) / Dew.ds().updateByCode(String code, Object entity)</code></p>
+<p><strong>更新</strong> <code>Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)</code></p>
 </li>
 <li>
-<p><strong>获取单条</strong> <code>Dew.ds().getById(long id, Class&lt;E&gt; entityClazz) / Dew.ds().getByCode(String code, Class&lt;E&gt; entityClazz)</code></p>
+<p><strong>获取单条</strong> <code>Dew.ds().getById(P id, Class&lt;E&gt; entityClazz) / Dew.ds().getByCode(String code, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
 <p><strong>获取多条</strong> <code>Dew.ds().findAll(Class&lt;E&gt; entityClazz) / Dew.ds().findAll(LinkedHashMap&lt;String, Boolean&gt; orderDesc, Class&lt;E&gt; entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)</code></p>
@@ -1305,16 +1328,16 @@ logger.info("&gt;&gt;&gt;&gt; "+Dew.ds().getById(id, ExampleEntity.class).getFie
 <p><strong>计数</strong> <code>Dew.ds().countAll(Class&lt;?&gt; entityClazz) / Dew.ds().countEnabled(Class&lt;?&gt; entityClazz) / Dew.ds().countDisabled(Class&lt;?&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>启用</strong> <code>Dew.ds().enableById(long id, Class&lt;?&gt; entityClazz) / Dew.ds().enableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>启用</strong> <code>Dew.ds().enableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().enableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>禁用</strong> <code>Dew.ds().disableById(long id, Class&lt;?&gt; entityClazz) / Dew.ds().disableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>禁用</strong> <code>Dew.ds().disableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().disableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>是否存在</strong> <code>Dew.ds().existById(long id, Class&lt;?&gt; entityClazz) / Dew.ds().existByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>是否存在</strong> <code>Dew.ds().existById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().existByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>物理删除</strong> <code>Dew.ds().deleteById(long id, Class&lt;?&gt; entityClazz) / Dew.ds().deleteByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>物理删除</strong> <code>Dew.ds().deleteById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().deleteByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
 </li>
 </ul>
 </div>
@@ -1389,14 +1412,14 @@ Page&lt;CRUDSTestEntity&gt; queryByCustomPaging(@ModelParam CRUDSTestEntity mode
 <div class="title">返回Bean类型数据</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
-CRUDSTestEntity getById(@Param("id") long id);</code></pre>
+CRUDSTestEntity getById(@Param("id") P id);</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">返回Map类型数据</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Select(value = "select * from t_test_crud_s_entity where id= #{id}")
-Map&lt;String,Object&gt; getMapById(@Param("id") long id);</code></pre>
+Map&lt;String,Object&gt; getMapById(@Param("id") P id);</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1434,14 +1457,14 @@ spring.datasource.url=…
 spring.datasource.username=…
 spring.datasource.password=…
 spring.datasource.driver-class-name=…
-spring.datasource.tomcat.max-idle=…
+spring.datasource.druid.max-idle=…
 …
 # 其它数据源
 spring.datasource.secondary.url=…
 spring.datasource.secondary.username=…
 spring.datasource.secondary.password=…
 spring.datasource.secondary.driver-class-name=…
-spring.datasource.secondary.tomcat.max-idle=…
+spring.datasource.secondary.max-idle=…
 …</code></pre>
 </div>
 </div>
@@ -1532,7 +1555,7 @@ spring.datasource.url=…
 spring.datasource.username=…
 spring.datasource.password=…
 spring.datasource.driver-class-name=…
-spring.datasource.tomcat.max-idle=…
+spring.datasource.druid.max-idle=…
 …
 # 其它数据源1
 spring.datasource.multi-datasources.other1.url=…
@@ -1564,7 +1587,7 @@ spring.datasource.multi-datasources.other2.url=…
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-主数据源连接池要加上 <code>tomcat</code> 或其它类型，其它数据源与 <code>url</code> 、 <code>username</code> 同级即可。
+主数据源连接池要加上 <code>druid</code> 或其它类型，其它数据源与 <code>url</code> 、 <code>username</code> 同级即可。
 </td>
 </tr>
 </table>
@@ -1647,7 +1670,7 @@ public long insert(Object entity) {
 <div class="sect2">
 <h3 id="true--12"><a class="anchor" href="#true--12"></a>2.7. 启用集群功能</h3>
 <div class="paragraph">
-<p>Dew的集群支持 <code>分布式缓存</code> <code>分布式Map</code> <code>分布式锁</code> <code>MQ</code> ，并且做了接口抽象以适配不同的实现，目前支持 <code>Redis</code> 、 <code>Hazelcast</code> 、 <code>Rabbit</code> ，对 <code>Ignite</code> 的适配正在进行中。</p>
+<p>Dew的集群支持 <code>分布式缓存</code> <code>分布式Map</code> <code>分布式锁</code> <code>MQ</code> <code>Master Election</code>，并且做了接口抽象以适配不同的实现，目前支持 <code>Redis</code> 、 <code>Hazelcast</code> 、 <code>Rabbit</code> ，对 <code>Ignite</code> 的适配正在进行中。</p>
 </div>
 <div class="listingblock">
 <div class="title">引入依赖</div>
@@ -1669,6 +1692,10 @@ public long insert(Object entity) {
 &lt;dependency&gt;
     &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
     &lt;artifactId&gt;cluster-spi-rabbit&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
+    &lt;artifactId&gt;cluster-spi-eureka&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1699,7 +1726,8 @@ dew:
     cluster:
     cache: redis
     dist: hazelcast # 可选 redis/hazelcast
-    mq: hazelcast # 可选 redis/hazelcast/rabbit</code></pre>
+    mq: hazelcast # 可选 redis/hazelcast/rabbit
+    election: eureka</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1729,6 +1757,7 @@ ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
 lock.delete();
 lock.lock();
 assert !lock.tryLock();
+lock.unLock();
 
 // MQ:发布-订阅模型
 Dew.cluster.mq.subscribe("test_pub_sub", message -&gt;
@@ -1892,7 +1921,7 @@ body 响应正文</pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-如果启用了字段检查（ <code>@RequestBody @Valid &#8230;&#8203;</code> ），在检查不通过时会上述两种格式的 <code>message</code> 内容返回Json格式的错误详细（ <code>Detail:</code> 标识之后的内容），格式为：
+如果启用了字段检查（ <code>@RequestBody @Validated &#8230;&#8203;</code> ），在检查不通过时会上述两种格式的 <code>message</code> 内容返回Json格式的错误详细（ <code>Detail:</code> 标识之后的内容），格式为：
      <code>[{"field":"&lt;字段名&gt;","reason":"&lt;原因，如NotNull,Min&gt;","msg":"&lt;错误描述&gt;"}]</code>
 </td>
 </tr>
@@ -1923,17 +1952,110 @@ public Resp&lt;String&gt; test(){
 // 重用http状态码
 // 与协议无关格式区别在于：
 // 1. throws 对应的异常
-// 2. 使用Dew.e(&lt;code&gt;,&lt;Exception Instance&gt;)来抛出异常
+// 2. 使用Dew.E.e(&lt;code&gt;,&lt;Exception Instance&gt;)来抛出异常
 public String test() throws IOException{
     return "enjoy!";
-    // or throw Dew.e("A000", new IOException("io error"));
-    // or throw Dew.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
+    // or throw Dew.E.e("A000", new IOException("io error"));
+    // or throw Dew.E.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--15"><a class="anchor" href="#true--15"></a>2.11. 认证缓存</h3>
+<h3 id="true--15"><a class="anchor" href="#true--15"></a>2.11. 异常处理</h3>
+<div class="paragraph">
+<p>Dew 会把程序没有捕获的异常统一转成 <code>500</code> 异常上抛，同时框架提供了常用的异常检查：</p>
+</div>
+<div class="listingblock">
+<div class="title">异常检查，异常类型要求为RuntimeException及其子类</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">Dew.E.check(VoidPredicate notExpected, E ex)
+Dew.E.check(boolean notExpected, E ex)
+Dew.E.checkNotEmpty(Map&lt;?, ?&gt; objects, E ex)
+Dew.E.checkNotEmpty(Iterable&lt;?&gt; objects, E ex)
+Dew.E.checkNotNull(Object obj, E ex)</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true-validation-bean"><a class="anchor" href="#true-validation-bean"></a>2.11.1. 使用validation进行Bean校验</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>在 java bean 中添加各项validation，支持标准<code>javax.validation.constraints</code>包下的诸如：<code>NotNull</code> ，同时框架扩展了几个检查，如：
+IdNumber、Phone</p>
+</li>
+<li>
+<p>在Controller中添加 <code>@Validated</code> 注解 ( Spring还支持@Vaild，但这一注解不支持分组 )</p>
+</li>
+<li>
+<p>支持Spring原生分组校验</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Bean校验示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// Controller
+// 保存请求，校验组为CreateGroup，这只一个标识，可为任意类或接口
+@PostMapping(value = "valid-create")
+public String validCreate(@Validated(CreateGroup.class) @RequestBody User user){
+    return "";
+}
+// 更新请求，校验组为UpdateGroup
+@PutMapping(value = "valid-update")
+public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user){
+    return "";
+}
+
+// User类
+public static class User {
+
+    // 仅在CreateGroup组下才校验
+    @NotNull(groups = CreateGroup.class)
+    @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
+    private String idCard;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
+    private int age;
+
+    // CreateGroup、UpdateGroup组下校验
+    @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
+    private String phone;
+
+    // Get/Set...
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">自定义异常配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">dew:
+  basic:
+    format:
+      use-unity-error: true // 这个必须为true
+    error-mapping:
+      "[&lt;异常类名&gt;]":
+        http-code: &lt;http状态码&gt;
+        business-code: &lt;业务编码&gt;
+        message: &lt;错误描述&gt;
+
+&lt;!--示例--&gt;
+dew:
+  basic:
+    format:
+      use-unity-error: true
+    error-mapping:
+      "[com.tairanchina.csp.dew.core.AuthException]":
+        http-code: 401
+        business-code: x00010
+        message: 认证错误</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true--16"><a class="anchor" href="#true--16"></a>2.12. 认证缓存</h3>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
@@ -1997,7 +2119,7 @@ public class OptInfo {
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--16"><a class="anchor" href="#true--16"></a>2.12. 服务调用开发期优化</h3>
+<h3 id="true--17"><a class="anchor" href="#true--17"></a>2.13. 服务调用开发期优化</h3>
 <div class="paragraph">
 <p>在Spring Cloud体系下，服务调用需要启动<code>Eureka</code>服务（对于Dew中的<code>Regstry</code>组件），这对开发阶段并不友好：</p>
 </div>
@@ -2022,7 +2144,37 @@ public class OptInfo {
 </div>
 </div>
 <div class="sect2">
-<h3 id="truedubbo"><a class="anchor" href="#truedubbo"></a>2.13. Dubbo协同</h3>
+<h3 id="true--18"><a class="anchor" href="#true--18"></a>2.14. 代码质量检查</h3>
+<div class="paragraph">
+<p>Dew 已集成 <code>Sonar</code> 插件，只需要在maven中配置 <code>sonar.host.url</code> 为目标地址，然后执行 <code>mvn clean verify sonar:sonar</code> 即可。</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+如提供没有权限访问，请设置 <code>sonar.forceAuthentication=false</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+使用 <code>&lt;maven.test.skip&gt;true&lt;/maven.test.skip&gt;</code> 可跳过特定模块的测试，<code>&lt;sonar.skip&gt;true&lt;/sonar.skip&gt;</code> 可跳过特定模块的Sonar检查
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truedubbo"><a class="anchor" href="#truedubbo"></a>2.15. Dubbo协同</h3>
 <div class="listingblock">
 <div class="title">引入依赖</div>
 <div class="content">
@@ -2185,6 +2337,121 @@ public @interface Service {
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="true-thrift"><a class="anchor" href="#true-thrift"></a>2.16. 使用Thrift文档</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>扩展TTransport支持从注册中心获取服务列表并根据既定策略进行负载，详见TLoadBalancerClient类，利用Netflix</p>
+</li>
+<li>
+<p>服务端添加Metrics支持，统计各服务响应时间及各方法调用次数</p>
+</li>
+<li>
+<p>封装TServiceClient支持超时熔断保护利用Hystrix</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="true-api-2"><a class="anchor" href="#true-api-2"></a>2.16.1. 生成API</h4>
+<div class="paragraph">
+<p>安装Thrift [<a href="https://thrift.apache.org/" class="bare">https://thrift.apache.org/</a>]</p>
+</div>
+<div class="listingblock">
+<div class="title">引入依赖</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.thrift&lt;/groupId&gt;
+    &lt;artifactId&gt;libthrift&lt;/artifactId&gt;
+    &lt;version&gt;0.10.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">编辑Thrift文件</div>
+<p>教程[<a href="http://www.jianshu.com/p/0f4113d6ec4b" class="bare">http://www.jianshu.com/p/0f4113d6ec4b</a>]</p>
+</div>
+<div class="listingblock">
+<div class="title">执行</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell" data-lang="shell">thrift --gen &lt;language&gt; &lt;Thrift filename&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truespring-cloud"><a class="anchor" href="#truespring-cloud"></a>2.16.2. Spring Cloud工程使用</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>在启动类，添加<code>@EnabledThriftDiscovery</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">引入依赖</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
+    &lt;artifactId&gt;boot-thrift-start&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0-beta5&lt;/version&gt;
+&lt;dependency&gt;</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueservice"><a class="anchor" href="#trueservice"></a>Service</h5>
+<div class="listingblock">
+<div class="title">实现Iface接口</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@ThriftService(value = "/url")
+public class CalculatorController implements TCalculatorService.Iface {
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">thrift:
+  client:
+      maxThread: 10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="trueclient"><a class="anchor" href="#trueclient"></a>Client</h5>
+<div class="listingblock">
+<div class="title">实现Iface接口</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@ThriftClient(serviceId = "thrift-service-example", path = "/url")
+TCalculatorService.Client tcalculatorClient;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">thrift:
+    service:
+          connectTimeout: 2000
+          readTimeout: 50000
+          maxRetries: 3
+          endpoint:</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+详见：<code>thrift-service-example</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2266,13 +2533,13 @@ public @interface Service {
 <h2 id="true-tbd-2"><a class="anchor" href="#true-tbd-2"></a>4. 技术指标(TBD)</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--17"><a class="anchor" href="#true--17"></a>4.1. 可靠性</h3>
+<h3 id="true--19"><a class="anchor" href="#true--19"></a>4.1. 可靠性</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--18"><a class="anchor" href="#true--18"></a>4.2. 性能</h3>
+<h3 id="true--20"><a class="anchor" href="#true--20"></a>4.2. 性能</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
@@ -2510,7 +2777,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--19"><a class="anchor" href="#true--19"></a>5. 贡献</h2>
+<h2 id="true--21"><a class="anchor" href="#true--21"></a>5. 贡献</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all spread">
 <colgroup>
@@ -2543,10 +2810,10 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--20"><a class="anchor" href="#true--20"></a>6. 编译部署</h2>
+<h2 id="true--22"><a class="anchor" href="#true--22"></a>6. 编译部署</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--21"><a class="anchor" href="#true--21"></a>6.1. 开发期热部署</h3>
+<h3 id="true--23"><a class="anchor" href="#true--23"></a>6.1. 开发期热部署</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -2588,13 +2855,13 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--22"><a class="anchor" href="#true--22"></a>6.2. 打包</h3>
+<h3 id="true--24"><a class="anchor" href="#true--24"></a>6.2. 打包</h3>
 <div class="paragraph">
 <p><code>mvn clean package -P fatjar</code> 即可打出一个包含所有依赖的包，后把<code>target</code>目录下生成的jar放到<code>release/apps</code>下。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--23"><a class="anchor" href="#true--23"></a>6.3. 部署</h3>
+<h3 id="true--25"><a class="anchor" href="#true--25"></a>6.3. 部署</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -2611,7 +2878,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </table>
 </div>
 <div class="sect3">
-<h4 id="true--24"><a class="anchor" href="#true--24"></a>6.3.1. 准备</h4>
+<h4 id="true--26"><a class="anchor" href="#true--26"></a>6.3.1. 准备</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2633,7 +2900,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="true--25"><a class="anchor" href="#true--25"></a>6.3.2. 手工发布</h4>
+<h4 id="true--27"><a class="anchor" href="#true--27"></a>6.3.2. 手工发布</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2665,12 +2932,85 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--26"><a class="anchor" href="#true--26"></a>7. 版本说明</h2>
+<h2 id="true--28"><a class="anchor" href="#true--28"></a>7. 版本说明</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true1.0.0-SNAPSHOT"><a class="anchor" href="#true1.0.0-SNAPSHOT"></a>7.1. 1.0.0-SNAPSHOT</h3>
+<h3 id="true1-0-0-beta5"><a class="anchor" href="#true1-0-0-beta5"></a>7.1. 1.0.0-beta5</h3>
 <div class="sect3">
 <h4 id="truefeature"><a class="anchor" href="#truefeature"></a>7.1.1. Feature</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>添加服务调用限制（可定义A服务不允许B服务调用，防止服务双向依赖） e.g.</p>
+<div class="literalblock">
+<div class="content">
+<pre>dew.security.exclude-services:
+ - serviceB
+ - serviceC</pre>
+</div>
+</div>
+</li>
+<li>
+<p>添加对Thrift的支持</p>
+</li>
+<li>
+<p>支持集群Leader Election（非严格模式）</p>
+</li>
+<li>
+<p>整合Spring Boot Cache</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>7.1.2. Improvement</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>优化CURD脚手架</p>
+</li>
+<li>
+<p>支持UUID形式的主键</p>
+</li>
+<li>
+<p>优化注解自定义查询（ <code>@Select</code> ），通过测试</p>
+</li>
+<li>
+<p>支持自定义异常配置，见 <code>异常处理</code> 章节</p>
+</li>
+<li>
+<p>添加Bean分组校验说明，见 <code>异常处理</code> 章节</p>
+</li>
+<li>
+<p>添加 <code>Sonar</code> 代码质量检查，配置 <code>sonar.host.url</code> 执行 <code>mvn clean verify sonar:sonar</code></p>
+</li>
+<li>
+<p>【需要迁移】使用Druid数据库连接池（注意数据库连接配置变更）</p>
+</li>
+<li>
+<p>【需要迁移】删除 <code>DaoImpl</code> 兼容性类</p>
+</li>
+<li>
+<p>【需要迁移】将 <code>Dew.e</code> 移到 <code>Dew.E.e</code>，添加 <code>Dew.E.checkXX</code>异常检查方法，见 <code>异常处理</code> 章节</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>7.1.3. Fixed</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>修正事务失败，重试成功后还是被回滚的问题</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true1-0-0-beta4"><a class="anchor" href="#true1-0-0-beta4"></a>7.2. 1.0.0-beta4</h3>
+<div class="sect3">
+<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>7.2.1. Feature</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -2692,7 +3032,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>7.1.2. Improvement</h4>
+<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>7.2.2. Improvement</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -2720,14 +3060,14 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>7.1.3. Fixed</h4>
+<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>7.2.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta3"><a class="anchor" href="#true1-0-0-beta3"></a>7.2. 1.0.0-beta3</h3>
+<h3 id="true1-0-0-beta3"><a class="anchor" href="#true1-0-0-beta3"></a>7.3. 1.0.0-beta3</h3>
 <div class="sect3">
-<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>7.2.1. Feature</h4>
+<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>7.3.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2737,7 +3077,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>7.2.2. Improvement</h4>
+<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>7.3.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2753,14 +3093,14 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>7.2.3. Fixed</h4>
+<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>7.3.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>7.3. 1.0.0-Beta2</h3>
+<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>7.4. 1.0.0-Beta2</h3>
 <div class="sect3">
-<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>7.3.1. Feature</h4>
+<h4 id="truefeature-4"><a class="anchor" href="#truefeature-4"></a>7.4.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2770,7 +3110,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>7.3.2. Improvement</h4>
+<h4 id="trueimprovement-4"><a class="anchor" href="#trueimprovement-4"></a>7.4.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2795,14 +3135,14 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>7.3.3. Fixed</h4>
+<h4 id="truefixed-4"><a class="anchor" href="#truefixed-4"></a>7.4.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>7.4. 1.0.0-beta1</h3>
+<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>7.5. 1.0.0-beta1</h3>
 <div class="sect3">
-<h4 id="truefeature-4"><a class="anchor" href="#truefeature-4"></a>7.4.1. Feature</h4>
+<h4 id="truefeature-5"><a class="anchor" href="#truefeature-5"></a>7.5.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2824,7 +3164,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-4"><a class="anchor" href="#trueimprovement-4"></a>7.4.2. Improvement</h4>
+<h4 id="trueimprovement-5"><a class="anchor" href="#trueimprovement-5"></a>7.5.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2843,7 +3183,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-4"><a class="anchor" href="#truefixed-4"></a>7.4.3. Fixed</h4>
+<h4 id="truefixed-5"><a class="anchor" href="#truefixed-5"></a>7.5.3. Fixed</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2864,7 +3204,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-28 11:53:29 CST
+Last updated 2017-09-02 09:43:44 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

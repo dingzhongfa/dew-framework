@@ -7,7 +7,7 @@ TIP: 所有模块均为Maven结构
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 </parent>
 ...
 <dependencies>
@@ -76,7 +76,7 @@ public class BoneExampleApplication {
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 </parent>
 …
 <dependencies>
@@ -716,6 +716,7 @@ ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
 lock.delete();
 lock.lock();
 assert !lock.tryLock();
+lock.unLock();
 
 // MQ:发布-订阅模型
 Dew.cluster.mq.subscribe("test_pub_sub", message ->
@@ -1169,7 +1170,7 @@ thrift --gen <language> <Thrift filename>
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>boot-thrift-start</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta5</version>
 <dependency>
 ----
 

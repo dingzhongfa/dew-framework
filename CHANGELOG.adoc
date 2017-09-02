@@ -19,9 +19,9 @@
 * 优化CURD脚手架
 * 支持UUID形式的主键
 * 优化注解自定义查询（ `@Select` ），通过测试
-* 支持自定义异常配置
+* 支持自定义异常配置，见 `异常处理` 章节
+* 添加Bean分组校验说明，见 `异常处理` 章节
 * 添加 `Sonar` 代码质量检查，配置 `sonar.host.url` 执行 `mvn clean verify sonar:sonar`
-* 添加Bean分组校验说明
 * 【需要迁移】使用Druid数据库连接池（注意数据库连接配置变更）
 * 【需要迁移】删除 `DaoImpl` 兼容性类
 * 【需要迁移】将 `Dew.e` 移到 `Dew.E.e`，添加 `Dew.E.checkXX`异常检查方法，见 `异常处理` 章节

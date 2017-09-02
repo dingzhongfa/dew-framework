@@ -740,6 +740,13 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 . Rabbit: 仅做MQ用，支持持久化，支持仅在收到消息并且处理完成后才Acknowledge
 ====
 
+[NOTE]
+.Rabbit Confirm模式支持
+====
+((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)
+((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)
+====
+
 === 服务脚手架
 
 一般的，我们对实体对象的操作可以有 `增C删D改U查R` 外加`状态变更S`，`服务脚手架`从`DAO`到`Service`再到`Controller`实现了上述操作。

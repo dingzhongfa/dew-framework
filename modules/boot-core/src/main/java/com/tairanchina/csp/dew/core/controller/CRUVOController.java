@@ -4,11 +4,15 @@ package com.tairanchina.csp.dew.core.controller;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.service.CRUService;
+import com.tairanchina.csp.dew.core.validation.CreateGroup;
+import com.tairanchina.csp.dew.core.validation.UpdateGroup;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOController<T, P, V, E> {
@@ -57,7 +61,7 @@ public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOCon
     @ApiImplicitParams({
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
-    default Resp<V> save(@RequestBody V vo) {
+    default Resp<V> save(@RequestBody @Validated(CreateGroup.class) V vo) {
         return convertObject(getService().save(voToEntity(vo)));
     }
 
@@ -67,7 +71,7 @@ public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOCon
             @ApiImplicitParam(name = "id", value = "记录ID", paramType = "path", dataType = "int", required = true),
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
-    default Resp<V> updateById(@PathVariable P id, @RequestBody V vo) {
+    default Resp<V> updateById(@PathVariable P id, @RequestBody @Validated(UpdateGroup.class) V vo) {
         return convertObject(getService().updateById(id, voToEntity(vo)));
     }
 
@@ -77,7 +81,7 @@ public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOCon
             @ApiImplicitParam(name = "code", value = "记录Code", paramType = "path", dataType = "String", required = true),
             @ApiImplicitParam(name = "vo", value = "记录实例", paramType = "body", dataType = "V", required = true),
     })
-    default Resp<V> updateByCode(@PathVariable String code, @RequestBody V vo) {
+    default Resp<V> updateByCode(@PathVariable String code, @RequestBody @Validated(UpdateGroup.class) V vo) {
         return convertObject(getService().updateByCode(code, voToEntity(vo)));
     }
 

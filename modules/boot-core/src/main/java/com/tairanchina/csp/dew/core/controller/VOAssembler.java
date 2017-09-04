@@ -16,11 +16,11 @@ public interface VOAssembler<V, E> {
 
     boolean convertAble();
 
-    default V entityToVO(E entity){
+    default V entityToVO(E entity) {
         return (V) entity;
     }
 
-    default E voToEntity(V vo){
+    default E voToEntity(V vo) {
         return (E) vo;
     }
 

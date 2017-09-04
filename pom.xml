@@ -30,9 +30,10 @@
         <module>components/gateway</module>
         <module>components/monitor</module>
         <module>examples/bone-example</module>
-        <module>examples/cache-example</module>
         <module>examples/web-example</module>
         <module>examples/jdbc-example</module>
+        <module>examples/cache-example</module>
+        <module>examples/hystrix-example</module>
         <module>examples/cluster-example</module>
         <module>examples/config-example</module>
         <module>examples/dubbo-example</module>

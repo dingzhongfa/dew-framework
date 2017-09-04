@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
 @ComponentScan(basePackageClasses = {Dew.class})
-@EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
 public abstract class DewBootApplication {
 

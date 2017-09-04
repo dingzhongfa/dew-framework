@@ -3,6 +3,7 @@ package com.tairanchina.csp.dew.example.cache.service;
 import com.tairanchina.csp.dew.example.cache.dto.CacheExampleDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -33,6 +34,8 @@ public class CacheExampleService {
 
     @CachePut(key = "#id")
     public CacheExampleDTO update(String id, CacheExampleDTO dto) {
+        // 同一类方法调用使用此方式才能被AOP代理
+        ((CacheExampleService) AopContext.currentProxy()).getById(id);
         CONTAINER.put(id, dto);
         return dto;
     }
@@ -43,10 +46,11 @@ public class CacheExampleService {
         return CONTAINER.get(id);
     }
 
-    @Cacheable
     public List<CacheExampleDTO> find() {
         logger.info("find without cache");
-        return new ArrayList<>(CONTAINER.values());
+        List<CacheExampleDTO> dtos = new ArrayList<>(CONTAINER.values());
+        dtos.forEach(dto -> ((CacheExampleService) AopContext.currentProxy()).getById(dto.getId()));
+        return dtos;
     }
 
     @CacheEvict

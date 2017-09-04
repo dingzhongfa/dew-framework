@@ -120,7 +120,9 @@ public class EntityContainer {
                         EnabledColumn enabledColumn = (EnabledColumn) field.getAnnotations().stream().filter(ann -> ann.annotationType() == EnabledColumn.class).findAny().get();
                         entityClassInfo.enabledFieldNameOpt = Optional.of(field.getName());
                         entityClassInfo.columns.put(field.getName(),
-                                EntityClassInfo.Column.build(enabledColumn.columnName().isEmpty() ? camelToUnderline(field.getName()) : enabledColumn.columnName(), false));
+                                EntityClassInfo.Column.build(enabledColumn.columnName().isEmpty() ? camelToUnderline(field.getName()) : enabledColumn.columnName(),
+                                        false,
+                                        enabledColumn.reverse()));
                         isContinue = true;
                     }
                     if (!isContinue) {
@@ -182,11 +184,17 @@ public class EntityContainer {
         public static class Column {
             public String columnName;
             public boolean notNull;
+            public boolean reverse;
 
             public static Column build(String columnName, boolean notNull) {
+                return build(columnName, notNull, false);
+            }
+
+            public static Column build(String columnName, boolean notNull, boolean reverse) {
                 Column column = new Column();
                 column.columnName = columnName.toLowerCase();
                 column.notNull = notNull;
+                column.reverse = reverse;
                 return column;
             }
         }

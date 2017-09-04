@@ -14,8 +14,8 @@ dew:
     mq: rabbit
   dao:
     base-package: com.tairanchina.csp.dew.core
-  security:
-    includeServices: ["a-serv"]
+#  security:
+#   includeServices: ["a-serv"]
 
 spring:
   cache:

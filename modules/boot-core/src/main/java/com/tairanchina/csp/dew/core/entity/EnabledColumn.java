@@ -10,4 +10,7 @@ public @interface EnabledColumn {
     // 默认为字段名（驼峰转下划线）
     String columnName() default "";
 
+    // 为true 反转结果，true->false，false->true
+    boolean reverse() default false;
+
 }

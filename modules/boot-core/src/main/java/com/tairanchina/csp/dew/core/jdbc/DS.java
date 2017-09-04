@@ -127,38 +127,42 @@ public class DS {
 
     public void enableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                column.columnName,
                 entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                true, id);
+                !column.reverse, id);
     }
 
     public void enableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                column.columnName,
                 entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                true, code);
+                !column.reverse, code);
     }
 
     public void disableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                column.columnName,
                 entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                false, id);
+                column.reverse, id);
     }
 
     public void disableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         jdbcTemplate.update(String.format("UPDATE %s SET `%s` = ? WHERE `%s` = ?",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName,
+                column.columnName,
                 entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                false, code);
+                column.reverse, code);
     }
 
     public boolean existById(Object id, Class<?> entityClazz) {
@@ -206,7 +210,8 @@ public class DS {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         LinkedHashMap where = new LinkedHashMap<>();
         if (enable != null) {
-            where.put(entityClassInfo.enabledFieldNameOpt.get(), enable);
+            EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
+            where.put(entityClassInfo.enabledFieldNameOpt.get(), column.reverse ? !enable : enable);
         }
         Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
         return jdbcTemplate.queryForList((String) packageSelect[0], (Object[]) packageSelect[1]).stream()
@@ -223,18 +228,20 @@ public class DS {
 
     public long countEnabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
-                new Object[]{true}, Long.class);
+                new Object[]{!column.reverse}, Long.class);
     }
 
     public long countDisabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
-                new Object[]{false}, Long.class);
+                new Object[]{column.reverse}, Long.class);
     }
 
     public <E> Page<E> paging(long pageNumber, int pageSize, Class<E> entityClazz) {
@@ -265,7 +272,8 @@ public class DS {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         LinkedHashMap where = new LinkedHashMap<>();
         if (enable != null) {
-            where.put(entityClassInfo.enabledFieldNameOpt.get(), enable);
+            EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
+            where.put(entityClassInfo.enabledFieldNameOpt.get(), column.reverse ? !enable : enable);
         }
         Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
         return paging((String) packageSelect[0], (Object[]) packageSelect[1], pageNumber, pageSize, entityClazz);

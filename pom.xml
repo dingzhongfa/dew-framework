@@ -25,6 +25,7 @@
         <module>modules/boot-core</module>
         <module>modules/cloud-core</module>
         <module>modules/boot-thrift-starter</module>
+        <module>modules/test-starter</module>
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>

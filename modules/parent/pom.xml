@@ -159,6 +159,12 @@
                 <version>${swagger.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>test-starter</artifactId>
+                <version>${dew.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.thrift</groupId>
                 <artifactId>libthrift</artifactId>
                 <version>${thrift.version}</version>

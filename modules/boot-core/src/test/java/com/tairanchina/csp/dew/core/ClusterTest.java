@@ -4,18 +4,14 @@ import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
-import redis.embedded.RedisServer;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,23 +24,6 @@ import java.util.concurrent.CountDownLatch;
 @SpringBootTest(classes = DewBootApplication.class)
 @ComponentScan(basePackageClasses = {Dew.class, ClusterTest.class})
 public class ClusterTest {
-
-    private RedisServer redisServer;
-
-    @Before
-    public void init() throws IOException {
-        redisServer = new RedisServer();
-        if (!redisServer.isActive()) {
-            redisServer.start();
-        }
-    }
-
-    @After
-    public void destroy() {
-        if (redisServer.isActive()) {
-            redisServer.stop();
-        }
-    }
 
     @Test
     public void testCache() throws InterruptedException {
@@ -186,7 +165,7 @@ public class ClusterTest {
         Thread t4 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                while (!lockLocal.tryLock(2000,20000)) {
+                while (!lockLocal.tryLock(2000, 20000)) {
                     System.out.println("waiting 2 unlock");
                     Thread.sleep(100);
                 }

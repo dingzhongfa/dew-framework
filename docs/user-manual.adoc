@@ -1237,9 +1237,15 @@ Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded
 </dependency>
 
 # config
+dew:
+  cluster: #所有集群操作都使用reids模拟
+    cache: redis
+    dist: redis
+    mq: redis
+
 spring:
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
   datasource:
     driver-class-name: org.h2.Driver

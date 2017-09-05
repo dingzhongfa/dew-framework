@@ -23,7 +23,7 @@ spring:
   application:
     name: core-test
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     database: 0
     pool:
@@ -32,7 +32,7 @@ spring:
       max-idle: 1
       min-idle: 0
   rabbitmq:
-    host: localhost
+    host: 127.0.0.1
     port: 5672
     username: user
     password: 123456

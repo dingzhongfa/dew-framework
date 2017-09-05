@@ -4,12 +4,14 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.jdbc.DS;
+import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class MiscTest {
 
@@ -25,10 +27,10 @@ public class MiscTest {
         String sql = "select * from table where" +
                 " id = #{b} and ( name1= #{a} or name2 = #{c} or name3 = #{d} ) " +
                 "and no1 like #{ ee } and no2 like #{f} ";
-        Object[] result = DS.packageSelect(sql,new LinkedHashMap<String,Object>(){{
-            put("a","1");
-            put("c","3");
-            put("ee","5");
+        Object[] result = DS.packageSelect(sql, new LinkedHashMap<String, Object>() {{
+            put("a", "1");
+            put("c", "3");
+            put("ee", "5");
         }});
         System.out.println(result);
     }
@@ -74,13 +76,38 @@ public class MiscTest {
     }
 
     @Test
-    public void testError(){
-        Map<String,String> a=new HashMap<>();
-        a.put("1","1");
-        Dew.E.checkNotEmpty(a,new RuntimeException());
+    public void testError() {
+        Map<String, String> a = new HashMap<>();
+        a.put("1", "1");
+        Dew.E.checkNotEmpty(a, new RuntimeException());
         a.clear();
-        Dew.E.checkNotEmpty(a,Dew.E.e("1001",new RuntimeException("")));
-        a.put("1","1");
+        Dew.E.checkNotEmpty(a, Dew.E.e("1001", new RuntimeException("")));
+        a.put("1", "1");
+    }
+
+
+    @Test
+    public void testInvokeAll() throws InterruptedException {
+        int taskNum = 1000;
+        int tempNum = taskNum;
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        List<Callable<String>> tasks = new ArrayList<>();
+        while (tempNum-- > 0) {
+            tasks.add(() -> {
+                Thread.sleep(new Random().nextInt(100));
+                return $.field.createUUID();
+            });
+        }
+        List<Future<String>> result = executorService.invokeAll(tasks);
+        Set<String> finalResult = result.stream().map(r -> {
+            try {
+                return r.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }).collect(Collectors.toSet());
+        Assert.assertEquals(taskNum, finalResult.size());
     }
 
 }

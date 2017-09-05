@@ -1,9 +1,10 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
+import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,18 +21,16 @@ public class RedisClusterMQ implements ClusterMQ {
     @Override
     public boolean publish(String topic, String message) {
         logger.trace("[MQ] publish {}:{}", topic, message);
-        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
-        connection.publish(topic.getBytes(), message.getBytes());
-        if (!connection.isClosed()) {
-            connection.close();
-        }
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
+            connection.publish(topic.getBytes(), message.getBytes());
+            return null;
+        });
         return true;
     }
 
     @Override
     public void subscribe(String topic, Consumer<String> consumer) {
-        Thread thread = new Thread(() -> {
-            RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
             connection.subscribe((message, pattern) -> {
                 try {
                     String msg = new String(message.getBody(), "UTF-8");
@@ -41,31 +40,24 @@ public class RedisClusterMQ implements ClusterMQ {
                     logger.error("Redis Subscribe error.", e);
                 }
             }, topic.getBytes());
-            if (!connection.isClosed()) {
-                connection.close();
-            }
+            return null;
         });
-        thread.setName("Redis Subscribe");
-        thread.start();
     }
 
     @Override
     public boolean request(String address, String message) {
         logger.trace("[MQ] request {}:{}", address, message);
-        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
-        connection.lPush(address.getBytes(), message.getBytes());
-        if (!connection.isClosed()) {
-            connection.close();
-        }
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
+            connection.lPush(address.getBytes(), message.getBytes());
+            return null;
+        });
         return true;
     }
 
     @Override
     public void response(String address, Consumer<String> consumer) {
-        new Thread(() -> {
-            RedisConnection connection = null;
+        redisTemplate.execute((RedisCallback<Void>) connection -> {
             try {
-                connection = redisTemplate.getConnectionFactory().getConnection();
                 while (!connection.isClosed()) {
                     List<byte[]> messages = connection.bRPop(30, address.getBytes());
                     if (messages == null) {
@@ -77,12 +69,9 @@ public class RedisClusterMQ implements ClusterMQ {
                 }
             } catch (Exception e) {
                 logger.error("Redis Response error.", e);
-            } finally {
-                if (connection != null && !connection.isClosed()) {
-                    connection.close();
-                }
             }
-        }).start();
+            return null;
+        });
     }
 
 }

@@ -6,10 +6,13 @@
 
 ==== Improvement
 
-* 支持rabbit confirm(音箱)模式
+* 支持rabbit confirm(单条)模式
 
   ((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)
   ((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)
+
+* 支持 `EnabledColumn` 结果反转，EnabledColumn用于标识是否启用状态的注解，默认是true是否用，false是禁用，但有些情况下状态字段会使用`del_flag`表示是否删除，这时需要设置结果反转
+* 引入 `embedded redis` 以支持单元测试
 
 ==== Fixed
 

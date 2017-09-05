@@ -32,6 +32,7 @@
         <druid.version>1.1.2</druid.version>
         <mysql.version>5.1.42</mysql.version>
         <h2.version>1.4.195</h2.version>
+        <embedded-redis.version>0.6</embedded-redis.version>
         <spring-boot-admin.version>1.5.2</spring-boot-admin.version>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -140,6 +141,11 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.kstyrc</groupId>
+                <artifactId>embedded-redis</artifactId>
+                <version>${embedded-redis.version}</version>
             </dependency>
             <!-- Doc -->
             <dependency>

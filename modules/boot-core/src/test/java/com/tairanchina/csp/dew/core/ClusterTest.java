@@ -4,15 +4,18 @@ import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
+import redis.embedded.RedisServer;
 
-import javax.validation.constraints.AssertTrue;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,23 @@ import java.util.concurrent.CountDownLatch;
 @SpringBootTest(classes = DewBootApplication.class)
 @ComponentScan(basePackageClasses = {Dew.class, ClusterTest.class})
 public class ClusterTest {
+
+    private RedisServer redisServer;
+
+    @Before
+    public void init() throws IOException {
+        redisServer = new RedisServer();
+        if (!redisServer.isActive()) {
+            redisServer.start();
+        }
+    }
+
+    @After
+    public void destroy() {
+        if (redisServer.isActive()) {
+            redisServer.stop();
+        }
+    }
 
     @Test
     public void testCache() throws InterruptedException {
@@ -166,7 +186,7 @@ public class ClusterTest {
         Thread t4 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             try {
-                while (!lockLocal.tryLock(2000)) {
+                while (!lockLocal.tryLock(2000,20000)) {
                     System.out.println("waiting 2 unlock");
                     Thread.sleep(100);
                 }
@@ -282,7 +302,7 @@ public class ClusterTest {
         Thread.sleep(1000);
 
         // rabbit confirm
-        if(Dew.cluster.mq instanceof RabbitClusterMQ) {
+        if (Dew.cluster.mq instanceof RabbitClusterMQ) {
             boolean success = ((RabbitClusterMQ) Dew.cluster.mq).publish("test_pub_sub", "confirm message", true);
             Assert.assertTrue(success);
             success = ((RabbitClusterMQ) Dew.cluster.mq).request("test_rep_resp", "confirm message", true);
@@ -293,6 +313,7 @@ public class ClusterTest {
 
     /**
      * 测试同一个线程能否锁住
+     *
      * @throws InterruptedException
      */
     @Test
@@ -306,6 +327,7 @@ public class ClusterTest {
 
     /**
      * 测试不同线程能否锁住
+     *
      * @throws InterruptedException
      */
     @Test
@@ -314,7 +336,7 @@ public class ClusterTest {
         Boolean temp = lock.tryLock(0, 100000);
         System.out.println("*********" + temp);
         Assert.assertTrue(temp);
-       Thread thread= new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_B");
                 Boolean tempTest = lockChild.tryLock(0, 100000);
@@ -334,6 +356,7 @@ public class ClusterTest {
      * 模拟两个虚拟机。
      * 先调用testDiffentJVMLockA锁住，等方法执行结束。
      * 再执行testDiffentJVMLockB，再去获得锁，正常结果第二次调用不能获取锁
+     *
      * @throws InterruptedException
      */
     @Test
@@ -352,6 +375,7 @@ public class ClusterTest {
 
     /**
      * 测试释放锁
+     *
      * @throws InterruptedException
      */
     @Test
@@ -363,7 +387,7 @@ public class ClusterTest {
         //加锁
         temp = lock.tryLock(0, 200000);
         Assert.assertTrue(temp);
-       Thread thread= new Thread(() -> {
+        Thread thread = new Thread(() -> {
             ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_D");
             //测试不同的线程去解锁
             Boolean tempTest = lockChild.unLock();
@@ -378,10 +402,11 @@ public class ClusterTest {
 
     /**
      * 测试等待获取锁【同一个线程】
+     *
      * @throws InterruptedException
      */
     @Test
-    public void testWaitLock() throws InterruptedException{
+    public void testWaitLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_E");
         Boolean temp = lock.tryLock(0, 10000);
         Assert.assertTrue(temp);
@@ -393,6 +418,7 @@ public class ClusterTest {
 
     /**
      * 测试连接是否被关闭，连接池默认设置最大连接数1，设置两次值
+     *
      * @throws InterruptedException
      */
     @Test

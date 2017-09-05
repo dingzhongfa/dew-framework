@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootApplication
 @SpringBootTest(classes = DewBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ComponentScan(basePackageClasses = {Dew.class, CRUDSTest.class})
 public class CRUDSTest {

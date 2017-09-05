@@ -11,7 +11,7 @@ dew:
   cluster:
     cache: redis
     dist: redis
-    mq: rabbit
+    mq: redis
   dao:
     base-package: com.tairanchina.csp.dew.core
 #  security:
@@ -27,7 +27,7 @@ spring:
     port: 6379
     database: 0
     pool:
-      max-active: 1
+      max-active: 10
       max-wait: -1
       max-idle: 1
       min-idle: 0

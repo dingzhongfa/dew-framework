@@ -683,10 +683,10 @@ spring:
 
 dew:
     cluster:
-    cache: redis
-    dist: hazelcast # 可选 redis/hazelcast
-    mq: hazelcast # 可选 redis/hazelcast/rabbit
-    election: eureka
+        cache: redis
+        dist: hazelcast # 可选 redis/hazelcast
+        mq: hazelcast # 可选 redis/hazelcast/rabbit
+        election: eureka
 ----
 
 [source,java]
@@ -795,7 +795,7 @@ TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-com
 
 * 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
 
-TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时会上述两种格式的 `message` 内容返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
+TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时上述两种格式的 `message` 内容会返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
      `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
 
 启用统一响应格式支持：

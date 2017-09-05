@@ -509,7 +509,7 @@ public class DS {
             E entity = entityClazz.newInstance();
             if (entityClassInfo == null) {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
-                    $.bean.setValue(entity, underlineToCamel(entry.getKey()), entry.getValue());
+                    $.bean.setValue(entity, underlineToCamel(entry.getKey().toLowerCase()), entry.getValue());
                 }
             } else {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {

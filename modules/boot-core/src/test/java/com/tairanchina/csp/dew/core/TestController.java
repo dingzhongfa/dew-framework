@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.io.IOException;
 @RestController
 @Api(value = "测试", description = "test")
 @RequestMapping(value = "/test/")
+@Validated
 public class TestController {
 
     @GetMapping(value = "t")
@@ -64,7 +66,12 @@ public class TestController {
     }
 
     @PutMapping(value = "valid-update")
-    public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user) {
+    public String validUpdate(@Validated(UpdateGroup.class) User user) {
+        return "";
+    }
+
+    @GetMapping(value = "valid-method/{age}")
+    public String validInMethod(@Min(value = 2,message = "age必须大于2") @PathVariable int age) {
         return "";
     }
 

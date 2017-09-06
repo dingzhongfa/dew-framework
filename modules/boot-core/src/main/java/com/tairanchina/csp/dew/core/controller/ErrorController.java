@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,11 @@ public class ErrorController extends AbstractErrorController {
 
     public ErrorController(ErrorAttributes errorAttributes) {
         super(errorAttributes);
+    }
+
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        return new MethodValidationPostProcessor();
     }
 
     @Override

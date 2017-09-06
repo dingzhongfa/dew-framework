@@ -60,11 +60,6 @@ public class Dew {
     @Autowired
     private ApplicationContext innerApplicationContext;
 
-    @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
-        return new MethodValidationPostProcessor();
-    }
-
     @PostConstruct
     private void init() {
         Dew.applicationContext = innerApplicationContext;

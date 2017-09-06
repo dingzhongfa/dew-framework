@@ -71,7 +71,7 @@ public class TestController {
     }
 
     @GetMapping(value = "valid-method/{age}")
-    public String validInMethod(@Min(value = 2,message = "age必须大于2") @PathVariable int age) {
+    public String validInMethod(@Min(value = 2,message = "age必须大于2") @PathVariable("age") int age) {
         return "";
     }
 

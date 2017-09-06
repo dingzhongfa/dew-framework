@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
+import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,9 @@ public class ErrorController extends AbstractErrorController {
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
     private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
+
+    private static final String SPECIAL_ERROR_FLAG = "org.springframework.boot.autoconfigure.web.DefaultErrorAttributes.ERROR";
+    private static final String DETAIL_FLAG = " Detail:";
 
     @Value("${error.path:/error}")
     private String errorPath;
@@ -86,17 +91,33 @@ public class ErrorController extends AbstractErrorController {
                 httpCode = detail.get("customHttpCode").asInt();
             }
         }
-        if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
-            ArrayNode errorExt = $.json.createArrayNode();
-            Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
-            while (errorExtIt.hasNext()) {
-                JsonNode json = errorExtIt.next();
-                errorExt.add($.json.createObjectNode()
-                        .put("field", json.get("field").asText(""))
-                        .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
-                        .put("msg", json.get("defaultMessage").asText("")));
+        Object specialError = request.getAttribute(SPECIAL_ERROR_FLAG);
+        if (specialError != null) {
+            if (specialError instanceof ConstraintViolationException) {
+                ArrayNode errorExt = $.json.createArrayNode();
+                ((ConstraintViolationException) specialError).getConstraintViolations().stream()
+                        .forEach(cv ->
+                                errorExt.add($.json.createObjectNode()
+                                        .put("field", "")
+                                        .put("reason", ((ConstraintDescriptorImpl<?>) cv.getConstraintDescriptor())
+                                                .getAnnotationType().getSimpleName())
+                                        .put("msg", cv.getMessage()))
+                        );
+                message += DETAIL_FLAG + $.json.toJsonString(errorExt);
             }
-            message += " Detail:" + $.json.toJsonString(errorExt);
+        } else {
+            if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
+                ArrayNode errorExt = $.json.createArrayNode();
+                Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
+                while (errorExtIt.hasNext()) {
+                    JsonNode json = errorExtIt.next();
+                    errorExt.add($.json.createObjectNode()
+                            .put("field", json.get("field").asText(""))
+                            .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
+                            .put("msg", json.get("defaultMessage").asText("")));
+                }
+                message += DETAIL_FLAG + $.json.toJsonString(errorExt);
+            }
         }
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {

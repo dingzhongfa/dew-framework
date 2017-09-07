@@ -13,6 +13,7 @@
 
 * 支持 `EnabledColumn` 结果反转，EnabledColumn用于标识是否启用状态的注解，默认是true是否用，false是禁用，但有些情况下状态字段会使用`del_flag`表示是否删除，这时需要设置结果反转
 * 引入 `embedded redis` 以支持单元测试
+* 统一Body及Url Path/Query的异常捕获
 
 ==== Fixed
 

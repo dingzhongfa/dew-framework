@@ -146,7 +146,7 @@ public class EntityContainer {
 
     public static EntityClassInfo getEntityClassByClazz(String tableName) {
         for (Map.Entry<String, EntityClassInfo> entry : COLUMN_INFO.entrySet()){
-            if (entry.getValue().tableName.contains(tableName)){
+            if (entry.getValue().tableName.equals(tableName)){
                 return entry.getValue();
             }
         }

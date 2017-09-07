@@ -144,6 +144,10 @@ public class EntityContainer {
         return COLUMN_INFO.get(clazz.getName());
     }
 
+    public static EntityClassInfo getEntityClassByClazz(String className) {
+        return COLUMN_INFO.get(className);
+    }
+
     public static String camelToUnderline(String name) {
         StringBuilder sb = new StringBuilder();
         if (name != null && name.length() > 0) {

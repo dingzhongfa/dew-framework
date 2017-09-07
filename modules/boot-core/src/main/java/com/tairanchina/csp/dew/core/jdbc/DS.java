@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
@@ -18,6 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.util.*;
@@ -523,25 +524,6 @@ public class DS {
         }
     }
 
-    public String underlineToCamel(String param) {
-        if (param == null || "".equals(param.trim())) {
-            return "";
-        }
-        int len = param.length();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            char c = param.charAt(i);
-            if (c == UNDERLINE) {
-                if (++i < len) {
-                    sb.append(Character.toUpperCase(param.charAt(i)));
-                }
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {
         Object[] result = packageSelect(sql, params);
         List<Map<String, Object>> list = jdbcTemplate.queryForList((String) result[0], (Object[]) result[1]);
@@ -579,12 +561,86 @@ public class DS {
         }
         if (sql.contains("#{")) {
             SQLStatementParser parser = new SQLStatementParser(sql);
-            SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
-            SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
+            SQLSelectStatement statement1 = (SQLSelectStatement) parser.parseStatementList().get(0);
+            SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement1.getSelect().getQuery()).getWhere();
             formatWhere(sqlExpr);
-            sql = statement.toString();
+            sql = statement1.toString();
+        }
+        if (sql.contains("*")){
+            SQLStatementParser parser = new SQLStatementParser(sql);
+            SQLSelectStatement statement2 = (SQLSelectStatement) parser.parseStatementList().get(0);
+            SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getFrom();
+            List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getSelectList();
+            List<SQLSelectItem> addList = new ArrayList<>();
+            formatFrom(sqlTableSource,selectList,addList);
+            selectList.addAll(addList);
+            sql = statement2.toString();
         }
         return new Object[]{sql, list.toArray()};
+    }
+
+    private static void formatFrom(SQLTableSource sqlTableSource,List<SQLSelectItem> selectList,List<SQLSelectItem> addList) {
+        if (sqlTableSource == null) {
+            return;
+        }
+        if (sqlTableSource instanceof SQLExprTableSource){
+            doFormat((SQLExprTableSource)sqlTableSource,selectList,addList);
+        }
+        if (sqlTableSource instanceof SQLJoinTableSource){
+            formatFrom(((SQLJoinTableSource) sqlTableSource).getRight(),selectList,addList);
+            formatFrom(((SQLJoinTableSource) sqlTableSource).getLeft(),selectList,addList);
+        }
+    }
+
+    private static void doFormat(SQLExprTableSource sqlTableSource,List<SQLSelectItem> selectList,List<SQLSelectItem> addList) {
+        System.out.println("表名：    " + sqlTableSource.getExpr() + "         别名：     " + sqlTableSource.getAlias());
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(underlineToCamel(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName()));
+        if (entityClassInfo==null){
+            return;
+        }
+        Iterator<SQLSelectItem> iterator = selectList.iterator();
+        while (iterator.hasNext()) {
+            SQLSelectItem sqlSelectItem = iterator.next();
+            if (sqlSelectItem.getExpr() instanceof SQLPropertyExpr) {
+                SQLPropertyExpr expr = (SQLPropertyExpr) sqlSelectItem.getExpr();
+                SQLIdentifierExpr expr_owner = (SQLIdentifierExpr) expr.getOwner();
+                if ((expr_owner.getName() + "." + expr.getName()).equals(sqlTableSource.getAlias() + ".*")) {
+                    iterator.remove();
+                    entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList,expr_owner,column));
+                }
+
+            } else if (sqlSelectItem.getExpr() instanceof SQLObjectImpl) {
+                iterator.remove();
+                entityClassInfo.columns.forEach((filedName, column) ->addList.add(new SQLSelectItem(new SQLIdentifierExpr(column.columnName ))) );
+            }
+        }
+
+    }
+
+    private static void addWhenAlias(List<SQLSelectItem> addList,SQLIdentifierExpr expr_owner ,EntityContainer.EntityClassInfo.Column column){
+        if (column.columnName.equals("id"))
+            return;
+        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(),column.columnName )));
+    }
+
+
+    public static String underlineToCamel(String param){
+        if (param==null||"".equals(param.trim())){
+            return "";
+        }
+        int len=param.length();
+        StringBuilder sb=new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c=param.charAt(i);
+            if (c==UNDERLINE){
+                if (++i<len){
+                    sb.append(Character.toUpperCase(param.charAt(i)));
+                }
+            }else{
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     public static void formatWhere(SQLExpr sqlExpr) {

@@ -33,7 +33,7 @@ public class DS {
     private static final char UNDERLINE = '_';
     private static final String STAR = "*";
     private static final String POINT = ".";
-
+    private static final String EMPTY = "";
     private JdbcTemplate jdbcTemplate;
     private String jdbcUrl;
 
@@ -346,7 +346,7 @@ public class DS {
                 if (Dew.context().optInfo().isPresent()) {
                     values.put(entityClassInfo.createUserFieldNameOpt.get(), Dew.context().optInfo().get().getAccountCode());
                 } else {
-                    values.put(entityClassInfo.createUserFieldNameOpt.get(), "");
+                    values.put(entityClassInfo.createUserFieldNameOpt.get(), EMPTY);
                 }
             }
             if (entityClassInfo.createTimeFieldNameOpt.isPresent()) {
@@ -356,7 +356,7 @@ public class DS {
                 if (Dew.context().optInfo().isPresent()) {
                     values.put(entityClassInfo.updateUserFieldNameOpt.get(), Dew.context().optInfo().get().getAccountCode());
                 } else {
-                    values.put(entityClassInfo.updateUserFieldNameOpt.get(), "");
+                    values.put(entityClassInfo.updateUserFieldNameOpt.get(), EMPTY);
                 }
             }
             if (entityClassInfo.updateTimeFieldNameOpt.isPresent()) {
@@ -435,7 +435,7 @@ public class DS {
             if (Dew.context().optInfo().isPresent()) {
                 values.put(entityClassInfo.updateUserFieldNameOpt.get(), Dew.context().optInfo().get().getAccountCode());
             } else {
-                values.put(entityClassInfo.updateUserFieldNameOpt.get(), "");
+                values.put(entityClassInfo.updateUserFieldNameOpt.get(), EMPTY);
             }
         }
         if (entityClassInfo.createUserFieldNameOpt.isPresent()) {
@@ -554,7 +554,7 @@ public class DS {
         List<Object> list = new ArrayList<>();
         //将值不为空的key用?替换
         for (String key : matchRegexList) {
-            key = key.substring(2, key.length() - 1).replace(" ", "");
+            key = key.substring(2, key.length() - 1).replace(" ", EMPTY);
             Object v = params.get(key);
             if (v != null) {
                 sql = sql.replaceFirst("\\#\\{\\s*" + key + "\\s*\\}", "?");
@@ -602,7 +602,7 @@ public class DS {
             if (sqlSelectItem.getExpr() instanceof SQLPropertyExpr) {
                 SQLPropertyExpr expr = (SQLPropertyExpr) sqlSelectItem.getExpr();
                 SQLIdentifierExpr expr_owner = (SQLIdentifierExpr) expr.getOwner();
-                if ((expr_owner.getName() + "." + expr.getName()).equals(sqlTableSource.getAlias() + ".*")) {
+                if ((expr_owner.getName() + POINT + expr.getName()).equals(sqlTableSource.getAlias() + POINT + STAR)) {
                     iterator.remove();
                     entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList, expr_owner, column));
                 }
@@ -623,8 +623,8 @@ public class DS {
 
 
     private static String underlineToCamel(String param) {
-        if (param == null || "".equals(param.trim())) {
-            return "";
+        if (param == null || EMPTY.equals(param.trim())) {
+            return EMPTY;
         }
         int len = param.length();
         StringBuilder sb = new StringBuilder(len);

@@ -31,6 +31,9 @@ public class DS {
     private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
     private static final char UNDERLINE = '_';
+    private static final String STAR = "*";
+    private static final String POINT = ".";
+
     private JdbcTemplate jdbcTemplate;
     private String jdbcUrl;
 
@@ -564,7 +567,7 @@ public class DS {
             SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
             formatWhere(sqlExpr);
         }
-        if (sql.contains("*")) {
+        if (sql.contains(STAR)) {
             SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getFrom();
             List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getSelectList();
             List<SQLSelectItem> addList = new ArrayList<>();
@@ -636,21 +639,6 @@ public class DS {
             }
         }
         return sb.toString();
-    }
-
-    private static String underlineToCamel2(String param) {
-        if (param == null || "".equals(param.trim())) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder(param);
-        Matcher mc = Pattern.compile("_").matcher(param);
-        int i = 0;
-        while (mc.find()) {
-            int position = mc.end() - (i++);
-            sb.replace(position - 1, position + 1, sb.substring(position, position + 1).toUpperCase());
-        }
-        String reult = sb.toString();
-        return reult.substring(0, 1).toUpperCase() + reult.substring(1);
     }
 
     public static void formatWhere(SQLExpr sqlExpr) {

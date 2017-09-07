@@ -14,6 +14,8 @@ dew:
     mq: redis
   dao:
     base-package: com.tairanchina.csp.dew.core
+  entity:
+        base-packages: ["com.tairanchina.csp.dew.core"]
 #  security:
 #   includeServices: ["a-serv"]
 
@@ -54,11 +56,9 @@ spring:
       driver-class-name: org.h2.Driver
       url: jdbc:h2:mem:test1
       initial-size: 1
-      max-idle: 1
       max-active: 1
     test2:
       driver-class-name: org.h2.Driver
       url: jdbc:h2:mem:test2
       initial-size: 1
-      max-idle: 1
       max-active: 1

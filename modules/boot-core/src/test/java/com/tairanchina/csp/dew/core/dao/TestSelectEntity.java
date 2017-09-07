@@ -1,12 +1,12 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.dao;
 
 import com.tairanchina.csp.dew.core.entity.CodeColumn;
 import com.tairanchina.csp.dew.core.entity.Column;
 import com.tairanchina.csp.dew.core.entity.Entity;
 import com.tairanchina.csp.dew.core.entity.SafeStatusEntity;
 
-@Entity(tableName = "t_test_crud_s_entity")
-public class CRUDSTestEntity extends SafeStatusEntity<Integer> {
+@Entity(tableName = "test_select_entity")
+public class TestSelectEntity extends SafeStatusEntity<Integer> {
 
     @CodeColumn
     private String code;

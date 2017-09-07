@@ -18,7 +18,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.util.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.util.*;
@@ -566,36 +565,35 @@ public class DS {
             formatWhere(sqlExpr);
             sql = statement1.toString();
         }
-        if (sql.contains("*")){
+        if (sql.contains("*")) {
             SQLStatementParser parser = new SQLStatementParser(sql);
             SQLSelectStatement statement2 = (SQLSelectStatement) parser.parseStatementList().get(0);
             SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getFrom();
             List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getSelectList();
             List<SQLSelectItem> addList = new ArrayList<>();
-            formatFrom(sqlTableSource,selectList,addList);
+            formatFrom(sqlTableSource, selectList, addList);
             selectList.addAll(addList);
             sql = statement2.toString();
         }
         return new Object[]{sql, list.toArray()};
     }
 
-    private static void formatFrom(SQLTableSource sqlTableSource,List<SQLSelectItem> selectList,List<SQLSelectItem> addList) {
+    private static void formatFrom(SQLTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
         if (sqlTableSource == null) {
             return;
         }
-        if (sqlTableSource instanceof SQLExprTableSource){
-            doFormat((SQLExprTableSource)sqlTableSource,selectList,addList);
+        if (sqlTableSource instanceof SQLExprTableSource) {
+            doFormat((SQLExprTableSource) sqlTableSource, selectList, addList);
         }
-        if (sqlTableSource instanceof SQLJoinTableSource){
-            formatFrom(((SQLJoinTableSource) sqlTableSource).getRight(),selectList,addList);
-            formatFrom(((SQLJoinTableSource) sqlTableSource).getLeft(),selectList,addList);
+        if (sqlTableSource instanceof SQLJoinTableSource) {
+            formatFrom(((SQLJoinTableSource) sqlTableSource).getRight(), selectList, addList);
+            formatFrom(((SQLJoinTableSource) sqlTableSource).getLeft(), selectList, addList);
         }
     }
 
-    private static void doFormat(SQLExprTableSource sqlTableSource,List<SQLSelectItem> selectList,List<SQLSelectItem> addList) {
-        System.out.println("表名：    " + sqlTableSource.getExpr() + "         别名：     " + sqlTableSource.getAlias());
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(underlineToCamel(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName()));
-        if (entityClassInfo==null){
+    private static void doFormat(SQLExprTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(underlineToCamel2(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName()));
+        if (entityClassInfo == null) {
             return;
         }
         Iterator<SQLSelectItem> iterator = selectList.iterator();
@@ -606,41 +604,56 @@ public class DS {
                 SQLIdentifierExpr expr_owner = (SQLIdentifierExpr) expr.getOwner();
                 if ((expr_owner.getName() + "." + expr.getName()).equals(sqlTableSource.getAlias() + ".*")) {
                     iterator.remove();
-                    entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList,expr_owner,column));
+                    entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList, expr_owner, column));
                 }
-
             } else if (sqlSelectItem.getExpr() instanceof SQLObjectImpl) {
                 iterator.remove();
-                entityClassInfo.columns.forEach((filedName, column) ->addList.add(new SQLSelectItem(new SQLIdentifierExpr(column.columnName ))) );
+                entityClassInfo.columns.forEach((filedName, column) -> addList.add(new SQLSelectItem(new SQLIdentifierExpr(column.columnName))));
             }
         }
 
     }
 
-    private static void addWhenAlias(List<SQLSelectItem> addList,SQLIdentifierExpr expr_owner ,EntityContainer.EntityClassInfo.Column column){
-        if (column.columnName.equals("id"))
+    private static void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr expr_owner, EntityContainer.EntityClassInfo.Column column) {
+        if (column.columnName.equals("id") || column.columnName.equals("created_by") || column.columnName.equals("updated_by") || column.columnName.equals("created_time") ||
+                column.columnName.equals("updated_time"))
             return;
-        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(),column.columnName )));
+        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(), column.columnName)));
     }
 
 
-    public static String underlineToCamel(String param){
-        if (param==null||"".equals(param.trim())){
+    private static String underlineToCamel(String param) {
+        if (param == null || "".equals(param.trim())) {
             return "";
         }
-        int len=param.length();
-        StringBuilder sb=new StringBuilder(len);
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
-            char c=param.charAt(i);
-            if (c==UNDERLINE){
-                if (++i<len){
+            char c = param.charAt(i);
+            if (c == UNDERLINE) {
+                if (++i < len) {
                     sb.append(Character.toUpperCase(param.charAt(i)));
                 }
-            }else{
+            } else {
                 sb.append(c);
             }
         }
         return sb.toString();
+    }
+
+    private static String underlineToCamel2(String param) {
+        if (param == null || "".equals(param.trim())) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder(param);
+        Matcher mc = Pattern.compile("_").matcher(param);
+        int i = 0;
+        while (mc.find()) {
+            int position = mc.end() - (i++);
+            sb.replace(position - 1, position + 1, sb.substring(position, position + 1).toUpperCase());
+        }
+        String reult = sb.toString();
+        return reult.substring(0, 1).toUpperCase() + reult.substring(1);
     }
 
     public static void formatWhere(SQLExpr sqlExpr) {

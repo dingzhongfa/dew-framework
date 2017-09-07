@@ -145,8 +145,15 @@ public class EntityContainer {
     }
 
     public static EntityClassInfo getEntityClassByClazz(String className) {
-        return COLUMN_INFO.get(className);
+        for (Map.Entry<String, EntityClassInfo> entry : COLUMN_INFO.entrySet()){
+            if (entry.getKey().contains(className)){
+                return entry.getValue();
+            }
+        }
+        return null;
     }
+
+
 
     public static String camelToUnderline(String name) {
         StringBuilder sb = new StringBuilder();

@@ -558,23 +558,20 @@ public class DS {
                 list.add(v);
             }
         }
+        SQLStatementParser parser = new SQLStatementParser(sql);
+        SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         if (sql.contains("#{")) {
-            SQLStatementParser parser = new SQLStatementParser(sql);
-            SQLSelectStatement statement1 = (SQLSelectStatement) parser.parseStatementList().get(0);
-            SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement1.getSelect().getQuery()).getWhere();
+            SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
             formatWhere(sqlExpr);
-            sql = statement1.toString();
         }
         if (sql.contains("*")) {
-            SQLStatementParser parser = new SQLStatementParser(sql);
-            SQLSelectStatement statement2 = (SQLSelectStatement) parser.parseStatementList().get(0);
-            SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getFrom();
-            List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement2.getSelect().getQuery()).getSelectList();
+            SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getFrom();
+            List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getSelectList();
             List<SQLSelectItem> addList = new ArrayList<>();
             formatFrom(sqlTableSource, selectList, addList);
             selectList.addAll(addList);
-            sql = statement2.toString();
         }
+        sql = statement.toString();
         return new Object[]{sql, list.toArray()};
     }
 
@@ -592,7 +589,7 @@ public class DS {
     }
 
     private static void doFormat(SQLExprTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(underlineToCamel2(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName()));
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName());
         if (entityClassInfo == null) {
             return;
         }

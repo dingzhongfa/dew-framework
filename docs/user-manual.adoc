@@ -414,6 +414,12 @@ TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
 ----
 @Select(value = "<SQL，使用#{参数占位名}>", entityClass = <返回的实体，为空时以Map封装>)
 <返回类型，可为单个对象/List/Page> <方法名，java规范即可>(<行参修饰符，@Param(<参数占位名>)或@ModelParam> <行参>);
+
+
+----
+TIP:`@Select` 中默认对*和.*自动解析成表对应字段。
+----
+
 ----
 
 TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需使用 `@Param()` 并指定与#{}相匹配的名称。

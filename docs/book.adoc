@@ -9,6 +9,8 @@ v1.0.0-beta5,2017-09-2
 
 include::../README.adoc[]
 
+include::guide.adoc[]
+
 include::user-manual.adoc[]
 
 include::best-practices.adoc[]
@@ -18,6 +20,8 @@ include::specification.adoc[]
 include::develop.adoc[]
 
 include::deploy.adoc[]
+
+include::configuration.adoc[]
 
 include::../CHANGELOG.adoc[]
 

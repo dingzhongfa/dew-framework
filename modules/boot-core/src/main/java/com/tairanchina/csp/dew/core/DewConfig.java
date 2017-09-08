@@ -38,7 +38,6 @@ public class DewConfig {
         private String webSite = "";
 
         private Doc doc = new Doc();
-        private Entity entity = new Entity();
         private Format format = new Format();
         private Map<String,ErrorMapping> errorMapping = new HashMap<>();
 
@@ -87,19 +86,6 @@ public class DewConfig {
             }
         }
 
-        public static class Entity {
-
-            private List<String> basePackages = new ArrayList<>();
-
-            public List<String> getBasePackages() {
-                return basePackages;
-            }
-
-            public void setBasePackages(List<String> basePackages) {
-                this.basePackages = basePackages;
-            }
-        }
-
         public static class Format {
 
             private boolean useUnityError = false;
@@ -130,7 +116,6 @@ public class DewConfig {
             public void setMessageFieldName(String messageFieldName) {
                 this.messageFieldName = messageFieldName;
             }
-
 
         }
 
@@ -171,14 +156,6 @@ public class DewConfig {
 
         public void setDoc(Doc doc) {
             this.doc = doc;
-        }
-
-        public Entity getEntity() {
-            return entity;
-        }
-
-        public void setEntity(Entity entity) {
-            this.entity = entity;
         }
 
         public Format getFormat() {

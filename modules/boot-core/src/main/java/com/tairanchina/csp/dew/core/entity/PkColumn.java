@@ -2,6 +2,9 @@ package com.tairanchina.csp.dew.core.entity;
 
 import java.lang.annotation.*;
 
+/**
+ * 标识主键字段，支持long/String格式
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

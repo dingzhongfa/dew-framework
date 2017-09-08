@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.6.RELEASE</version>
     </parent>
 
     <groupId>com.tairanchina.csp.dew</groupId>
@@ -43,10 +43,26 @@
 
     <developers>
         <developer>
-            <name>gudaoxuri</name>
+            <name>蒋震宇</name>
             <email>i@sunisle.org</email>
             <organization>ecfront</organization>
             <organizationUrl>http://www.ecfront.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>潘帅伟</name>
+            <email>hzpsw@tairanchina.com</email>
+        </developer>
+        <developer>
+            <name>葛佳兴</name>
+            <email>hzgjx@tairanchina.com</email>
+        </developer>
+        <developer>
+            <name>丁忠发</name>
+            <email>hzdzf@tairanchina.com</email>
+        </developer>
+        <developer>
+            <name>周建标</name>
+            <email>hzzjb@tairanchina.com</email>
         </developer>
     </developers>
 
@@ -61,7 +77,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Dalston.SR1</version>
+                <version>Dalston.SR3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -196,11 +212,6 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.version}</version>
-            </plugin>
         </plugins>
     </build>
 
@@ -228,18 +239,6 @@
                                 <id>attach-sources</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <goals>
-                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -282,18 +281,6 @@
                         <configuration>
                             <finalName>${project.artifactId}</finalName>
                         </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>dependency</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <version>3.0.1</version>
                     </plugin>
                 </plugins>
             </build>
@@ -481,6 +468,11 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar.version}</version>
+                    </plugin>
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>

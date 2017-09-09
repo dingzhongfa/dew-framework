@@ -3,20 +3,39 @@
 [IMPORTANT]
 .使用申明
 ====
-`SNAPSHOT` 版本未经过测试，线上项目务必使用 `Release` 版本。
+`Dew` 有多个版本通道，使用时请谨慎选择
+
+. `GA` General Availability，正式版本，通过内部测试没有已知错误并且经过生产验证，生产环境首选！
+. `RC` Release Candidate，发行候选版本，通过内部测试没有已知错误，可用于生产环境。
+. `Beta` 公开测试版本，没有已知的Major类型Bug，但允许存在个别minor类型Bugs，生产环境使用需要谨慎评估！
+. `Alpha` 内容测试版本，很早期的测试版本，未经过内部测试，可能存在较多Bugs，此版本类似技术预览版（Technical Preview），切 *不可* 用于生产环境！
+. `SNAPSHOT` 快照版本，类似Nightly版本，更新频繁此不保证质量，切 *不可* 用于生产环境！
 ====
 
-TIP: 所有模块均为Maven结构
+=== Let's Begin
+
+NOTE: `Dew` 框架是对 `Spring Boot/Cloud` 的扩展，使用之前务必了解相关框架的基础知识。
+
+----
+此章节关联示例:guide-petstore、bone-example
+----
+
+==== 结构说明
+
+`Dew` 所有模块均为Maven结构，使用如下：
 
 [source,xml]
 ----
+<!--引入Dew父依赖，也可以使用import方式-->
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-beta5</version>
+    <!--生产环境请选择合适的版本!!!!!!!!-->
+    <version>${dew.version}</version>
 </parent>
 ...
 <dependencies>
+    <!--引入需要的模块-->
     <dependency>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId><模块名></artifactId>
@@ -27,123 +46,161 @@ TIP: 所有模块均为Maven结构
 
 TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号
 
-NOTE: 由于本框架并没有修改Spring Boot/Cloud的功能，所以部分功能会提供使用原生写法和Dew写法两个版本进行对照
+==== 功能模块
 
-=== 构建一个最基本的Spring Boot工程
+|===
+|模块名 |核心功能
 
-==== 原生版本
+|`boot-core` |基于Spring Boot的扩展，Dew的核心模块
+|`cloud-core` |基于Spring Cloud的扩展，基于`boot-core`
+|`cluster-common` |集群能力接口
+|`cluster-redis` |集群能力-Redis实现
+|`cluster-hazelcast` |集群能力-Hazelcast实现
+|`cluster-ignite` |集群能力-Ignite实现(开发中）
+|`cluster-rabbit` |集群能力-Rabbit实现
+|`cluster-eureka` |集群能力-Eureka实现
+|`boot-thrift-starter` |Thrift RPC
+|`test-starter` |Dew的单元测试封装
+|`config` |统一配置中心组件
+|`registry` |服务注册中心组件
+|`gateway` |服务网关组件
+|`monitor` |服务监控组件
+|`<x>-example` |各类示例
+|===
 
-[source,xml]
-.引入依赖
-----
-<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.2.RELEASE</version>
-</parent>
-…
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>Dalston.SR1</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
-<dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter</artifactId>
-    </dependency>
-</dependencies>
-…
-----
+==== 启动类
 
-[source,java]
-.添加启动类
-----
-@SpringBootApplication
-@EnableAutoConfiguration()
-public class BoneExampleApplication {
- public static void main(String[] args) {
-     new SpringApplicationBuilder(BoneExampleApplication.class).run(args);
- }
-}
-----
-
-==== Dew版本
-
-[source,xml]
-.引入依赖
-----
-<parent>
-    <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.0-beta5</version>
-</parent>
-…
-<dependencies>
-    <dependency>
-        <groupId>com.tairanchina.csp.dew</groupId>
-        <artifactId>boot-core</artifactId>
-    </dependency>
-</dependencies>
-…
-----
-
-TIP: Dew版本的 `parent` 模块已经加入Spring Boot dependencyManagement，依赖了`spring-boot-starter-actuator`
-
-[source,java]
-.添加启动类
-----
-public class BoneExampleApplication extends DewBootApplication {
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(BoneExampleApplication.class).run(args);
-    }
- }
-----
+`Dew` 有两个核心启动类 `DewBootApplication` 和 `DewCloudApplication` ，前者引用的依赖是 `boot-core` 用于启动 `Spring boot` 类型的工程，后者依赖的是`cloud-core` 继承自 `DewBootApplication` 用于启动 `Spring cloud` 类型的工程。
 
 [TIP]
 .DewBootApplication使用如下注解
 ====
-* @SpringBootApplication
-* @EnableTransactionManagement
-* @EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
-* @ComponentScan(basePackageClasses = {Dew.class})
-* @EnableAspectJAutoProxy(proxyTargetClass = true)
+@SpringBootApplication
+@EnableTransactionManagement
+@EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
+@ComponentScan(basePackageClasses = {Dew.class})
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
+@EnableCaching(proxyTargetClass = true)
 ====
 
-NOTE: 由于Maven的 `parent` 引用是固定的，为节省篇幅后文只写依赖包
+[TIP]
+.DewCloudApplication使用如下注解
+====
+@SpringCloudApplication
+====
 
-=== 启用Web服务
+[NOTE]
+.@ComponentScan说明
+====
+`Spring boot` 严重依赖于包扫描功能，所以工程中需要重写 `@ComponentScan` 加入当前工程的根包，要求为 `Dew` 包在前，工程包在后，如： `(basePackageClasses = {Dew.class,PetStoreApplication.class})`
+====
 
-==== 原生版本
+TIP: 示例见 `example/guide-petstore`
+
+==== 配置说明
+
+`Dew` 的配置使用 `Spring boot` 风格，尽量重用已有的配置， `Dew` 的特殊配置均在 `dew.` key下， 推荐使用 `yml` 格式。
+
+==== 日志框架
+
+推荐使用 `logback` ， 使用 `logback-spring.xml` 文件配置日志核心处理。
+
+==== 业务初始化操作
+
+`Spring boot` 可使用 `@PostConstruct` 在 `bean` 加载时做业务初始化操作，它可位于任何类/包中，高度灵活的同时可能会导致初始化操作不可控， `Dew` 推荐在根包中建立名为 `<project>Initiator` 类，所有业务初始化操作都在此类中完成。
+
+=== 核心
+
+==== 常用工具
+
+`Dew` 框架的常用工具由 `Dew-Common` 包提供（https://github.com/gudaoxuri/dew-common），功能如下：
+
+. Json与Java对象互转，支持泛型
+. Java Bean操作，Bean复制、反射获取/设置注解、字段、方法等
+. Java Class扫描操作，根据注解或名称过滤
+. Shell脚本操作，Shell内容获取、成功捕获及进度报告等
+. 加解密操作，Base64、MD5/BCrypt/SHA等对称算法和RSA等非对称算法
+. Http操作，包含Get/Post/Put/Delete/Head/Options操作
+. 金额操作，金额转大写操作
+. 通用拦截器栈，前/后置、错误处理等
+. 定时器操作，定时和周期性任务
+. 常用文件操作，根据不同情况获取文件内容
+. 常用字段操作，各类字段验证、身份证提取、UUID创建等
+. 常用时间处理，常规时间格式化模板
+. 主流文件MIME整理，MIME分类
+. 响应处理及分页模型
+
+[TIP]
+.`Dew Common` 的使用
+====
+`Dew Common` 功能均以 `$` 开始，比如:
+
+* Json转成Java对象: `$.json.toObject(json,JavaModel.class)`
+* Json字符串转成List对象: `$.json.toList(jsonArray, JavaModel.class)`
+* Bean复制：`$.bean.copyProperties(ori, dist)`
+* 获取Class的注解信息: `$.bean.getClassAnnotation(IdxController.class, TestAnnotation.RPC.class)`
+* 非对称加密: `$.encrypt.Asymmetric.encrypt(d.getBytes("UTF-8"), publicKey, 1024, "RSA")`
+* Http Get: `$.http.get("https://httpbin.org/get")`
+* 验证手机号格式是否合法: `$.field.validateMobile("18657120000")`
+* ...
+====
+
+TIP: 完整使用手册见 https://gudaoxuri.github.io/dew-common/
+
+==== Web处理
+
+===== 基础Web使用
+
+----
+此章节关联示例:web-example
+----
 
 [source,xml]
 .引入依赖
 ----
 <dependencies>
+    <!--dew的核心包-->
+    <dependency>
+        <groupId>com.tairanchina.csp.dew</groupId>
+        <artifactId>boot-core</artifactId>
+        <version>${dew.version}</version>
+    </dependency>
+    <!--Spring Boot Web核心依赖-->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!--添加文档支持-->
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
     </dependency>
 </dependencies>
 …
 ----
 
-[source,java]
-.添加启动类
+[source,yml]
+.添加配置
 ----
-@SpringBootApplication
-@EnableAutoConfiguration()
-public class WebExampleApplication {
-    public static void main(String[] args) {
-        new SpringApplicationBuilder(WebExampleApplication.class).run(args);
-    }
-}
+spring:
+  application:
+    name: web-example
+
+server:
+  port: 8080 # http端口号
+
+dew:
+  basic:
+    name: web
+    version: 1.0
+    desc: desc
+    web-site: www.tairanchina.com
+    doc:
+      base-package: com.tairanchina # API文档路径
 ----
 
 [source,java]
@@ -158,96 +215,200 @@ public class ExampleController {
 }
 ----
 
-==== Dew版本
+TIP: `Controller` 的操作请参见 `Spring boot` 文档
 
-[source,xml]
-.引入依赖
+===== CORS支持
+
+`CORS` 默认支持
+
+[source,yml]
+.`CORS`实现定制
 ----
-<dependencies>
-    <dependency>
-        <groupId>com.tairanchina.csp.dew</groupId>
-        <artifactId>boot-core</artifactId>
-        <version>${dew.version}</version>
-    </dependency>
-    <!-- 引入web依赖 -->
-        <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-</dependencies>
-…
+dew:
+  security:
+    cors:
+      allow-origin: # 允许来源，默认 *
+      allow-methods: # 允许方法，默认 POST,GET,OPTIONS,PUT,DELETE,HEAD
+      allow-headers: # 允许头信息 x-requested-with,content-type
 ----
+
+===== 数据验证
+
+`Dew` 集成了 `Spring validate` 机制，支持针对 `URL` 及 `Bean` 的验证。
+
+* 在 java bean 中添加各项validation，支持标准`javax.validation.constraints`包下的诸如：`NotNull` ，同时框架扩展了几个检查，如：
+   IdNumber、Phone
+* 在Controller中添加 `@Validated` 注解 ( Spring还支持@Vaild，但这一注解不支持分组 )
+* 支持Spring原生分组校验
+* `URL` 类型的验证必须在类头添加 `@Validated` 注解
+* `Dew` 框架内置了 `CreateGroup` `UpdateGroup` 两个验证组，验证组仅是一个标识，可为任何java对象
 
 [source,java]
-.添加启动类
+.修改之前的Controller
 ----
-public class WebExampleApplication extends DewBootApplication {
-   public static void main(String[] args) {
-       new SpringApplicationBuilder(WebExampleApplication.class).run(args);
-   }
+@RestController
+@Api(description = "示例应用")
+@Validated // URL 类型的验证需要使用此注解
+public class WebExampleController {
+
+    /**
+     * 最基础的Controller示例
+     */
+    @GetMapping("example")
+    @ApiOperation(value = "示例方式")
+    public String example() {
+        return "enjoy!";
+    }
+
+    /**
+     * 数据验证示例，针对 CreateGroup 这一标识组的 bean认证
+     */
+    @PostMapping(value = "valid-create")
+    public String validCreate(@Validated(CreateGroup.class) @RequestBody User user) {
+        return "";
+    }
+
+    /**
+     * 数据验证示例，针对 UpdateGroup 这一标识组的 bean认证，传入的是表单形式
+     */
+    @PutMapping(value = "valid-update")
+    public String validUpdate(@Validated(UpdateGroup.class) User user) {
+        return "";
+    }
+
+    /**
+     * 数据验证示例，URL认证
+     */
+    @GetMapping(value = "valid-method/{age}")
+    public String validInMethod(@Min(value = 2,message = "age必须大于2") @PathVariable("age") int age) {
+        return "";
+    }
+
+    // User类
+    public static class User {
+
+        // 仅在CreateGroup组下才校验
+        @NotNull(groups = CreateGroup.class)
+        @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
+        private String idCard;
+
+        // CreateGroup、UpdateGroup组下校验
+        @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
+        private int age;
+
+        // CreateGroup、UpdateGroup组下校验
+        @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
+        private String phone;
+
+        // Get/Set...
+    }
+
 }
 ----
 
-* 添加Controller (同原生版本)
+===== 统一响应
 
-=== 使用Swagger API文档
+`Dew` 支持两种格式：
 
-==== 原生版本
+* 协议无关：`Resp<E>` 响应，对于`HTTP`统一返回`200`HTTP状态码，使用`code`表示业务状态码，`Resp`对象包含:
 
-[source,xml]
-.引入依赖 (在 `启用Web服务` 的基础上增加)
-----
-<dependencies>
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>${swagger.version}</version>
-        <optional>true</optional>
-    </dependency>
-    <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger-ui</artifactId>
-        <version>${swagger.version}</version>
-        <optional>true</optional>
-    </dependency>
-</dependencies>
-…
-----
+ code 响应编码，与http状态码类似，200表示成功
+ message 响应附加消息，多有于错误描述
+ body 响应正文
 
-* 添加 Docket Bean
+TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-common/#true-resp[https://gudaoxuri.github.io/dew-common/#true-resp]
 
-TIP: 详见 https://github.com/swagger-api/swagger-samples/blob/master/java/java-spring-boot/src/main/java/io/swagger/sample/Application.java[https://github.com/swagger-api/swagger-samples/blob/master/java/java-spring-boot/src/main/java/io/swagger/sample/Application.java]
+* 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
 
-==== Dew版本
+TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时上述两种格式的 `message` 内容会返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
+     `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
 
-* 引入依赖 (同原生版本)
+启用统一响应格式支持：
 
 [source,yml]
-.增加配置
+.统一响应格式配置
 ----
 dew:
     basic:
-    name: # 文档名称
-    version: # 文档版本
-    desc: # 文档描述
-    webSite: # 文档官网
-    doc:
-        basePackage:  # 要扫描的包路径
+        format:
+            use-unity-error: true # 默认true
+            reuse-http-state: false # 默认true， true:重用http状态码，false:使用协议无关格式
 ----
 
-=== 使用离线API文档
+[source,java]
+.统一响应使用
+----
+// 使用协议无关格式
+public Resp<String> test(){
+    return Resp.success("enjoy!");
+    // or return Resp.notFound("…")/conflict("…")/badRequest("…")/…
+}
+
+// 重用http状态码
+// 与协议无关格式区别在于：
+// 1. throws 对应的异常
+// 2. 使用Dew.E.e(<code>,<Exception Instance>)来抛出异常
+public String test() throws IOException{
+    return "enjoy!";
+    // or throw Dew.E.e("A000", new IOException("io error"));
+    // or throw Dew.E.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
+}
+----
+
+[NOTE]
+.统一响应格式的选择
+====
+`Dew` 推荐使用 `协议无关格式`，此格式在 `方法间调用` `非HTTP协议RPC` `MQ` 等数据交互场景做到真正的 `统一响应格式`。
+====
+
+===== 异常处理
+
+`Dew` 会把程序没有捕获的异常统一转成 `500` 异常上抛，同时框架提供了常用的异常检查：
+
+[source,java]
+.异常检查，异常类型要求为RuntimeException及其子类
+----
+Dew.E.check(VoidPredicate notExpected, E ex)
+Dew.E.check(boolean notExpected, E ex)
+Dew.E.checkNotEmpty(Map<?, ?> objects, E ex)
+Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
+Dew.E.checkNotNull(Object obj, E ex)
+----
+
+[source,xml]
+.自定义异常配置
+----
+dew:
+  basic:
+    format:
+      use-unity-error: true // 这个必须为true
+    error-mapping:
+      "[<异常类名>]":
+        http-code: # http状态码，不存在时使用实例级http状态码
+        business-code: # 业务编码，不存在时使用实例级业务编码
+        message: # 错误描述，不存在时使用实例级错误描述
+
+<!--示例-->
+dew:
+  basic:
+    format:
+      use-unity-error: true
+    error-mapping:
+      "[com.tairanchina.csp.dew.core.AuthException]":
+        http-code: 401
+        business-code: x00010
+        message: 认证错误
+----
+
+===== 访问在线API文档
+
+在 `default` `test` `dev` profile下http访问 `./swagger-ui.html` 即可。
+
+===== 生成离线API文档
 
 实现Html及PDF版本的离线API文档，效果如下：
 
 image:http://swagger2markup.github.io/swagger2markup/1.3.1/images/Swagger2Markup.PNG[]
-
-==== 原生版本
-
-NOTE: 未提供此功能，实现复杂，见：https://github.com/Swagger2Markup/spring-swagger2markup-demo
-
-==== Dew版本
-
-TIP: 确保引入了上文的 `Swagger` 依赖
 
 [source,java]
 .建立如下测试类，WebExampleApplication修改成对应的启动类
@@ -276,6 +437,27 @@ mvn -Dtest=DocTest clean test -P doc
 ====
 创建或编辑 `api-docs/asciidoc/index.adoc` 加入个性化内容，此为 `asciidoc` 格式，使用见： http://asciidoctor.org/docs/asciidoc-writers-guide/
 ====
+
+==== 数据访问
+==== 集群功能
+
+=== 增强
+
+==== 服务脚手架
+==== 权限认证
+==== 追踪日志
+==== Thrift集成
+==== Dubbo兼容
+
+=== 工程化
+
+==== 代码质量检查
+==== Spring Admin集成
+==== Zipkin集成
+==== 测试支持
+
+
+
 
 === 启用JDBC功能(JdbcTemplate)
 
@@ -779,149 +961,7 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 
 TIP: 详见API文档
 
-=== CORS支持
 
-默认支持，在`启用Web服务`章节的基础上加上如下配置实现定制：
-
-[source,yml]
-----
-dew:
-  security:
-    cors:
-      allow-origin: # 允许来源，默认 *
-      allow-methods: # 允许方法，默认 POST,GET,OPTIONS,PUT,DELETE,HEAD
-      allow-headers: # 允许头信息 x-requested-with,content-type
-----
-
-=== 统一响应格式
-
-Dew支持两种格式：
-
-* 协议无关：`Resp<E>` 响应，对于`HTTP`统一返回`200`状态，使用`code`表示实际状态，`Resp`对象包含:
-
- code 响应编码，与http状态码类似，200表示成功
- message 响应附加消息，多有于错误描述
- body 响应正文
-
-TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-common/#true-resp[https://gudaoxuri.github.io/dew-common/#true-resp]
-
-* 重用`HTTP Status Code`: 在无错误时直接返回内容，发生错误时返回 `{"error":{"code":"实际错误码","message":"错误信息"}}`
-
-TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检查不通过时上述两种格式的 `message` 内容会返回Json格式的错误详细（ `Detail:` 标识之后的内容），格式为：
-     `[{"field":"<字段名>","reason":"<原因，如NotNull,Min>","msg":"<错误描述>"}]`
-
-启用统一响应格式支持：
-
-[source,yml]
-.配置
-----
-dew:
-    basic:
-        format:
-            use-unity-error: true # 默认false
-            reuse-http-state: # true:重用http状态码，false:使用协议无关格式
-----
-
-[source,java]
-.相关代码
-----
-// 使用协议无关格式
-public Resp<String> test(){
-    return Resp.success("enjoy!");
-    // or return Resp.notFound("…")/conflict("…")/badRequest("…")/…
-}
-
-// 重用http状态码
-// 与协议无关格式区别在于：
-// 1. throws 对应的异常
-// 2. 使用Dew.E.e(<code>,<Exception Instance>)来抛出异常
-public String test() throws IOException{
-    return "enjoy!";
-    // or throw Dew.E.e("A000", new IOException("io error"));
-    // or throw Dew.E.e("A000", new IOException("io error"),StandardCode.UNAUTHORIZED); // 自定义http异常401
-}
-----
-
-=== 异常处理
-
-Dew 会把程序没有捕获的异常统一转成 `500` 异常上抛，同时框架提供了常用的异常检查：
-
-[source,java]
-.异常检查，异常类型要求为RuntimeException及其子类
-----
-Dew.E.check(VoidPredicate notExpected, E ex)
-Dew.E.check(boolean notExpected, E ex)
-Dew.E.checkNotEmpty(Map<?, ?> objects, E ex)
-Dew.E.checkNotEmpty(Iterable<?> objects, E ex)
-Dew.E.checkNotNull(Object obj, E ex)
-----
-
-==== 使用validation进行Bean校验
-
-* 在 java bean 中添加各项validation，支持标准`javax.validation.constraints`包下的诸如：`NotNull` ，同时框架扩展了几个检查，如：
-   IdNumber、Phone
-* 在Controller中添加 `@Validated` 注解 ( Spring还支持@Vaild，但这一注解不支持分组 )
-* 支持Spring原生分组校验
-
-[source,java]
-.Bean校验示例
-----
-// Controller
-// 保存请求，校验组为CreateGroup，这只一个标识，可为任意类或接口
-@PostMapping(value = "valid-create")
-public String validCreate(@Validated(CreateGroup.class) @RequestBody User user){
-    return "";
-}
-// 更新请求，校验组为UpdateGroup
-@PutMapping(value = "valid-update")
-public String validUpdate(@Validated(UpdateGroup.class) @RequestBody User user){
-    return "";
-}
-
-// User类
-public static class User {
-
-    // 仅在CreateGroup组下才校验
-    @NotNull(groups = CreateGroup.class)
-    @IdNumber(message = "身份证号错误", groups = CreateGroup.class)
-    private String idCard;
-
-    // CreateGroup、UpdateGroup组下校验
-    @Min(value = 10, groups = {CreateGroup.class, UpdateGroup.class})
-    private int age;
-
-    // CreateGroup、UpdateGroup组下校验
-    @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
-    private String phone;
-
-    // Get/Set...
-}
-----
-
-[source,xml]
-.自定义异常配置
-----
-dew:
-  basic:
-    format:
-      use-unity-error: true // 这个必须为true
-    error-mapping:
-      "[<异常类名>]":
-        http-code: <http状态码>
-        business-code: <业务编码>
-        message: <错误描述>
-
-<!--示例-->
-dew:
-  basic:
-    format:
-      use-unity-error: true
-    error-mapping:
-      "[com.tairanchina.csp.dew.core.AuthException]":
-        http-code: 401
-        business-code: x00010
-        message: 认证错误
-----
 
 === 认证缓存
 

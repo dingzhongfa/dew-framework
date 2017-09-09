@@ -3,7 +3,7 @@ spring:
     name: web-example
 
 server:
-  port: 8080
+  port: 8080 # http端口号
 
 dew:
   basic:
@@ -12,7 +12,7 @@ dew:
     desc: desc
     web-site: www.tairanchina.com
     doc:
-      base-package: com.tairanchina
+      base-package: com.tairanchina # API文档路径
 
 logging:
   path: ./logs

@@ -1,10 +1,9 @@
-package com.tairanchina.csp.dew;
+package com.tairanchina.csp.dew.example.mybatisplus;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.entity.User;
-import com.tairanchina.csp.dew.service.UserService;
+import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
+import com.tairanchina.csp.dew.example.mybatisplus.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +25,6 @@ public class MybatisplusExampleInitiator {
 
     @PostConstruct
     public void init() {
-
-//        ILock lock =Dew.cluster.dist.lock("aaaaaa");
-//        lock.lock();
-//
-//
-//        lock1 =Dew.cluster.dist.lock("aaaaaa");
-//        lock.unLock();
-
         User user = new User();
         user.setName("Tom");
         userService.insert(user);

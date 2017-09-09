@@ -1,16 +1,13 @@
-package com.tairanchina.csp.dew.service;
+package com.tairanchina.csp.dew.example.mybatisplus.service;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.tairanchina.csp.dew.entity.User;
-import com.tairanchina.csp.dew.mapper.UserMapper;
+import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
+import com.tairanchina.csp.dew.example.mybatisplus.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by panshuai on 17/6/26.
- */
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
 
@@ -19,7 +16,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     public List<String> ageGroup(){
         return baseMapper.ageGroup();
-//        return userMapper.ageGroup();
     }
 
 }

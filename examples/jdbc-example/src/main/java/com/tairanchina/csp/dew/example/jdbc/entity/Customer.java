@@ -1,4 +1,4 @@
-package your.group.entity;
+package com.tairanchina.csp.dew.example.jdbc.entity;
 
 import com.tairanchina.csp.dew.core.entity.Column;
 import com.tairanchina.csp.dew.core.entity.Entity;

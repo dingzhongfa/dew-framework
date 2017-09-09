@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.service;
+package com.tairanchina.csp.dew.example.mybatisplus.service;
 
 import com.tairanchina.csp.dew.model.Account;
 import com.tairanchina.csp.dew.storage.AccountMapper;

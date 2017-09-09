@@ -3,7 +3,7 @@ package com.tairanchina.csp.dew.core.entity;
 import java.lang.annotation.*;
 
 /**
- * 标识主键字段，支持long/String格式
+ * 标识主键字段，支持int/String格式
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

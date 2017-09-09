@@ -149,11 +149,11 @@ TIP: 完整使用手册见 https://gudaoxuri.github.io/dew-common/
 
 ==== Web处理
 
-===== 基础Web使用
-
 ----
 此章节关联示例:web-example
 ----
+
+===== 基础Web使用
 
 [source,xml]
 .引入依赖
@@ -331,7 +331,7 @@ TIP: 如果启用了字段检查（ `@RequestBody @Validated ...` ），在检�
 dew:
     basic:
         format:
-            use-unity-error: true # 默认true
+            use-unity-error: true # 是否启用统一响应，默认true
             reuse-http-state: false # 默认true， true:重用http状态码，false:使用协议无关格式
 ----
 
@@ -439,83 +439,25 @@ mvn -Dtest=DocTest clean test -P doc
 ====
 
 ==== 数据访问
-==== 集群功能
 
-=== 增强
-
-==== 服务脚手架
-==== 权限认证
-==== 追踪日志
-==== Thrift集成
-==== Dubbo兼容
-
-=== 工程化
-
-==== 代码质量检查
-==== Spring Admin集成
-==== Zipkin集成
-==== 测试支持
-
-
-
-
-=== 启用JDBC功能(JdbcTemplate)
-
-==== 原生版本
-
-[source,xml]
-.引入依赖
 ----
-<dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-jdbc</artifactId>
-    </dependency>
-    <dependency>
-         <groupId>com.alibaba</groupId>
-         <artifactId>druid-spring-boot-starter</artifactId>
-    </dependency>
-    <!-- 对应的数据库JDBC驱动 -->
-</dependencies>
+此章节关联示例:jdbc-example、mybatisplus-example
 ----
 
-[source,yml]
-.增加配置
-----
-spring:
-    datasource:
-    driver-class-name: # 驱动名
-    url: # 驱动url
-----
+`Dew` 基于 `Spring Boot` ，原生 `Hibernate` `MyBatis` `Spring JDBC Template` 等主流的持久化框架。 各类框架的整合参见网络资料，示例中提供了针对 `MybatisPlus` 的整合说明： `mybatisplus` 。
 
-[source,java]
-.使用JDBC
-----
-@Autowired
-JdbcTemplate jdbcTemplate;
+===== `Dew DS`
 
-public void test() throws Exception {
-    jdbcTemplate.execute("DROP TABLE customers IF EXISTS");
-    jdbcTemplate.execute("CREATE TABLE customers(" +
-            "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
+`Dew` 选用 `Spring JDBC Template` 这一轻量的数据处理框架，并做了一定的扩展以支持：
 
-    List<Object[]> splitUpNames = Arrays.asList("John Woo", "Jeff Dean", "Josh Bloch", "Josh Long").stream()
-            .map(name -> name.split(" "))
-            .collect(Collectors.toList());
-
-    jdbcTemplate.batchUpdate("INSERT INTO customers(first_name, last_name) VALUES (?,?)", splitUpNames);
-
-    jdbcTemplate.query(
-            "SELECT id, first_name, last_name FROM customers WHERE first_name = ?", new Object[] { "Josh" },
-            (rs, rowNum) -> new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
-    ).forEach(customer -> log.info(customer.toString()));
-}
-....
-----
+. 支持实体与SQL的映射
+. 支持常用数据处理操作
+. 支持@Select注解
+. 轻松使用多数据源
 
 TIP: `JdbcTemplate` 知识见 https://spring.io/guides/gs/relational-data-access/[https://spring.io/guides/gs/relational-data-access/]
 
-==== Dew版本
+* 启用 `Dew DS`
 
 [source,xml]
 .引入依赖
@@ -525,116 +467,191 @@ TIP: `JdbcTemplate` 知识见 https://spring.io/guides/gs/relational-data-access
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>boot-core</artifactId>
     </dependency>
+    <!--引入JDBC依赖-->
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <!--使用druid连接池-->
+    <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid-spring-boot-starter</artifactId>
     </dependency>
     <!-- 对应的数据库JDBC驱动 -->
 </dependencies>
 ----
 
-* 增加配置 (同原生版本)
+IMPORTANT: `Dew DS` 指定使用 `druid` 做为连接池。
 
-[source,java]
-.使用JDBC
+[source,yml]
+.增加配置
 ----
-// ddl
-Dew.ds().jdbc().execute("CREATE TABLE example_entity\n" +
-        "(\n" +
-        "id int primary key auto_increment,\n" +
-        "field_a varchar(255)\n" +
-        ")");
-// insert
-ExampleEntity entity = new ExampleEntity();
-entity.setFieldA("测试A");
-P id = Dew.ds().insert(entity);
-// get
-logger.info(">>>> "+Dew.ds().getById(id, ExampleEntity.class).getFieldA());
+spring:
+    datasource:
+    driver-class-name: # 驱动名
+    url: # 驱动url
+    druid:
+      # 连接池配置
 ----
 
-==== Dew对 `JdbcTemplate` 做扩展
+====== 实体与SQL的映射
 
-*支持实体与SQL的映射*
+`Dew DS` 支持注解方式实现ORMPing，可用的注解有:
 
-* 可选的注解:
-** `Entity`: 表示此类可映射为数据库表
-** `PkColumn`: 主键标识 存在此注解的实体可以使用 `xxxById` 操作
-** `CodeColumn`: 业务主键 在工程中很多对象的主键不依赖于数据库主键而会使用code（如uuid表示）作为业务主键，
-** 保存（insert）时如果存在业务主键，且`value==null &amp;&amp; uuid=true`，则会自动附加上uuid
-** 存在此注解的实体可以使用 `xxxByCode` 操作
-** `CreateUserColumn`: 创建人，保存（insert）时自动附加当前操作人`code`（需要与获取操作人动作同一线程）
-** `CreateTimeColumn`: 创建时间，保存（insert）时自动附加当前时间
-** `UpdateUserColumn`：更新人，保存（insert）更新（updateById/updateByCode）时自动附加当前操作人`code`（需要与获取操作人动作同一线程）
-** `UpdateTimeColumn`: 更新时间，保存（insert）更新（updateById/updateByCode）时自动附加当前时间
-** `EnabledColumn`: 状态，启用或禁用 存在此注解的实体可以使用 `enableByxx` `disableByxx` `xxEnabled` `xxDisabled` 操作
-** `Column`: 普通字段
+* `Entity` : 表示此类可映射为数据库表
+* `PkColumn` : 主键标识 支持 `int/String` 类型，`int` 多用于ID自增场景， `String` 可选择是否自动生成 `uuid` 数据（ `uuid=true` ），存在此注解的实体可以使用 `xxxById` 操作
+* `CodeColumn` : 业务主键 在工程中很多对象的主键不依赖于数据库主键而会使用code（如uuid表示）作为业务主键， 保存（insert）时如果存在业务主键，且  `value==null && uuid=true` 则会自动附加上uuid，存在此注解的实体可以使用 `xxxByCode` 操作
+* `CreateUserColumn` : 创建人，保存（insert）时自动附加当前操作人 `code` （需要与获取操作人动作同一线程）
+* `CreateTimeColumn` : 创建时间，保存（insert）时自动附加当前时间
+* `UpdateUserColumn` ：更新人，保存（insert）更新（updateById/updateByCode）时自动附加当前操作人 `code` （需要与获取操作人动作同一线程）
+* `UpdateTimeColumn` : 更新时间，保存（insert）更新（updateById/updateByCode）时自动附加当前时间
+* `EnabledColumn` : 状态，启用或禁用，支持字段字面含义反转（ `reverse=true` ） 存在此注解的实体可以使用 `enableByXX` `disableByXX` `xxEnabled` `xxDisabled` 操作
+* `Column`: 普通字段
 
 IMPORTANT: 只有存在`Entity`注解的类才会被解析，只有存在`XXColumn`的字段才会被映射
 
-TIP: 为方便操作，框架提供了`PkEntity` `SafeEntity` `StatusEntity` `SafeStatusEntity` 四个预制的父类
+TIP: 为方便操作，框架提供了 `PkEntity` `SafeEntity` `StatusEntity` `SafeStatusEntity` 四个预制的父类。
 
-* 支持常用操作
+[source,java]
+.实体与SQL的映射示例
+----
+@Entity
+public class Pet implements Serializable {
 
-** *增加* `Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable<?> entities)`
-** *更新* `Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
-** *获取单条* `Dew.ds().getById(P id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
-** *获取多条* `Dew.ds().findAll(Class<E> entityClazz) / Dew.ds().findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)`
-** *获取分页* `Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…)`
-** *计数* `Dew.ds().countAll(Class<?> entityClazz) / Dew.ds().countEnabled(Class<?> entityClazz) / Dew.ds().countDisabled(Class<?> entityClazz)`
-** *启用* `Dew.ds().enableById(P id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
-** *禁用* `Dew.ds().disableById(P id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
-** *是否存在* `Dew.ds().existById(P id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
-** *物理删除* `Dew.ds().deleteById(P id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
+    @PkColumn
+    private int id;
+    @Column(notNull = true)
+    private String type;
+    @Column(notNull = true)
+    private BigDecimal price;
+    @CreateTimeColumn
+    private Date createTime;
+    @UpdateTimeColumn
+    private Date updateTime;
+    @EnabledColumn
+    private boolean enabled;
 
-TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API
+    // get/set...
+}
+----
 
-===== 支持@Select注解
+TIP: 实体对象需要实现 `Serializable` 接口。
 
-* 格式
+====== 常用数据处理操作
 
-[source]
+* *增加* `Dew.ds().insert(Object entity) / Dew.ds().insert(Iterable<?> entities)`
+* *更新* `Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)`
+* *获取单条* `Dew.ds().getById(P id, Class<E> entityClazz) / Dew.ds().getByCode(String code, Class<E> entityClazz)`
+* *获取多条* `Dew.ds().findAll(Class<E> entityClazz) / Dew.ds().findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)`
+* *获取分页* `Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…)`
+* *计数* `Dew.ds().countAll(Class<?> entityClazz) / Dew.ds().countEnabled(Class<?> entityClazz) / Dew.ds().countDisabled(Class<?> entityClazz)`
+* *启用* `Dew.ds().enableById(P id, Class<?> entityClazz) / Dew.ds().enableByCode(String code, Class<?> entityClazz)`
+* *禁用* `Dew.ds().disableById(P id, Class<?> entityClazz) / Dew.ds().disableByCode(String code, Class<?> entityClazz)`
+* *是否存在* `Dew.ds().existById(P id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz)`
+* *物理删除* `Dew.ds().deleteById(P id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz)`
+
+TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API。
+
+[source,java]
+.常用数据处理操作示例
+----
+// =============== DS 示例 ===============
+// 初始宠物表
+Dew.ds().jdbc().execute("CREATE TABLE pet\n" +
+        "(\n" +
+        "id int primary key auto_increment,\n" +
+        "type varchar(50),\n" +
+        "price decimal(11,4) not null,\n" +
+        "create_time datetime,\n" +
+        "update_time datetime,\n" +
+        "enabled bool\n" +
+        ")");
+// 初始化订单表
+Dew.ds().jdbc().execute("CREATE TABLE t_order\n" +
+        "(\n" +
+        "id int primary key auto_increment,\n" +
+        "pet_id int,\n" +
+        "customer_id int,\n" +
+        "price decimal(11,4) not null,\n" +
+        "create_time datetime \n" +
+        ")");
+
+Pet pet = new Pet();
+pet.setType("狗");
+pet.setPrice(new BigDecimal(1000));
+pet.setEnabled(true);
+// insert
+int id = (int) Dew.ds().insert(pet);
+// getById
+pet = Dew.ds().getById(id, Pet.class);
+assert pet.getType().equals("狗");
+----
+
+====== DewDao
+
+`DewDao` 是一个泛型基础 `Dao` 类，实现了常用的操作。
+
+上个章节的示例用 `DewDao` 可写成如下形式：
+
+[source,java]
+.常用数据处理操作示例 `DewDao` 版
+----
+// 在配置文件中添加Dao的路径
+Dew:
+  dao:
+    basePackage: com.tairanchina.csp.dew.example.jdbc.dao
+
+// 添加CustomerDao
+public interface CustomerDao extends DewDao<In, Customer> {
+}
+
+@Autowired
+private PetDao petDao;
+
+// =============== Dao 示例 ===============
+// insert by dao
+pet = new Pet();
+pet.setType("猫");
+pet.setPrice(new BigDecimal(2000));
+pet.setEnabled(true);
+id = petDao.insert(pet);
+// getById by dao
+pet = petDao.getById(id);
+assert pet.getType().equals("猫");
+----
+
+====== @Select注解
+
+[source,java]
+.`@Select` 格式
 ----
 @Select(value = "<SQL，使用#{参数占位名}>", entityClass = <返回的实体，为空时以Map封装>)
 <返回类型，可为单个对象/List/Page> <方法名，java规范即可>(<行参修饰符，@Param(<参数占位名>)或@ModelParam> <行参>);
-
-
-----
-TIP:`@Select` 中默认对*和.*自动解析成表对应字段，但不支持表的嵌套查询。
-----
-
 ----
 
 TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需使用 `@Param()` 并指定与#{}相匹配的名称。
 `@Select` 中entityClass用于指定返回类型。
 
-* 使用示例
+TIP: 分页查询要求返回 `Page<?>` 对象，参数最后两个固定为 `@Param("pageNumber") long pageNumber, @Param("pageSize") int pageSize` 这两个参数框架会自行解析，`pageNumber` 从 `1` 开始。
 
-添加扫描配置： `dew.dao.base-package: xxx`
+TIP: `@Select` 中默认对*和.*自动解析成表对应字段，但不支持表的嵌套查询。
 
 [source,java]
-.返回全量数据
+.`@Select` 示例
 ----
+// 返回全量数据
 @Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
 List<CRUDSTestEntity> queryByField(@Param("fieldA") String fieldA);
-----
 
-[source,java]
-.返回分页数据
-----
+//返回分页数据
 @Select(value = "select * from t_test_crud_s_entity where field_a= #{ fieldA }", entityClass = CRUDSTestEntity.class)
 Page<CRUDSTestEntity> queryByCustomPaging(@ModelParam CRUDSTestEntity model, @Param("pageNumber") Long pageNumber, @Param("pageSize") Integer pageSize);
-----
 
-[source,java]
-.返回Bean类型数据
-----
+//返回Bean类型数据
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}", entityClass = CRUDSTestEntity.class)
 CRUDSTestEntity getById(@Param("id") P id);
-----
 
-[source,java]
-.返回Map类型数据
-----
+//返回Map类型数据
 @Select(value = "select * from t_test_crud_s_entity where id= #{id}")
 Map<String,Object> getMapById(@Param("id") P id);
 ----
@@ -645,185 +662,120 @@ Map<String,Object> getMapById(@Param("id") P id);
 . `@Select` 暂不支持DSL SQL，比如（HQL）
 . `@ModelParam` 参数不支持 `null` 查询
 
+====== 多数据源
 
-=== 多数据源支持
+`Dew` 可以很轻松地实现多数据源使用。
 
-==== 原生版本
-
-[source,properties]
-.配置数据源
+[source,yml]
+.多数据源配置
 ----
-# 主数据源
-spring.datasource.url=…
-spring.datasource.username=…
-spring.datasource.password=…
-spring.datasource.driver-class-name=…
-spring.datasource.druid.max-idle=…
-…
-# 其它数据源
-spring.datasource.secondary.url=…
-spring.datasource.secondary.username=…
-spring.datasource.secondary.password=…
-spring.datasource.secondary.driver-class-name=…
-spring.datasource.secondary.max-idle=…
-…
+spring:
+  datasource: # 主数据源配置
+    driver-class-name:
+    url:
+    druid:
+      # 主数据源连接池配置
+  multi-datasources: # 此key下配置其它数据源
+    other: # 数据源标识
+      driver-class-name:
+      url:
+      # 此数据源的连接池配置
 ----
 
-[source,java]
-.添加DataSource
-----
-@Bean
-@Primary 
-@ConfigurationProperties(prefix="spring.datasource")
-public DataSource primaryDataSource() {
-    return DataSourceBuilder.create().build();
-}
-  
-@Bean
-@ConfigurationProperties(prefix="spring.datasource.secondary")  
-public DataSource secondaryDataSource() {  
-    return DataSourceBuilder.create().build();  
-}  
-----
-
-[source,java]
-.添加JdbcTemplate
-----
-@Bean
-@Primary
-public JdbcTemplate primaryJdbcTemplate(@Qualifier("primaryDataSource")DataSource dataSource){
-    return new JdbcTemplate(dataSource);
-}
-
-@Bean
-public JdbcTemplate secondaryJdbcTemplate(@Qualifier("secondaryDataSource")DataSource dataSource){
-    return new JdbcTemplate(dataSource);
-}
----- 
-
-[source,java]
-.启用事务
-----
-@EnableTransactionManagement
-----
-
-[source,java]
-.添加事务
-----
-@Bean
-@Primary
-public PlatformTransactionManager primaryTransactionManager(@Qualifier("primaryDataSource") DataSource dataSource) {
-    return new DataSourceTransactionManager(dataSource);
-}
-
-@Bean
-public PlatformTransactionManager secondaryTransactionManager(@Qualifier("secondaryDataSource") DataSource dataSource) {
-    return new DataSourceTransactionManager(dataSource);
-}
-----
-
-[source,java]
-.使用
-----
-@Autowired
-private JdbcTemplate jdbcTemplate;
-
-@Autowired
-@Qualifier("secondaryJdbcTemplate")
-private JdbcTemplate secondaryJdbcTemplate;
-
-@Transactional
-public long insert(Object entity) {
-    // DoSomething
-    jdbcTemplate.xxx;
-}
-
-@Transactional(secondaryTransactionManager)
-public long insert(Object entity) {
-    // DoSomething
-    secondaryJdbcTemplate.xxx;
-}
-----
-
-==== Dew版本
-
-[source,properties]
-.配置数据源
-----
-# 主数据源
-spring.datasource.url=…
-spring.datasource.username=…
-spring.datasource.password=…
-spring.datasource.driver-class-name=…
-spring.datasource.druid.max-idle=…
-…
-# 其它数据源1
-spring.datasource.multi-datasources.other1.url=…
-spring.datasource.multi-datasources.other1.username=…
-spring.datasource.multi-datasources.other1.password=…
-spring.datasource.multi-datasources.other1.driver-class-name=…
-spring.datasource.multi-datasources.other1.max-idle=…
-# 其它数据源2
-spring.datasource.multi-datasources.other2.url=…
-…
-----
-
-IMPORTANT: 其它数据源务必配置在 `spring.datasource.multi-datasources` 下，格式是 `spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
+TIP: 其它数据源务必配置在 `spring.datasource.multi-datasources` 下，格式是 `spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
 
 IMPORTANT: 主数据源连接池要加上 `druid` 或其它类型，其它数据源与 `url` 、 `username` 同级即可。
 
-[source,java]
-.使用
+[source,yml]
+.多数据源配置 示例
 ----
-// Dew常规方式
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+  multi-datasources:
+    other:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:test_other
+      initial-size: 1
+      max-active: 1
+----
 
-Dew.ds().xxx // 使用主数据源
-Dew.ds("other1").xxx // 使用DS Name为`other1`的数据源
+[source,java]
+.多数据源使用
+----
+// =============== 1）Dew.ds上直接使用 ===============
 
-// 泛型DAO (详见 `服务脚手架` 章节)
+Dew.ds(<数据源标识，为空时表示使用主数据源>).XX
 
-@Repository
-public class CRUDSTestDao implements DewDao<CRUDSTestEntity> {
+// -------- 例如 --------
+
+// 初始化客户表，来自另一个数据源
+Dew.ds("other").jdbc().execute("CREATE TABLE customer\n" +
+        "(\n" +
+        "id int primary key auto_increment,\n" +
+        "name varchar(50)\n" +
+        ")");
+Customer customer = new Customer();
+customer.setName("张三");
+// insert
+id = (int) Dew.ds("other").insert(customer);
+// getById
+customer = Dew.ds("other").getById(id, Customer.class);
+assert customer.getName().equals("张三");
+
+// =============== 2）Dao层上使用 ===============
+
+// Dao必须重写 `String ds()` 方法，返回对应的数据源标识
+
+// -------- 例如 --------
+
+public interface CustomerDao extends DewDao<Integer, Customer> {
     @Override
-    public String ds() {
-        return "other1"; // 使用DS Name为`other1`的数据源，此方法不重载时表示使用主数据源
+    default String ds() {
+        return "other";
     }
 }
 
-// 手工注入（同原生版本）
+// =============== 3）直接使用JdbcTemplate ===============
 
-@Autowired
+@Qualifier("<数据源标识+JdbcTemplate>")
+
+// -------- 例如 --------
+
+@Autowired // 主数据源
 private JdbcTemplate jdbcTemplate;
 
 @Autowired
-@Qualifier("other1JdbcTemplate")
+@Qualifier("otherJdbcTemplate") // 其它数据源
 private JdbcTemplate secondaryJdbcTemplate;
 
-@Transactional
-public long insert(Object entity) {
-    // DoSomething
-    jdbcTemplate.xxx;
-}
+// =============== 事务处理 ===============
 
-@Transactional(other1TransactionManager)
-public long insert(Object entity) {
-    // DoSomething
-    secondaryJdbcTemplate.xxx;
-}
+@Transactional("<数据源标识+TransactionManager，为空表示主数据源>")
+
+// -------- 例如 --------
+
+@Transactional(otherTransactionManager)
+
 ----
 
 IMPORTANT: `JdbcTemplate` Bean名称规则：主数据源= `jdbcTemplate` ，其它数据源= `<DS Name>JdbcTemplate`
 
 IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionManager` ，其它数据源= `<DS Name>TransactionManager`
 
+==== 集群功能
 
-====
- 以下功能原生版本支持比较繁琐或无对应实现，后文只描述Dew框架实现
-====
+----
+此章节关联示例:cluster-example
+----
 
-=== 启用集群功能
-
-Dew的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` `Master Election`，并且做了接口抽象以适配不同的实现，目前支持 `Redis` 、 `Hazelcast` 、 `Rabbit` ，对 `Ignite` 的适配正在进行中。
+`Dew` 的集群支持 `分布式缓存` `分布式Map` `分布式锁` `MQ` `Leader Election`，并且做了接口抽象以适配不同的实现，目前支持 `Redis` `Hazelcast` `Rabbit` `Ignite` `Eureka` 。
 
 [source,xml]
 .引入依赖
@@ -882,6 +834,26 @@ dew:
         mq: hazelcast # 可选 redis/hazelcast/rabbit
         election: eureka
 ----
+
+=== 增强
+
+==== 服务脚手架
+==== 权限认证
+==== 追踪日志
+==== Thrift集成
+==== Dubbo兼容
+
+=== 工程化
+
+==== 代码质量检查
+==== Spring Admin集成
+==== Zipkin集成
+==== 测试支持
+
+
+=== 启用集群功能
+
+
 
 [source,java]
 .使用集群功能

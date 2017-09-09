@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.entity;
+package com.tairanchina.csp.dew.example.mybatisplus.entity;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;

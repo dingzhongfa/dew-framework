@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.service;
+package com.tairanchina.csp.dew.example.mybatisplus.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;

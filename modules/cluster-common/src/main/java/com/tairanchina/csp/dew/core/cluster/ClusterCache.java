@@ -3,6 +3,9 @@ package com.tairanchina.csp.dew.core.cluster;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 缓存服务
+ */
 public interface ClusterCache {
 
     /**

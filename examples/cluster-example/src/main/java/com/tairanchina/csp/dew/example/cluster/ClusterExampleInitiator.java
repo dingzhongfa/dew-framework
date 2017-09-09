@@ -5,6 +5,7 @@ import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
+import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public class ClusterExampleInitiator {
     private static final Logger logger = LoggerFactory.getLogger(ClusterExampleInitiator.class);
 
     @PostConstruct
-    public void init() throws InterruptedException {
+    public void init() throws Exception {
         // cache
         Dew.cluster.cache.flushdb();
         Dew.cluster.cache.del("n_test");
@@ -42,10 +43,19 @@ public class ClusterExampleInitiator {
 
         // dist lock
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
-        lock.delete();
-        lock.lock();
-        assert !lock.tryLock();
-        // ...
+        // tryLock 示例，等待0ms，忘了手工unLock或出异常时1s后自动解锁
+        if (lock.tryLock(0, 1000)) {
+            try {
+                // 已加锁，执行业务方法
+            } finally {
+                // 必须手工解锁
+                lock.unLock();
+            }
+        }
+        // tryLockWithFun 示例
+        lock.tryLockWithFun(0, 1000, () -> {
+            // 已加锁，执行业务方法，tryLockWithFun会将业务方法包裹在try-cache中，无需手工解锁
+        });
 
         // pub-sub
         Dew.cluster.mq.subscribe("test_pub_sub", message ->
@@ -58,6 +68,11 @@ public class ClusterExampleInitiator {
                 logger.info("req_resp>>" + message));
         Dew.cluster.mq.request("test_rep_resp", "msg1");
         Dew.cluster.mq.request("test_rep_resp", "msg2");
+        // rabbit confirm
+        if (Dew.cluster.mq instanceof RabbitClusterMQ) {
+            boolean success = ((RabbitClusterMQ) Dew.cluster.mq).publish("test_pub_sub", "confirm message", true);
+            success = ((RabbitClusterMQ) Dew.cluster.mq).request("test_rep_resp", "confirm message", true);
+        }
     }
 
     static class TestMapObj implements Serializable {

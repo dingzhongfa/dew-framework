@@ -150,7 +150,7 @@ TIP: 完整使用手册见 https://gudaoxuri.github.io/dew-common/
 ==== Web处理
 
 ----
-此章节关联示例:web-example
+此章节关联示例:web-example、cache-example
 ----
 
 ===== 基础Web使用
@@ -399,6 +399,10 @@ dew:
         business-code: x00010
         message: 认证错误
 ----
+
+===== 注解式缓存
+
+`Dew` 支持 `Spring Boot` 的缓存注解，详见示例 `example/cache-example`
 
 ===== 访问在线API文档
 
@@ -780,12 +784,11 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 [source,xml]
 .引入依赖
 ----
-<dependencies>
-    <dependency>
+<dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>boot-core</artifactId>
 </dependency>
-<!--引入集群依赖，可选redis/hazelcast/rabbit-->
+<!--引入集群依赖，可选redis/hazelcast/rabbit/ignite/eureka-->
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-redis</artifactId>
@@ -800,6 +803,11 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 </dependency>
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cluster-spi-ignite</artifactId>
+</dependency>
+<!--此实现需要引用 cloud-core -->
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-eureka</artifactId>
 </dependency>
 ----
@@ -807,17 +815,20 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 [source,yml]
 .增加配置
 ----
+dew:
+    cluster:
+        cache: redis
+        dist: hazelcast # 可选 redis/hazelcast
+        mq: hazelcast # 可选 redis/hazelcast/rabbit
+        election: eureka
+
 spring:
     redis:
         host: # redis主机
         port: # redis端口
         database: # redis数据库
         password: # redis密码
-        pool:
-          max-active:
-          max-wait:
-          max-idle:
-          min-idle:
+        pool: # 连接池配置
     rabbitmq:
       host: # rabbit主机
       port: # rabbit端口
@@ -825,77 +836,533 @@ spring:
       password: # rabbit密码
       virtual-host: # rabbit VH
     hazelcast:
-    addresses: [] # hazelcast地址，端口可选
-
-dew:
-    cluster:
-        cache: redis
-        dist: hazelcast # 可选 redis/hazelcast
-        mq: hazelcast # 可选 redis/hazelcast/rabbit
-        election: eureka
+        addresses: [] # hazelcast地址，端口可选
 ----
 
-=== 增强
+TIP: `eureka` 实现了领导者选择，必须为 `Spring Cloud` 工程。
 
-==== 服务脚手架
-==== 权限认证
-==== 追踪日志
-==== Thrift集成
-==== Dubbo兼容
+集群服务的使用入口统一为： `Dew.cluster.XX`
 
-=== 工程化
-
-==== 代码质量检查
-==== Spring Admin集成
-==== Zipkin集成
-==== 测试支持
-
-
-=== 启用集群功能
-
-
+===== 分布式缓存
 
 [source,java]
-.使用集群功能
+.MQ服务: `Dew.cluster.cache`
 ----
-// 缓存示例，类似redis语法，支持string、list、hash
+/**
+ * key是否存在
+ *
+ * @param key key
+ * @return 是否存在
+ */
+boolean exists(String key);
+
+/**
+ * 获取字符串值
+ *
+ * @param key key
+ * @return 值
+ */
+String get(String key);
+
+/**
+ * 设置字符串
+ *
+ * @param key       key
+ * @param value     value
+ * @param expireSec 过期时间(seconds)，0表示永不过期
+ */
+void set(String key, String value, int expireSec);
+
+/**
+ * 设置字符串
+ *
+ * @param key   key
+ * @param value value
+ */
+void set(String key, String value);
+
+/**
+ * 删除key
+ *
+ * @param key key
+ */
+void del(String key);
+
+/**
+ * 添加列表值
+ *
+ * @param key   key
+ * @param value value
+ */
+void lpush(String key, String value);
+
+/**
+ * 设置列表
+ *
+ * @param key       key
+ * @param values    values
+ * @param expireSec 过期时间(seconds)，0表示永不过期
+ */
+void lmset(String key, List<String> values, int expireSec);
+
+/**
+ * 设置列表
+ *
+ * @param key    key
+ * @param values values
+ */
+void lmset(String key, List<String> values);
+
+/**
+ * 弹出栈顶的列表值
+ * 注意，Redis的列表是栈结构，先进后出
+ *
+ * @param key key
+ * @return 栈顶的列表值
+ */
+String lpop(String key);
+
+/**
+ * 获取列表值的长度
+ *
+ * @param key key
+ * @return 长度
+ */
+long llen(String key);
+
+/**
+ * 获取列表中的所有值
+ *
+ * @param key key
+ * @return 值列表
+ */
+List<String> lget(String key);
+
+/**
+ * 设置Hash集合
+ *
+ * @param key       key
+ * @param values    values
+ * @param expireSec 过期时间(seconds)，0表示永不过期
+ */
+void hmset(String key, Map<String, String> values, int expireSec);
+
+/**
+ * 设置Hash集合
+ *
+ * @param key    key
+ * @param values values
+ */
+void hmset(String key, Map<String, String> values);
+
+
+/**
+ * 修改Hash集合field对应的值
+ *
+ * @param key   key
+ * @param field field
+ * @param value value
+ */
+void hset(String key, String field, String value);
+
+/**
+ * 获取Hash集合field对应的值
+ *
+ * @param key   key
+ * @param field field
+ * @return field对应的值
+ */
+String hget(String key, String field);
+
+/**
+ * 判断Hash集合field是否存在
+ *
+ * @param key   key
+ * @param field field
+ * @return 是否存在
+ */
+boolean hexists(String key, String field);
+
+/**
+ * 获取Hash集合的所有值
+ *
+ * @param key key
+ * @return 所有值
+ */
+Map<String, String> hgetAll(String key);
+
+/**
+ * 删除Hash集合是对应的field
+ *
+ * @param key   key
+ * @param field field
+ */
+void hdel(String key, String field);
+
+/**
+ * 原子加操作
+ *
+ * @param key       key，key不存在时会自动创建值为0的对象
+ * @param incrValue 要增加的值，必须是Long Int Float 或 Double
+ * @return 操作后的值
+ */
+long incrBy(String key, long incrValue);
+
+/**
+ * 原子减操作
+ *
+ * @param key       key不存在时会自动创建值为0的对象
+ * @param decrValue 要减少的值，必须是Long  或 Int
+ * @return 操作后的值
+ */
+long decrBy(String key, long decrValue);
+
+/**
+ * 设置过期时间
+ *
+ * @param key       key
+ * @param expireSec 过期时间(seconds)，0表示永不过期
+ */
+void expire(String key, int expireSec);
+
+void flushdb();
+----
+
+[source,java]
+.Cache示例
+----
 Dew.cluster.cache.flushdb();
 Dew.cluster.cache.del("n_test");
 assert !Dew.cluster.cache.exists("n_test");
-Dew.cluster.cache.set("n_test", "{&quot;name&quot;:&quot;jzy&quot;}", 1);
+Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
 assert Dew.cluster.cache.exists("n_test");
 assert "jzy".equals($.json.toJson(Dew.cluster.cache.get("n_test")).get("name").asText());
 Thread.sleep(1000);
 assert !Dew.cluster.cache.exists("n_test");
 assert null == Dew.cluster.cache.get("n_test");
+----
 
-// 分布式Map，支撑常用Map操作
+===== 分布式锁
+
+[source,java]
+.MQ服务: `Dew.cluster.dist.lock`
+----
+/**
+ * 加锁，加锁成功后执行对应的函数，执行完成自动解锁
+ * <p>
+ * 推荐使用 {@link #tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun)}
+ *
+ * @param fun 加锁成功后执行的函数
+ */
+void lockWithFun(VoidProcessFun fun) throws Exception;
+
+/**
+ * 尝试加锁，加锁成功后执行对应的函数，执行完成自动解锁
+ * <p>
+ * 推荐使用 {@link #tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun)}
+ *
+ * @param fun 加锁成功后执行的函数
+ */
+void tryLockWithFun(VoidProcessFun fun) throws Exception;
+
+/**
+ * 尝试加锁，加锁成功后执行对应的函数，执行完成自动解锁
+ * <p>
+ * 推荐使用 {@link #tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun)}
+ *
+ * @param fun 加锁成功后执行的函数
+ */
+void tryLockWithFun(long waitMillSec, VoidProcessFun fun) throws Exception;
+
+/**
+ * 尝试加锁，加锁成功后执行对应的函数，执行完成自动解锁
+ *
+ * @param waitMillSec  等待毫秒数
+ * @param leaseMillSec 锁释放毫秒数
+ * @param fun          加锁成功后执行的函数
+ */
+void tryLockWithFun(long waitMillSec, long leaseMillSec, VoidProcessFun fun) throws Exception;
+
+/**
+ * 加锁
+ * <p>
+ * 推荐使用 {@link #tryLock(long waitMillSec, long leaseMillSec)}
+ */
+void lock();
+
+/**
+ * 尝试加锁
+ * <p>
+ * 推荐使用 {@link #tryLock(long waitMillSec, long leaseMillSec)}
+ */
+boolean tryLock();
+
+/**
+ * 尝试加锁
+ * <p>
+ * 推荐使用 {@link #tryLock(long waitMillSec, long leaseMillSec)}
+ *
+ * @param waitMillSec 等待毫秒数
+ */
+boolean tryLock(long waitMillSec) throws InterruptedException;
+
+/**
+ * 尝试加锁
+ *
+ * @param waitMillSec  等待毫秒数
+ * @param leaseMillSec 锁释放毫秒数
+ */
+boolean tryLock(long waitMillSec, long leaseMillSec) throws InterruptedException;
+
+/**
+ * 解锁操作，只有加锁的实例及线程才能解锁
+ */
+boolean unLock();
+
+/**
+ * 强制解锁，不用匹配加锁的实例与线程
+ * <p>
+ * 谨慎使用
+ */
+void delete();
+----
+
+[source,java]
+.Lock示例
+----
+// dist lock
+ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
+// tryLock 示例，等待0ms，忘了手工unLock或出异常时1s后自动解锁
+if (lock.tryLock(0, 1000)) {
+    try {
+        // 已加锁，执行业务方法
+    } finally {
+        // 必须手工解锁
+        lock.unLock();
+    }
+}
+// tryLockWithFun 示例
+lock.tryLockWithFun(0, 1000, () -> {
+    // 已加锁，执行业务方法，tryLockWithFun会将业务方法包裹在try-cache中，无需手工解锁
+});
+----
+
+===== 分布式Map
+
+[source,java]
+.MQ服务: `Dew.cluster.dist.map`
+----
+/**
+ * 添加Item，同步实现
+ *
+ * @param key   key
+ * @param value value
+ */
+void put(String key, M value);
+
+/**
+ * 添加Item，异步实现
+ *
+ * @param key   key
+ * @param value value
+ */
+void putAsync(String key, M value);
+
+/**
+ * 添加不存在的Item，同步实现
+ *
+ * @param key   key
+ * @param value value
+ */
+void putIfAbsent(String key, M value);
+
+/**
+ * 指定Key是否存在
+ *
+ * @param key key
+ * @return 是否存在
+ */
+boolean containsKey(String key);
+
+/**
+ * 获取所有Item
+ *
+ * @return 所有Item
+ */
+Map<String, M> getAll();
+
+/**
+ * 获取指定key的value
+ *
+ * @param key key
+ * @return 对应的value
+ */
+M get(String key);
+
+/**
+ * 删除指定key的Item，同步实现
+ *
+ * @param key key
+ */
+void remove(String key);
+
+/**
+ * 删除指定key的Item，异步实现
+ *
+ * @param key key
+ */
+void removeAsync(String key);
+
+/**
+ * 清空Map
+ */
+void clear();
+
+/**
+ * 注册新增Item时要执行的函数
+ * <p>
+ * 目前只支持Hazelcast实现
+ *
+ * @param fun 执行的函数
+ */
+ClusterDistMap<M> regEntryAddedEvent(Consumer<EntryEvent<M>> fun);
+
+/**
+ * 注册删除Item时要执行的函数
+ * <p>
+ * 目前只支持Hazelcast实现
+ *
+ * @param fun 执行的函数
+ */
+ClusterDistMap<M> regEntryRemovedEvent(Consumer<EntryEvent<M>> fun);
+
+/**
+ * 注册更新Item时要执行的函数
+ * <p>
+ * 目前只支持Hazelcast实现
+ *
+ * @param fun 执行的函数
+ */
+ClusterDistMap<M> regEntryUpdatedEvent(Consumer<EntryEvent<M>> fun);
+
+/**
+ * 注册清空Map时要执行的函数
+ * <p>
+ * 目前只支持Hazelcast实现
+ *
+ * @param fun 执行的函数
+ */
+ClusterDistMap<M> regMapClearedEvent(VoidProcessFun fun);
+----
+
+[source,java]
+.Map示例
+----
 ClusterDistMap<TestMapObj> mapObj = Dew.cluster.dist.map("test_obj_map", TestMapObj.class);
 mapObj.clear();
 TestMapObj obj = new TestMapObj();
 obj.a = "测试";
 mapObj.put("test", obj);
 assert "测试".equals(mapObj.get("test").a);
+----
 
-// 分布式锁
-ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
-lock.delete();
-lock.lock();
-assert !lock.tryLock();
-lock.unLock();
+===== MQ
 
-// MQ:发布-订阅模型
+[source,java]
+.MQ服务: `Dew.cluster.mq`
+----
+/**
+ * MQ 发布订阅模式 之 发布
+ *
+ * 请确保发布之前 topic 已经存在
+ *
+ * @param topic   主题
+ * @param message 消息内容
+ * @return 是否发布成功，此返回值仅在rabbit confirm 模式下才能保证严格准确！
+ */
+boolean publish(String topic, String message);
+
+/**
+ * MQ 发布订阅模式 之 订阅
+ *
+ * 非阻塞方式
+ *
+ * @param topic    主题
+ * @param consumer 订阅处理方法
+ */
+void subscribe(String topic, Consumer<String> consumer);
+
+/**
+ * MQ 请求响应模式 之 请求
+ *
+ * @param address 请求地址
+ * @param message 消息内容
+ * @return 是否请求成功
+ */
+boolean request(String address, String message);
+
+/**
+ * MQ 请求响应模式 之 响应
+ *
+ * 非阻塞方式
+ *
+ * @param address  请求对应的地址
+ * @param consumer 响应处理方法
+ */
+void response(String address, Consumer<String> consumer);
+----
+
+
+[source,java]
+.MQ示例
+----
+// pub-sub
 Dew.cluster.mq.subscribe("test_pub_sub", message ->
-logger.info("pub_sub>>" + message));
+        logger.info("pub_sub>>" + message));
 Thread.sleep(1000);
 Dew.cluster.mq.publish("test_pub_sub", "msgA");
 Dew.cluster.mq.publish("test_pub_sub", "msgB");
-
-// MQ:请求-响应模型
+// req-resp
 Dew.cluster.mq.response("test_rep_resp", message ->
-logger.info("req_resp>>" + message));
+        logger.info("req_resp>>" + message));
 Dew.cluster.mq.request("test_rep_resp", "msg1");
 Dew.cluster.mq.request("test_rep_resp", "msg2");
+// rabbit confirm
+if (Dew.cluster.mq instanceof RabbitClusterMQ) {
+    boolean success = ((RabbitClusterMQ) Dew.cluster.mq).publish("test_pub_sub", "confirm message", true);
+    success = ((RabbitClusterMQ) Dew.cluster.mq).request("test_rep_resp", "confirm message", true);
+}
+----
+
+IMPORTANT: 发布订阅模式时，发布前 `topic` 必须已经存在，可先使用 `subscribe` 订阅，此操作会自动创建 `topic` 。
+
+TIP: `rabbit` 实现支持单条 `confirm` 模式。
+
+===== Leader Election
+
+[source,java]
+.MQ服务: `Dew.cluster.election`
+----
+/**
+ * 执行（重新）选举
+ *
+ * 需调用方定时调用此接口
+ *
+ * @throws Exception
+ */
+void election() throws Exception;
+
+/**
+ * 退出选举，暂未实现
+ * @throws Exception
+ */
+void quit() throws Exception;
+
+/**
+ * 当前工程是否是领导者
+ * @return 是否是领导者
+ */
+boolean isLeader();
 ----
 
 [IMPORTANT]
@@ -904,6 +1371,7 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 . Redis: 多用于Cache，可做为轻量MQ，可用于要求不高的Lock(Redis锁存在不安全隐患)及Map
 . Hazelcast: 对Lock及Map支持得很好，可做为轻量MQ
 . Rabbit: 仅做MQ用，支持持久化，支持仅在收到消息并且处理完成后才Acknowledge
+. Eureka: 可用集群选举
 ====
 
 [NOTE]
@@ -913,7 +1381,9 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 ((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)
 ====
 
-=== 服务脚手架
+=== 增强
+
+==== 服务脚手架
 
 一般的，我们对实体对象的操作可以有 `增C删D改U查R` 外加`状态变更S`，`服务脚手架`从`DAO`到`Service`再到`Controller`实现了上述操作。
 
@@ -933,13 +1403,11 @@ Dew.cluster.mq.request("test_rep_resp", "msg2");
 
 TIP: 详见API文档
 
-
-
-=== 认证缓存
+==== 权限认证
 
 [quote,]
 ____
-Dew内核不支持鉴权处理（Auth组件功能），但它支持`认证缓存`，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。
+Dew 内核不支持鉴权处理（Auth组件功能），但它支持`认证缓存`，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。
 ____
 
 [source,yml]
@@ -996,28 +1464,9 @@ public class OptInfo {
 }
 ----
 
-=== 服务调用开发期优化
-
-在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
-
-. 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
-. 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）
-. 需要启动 `Eureka` 服务，多了一个依赖
-
-为解决上述问题，Dew框架做了相应的优化，
-在服务调用时使用 `Dew.EB.post/get/put/delete/options/head` 方法，Dew会根据传入的 `URL` 判断，
-如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
-所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
-
-=== 代码质量检查
-
-Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar -P qa` 即可。
-
-TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
-
-TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
-
-=== Dubbo协同
+==== 追踪日志
+==== Thrift集成
+==== Dubbo兼容
 
 [source,xml]
 .引入依赖
@@ -1152,7 +1601,6 @@ public @interface Service {
     String monitor() default "";
 
     String[] registry() default {};
-
 }
 ----
 
@@ -1163,6 +1611,66 @@ public @interface Service {
 ----
 
 TIP: 详见：`dubbo-example`
+
+=== 工程化
+
+==== 代码质量检查
+
+Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar -P qa` 即可。
+
+TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
+
+TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
+
+==== Spring Admin集成
+==== Zipkin集成
+==== 测试支持
+
+良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
+但实际上我们会的代码往往会与数据库、缓存、MQ等外部工具交互，这会使单测的结果不可控，通常的解决方案是使用Mock，但这无行中引入了单测撰写的成本，
+Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded redis` ，由于 `Dew` 集群的 `Cache` `Map` `Lock` `MQ` 都支持 `Redis` 实现，所以可以做到对主流操作的全覆盖。
+
+[source,xml]
+.配置示例
+----
+# maven
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>test-starter</artifactId>
+</dependency>
+
+# config
+dew:
+  cluster: #所有集群操作都使用reids模拟
+    cache: redis
+    dist: redis
+    mq: redis
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+----
+
+
+
+
+=== 服务调用开发期优化
+
+在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
+
+. 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
+. 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）
+. 需要启动 `Eureka` 服务，多了一个依赖
+
+为解决上述问题，Dew框架做了相应的优化，
+在服务调用时使用 `Dew.EB.post/get/put/delete/options/head` 方法，Dew会根据传入的 `URL` 判断，
+如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
+所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
+
 
 === 使用Thrift文档
 
@@ -1244,35 +1752,3 @@ thrift:
 ----
 
 TIP: 详见：`thrift-service-example`
-
-==== 测试支持
-
-良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
-但实际上我们会的代码往往会与数据库、缓存、MQ等外部工具交互，这会使单测的结果不可控，通常的解决方案是使用Mock，但这无行中引入了单测撰写的成本，
-Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded redis` ，由于 `Dew` 集群的 `Cache` `Map` `Lock` `MQ` 都支持 `Redis` 实现，所以可以做到对主流操作的全覆盖。
-
-[source,xml]
-.配置示例
-----
-# maven
-<dependency>
-    <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>test-starter</artifactId>
-</dependency>
-
-# config
-dew:
-  cluster: #所有集群操作都使用reids模拟
-    cache: redis
-    dist: redis
-    mq: redis
-
-spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
-
-----

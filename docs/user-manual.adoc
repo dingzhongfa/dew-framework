@@ -419,7 +419,8 @@ image:http://swagger2markup.github.io/swagger2markup/1.3.1/images/Swagger2Markup
 ----
 @RunWith(SpringRunner.class)
 @SpringBootApplication
-@SpringBootTest(classes = {Dew.class, WebExampleApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = WebExampleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ComponentScan(basePackageClasses = {Dew.class, WebExampleApplication.class})
 public class DocTest {
 
     @Test
@@ -450,7 +451,7 @@ mvn -Dtest=DocTest clean test -P doc
 
 `Dew` 基于 `Spring Boot` ，原生 `Hibernate` `MyBatis` `Spring JDBC Template` 等主流的持久化框架。 各类框架的整合参见网络资料，示例中提供了针对 `MybatisPlus` 的整合说明： `mybatisplus` 。
 
-===== `Dew DS`
+===== `Dew JDBC`
 
 `Dew` 选用 `Spring JDBC Template` 这一轻量的数据处理框架，并做了一定的扩展以支持：
 
@@ -461,7 +462,7 @@ mvn -Dtest=DocTest clean test -P doc
 
 TIP: `JdbcTemplate` 知识见 https://spring.io/guides/gs/relational-data-access/[https://spring.io/guides/gs/relational-data-access/]
 
-* 启用 `Dew DS`
+* 启用 `Dew JDBC`
 
 [source,xml]
 .引入依赖
@@ -485,7 +486,7 @@ TIP: `JdbcTemplate` 知识见 https://spring.io/guides/gs/relational-data-access
 </dependencies>
 ----
 
-IMPORTANT: `Dew DS` 指定使用 `druid` 做为连接池。
+IMPORTANT: `Dew JDBC` 指定使用 `druid` 做为连接池。
 
 [source,yml]
 .增加配置
@@ -500,7 +501,7 @@ spring:
 
 ====== 实体与SQL的映射
 
-`Dew DS` 支持注解方式实现ORMPing，可用的注解有:
+`Dew JDBC` 支持注解方式实现ORMPing，可用的注解有:
 
 * `Entity` : 表示此类可映射为数据库表
 * `PkColumn` : 主键标识 支持 `int/String` 类型，`int` 多用于ID自增场景， `String` 可选择是否自动生成 `uuid` 数据（ `uuid=true` ），存在此注解的实体可以使用 `xxxById` 操作
@@ -1385,6 +1386,10 @@ boolean isLeader();
 
 ==== 服务脚手架
 
+----
+此章节关联示例:guide-petstore
+----
+
 一般的，我们对实体对象的操作可以有 `增C删D改U查R` 外加`状态变更S`，`服务脚手架`从`DAO`到`Service`再到`Controller`实现了上述操作。
 
 * CRUController: 支持增改查操作
@@ -1403,7 +1408,15 @@ boolean isLeader();
 
 TIP: 详见API文档
 
+TIP: 脚本架方法不带缓存，如需要缓存请在子类复写对应的方法。
+
+IMPORTANT: 目前服务脚手架需与 `Dew JDBC` 配合使用，后期会适配其它持久化框架。
+
 ==== 权限认证
+
+----
+此章节关联示例:auth-example
+----
 
 [quote,]
 ____
@@ -1420,8 +1433,10 @@ dew:
         token-hash: # token 值是否做hash（MD5）处理
 ----
 
+IMPORTANT: 认证缓存需要 `集群缓存` 服务支持，请引入相关的依赖并配置对应的连接信息等。
+
 [source,java]
-.使用
+.认证缓存接口
 ----
 // 添加登录信息，optInfo封装自鉴权系统过来的登录信息
 // 一般在登录认证后操作
@@ -1438,8 +1453,6 @@ public class OptInfo {
     String token;
     // 账号编码
     String accountCode;
-    // 登录ID
-    String loginId;
     // 手机号
     String mobile;
     // 邮箱
@@ -1450,8 +1463,6 @@ public class OptInfo {
     List<RoleInfo> roles;
     // 最后一次登录时间
     Date lastLoginTime;
-    // 扩展信息(Json格式)
-    String ext;
     // 角色信息
     public static class RoleInfo {
         // 角色编码
@@ -1464,7 +1475,67 @@ public class OptInfo {
 }
 ----
 
+TIP: `OptInfo` 为认证缓存信息的基类，使用时可以继承并扩展自己的属性。
+
+[source,java]
+.认证缓存示例
+----
+/**
+ * 模拟用户注册
+ */
+@PostMapping(value = "user/register")
+public Resp<Void> register(@RequestBody User user) {
+    // 实际注册处理
+    user.setId($.field.createUUID());
+    MOCK_USER_CONTAINER.put(user.getId(), user);
+    return Resp.success(null);
+}
+
+/**
+ * 模拟用户登录
+ */
+@PostMapping(value = "auth/login")
+public Resp<String> login(@RequestBody LoginDTO loginDTO) {
+    // 实际登录处理
+    User user = MOCK_USER_CONTAINER.values().stream().filter(u -> u.getIdCard().equals(loginDTO.getIdCard())).findFirst().get();
+    String token = $.field.createUUID();
+    Dew.Auth.setOptInfo(new OptInfoExt()
+            .setIdCard(user.getIdCard())
+            .setAccountCode($.field.createShortUUID())
+            .setToken(token)
+            .setName(user.getName())
+            .setMobile(user.getPhone()));
+    return Resp.success(token);
+}
+
+/**
+ * 模拟业务操作
+ */
+@GetMapping(value = "business/someopt")
+public Resp<Void> someOpt() {
+    // 获取登录用户信息
+    Optional<OptInfoExt> optInfoExtOpt = Dew.Auth.getOptInfo();
+    if (!optInfoExtOpt.isPresent()) {
+        return Resp.unAuthorized("用户认证错误");
+    }
+    // 登录用户的信息
+    optInfoExtOpt.get();
+    return Resp.success(null);
+}
+
+/**
+ * 模拟用户注销
+ */
+@DeleteMapping(value = "auth/logout")
+public Resp<Void> logout() {
+    // 实际注册处理
+    Dew.Auth.removeOptInfo();
+    return Resp.success(null);
+}
+----
+
 ==== 追踪日志
+
 ==== Thrift集成
 ==== Dubbo兼容
 

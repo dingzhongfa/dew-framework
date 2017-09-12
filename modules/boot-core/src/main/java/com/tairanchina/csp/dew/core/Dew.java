@@ -21,7 +21,6 @@ import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +28,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -370,14 +368,14 @@ public class Dew {
 
     public static class Auth {
 
-        public static Optional<OptInfo> getOptInfo() {
+        public static <E extends OptInfo> Optional<E> getOptInfo() {
             return Dew.context().optInfo();
         }
 
-        public static Optional<OptInfo> getOptInfo(String token) {
+        public static <E extends OptInfo> Optional<E> getOptInfo(String token) {
             String optInfoStr = Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token);
             if (optInfoStr != null && !optInfoStr.isEmpty()) {
-                return Optional.of($.json.toObject(optInfoStr, OptInfo.class));
+                return Optional.of($.json.toObject(optInfoStr, DewContext.getOptInfoClazz()));
             } else {
                 return Optional.empty();
             }
@@ -399,16 +397,16 @@ public class Dew {
             }
         }
 
-        public static Optional<OptInfo> getOptInfoByAccCode(String accountCode) {
+        public static <E extends OptInfo> Optional<E> getOptInfoByAccCode(String accountCode) {
             String token = Dew.cluster.cache.get(Dew.Constant.TOKEN_ID_REL_FLAG + accountCode);
             if (token != null && !token.isEmpty()) {
-                return Optional.of($.json.toObject(Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token), OptInfo.class));
+                return Optional.of($.json.toObject(Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token), DewContext.getOptInfoClazz()));
             } else {
                 return Optional.empty();
             }
         }
 
-        public static void setOptInfo(OptInfo optInfo) {
+        public static <E extends OptInfo> void setOptInfo(E optInfo) {
             Dew.cluster.cache.del(Dew.Constant.TOKEN_INFO_FLAG + Dew.cluster.cache.get(Dew.Constant.TOKEN_ID_REL_FLAG + optInfo.getAccountCode()));
             Dew.cluster.cache.set(Dew.Constant.TOKEN_ID_REL_FLAG + optInfo.getAccountCode(), optInfo.getToken());
             Dew.cluster.cache.set(Dew.Constant.TOKEN_INFO_FLAG + optInfo.getToken(), $.json.toJsonString(optInfo));

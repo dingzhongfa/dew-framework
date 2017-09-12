@@ -456,7 +456,7 @@ public class OrderController implements CRUController<OrderService, Integer, Ord
 ----
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PetStoreApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, PetStoreTest.class})
+@ComponentScan(basePackageClasses = {Dew.class, PetStoreApplication.class})
 public class PetStoreTest {
 
     private static final String url = "http://127.0.0.1:8080/";
@@ -509,7 +509,8 @@ Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为�
 ----
 @RunWith(SpringRunner.class)
 @SpringBootApplication
-@SpringBootTest(classes = {Dew.class, .class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = PetStoreApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ComponentScan(basePackageClasses = {Dew.class, PetStoreApplication.class})
 public class DocTest {
 
     @Test

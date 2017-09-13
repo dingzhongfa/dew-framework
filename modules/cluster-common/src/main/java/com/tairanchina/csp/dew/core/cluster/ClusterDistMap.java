@@ -120,6 +120,7 @@ public interface ClusterDistMap<M> {
         return this;
     }
 
+    //V即M
     class EntryEvent<V> {
         private String key;
         private V oldValue;

@@ -1,9 +1,8 @@
-package com.tairanchina.csp.dew.core.dao;
+package com.tairanchina.csp.dew.core.test.select.entity;
 
 
 import com.tairanchina.csp.dew.core.entity.Column;
 import com.tairanchina.csp.dew.core.entity.Entity;
-import com.tairanchina.csp.dew.core.entity.PkColumn;
 import com.tairanchina.csp.dew.core.entity.SafeEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

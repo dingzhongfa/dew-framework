@@ -1,11 +1,11 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.jdbc.entity;
 
 import com.tairanchina.csp.dew.core.entity.CodeColumn;
 import com.tairanchina.csp.dew.core.entity.Column;
 import com.tairanchina.csp.dew.core.entity.Entity;
 import com.tairanchina.csp.dew.core.entity.SafeStatusEntity;
 
-@Entity(tableName = "t_full_entity")
+@Entity(tableName = "full_entity")
 public class FullEntity extends SafeStatusEntity<Integer> {
 
     @CodeColumn

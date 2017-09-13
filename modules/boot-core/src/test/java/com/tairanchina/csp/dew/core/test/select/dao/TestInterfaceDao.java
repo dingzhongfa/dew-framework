@@ -1,17 +1,16 @@
-package com.tairanchina.csp.dew.core.dao;
+package com.tairanchina.csp.dew.core.test.select.dao;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.ModelParam;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
+import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by 迹_Jason on 2017/7/27.
- */
+
 public interface TestInterfaceDao extends DewDao<Integer,TestSelectEntity>{
 
     @Select(value = "select * from test_select_entity where field_a= #{ fieldA }", entityClass = TestSelectEntity.class)

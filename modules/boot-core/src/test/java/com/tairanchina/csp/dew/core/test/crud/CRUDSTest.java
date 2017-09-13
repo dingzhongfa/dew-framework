@@ -1,9 +1,11 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.crud;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.dao.TestSelectEntity;
+import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.DewBootApplication;
+import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

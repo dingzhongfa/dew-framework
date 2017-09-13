@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.dao;
+package com.tairanchina.csp.dew.core.test.select.entity;
 
 import com.tairanchina.csp.dew.core.entity.CodeColumn;
 import com.tairanchina.csp.dew.core.entity.Column;

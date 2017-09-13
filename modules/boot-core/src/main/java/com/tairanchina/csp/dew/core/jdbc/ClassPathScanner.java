@@ -22,10 +22,12 @@ public class ClassPathScanner extends ClassPathBeanDefinitionScanner {
 
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
+        // scan interface beanDefinitions by spring scanner
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
         if (beanDefinitions.isEmpty()) {
             logger.warn("No dao was found in '" + Arrays.toString(basePackages) + "' package. Please check your configuration.");
         } else {
+            // add interface own character
             for (BeanDefinitionHolder holder : beanDefinitions) {
                 GenericBeanDefinition definition = (GenericBeanDefinition) holder.getBeanDefinition();
                 definition.getPropertyValues().add("mapperInterface", definition.getBeanClassName());

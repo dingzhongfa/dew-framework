@@ -11,7 +11,7 @@ dew:
   cluster:
     cache: redis
     dist: redis
-    mq: redis
+    mq: rabbit
   dao:
     base-package: com.tairanchina.csp.dew.core
   entity:
@@ -34,11 +34,10 @@ spring:
       max-idle: 1
       min-idle: 0
   rabbitmq:
-    host: 127.0.0.1
+    host: mq.fengdai.org
     port: 5672
-    username: user
-    password: 123456
-    virtual-host: dew
+    username: guest
+    password: guest
   hazelcast:
     addresses: ["127.0.0.1"]
   ignite:
@@ -60,5 +59,8 @@ spring:
     test2:
       driver-class-name: org.h2.Driver
       url: jdbc:h2:mem:test2
-      initial-size: 1
-      max-active: 1
+      druid:
+        initial-size: 5
+        min-idle: 5
+        max-active: 20
+        max-wait: 60000

@@ -1,14 +1,13 @@
-package com.tairanchina.csp.dew.core.dao;
+package com.tairanchina.csp.dew.core.test.select.dao;
 
 import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
+import com.tairanchina.csp.dew.core.test.select.entity.SystemConfig;
 
 import java.util.Map;
 
-/**
- * Created by ding on 2017/9/7.
- */
+
 public interface SystemConfigDao extends DewDao<String ,SystemConfig> {
 
     @Select("SELECT s.*,t.*" +

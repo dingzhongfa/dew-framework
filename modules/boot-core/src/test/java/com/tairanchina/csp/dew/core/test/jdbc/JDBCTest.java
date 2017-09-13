@@ -1,7 +1,13 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.jdbc;
 
 import com.ecfront.dew.common.Page;
+import com.tairanchina.csp.dew.core.*;
+import com.tairanchina.csp.dew.core.test.jdbc.entity.BasicEntity;
+import com.tairanchina.csp.dew.core.test.jdbc.entity.EmptyEntity;
+import com.tairanchina.csp.dew.core.test.jdbc.entity.FullEntity;
+import com.tairanchina.csp.dew.core.test.jdbc.util.TxService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootApplication
@@ -41,6 +49,29 @@ public class JDBCTest {
         Assert.assertTrue(temp == 1);
     }*/
 
+   @Before
+   public void init(){
+       Dew.ds().jdbc().execute("DROP TABLE IF EXISTS `basic_entity`;");
+       Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
+               "(\n" +
+               "id int primary key auto_increment,\n" +
+               "field_a varchar(255)\n" +
+               ")");
+       Dew.ds().jdbc().execute("DROP TABLE IF EXISTS `full_entity`;");
+       Dew.ds().jdbc().execute("CREATE TABLE full_entity\n" +
+               "(\n" +
+               "id int primary key auto_increment,\n" +
+               "code varchar(255),\n" +
+               "field_a varchar(255),\n" +
+               "field_c varchar(255) not null,\n" +
+               "create_user varchar(255) not null,\n" +
+               "create_time datetime,\n" +
+               "update_user varchar(255) not null,\n" +
+               "update_time datetime,\n" +
+               "enabled bool\n" +
+               ")");
+   }
+
     @Test
     public void testAll() throws Exception {
         testEntity();
@@ -56,24 +87,6 @@ public class JDBCTest {
         } catch (Throwable e) {
             Assert.assertTrue(true);
         }
-        // ddl
-        Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
-                "(\n" +
-                "id int primary key auto_increment,\n" +
-                "field_a varchar(255)\n" +
-                ")");
-        Dew.ds().jdbc().execute("CREATE TABLE t_full_entity\n" +
-                "(\n" +
-                "id int primary key auto_increment,\n" +
-                "code varchar(255),\n" +
-                "field_a varchar(255),\n" +
-                "field_c varchar(255) not null,\n" +
-                "create_user varchar(255) not null,\n" +
-                "create_time datetime,\n" +
-                "update_user varchar(255) not null,\n" +
-                "update_time datetime,\n" +
-                "enabled bool\n" +
-                ")");
         // =========== Basic Test
         // findAll
         Assert.assertEquals(0, Dew.ds().findAll(BasicEntity.class).size());
@@ -196,6 +209,10 @@ public class JDBCTest {
         // deleteByCode
         Dew.ds().deleteByCode(Dew.ds().findAll(FullEntity.class).get(0).getCode(), FullEntity.class);
         Assert.assertEquals(1, Dew.ds().findAll(FullEntity.class).size());
+        // selectForList
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", "1");
+        Dew.ds().selectForList(fullEntity.getClass(), params, "select t.* from t_full_entity t where t.code = #{code}");
     }
 
     public void testTx(){
@@ -253,7 +270,7 @@ public class JDBCTest {
             Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2);
             hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -270,7 +287,7 @@ public class JDBCTest {
             Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2);
             hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();

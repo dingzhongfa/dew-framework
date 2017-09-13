@@ -1,5 +1,6 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.postman;
 
+import com.tairanchina.csp.dew.core.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.util.Date;

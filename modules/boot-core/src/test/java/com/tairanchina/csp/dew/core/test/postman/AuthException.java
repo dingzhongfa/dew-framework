@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.postman;
 
 public class AuthException extends RuntimeException {
 

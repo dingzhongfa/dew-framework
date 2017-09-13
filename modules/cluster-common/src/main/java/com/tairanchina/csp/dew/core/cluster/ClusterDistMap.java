@@ -23,22 +23,45 @@ public interface ClusterDistMap<M> {
 
     void clear();
 
+
+
+    /**
+     * 针对hazelcast，在插入的时候打印日志
+     * @param fun
+     * @return
+     */
     default ClusterDistMap<M> regEntryAddedEvent(Consumer<EntryEvent<M>> fun) {
         return this;
     }
 
+    /**
+     * 针对hazelcast，
+     * @param fun
+     * @return
+     */
     default ClusterDistMap<M> regEntryRemovedEvent(Consumer<EntryEvent<M>> fun) {
         return this;
     }
 
+    /**
+     * 针对hazelcast，
+     * @param fun
+     * @return
+     */
     default ClusterDistMap<M> regEntryUpdatedEvent(Consumer<EntryEvent<M>> fun) {
         return this;
     }
 
+    /**
+     * 针对hazelcast，
+     * @param fun
+     * @return
+     */
     default ClusterDistMap<M> regMapClearedEvent(VoidProcessFun fun) {
         return this;
     }
 
+    //V即M
     class EntryEvent<V> {
         private String key;
         private V oldValue;

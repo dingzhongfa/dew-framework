@@ -1,10 +1,11 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.zdeveloping;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import org.junit.Assert;
 import org.junit.Test;

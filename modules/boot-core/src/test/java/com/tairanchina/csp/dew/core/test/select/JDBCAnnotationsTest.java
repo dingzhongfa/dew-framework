@@ -1,10 +1,12 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.select;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.dao.SystemConfig;
-import com.tairanchina.csp.dew.core.dao.SystemConfigDao;
-import com.tairanchina.csp.dew.core.dao.TestInterfaceDao;
-import com.tairanchina.csp.dew.core.dao.TestSelectEntity;
+import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.DewBootApplication;
+import com.tairanchina.csp.dew.core.test.select.dao.SystemConfigDao;
+import com.tairanchina.csp.dew.core.test.select.dao.TestInterfaceDao;
+import com.tairanchina.csp.dew.core.test.select.entity.SystemConfig;
+import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,7 +88,7 @@ public class JDBCAnnotationsTest {
     }
 
     @Test
-    public void testLink(){
+    public void testLink() {
         List<TestSelectEntity> testSelectEntities = dao.findAll();
         List<SystemConfig> systemConfigs = systemConfigDao.findAll();
         TestSelectEntity model = new TestSelectEntity();

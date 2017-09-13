@@ -1,7 +1,7 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.crud.service;
 
-import com.tairanchina.csp.dew.core.dao.TestInterfaceDao;
-import com.tairanchina.csp.dew.core.dao.TestSelectEntity;
+import com.tairanchina.csp.dew.core.test.select.dao.TestInterfaceDao;
+import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
 import com.tairanchina.csp.dew.core.service.CRUDSService;
 import org.springframework.stereotype.Service;
 

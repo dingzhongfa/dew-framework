@@ -1,7 +1,9 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew.core.test.postman;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
+import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.test.postman.AuthException;
 import com.tairanchina.csp.dew.core.validation.CreateGroup;
 import com.tairanchina.csp.dew.core.validation.IdNumber;
 import com.tairanchina.csp.dew.core.validation.Phone;
@@ -13,7 +15,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;

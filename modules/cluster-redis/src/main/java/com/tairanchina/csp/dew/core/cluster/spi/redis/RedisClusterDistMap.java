@@ -26,7 +26,7 @@ public class RedisClusterDistMap<M> implements ClusterDistMap<M> {
 
     @Override
     public void putAsync(String key, M value) {
-        new Thread(() -> put(key, value));
+        new Thread(() -> put(key, value)).start();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class RedisClusterDistMap<M> implements ClusterDistMap<M> {
 
     @Override
     public void removeAsync(String key) {
-        new Thread(() -> remove(key));
+        new Thread(() -> remove(key)).start();
     }
 
     @Override

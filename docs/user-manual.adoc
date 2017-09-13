@@ -917,7 +917,7 @@ dew:
     format:
       use-unity-error: true
     error-mapping:
-      "[com.tairanchina.csp.dew.core.AuthException]":
+      "[com.tairanchina.csp.dew.core.test.postman.AuthException]":
         http-code: 401
         business-code: x00010
         message: 认证错误

@@ -14,8 +14,6 @@ dew:
     mq: rabbit
   dao:
     base-package: com.tairanchina.csp.dew.core
-  entity:
-        base-packages: ["com.tairanchina.csp.dew.core"]
 #  security:
 #   includeServices: ["a-serv"]
 

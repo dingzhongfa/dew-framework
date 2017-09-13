@@ -345,7 +345,7 @@ dew:
     basic:
         format:
             use-unity-error: true # 是否启用统一响应，默认true
-            reuse-http-state: false # 默认true， true:重用http状态码，false:使用协议无关格式
+            reuse-http-state: false # true:重用http状态码，false:使用协议无关格式，默认true
 ----
 
 [source,java]
@@ -1716,12 +1716,8 @@ Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为�
 
 TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
 
-TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
+TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查。
 
-
-
-==== Spring Admin集成
-==== Zipkin集成
 ==== 测试支持
 
 良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
@@ -1753,10 +1749,65 @@ spring:
     url: jdbc:h2:mem:test
 ----
 
+==== `Spring Admin` 集成
 
+----
+此章节关联示例:monitor-example
+----
 
+`Dew` 集成了 `Spring Admin` ，封装成 `monitor` 组件， 示例 `monitor-example` 演示了如何与 `monitor` 交互。
 
-=== 服务调用开发期优化
+[source,yml]
+.`monitor` 关键配置
+----
+spring:
+  application:
+    name: monitor # 监控服务名称
+  boot:
+    admin:
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream # 要统计的内容
+      turbine: # turbine集成配置
+        clusters: default # 集群名称
+        location: monitor # 聚合到的服务名称，这里要与 `spring.application.name` 相同
+
+turbine: # turbine配置
+  aggregator:
+    clusterConfig: default # 集群名称
+  appConfig: monitor-example # 要聚合的服务名称，需要把各个服务添加上去
+  clusterNameExpression: metadata['cluster']
+
+server:
+  port: # 端口号
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: # eureka 服务地址
+----
+
+[source,yml]
+.要监控的服务 关键配置
+----
+spring:
+  application:
+    name: monitor-example # 服务名称，必须在上文 `turbine.appConfig` 添加上去
+
+eureka:
+  client:
+    serviceUrl: # eureka 服务地址，必须和监控服务在同一集群中
+  instance:
+    metadata-map:
+      cluster: default # 集群名称
+
+management.security.enabled: false # 需要关闭安全管理，可通过IP来限制
+----
+
+==== `Zipkin` 集成
+
+// TBD
+
+==== 服务调用开发期优化
 
 在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
 
@@ -1768,6 +1819,4 @@ spring:
 在服务调用时使用 `Dew.EB.post/get/put/delete/options/head` 方法，Dew会根据传入的 `URL` 判断，
 如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
-
-
 

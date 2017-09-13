@@ -1,12 +1,3 @@
-== 贡献
-
-|===
-|角色 |成员
-
-|负责部门 |架构组
-|开发成员 |所有开发人员
-|===
-
-==== SCM
+== SCM
 
 https://rep.360taihe.com/csp/dew-framework/[https://rep.360taihe.com/csp/dew-framework/]

@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.server.annotation;
+package com.tairanchina.csp.dew.rpc.thrift.server.annotation;
 
 import org.springframework.stereotype.Component;
 

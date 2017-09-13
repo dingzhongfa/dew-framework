@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.client.transport;
+package com.tairanchina.csp.dew.rpc.thrift.client.transport;
 
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;

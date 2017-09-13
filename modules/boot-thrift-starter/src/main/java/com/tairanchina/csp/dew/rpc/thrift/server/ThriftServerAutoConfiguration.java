@@ -1,7 +1,7 @@
-package com.tairanchina.csp.dew.core.server;
+package com.tairanchina.csp.dew.rpc.thrift.server;
 
-import com.tairanchina.csp.dew.core.server.annotation.ThriftService;
-import com.tairanchina.csp.dew.core.server.interceptor.MetricsThriftMethodInterceptor;
+import com.tairanchina.csp.dew.rpc.thrift.server.annotation.ThriftService;
+import com.tairanchina.csp.dew.rpc.thrift.server.interceptor.MetricsThriftMethodInterceptor;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;

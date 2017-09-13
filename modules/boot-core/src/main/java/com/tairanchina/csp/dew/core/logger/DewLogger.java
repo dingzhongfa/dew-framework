@@ -12,7 +12,7 @@ public class DewLogger implements Logger {
 
     private Logger logger;
 
-    public DewLogger(Class<?> clazz) {
+    private DewLogger(Class<?> clazz) {
         logger = LoggerFactory.getLogger(clazz.getName());
     }
 

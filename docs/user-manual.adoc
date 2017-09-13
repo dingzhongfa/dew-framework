@@ -42,6 +42,19 @@ NOTE: `Dew` 框架是对 `Spring Boot/Cloud` 的扩展，使用之前务必了�
     </dependency>
 </dependencies>
 ...
+<!--开发者-->
+<developers>
+    <developer>
+        <name></name>
+        <email></email>
+    </developer>
+</developers>
+<!--SCM信息-->
+<scm>
+    <connection></connection>
+    <developerConnection></developerConnection>
+    <url></url>
+</scm>
 ----
 
 TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号
@@ -1536,8 +1549,22 @@ public Resp<Void> logout() {
 
 ==== 追踪日志
 
-==== Thrift集成
+`Dew` 集成了可追踪日志的功能，本质上一个 `slf4j` 的装饰器，会在每条日志内容前面打印 `用户账号 #` 。
+
+[source,java]
+.使用方式
+----
+Logger logger = DewLogger.getLogger(<当前的class>);
+logger.info/debug/trace/error...
+----
+
+NOTE: 此功能要求使用 `Threadlocal` 与请求接收同一线程有效，不同线程需要把 `DewContext` 传入到新线程并执行执行 `DewContext.setContext(context)` 。
+
 ==== Dubbo兼容
+
+----
+此章节关联示例:dubbo-example
+----
 
 [source,xml]
 .引入依赖
@@ -1681,8 +1708,6 @@ public @interface Service {
 @Service(version = "",interfaceName = "")
 ----
 
-TIP: 详见：`dubbo-example`
-
 === 工程化
 
 ==== 代码质量检查
@@ -1692,6 +1717,8 @@ Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为�
 TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
 
 TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
+
+
 
 ==== Spring Admin集成
 ==== Zipkin集成
@@ -1743,83 +1770,4 @@ spring:
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
 
 
-=== 使用Thrift文档
 
-. 扩展TTransport支持从注册中心获取服务列表并根据既定策略进行负载，详见TLoadBalancerClient类，利用Netflix
-. 服务端添加Metrics支持，统计各服务响应时间及各方法调用次数
-. 封装TServiceClient支持超时熔断保护利用Hystrix
-
-==== 生成API
-安装Thrift [https://thrift.apache.org/]
-
-[source,xml]
-.引入依赖
-----
-<dependency>
-    <groupId>org.apache.thrift</groupId>
-    <artifactId>libthrift</artifactId>
-    <version>0.10.0</version>
-</dependency>
-----
-
-.编辑Thrift文件
-教程[http://www.jianshu.com/p/0f4113d6ec4b]
-
-[source,shell]
-.执行
-----
-thrift --gen <language> <Thrift filename>
-----
-==== Spring Cloud工程使用
-
-* 在启动类，添加`@EnabledThriftDiscovery`
-
-[source,xml]
-.引入依赖
-----
-<dependency>
-    <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>boot-thrift-start</artifactId>
-    <version>1.0.0-beta5</version>
-<dependency>
-----
-
-===== Service
-
-[source,java]
-.实现Iface接口
-----
-@ThriftService(value = "/url")
-public class CalculatorController implements TCalculatorService.Iface {
-
-}
-----
-[source,yaml]
-.配置
-----
-thrift:
-  client:
-      maxThread: 10
-----
-
-===== Client
-
-[source,java]
-.实现Iface接口
-----
-@ThriftClient(serviceId = "thrift-service-example", path = "/url")
-TCalculatorService.Client tcalculatorClient;
-----
-
-[source,yaml]
-.配置
-----
-thrift:
-    service:
-          connectTimeout: 2000
-          readTimeout: 50000
-          maxRetries: 3
-          endpoint:
-----
-
-TIP: 详见：`thrift-service-example`

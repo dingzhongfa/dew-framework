@@ -1,21 +1,9 @@
 spring:
   application:
-    name: thrift-service-example
+    name: thrift-process-example
 
 server:
   port: 8890
-
-dew:
-  basic:
-    name: thrift-service-example
-    version: 1.0
-    desc: desc
-    web-site: www.tairanchina.com
-    doc:
-      base-package: com.tairanchina
-
-logging:
-  path: ./logs
 
 thrift:
   client:

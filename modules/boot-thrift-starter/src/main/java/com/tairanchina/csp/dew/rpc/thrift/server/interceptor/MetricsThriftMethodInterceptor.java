@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.server.interceptor;
+package com.tairanchina.csp.dew.rpc.thrift.server.interceptor;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;

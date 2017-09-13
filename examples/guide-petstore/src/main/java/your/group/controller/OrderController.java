@@ -5,6 +5,8 @@ import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.controller.CRUController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import your.group.entity.Order;
@@ -18,6 +20,8 @@ public class OrderController implements CRUController<OrderService, Integer, Ord
 
     @PostMapping("buy")
     @ApiOperation(value = "获取记录分页列表")
+    // 自定义返回状态，可复写预定义状态
+    @ApiResponses({@ApiResponse(code = 401,message = "示例 message",reference = "示例 reference")})
     public Resp<Void> buy(@Validated @RequestBody BuyVO buyVO) {
         return getService().buy(buyVO.getPetId(), buyVO.getCustomerId());
     }

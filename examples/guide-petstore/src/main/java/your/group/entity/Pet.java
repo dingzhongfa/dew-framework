@@ -10,7 +10,7 @@ import java.util.Date;
 public class Pet implements Serializable {
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private String type;
     @Column(notNull = true)
@@ -22,11 +22,11 @@ public class Pet implements Serializable {
     @EnabledColumn
     private boolean enabled;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

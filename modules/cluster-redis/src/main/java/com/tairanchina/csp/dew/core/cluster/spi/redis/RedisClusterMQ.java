@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
-import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -58,22 +57,23 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void response(String address, Consumer<String> consumer) {
-        redisTemplate.execute((RedisCallback<Void>) connection -> {
-            try {
-                while (!connection.isClosed()) {
-                    List<byte[]> messages = connection.bRPop(30, address.getBytes());
-                    if (messages == null) {
-                        continue;
+        new Thread(() ->
+                redisTemplate.execute((RedisCallback<Void>) connection -> {
+                    try {
+                        while (!connection.isClosed()) {
+                            List<byte[]> messages = connection.bRPop(30, address.getBytes());
+                            if (messages == null) {
+                                continue;
+                            }
+                            String message = new String(messages.get(1), "UTF-8");
+                            logger.trace("[MQ] response {}:{}", address, message);
+                            consumer.accept(message);
+                        }
+                    } catch (Exception e) {
+                        logger.error("Redis Response error.", e);
                     }
-                    String message = new String(messages.get(1), "UTF-8");
-                    logger.trace("[MQ] response {}:{}", address, message);
-                    consumer.accept(message);
-                }
-            } catch (Exception e) {
-                logger.error("Redis Response error.", e);
-            }
-            return null;
-        });
+                    return null;
+                })).start();
     }
 
 }

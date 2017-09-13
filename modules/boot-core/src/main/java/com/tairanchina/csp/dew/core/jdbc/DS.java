@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 public class DS {
 
-    private static final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}";
+    private static final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}"; // 正则匹配 #{key}
     private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
     private static final char UNDERLINE = '_';
@@ -329,7 +329,7 @@ public class DS {
             } else if (entityClassInfo.pkFieldNameOpt.isPresent() &&
                     values.containsKey(entityClassInfo.pkFieldNameOpt.get())) {
                 Object id = values.get(entityClassInfo.pkFieldNameOpt.get());
-                if (id == null || id instanceof Number && (Long) id == 0) {
+                if (id == null || id instanceof Number && (int) id == 0) {
                     // Remove private key field
                     values.remove(entityClassInfo.pkFieldNameOpt.get());
                 }
@@ -554,6 +554,7 @@ public class DS {
         List<Object> list = new ArrayList<>();
         //将值不为空的key用?替换
         for (String key : matchRegexList) {
+            // #{key},去掉#{}和空格,获取真实的key
             key = key.substring(2, key.length() - 1).replace(" ", EMPTY);
             Object v = params.get(key);
             if (v != null) {

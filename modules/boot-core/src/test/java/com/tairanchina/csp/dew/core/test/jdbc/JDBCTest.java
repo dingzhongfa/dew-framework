@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootApplication
@@ -207,6 +209,10 @@ public class JDBCTest {
         // deleteByCode
         Dew.ds().deleteByCode(Dew.ds().findAll(FullEntity.class).get(0).getCode(), FullEntity.class);
         Assert.assertEquals(1, Dew.ds().findAll(FullEntity.class).size());
+        // selectForList
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", "1");
+        Dew.ds().selectForList(fullEntity.getClass(), params, "select t.* from t_full_entity t where t.code = #{code}");
     }
 
     public void testTx(){

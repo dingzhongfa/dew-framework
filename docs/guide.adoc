@@ -72,7 +72,6 @@ https://www.google.ca/search?dcr=0&q=pet+store+sample+application&oq=pet+store+s
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <optional>true</optional>
         </dependency>
         <!--测试项目，使用h2数据库-->
         <dependency>
@@ -217,7 +216,7 @@ public class PetstoreInitiator {
 public class Pet {
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private String type;
     @Column(notNull = true)
@@ -236,7 +235,7 @@ public class Pet {
 public class Customer {
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private String name;
 
@@ -247,7 +246,7 @@ public class Customer {
 public class Order {
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private int petId;
     @Column(notNull = true)
@@ -262,7 +261,7 @@ public class Order {
 .注解说明
 ====
 . 表名/字段名在注解中没有特别指定时均以驼峰转下划线规则处理
-. `PkColumn` 标识主键字段，支持long/String类型
+. `PkColumn` 标识主键字段，支持int/String类型
 . `Column` 标识普通字段
 . `CreateTimeColumn/UpdateTimeColumn` 标识创建/更新字段，会自动添加日期
 . `EnabledColumn` 标识状态字段，用于软删除操作
@@ -457,7 +456,7 @@ public class OrderController implements CRUController<OrderService, Integer, Ord
 ----
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PetStoreApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, PetStoreTest.class})
+@ComponentScan(basePackageClasses = {Dew.class, PetStoreApplication.class})
 public class PetStoreTest {
 
     private static final String url = "http://127.0.0.1:8080/";
@@ -510,7 +509,8 @@ Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为�
 ----
 @RunWith(SpringRunner.class)
 @SpringBootApplication
-@SpringBootTest(classes = {Dew.class, .class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = PetStoreApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ComponentScan(basePackageClasses = {Dew.class, PetStoreApplication.class})
 public class DocTest {
 
     @Test

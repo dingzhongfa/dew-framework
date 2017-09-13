@@ -10,15 +10,15 @@ import java.io.Serializable;
 public class Customer implements Serializable{
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private String name;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -10,17 +10,17 @@ import java.io.Serializable;
 public class Order implements Serializable {
 
     @PkColumn
-    private long id;
+    private int id;
     @Column(notNull = true)
     private int petId;
     @Column(notNull = true)
     private int customerId;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

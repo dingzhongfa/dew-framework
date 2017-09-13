@@ -28,25 +28,3 @@ ____
 . 可替换，只做扩展，尽量不修改基础框架代码，开发人员完全可以直接基于基础框架开发
 
 实现上我们选择Spring Boot/Cloud这一业界主流框架。
-
-=== 功能模块
-
-|===
-|模块名 |核心功能
-
-|`boot-core` |基于Spring Boot的扩展，Dew的核心模块
-|`cloud-core` |基于Spring Cloud的扩展，基于`boot-core`
-|`cluster-common` |集群能力接口
-|`cluster-redis` |集群能力-Redis实现
-|`cluster-hazelcast` |集群能力-Hazelcast实现
-|`cluster-ignite` |集群能力-Ignite实现(开发中）
-|`cluster-rabbit` |集群能力-Rabbit实现
-|`cluster-eureka` |集群能力-Eureka实现
-|`boot-thrift-starter` |Thrift RPC
-|`test-starter` |Dew的单元测试封装
-|`config` |统一配置中心组件
-|`registry` |服务注册中心组件
-|`gateway` |服务网关组件
-|`monitor` |服务监控组件
-|`<x>-example` |各类示例
-|===

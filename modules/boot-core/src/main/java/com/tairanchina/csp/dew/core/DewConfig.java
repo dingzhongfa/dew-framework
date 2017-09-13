@@ -88,7 +88,7 @@ public class DewConfig {
 
         public static class Format {
 
-            private boolean useUnityError = false;
+            private boolean useUnityError = true;
             private boolean reuseHttpState = false;
             // 兼容原系统设置
             private String messageFieldName = "message";

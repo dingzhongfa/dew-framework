@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 
+/**
+ * Dew Servlet拦截器
+ */
 public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(DewHandlerInterceptor.class);
@@ -19,6 +22,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
+        // 仅支持白名单内的服务
         if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
                 if (!v.equalsIgnoreCase(requestFrom)) {
@@ -26,6 +30,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
                 }
             }
         }
+        // 排除黑名单中的服务
         if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
                 if (v.equalsIgnoreCase(requestFrom)) {
@@ -33,6 +38,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
                 }
             }
         }
+        // 配置跨域参数
         response.addHeader("Access-Control-Allow-Origin", Dew.dewConfig.getSecurity().getCors().getAllowOrigin());
         response.addHeader("Access-Control-Allow-Methods", Dew.dewConfig.getSecurity().getCors().getAllowMethods());
         response.addHeader("Access-Control-Allow-Headers", Dew.dewConfig.getSecurity().getCors().getAllowHeaders());

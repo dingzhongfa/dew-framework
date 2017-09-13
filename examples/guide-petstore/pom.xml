@@ -51,7 +51,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <optional>true</optional>
         </dependency>
         <!--测试项目，使用h2数据库-->
         <dependency>

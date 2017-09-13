@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.controller;
 
-import com.tairanchina.csp.dew.service.PressureService;
+import com.tairanchina.csp.dew.example.mybatisplus.service.PressureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

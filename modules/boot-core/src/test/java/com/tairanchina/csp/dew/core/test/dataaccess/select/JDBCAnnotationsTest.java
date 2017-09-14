@@ -1,11 +1,11 @@
-package com.tairanchina.csp.dew.core.test.select;
+package com.tairanchina.csp.dew.core.test.dataaccess.select;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewBootApplication;
-import com.tairanchina.csp.dew.core.test.select.dao.SystemConfigDao;
-import com.tairanchina.csp.dew.core.test.select.dao.TestInterfaceDao;
-import com.tairanchina.csp.dew.core.test.select.entity.SystemConfig;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.SystemConfigDao;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.entity.SystemConfig;
 import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import org.junit.Assert;
 import org.junit.Before;

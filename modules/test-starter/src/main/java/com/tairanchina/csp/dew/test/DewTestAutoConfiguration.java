@@ -26,9 +26,13 @@ public class DewTestAutoConfiguration {
         logger.info("Enabled Dew Test");
         redisServer = new RedisServer();
         if (!redisServer.isActive()) {
-            redisServer.start();
+            try {
+                redisServer.start();
+                redisTemplate.getConnectionFactory().getConnection();
+            } catch (Throwable e) {
+                logger.error("Start embedded redis error.", e);
+            }
         }
-        redisTemplate.getConnectionFactory().getConnection();
     }
 
 

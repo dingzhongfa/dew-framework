@@ -3,7 +3,7 @@
 [IMPORTANT]
 .使用申明
 ====
-`Dew` 有多个版本通道，使用时请谨慎选择
+`Dew` 有多个版本通道，使用时请谨慎选择：
 
 . `GA` General Availability，正式版本，通过内部测试没有已知错误并且经过生产验证，生产环境首选！
 . `RC` Release Candidate，发行候选版本，通过内部测试没有已知错误，可用于生产环境。
@@ -57,7 +57,7 @@ NOTE: `Dew` 框架是对 `Spring Boot/Cloud` 的扩展，使用之前务必了�
 </scm>
 ----
 
-TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号
+TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号。
 
 ==== 功能模块
 
@@ -88,11 +88,11 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 [TIP]
 .DewBootApplication使用如下注解
 ====
-@SpringBootApplication
-@EnableTransactionManagement
-@EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
-@ComponentScan(basePackageClasses = {Dew.class})
-@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
+@SpringBootApplication +
+@EnableTransactionManagement +
+@EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class}) +
+@ComponentScan(basePackageClasses = {Dew.class}) +
+@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true) +
 @EnableCaching(proxyTargetClass = true)
 ====
 
@@ -126,7 +126,7 @@ TIP: 示例见 `example/guide-petstore`
 
 ==== 常用工具
 
-`Dew` 框架的常用工具由 `Dew-Common` 包提供（https://github.com/gudaoxuri/dew-common），功能如下：
+`Dew` 框架的常用工具由 `Dew-Common` 包提供（ https://github.com/gudaoxuri/dew-common ），功能如下：
 
 . Json与Java对象互转，支持泛型
 . Java Bean操作，Bean复制、反射获取/设置注解、字段、方法等
@@ -323,7 +323,7 @@ public class WebExampleController {
 
 `Dew` 支持两种格式：
 
-* 协议无关：`Resp<E>` 响应，对于`HTTP`统一返回`200`HTTP状态码，使用`code`表示业务状态码，`Resp`对象包含:
+* 协议无关：`Resp<E>` 响应，对于 `HTTP` 统一返回 `200` HTTP状态码，使用 `code` 表示业务状态码，`Resp` 对象包含:
 
  code 响应编码，与http状态码类似，200表示成功
  message 响应附加消息，多有于错误描述
@@ -462,7 +462,7 @@ mvn -Dtest=DocTest clean test -P doc
 此章节关联示例:jdbc-example、mybatisplus-example
 ----
 
-`Dew` 基于 `Spring Boot` ，原生 `Hibernate` `MyBatis` `Spring JDBC Template` 等主流的持久化框架。 各类框架的整合参见网络资料，示例中提供了针对 `MybatisPlus` 的整合说明： `mybatisplus` 。
+`Dew` 基于 `Spring Boot` ，原生支持 `Hibernate` `MyBatis` `Spring JDBC Template` 等主流的持久化框架。 各类框架的整合参见网络资料，示例中提供了针对 `MybatisPlus` 的整合说明： `mybatisplus` 。
 
 ===== `Dew JDBC`
 
@@ -526,7 +526,7 @@ spring:
 * `EnabledColumn` : 状态，启用或禁用，支持字段字面含义反转（ `reverse=true` ） 存在此注解的实体可以使用 `enableByXX` `disableByXX` `xxEnabled` `xxDisabled` 操作
 * `Column`: 普通字段
 
-IMPORTANT: 只有存在`Entity`注解的类才会被解析，只有存在`XXColumn`的字段才会被映射
+IMPORTANT: 只有存在`Entity`注解的类才会被解析，只有存在`XXColumn`的字段才会被映射。
 
 TIP: 为方便操作，框架提供了 `PkEntity` `SafeEntity` `StatusEntity` `SafeStatusEntity` 四个预制的父类。
 
@@ -652,7 +652,7 @@ TIP: 方法参数Bean类型需使用 `@ModelParam` ，参数作为SQL参数需�
 
 TIP: 分页查询要求返回 `Page<?>` 对象，参数最后两个固定为 `@Param("pageNumber") long pageNumber, @Param("pageSize") int pageSize` 这两个参数框架会自行解析，`pageNumber` 从 `1` 开始。
 
-TIP: `@Select` 中默认对*和.*自动解析成表对应字段，但不支持表的嵌套查询。
+TIP: `@Select` 中默认对 * 和 .* 自动解析成表对应字段，但不支持表的嵌套查询。
 
 [source,java]
 .`@Select` 示例
@@ -674,11 +674,12 @@ CRUDSTestEntity getById(@Param("id") P id);
 Map<String,Object> getMapById(@Param("id") P id);
 ----
 
-* 限定
-
-. `@Select` 只能用于接口
-. `@Select` 暂不支持DSL SQL，比如（HQL）
+[IMPORTANT]
+.使用限制
+====
+. `@Select` 只能用于接口、暂不支持DSL SQL，比如（HQL）
 . `@ModelParam` 参数不支持 `null` 查询
+====
 
 ====== 多数据源
 
@@ -830,11 +831,11 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 .增加配置
 ----
 dew:
-    cluster:
-        cache: redis
-        dist: hazelcast # 可选 redis/hazelcast
-        mq: hazelcast # 可选 redis/hazelcast/rabbit
-        election: eureka
+    cluster: # 集群功能
+        cache: # 缓存实现，默认为 redis
+        dist: # 分布式锁和Map实现，默认为 redis，可选 redis/hazelcast
+        mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
+        election: # 领导者选举实现，默认为 eureka
 
 spring:
     redis:
@@ -1391,7 +1392,7 @@ boolean isLeader();
 [NOTE]
 .Rabbit Confirm模式支持
 ====
-((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)
+((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm) +
 ((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)
 ====
 
@@ -1419,7 +1420,7 @@ boolean isLeader();
 * CRUDSService: 支持增删改查状态变更操作
 * DewDao: 支持增删改查状态变更操作
 
-TIP: 详见API文档
+TIP: 详见API文档。
 
 TIP: 脚本架方法不带缓存，如需要缓存请在子类复写对应的方法。
 
@@ -1714,7 +1715,7 @@ public @interface Service {
 
 Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为目标地址，然后执行 `mvn clean verify sonar:sonar -P qa` 即可。
 
-TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
+TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false` 。
 
 TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查。
 
@@ -1805,7 +1806,7 @@ management.security.enabled: false # 需要关闭安全管理，可通过IP来�
 
 ==== `Zipkin` 集成
 
-// TBD
+TBD
 
 ==== 服务调用开发期优化
 

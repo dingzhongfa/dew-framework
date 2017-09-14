@@ -475,6 +475,8 @@ mvn -Dtest=DocTest clean test -P doc
 
 TIP: `JdbcTemplate` 知识见 https://spring.io/guides/gs/relational-data-access/[https://spring.io/guides/gs/relational-data-access/]
 
+TIP: SQL输出日志需要在 `logback-spring.xml` 中添加 `<logger name="org.springframework.jdbc.core" level="TRACE"/>`
+
 * 启用 `Dew JDBC`
 
 [source,xml]
@@ -701,7 +703,7 @@ spring:
       # 此数据源的连接池配置
 ----
 
-TIP: 其它数据源务必配置在 `spring.datasource.multi-datasources` 下，格式是 `spring.datasource.multi-datasources.<DS Name>.<属性名>=<属性值>`
+TIP: 其它数据源务必配置在 `spring.multi-datasources` 下，格式是 `spring.multi-datasources.<DS Name>.<属性名>=<属性值>`
 
 IMPORTANT: 主数据源连接池要加上 `druid` 或其它类型，其它数据源与 `url` 、 `username` 同级即可。
 

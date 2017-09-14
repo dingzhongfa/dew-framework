@@ -16,17 +16,18 @@ public class DewConfig {
     private Basic basic = new Basic();
     private Cluster cluster = new Cluster();
     private Security security = new Security();
-    private Dao dao = new Dao();
+    private jdbc jdbc = new jdbc();
 
-    public static class Dao {
-        private String basePackage = "";
+    public static class jdbc {
 
-        public String getBasePackage() {
-            return basePackage;
+        private List<String> basePackages = new ArrayList<>();
+
+        public List<String> getBasePackages() {
+            return basePackages;
         }
 
-        public void setBasePackage(String basePackage) {
-            this.basePackage = basePackage;
+        public void setBasePackages(List<String> basePackages) {
+            this.basePackages = basePackages;
         }
     }
 
@@ -39,7 +40,7 @@ public class DewConfig {
 
         private Doc doc = new Doc();
         private Format format = new Format();
-        private Map<String,ErrorMapping> errorMapping = new HashMap<>();
+        private Map<String, ErrorMapping> errorMapping = new HashMap<>();
 
         public String getName() {
             return name;
@@ -333,11 +334,11 @@ public class DewConfig {
         this.security = security;
     }
 
-    public Dao getDao() {
-        return dao;
+    public jdbc getJdbc() {
+        return jdbc;
     }
 
-    public void setDao(Dao dao) {
-        this.dao = dao;
+    public void setJdbc(jdbc jdbc) {
+        this.jdbc = jdbc;
     }
 }

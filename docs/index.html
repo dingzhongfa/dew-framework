@@ -806,8 +806,8 @@ dew:
       basePackage: your.group.controller # API文档路径
   cluster:
     cache: redis # 指定集群缓存实现为redis
-  dao:
-    basePackage: your.group.dao</code></pre>
+  jdbc:
+    basePackage: your.group.jdbc</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -1008,7 +1008,7 @@ public class Order {
 <div class="ulist">
 <ul>
 <li>
-<p>添加 <code>DAO</code> 到 <code>src/main/java/your/group/dao</code> 下，共3个接口：</p>
+<p>添加 <code>DAO</code> 到 <code>src/main/java/your/group/jdbc</code> 下，共3个接口：</p>
 </li>
 </ul>
 </div>
@@ -2449,8 +2449,8 @@ assert pet.getType().equals("狗");</code></pre>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 在配置文件中添加Dao的路径
 Dew:
-  dao:
-    basePackage: com.tairanchina.csp.dew.example.jdbc.dao
+  jdbc:
+    basePackage: com.tairanchina.csp.dew.example.jdbc.jdbc
 
 // 添加CustomerDao
 public interface CustomerDao extends DewDao&lt;In, Customer&gt; {
@@ -2460,13 +2460,13 @@ public interface CustomerDao extends DewDao&lt;In, Customer&gt; {
 private PetDao petDao;
 
 // =============== Dao 示例 ===============
-// insert by dao
+// insert by jdbc
 pet = new Pet();
 pet.setType("猫");
 pet.setPrice(new BigDecimal(2000));
 pet.setEnabled(true);
 id = petDao.insert(pet);
-// getById by dao
+// getById by jdbc
 pet = petDao.getById(id);
 assert pet.getType().equals("猫");</code></pre>
 </div>
@@ -4473,8 +4473,8 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
         dist: # 分布式锁和Map实现，默认为 redis，可选 redis/hazelcast
         mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
         election: # 领导者选举实现，默认为 eureka
-    dao: # DewJDBC功能
-        base-package: # 要扫描的根包，多指定到 dao 包中
+    jdbc: # DewJDBC功能
+        base-package: # 要扫描的根包，多指定到 jdbc 包中
     security: # 安全功能
         cors:
             allow-origin: # 允许的来源，默认为 * ，建议修改

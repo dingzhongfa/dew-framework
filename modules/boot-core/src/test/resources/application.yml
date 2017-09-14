@@ -12,8 +12,8 @@ dew:
     cache: redis
     dist: redis
     mq: rabbit
-  dao:
-    base-package: com.tairanchina.csp.dew.core
+  jdbc:
+    base-packages: ["com.tairanchina.csp.dew.core"]
 #  security:
 #   includeServices: ["a-serv"]
 

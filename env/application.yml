@@ -5,7 +5,7 @@ dew:
     desc:
     webSite: www.tairanchina.com
     doc:
-      basePackage: "com.tairanchina"
+      base-packages: ["com.tairanchina"]
   cluster:
     cache: redis
     dist: redis

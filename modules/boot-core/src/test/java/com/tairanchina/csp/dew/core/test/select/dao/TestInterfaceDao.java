@@ -5,7 +5,7 @@ import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.ModelParam;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
-import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 
 import java.util.List;
 import java.util.Map;

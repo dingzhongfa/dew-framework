@@ -7,26 +7,17 @@ import com.tairanchina.csp.dew.core.test.jdbc.entity.EmptyEntity;
 import com.tairanchina.csp.dew.core.test.jdbc.entity.FullEntity;
 import com.tairanchina.csp.dew.core.test.jdbc.util.TxService;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@SpringBootApplication
-@SpringBootTest(classes = DewBootApplication.class)
-@ComponentScan(basePackageClasses = {Dew.class, JDBCTest.class})
+@Component
 public class JDBCTest {
 
     @Autowired
@@ -49,15 +40,12 @@ public class JDBCTest {
         Assert.assertTrue(temp == 1);
     }*/
 
-   @Before
-   public void init(){
-       Dew.ds().jdbc().execute("DROP TABLE IF EXISTS `basic_entity`;");
+   private void init(){
        Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
                "(\n" +
                "id int primary key auto_increment,\n" +
                "field_a varchar(255)\n" +
                ")");
-       Dew.ds().jdbc().execute("DROP TABLE IF EXISTS `full_entity`;");
        Dew.ds().jdbc().execute("CREATE TABLE full_entity\n" +
                "(\n" +
                "id int primary key auto_increment,\n" +
@@ -72,14 +60,13 @@ public class JDBCTest {
                ")");
    }
 
-    @Test
     public void testAll() throws Exception {
         testEntity();
         testMultiDS();
         testTx();
     }
 
-    public void testEntity() throws InterruptedException {
+    private void testEntity() throws InterruptedException {
         // 没有Entity注解的类，异常
         try {
             Dew.ds().findAll(EmptyEntity.class);
@@ -88,6 +75,7 @@ public class JDBCTest {
             Assert.assertTrue(true);
         }
         // =========== Basic Test
+        init();
         // findAll
         Assert.assertEquals(0, Dew.ds().findAll(BasicEntity.class).size());
         // insert
@@ -212,10 +200,10 @@ public class JDBCTest {
         // selectForList
         Map<String, Object> params = new HashMap<>();
         params.put("code", "1");
-        Dew.ds().selectForList(fullEntity.getClass(), params, "select t.* from t_full_entity t where t.code = #{code}");
+        Dew.ds().selectForList(fullEntity.getClass(), params, "select t.* from full_entity t where t.code = #{code}");
     }
 
-    public void testTx(){
+    private void testTx(){
         txService.testCommit();
         try {
             txService.testRollBack();
@@ -238,7 +226,7 @@ public class JDBCTest {
         Assert.assertTrue(res == 0);
     }
 
-    public void testMultiDS(){
+    private void testMultiDS(){
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         try {
             Dew.ds("test1").jdbc().queryForList("select * from basic_entity").size();
@@ -261,7 +249,6 @@ public class JDBCTest {
     }
 
     @Transactional
-    @Test
     public void testPool() {
         Boolean[] hasFinish={false};
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();
@@ -270,14 +257,13 @@ public class JDBCTest {
             Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(2);
+            Thread.sleep(1);
             hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    @Test
     @Transactional("test2TransactionManager")
     public void testPoolA() {
         Boolean[] hasFinish={false};
@@ -287,7 +273,7 @@ public class JDBCTest {
             Assert.assertTrue(hasFinish[0]);
         }).start();
         try {
-            Thread.sleep(2);
+            Thread.sleep(1);
             hasFinish[0]=true;
         } catch (InterruptedException e) {
             e.printStackTrace();

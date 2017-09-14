@@ -1,4 +1,4 @@
-namespace java com.tairanchina.csp.dew.example.web
+namespace java com.tairanchina.csp.dew.example.thrift
 
 enum TOperation {
   ADD = 1,

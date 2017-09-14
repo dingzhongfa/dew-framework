@@ -39,14 +39,14 @@
         <module>examples/mybatisplus-example</module>
         <module>examples/auth-example</module>
         <module>examples/dubbo-example</module>
-        <!-- <module>examples/hystrix-example</module>
+        <module>examples/monitor-example</module>
+        <module>examples/hystrix-example</module>
+        <!--<module>examples/thrift-definition-example</module>
+        <module>examples/thrift-process-example</module>
        <module>examples/config-example</module>
-       <module>examples/monitor-example</module>
              <module>examples/pressure-test-api</module>
                <module>examples/pressure-test-service</module>
                <module>examples/service-cloud-example</module>
-               <module>examples/thrift-definition-example</module>
-               <module>examples/thrift-service-example</module>
                <module>examples/zipkin-example</module>
                <module>examples/zipkin-service-example</module>
                <module>examples/zipkin-service2-example</module>

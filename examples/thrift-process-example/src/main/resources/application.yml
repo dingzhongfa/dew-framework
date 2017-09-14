@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: thrift-process-example
+
+server:
+  port: 8890
+
+thrift:
+  client:
+      maxThread: 10 # pool object num,default is ten
+  service:
+      connectTimeout: 2000
+      readTimeout: 50000
+      maxRetries: 3 #if in cloud env,should be set empty,if not,should be set a fixed address
+      endpoint: # if in cloud env,should be set empty,if not,should be set a fixed address
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://tr:123456@172.30.248.162:10000/eureka

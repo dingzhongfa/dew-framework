@@ -4,6 +4,8 @@
 
 ==== Feature
 
+[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除
+
 ==== Improvement
 
 * [功能]支持rabbit confirm(单条)模式

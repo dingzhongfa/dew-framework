@@ -42,6 +42,19 @@ NOTE: `Dew` 框架是对 `Spring Boot/Cloud` 的扩展，使用之前务必了�
     </dependency>
 </dependencies>
 ...
+<!--开发者-->
+<developers>
+    <developer>
+        <name></name>
+        <email></email>
+    </developer>
+</developers>
+<!--SCM信息-->
+<scm>
+    <connection></connection>
+    <developerConnection></developerConnection>
+    <url></url>
+</scm>
 ----
 
 TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号
@@ -332,7 +345,7 @@ dew:
     basic:
         format:
             use-unity-error: true # 是否启用统一响应，默认true
-            reuse-http-state: false # 默认true， true:重用http状态码，false:使用协议无关格式
+            reuse-http-state: false # true:重用http状态码，false:使用协议无关格式，默认true
 ----
 
 [source,java]
@@ -1463,8 +1476,6 @@ public class OptInfo {
     List<RoleInfo> roles;
     // 最后一次登录时间
     Date lastLoginTime;
-    // 扩展信息(Json格式)
-    String ext;
     // 角色信息
     public static class RoleInfo {
         // 角色编码
@@ -1538,8 +1549,22 @@ public Resp<Void> logout() {
 
 ==== 追踪日志
 
-==== Thrift集成
+`Dew` 集成了可追踪日志的功能，本质上一个 `slf4j` 的装饰器，会在每条日志内容前面打印 `用户账号 #` 。
+
+[source,java]
+.使用方式
+----
+Logger logger = DewLogger.getLogger(<当前的class>);
+logger.info/debug/trace/error...
+----
+
+NOTE: 此功能要求使用 `Threadlocal` 与请求接收同一线程有效，不同线程需要把 `DewContext` 传入到新线程并执行执行 `DewContext.setContext(context)` 。
+
 ==== Dubbo兼容
+
+----
+此章节关联示例:dubbo-example
+----
 
 [source,xml]
 .引入依赖
@@ -1683,8 +1708,6 @@ public @interface Service {
 @Service(version = "",interfaceName = "")
 ----
 
-TIP: 详见：`dubbo-example`
-
 === 工程化
 
 ==== 代码质量检查
@@ -1693,10 +1716,8 @@ Dew 已集成 `Sonar` 插件，只需要在maven中配置 `sonar.host.url` 为�
 
 TIP: 如提供没有权限访问，请设置 `sonar.forceAuthentication=false`
 
-TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查
+TIP: 使用 `<maven.test.skip>true</maven.test.skip>` 可跳过特定模块的测试，`<sonar.skip>true</sonar.skip>` 可跳过特定模块的Sonar检查。
 
-==== Spring Admin集成
-==== Zipkin集成
 ==== 测试支持
 
 良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
@@ -1728,10 +1749,65 @@ spring:
     url: jdbc:h2:mem:test
 ----
 
+==== `Spring Admin` 集成
 
+----
+此章节关联示例:monitor-example
+----
 
+`Dew` 集成了 `Spring Admin` ，封装成 `monitor` 组件， 示例 `monitor-example` 演示了如何与 `monitor` 交互。
 
-=== 服务调用开发期优化
+[source,yml]
+.`monitor` 关键配置
+----
+spring:
+  application:
+    name: monitor # 监控服务名称
+  boot:
+    admin:
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream # 要统计的内容
+      turbine: # turbine集成配置
+        clusters: default # 集群名称
+        location: monitor # 聚合到的服务名称，这里要与 `spring.application.name` 相同
+
+turbine: # turbine配置
+  aggregator:
+    clusterConfig: default # 集群名称
+  appConfig: monitor-example # 要聚合的服务名称，需要把各个服务添加上去
+  clusterNameExpression: metadata['cluster']
+
+server:
+  port: # 端口号
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: # eureka 服务地址
+----
+
+[source,yml]
+.要监控的服务 关键配置
+----
+spring:
+  application:
+    name: monitor-example # 服务名称，必须在上文 `turbine.appConfig` 添加上去
+
+eureka:
+  client:
+    serviceUrl: # eureka 服务地址，必须和监控服务在同一集群中
+  instance:
+    metadata-map:
+      cluster: default # 集群名称
+
+management.security.enabled: false # 需要关闭安全管理，可通过IP来限制
+----
+
+==== `Zipkin` 集成
+
+// TBD
+
+==== 服务调用开发期优化
 
 在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
 
@@ -1744,116 +1820,3 @@ spring:
 如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
 
-
-=== 使用Thrift文档
-
-. 扩展TTransport支持从注册中心获取服务列表并根据既定策略进行负载，详见TLoadBalancerClient类，利用Netflix
-. 服务端添加Metrics支持，统计各服务响应时间及各方法调用次数
-. 封装TServiceClient支持超时熔断保护利用Hystrix
-
-==== 生成API
-安装Thrift [https://thrift.apache.org/]
-
-[source,xml]
-.引入依赖
-----
-<dependency>
-    <groupId>org.apache.thrift</groupId>
-    <artifactId>libthrift</artifactId>
-    <version>0.10.0</version>
-</dependency>
-----
-
-.编辑Thrift文件
-教程[http://www.jianshu.com/p/0f4113d6ec4b]
-
-[source,shell]
-.执行
-----
-thrift --gen <language> <Thrift filename>
-----
-==== Spring Cloud工程使用
-
-* 在启动类，添加`@EnabledThriftDiscovery`
-
-[source,xml]
-.引入依赖
-----
-<dependency>
-    <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>boot-thrift-start</artifactId>
-    <version>1.0.0-beta5</version>
-<dependency>
-----
-
-===== Service
-
-[source,java]
-.实现Iface接口
-----
-@ThriftService(value = "/url")
-public class CalculatorController implements TCalculatorService.Iface {
-
-}
-----
-[source,yaml]
-.配置
-----
-thrift:
-  client:
-      maxThread: 10
-----
-
-===== Client
-
-[source,java]
-.实现Iface接口
-----
-@ThriftClient(serviceId = "thrift-service-example", path = "/url")
-TCalculatorService.Client tcalculatorClient;
-----
-
-[source,yaml]
-.配置
-----
-thrift:
-    service:
-          connectTimeout: 2000
-          readTimeout: 50000
-          maxRetries: 3
-          endpoint:
-----
-
-TIP: 详见：`thrift-service-example`
-
-==== 测试支持
-
-良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
-但实际上我们会的代码往往会与数据库、缓存、MQ等外部工具交互，这会使单测的结果不可控，通常的解决方案是使用Mock，但这无行中引入了单测撰写的成本，
-Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded redis` ，由于 `Dew` 集群的 `Cache` `Map` `Lock` `MQ` 都支持 `Redis` 实现，所以可以做到对主流操作的全覆盖。
-
-[source,xml]
-.配置示例
-----
-# maven
-<dependency>
-    <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>test-starter</artifactId>
-</dependency>
-
-# config
-dew:
-  cluster: #所有集群操作都使用reids模拟
-    cache: redis
-    dist: redis
-    mq: redis
-
-spring:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
-
-----

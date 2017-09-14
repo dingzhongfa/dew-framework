@@ -1,4 +1,4 @@
-== 技术指标(TBD)
+== 技术指标
 
 === 可靠性
 
@@ -171,16 +171,3 @@ TBD
     分析原因:gateway[网关]接收到请求以后，通过ribbon[负载均衡服务]去调用具体的服务。虽然gateway的tomcat能接受非常的多请求，但是ribbon线程数默认较小,很多请求在等待。
     这样导致max会异常的大。因为ribbon线程数默认较小，调用服务的线程数也较少，反应出来的情况就是服务的Thoughput并不是特别的高。Ps:实际上只需要调整MaxConnectionsPerHost,
     MaxTotalConnections两个参数，改问题就能解决，这里还是建议将Pool的参数也同等比例的调整放大比较合适。
-
-
-
-
-
-
-
-
-
-
-
-
-

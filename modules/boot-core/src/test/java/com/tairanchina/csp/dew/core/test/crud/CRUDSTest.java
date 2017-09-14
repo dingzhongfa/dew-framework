@@ -4,28 +4,26 @@ import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.DewBootApplication;
-import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = DewBootApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, CRUDSTest.class})
+@Component
 public class CRUDSTest {
 
-    private static final String url = "http://127.0.0.1:8080/crud";
+    private String url = "http://127.0.0.1:8080/crud";
 
-    private static long pageNumber = 1;
-    private static long pageSize = 10;
+    private long pageNumber = 1;
+    private long pageSize = 10;
 
-    @Test
+    @Autowired
+    private TestRestTemplate testRestTemplate;
+
+
     public void testAll() throws Exception {
         initialize();
         testCRUD();
@@ -34,7 +32,7 @@ public class CRUDSTest {
 
     private void testCRUD() throws Exception {
         // findAll
-        Resp<List<TestSelectEntity>> entitiesResp = Resp.genericList($.http.get(url + "/"), TestSelectEntity.class);
+        Resp<List<TestSelectEntity>> entitiesResp = Resp.genericList(testRestTemplate.getForObject(url + "/", String.class), TestSelectEntity.class);
         long recordTotal = entitiesResp.getBody().size();
         // paging
         Resp<Page<TestSelectEntity>> entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), TestSelectEntity.class);
@@ -212,7 +210,7 @@ public class CRUDSTest {
     private void initialize() throws Exception {
         // ddl
         // Dew.ds.jdbc().execute("DROP TABLE t_test_crud_s_entity");
-        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS t_test_crud_s_entity\n" +
+        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "code varchar(32),\n" +
@@ -224,5 +222,9 @@ public class CRUDSTest {
                 "update_time datetime,\n" +
                 "enabled bool\n" +
                 ")");
+        Dew.ds().jdbc().execute("INSERT  INTO  test_select_entity " +
+                "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+
     }
 }

@@ -6,7 +6,7 @@ import com.tairanchina.csp.dew.core.DewBootApplication;
 import com.tairanchina.csp.dew.core.test.select.dao.SystemConfigDao;
 import com.tairanchina.csp.dew.core.test.select.dao.TestInterfaceDao;
 import com.tairanchina.csp.dew.core.test.select.entity.SystemConfig;
-import com.tairanchina.csp.dew.core.test.select.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

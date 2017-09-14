@@ -3,7 +3,6 @@ package com.tairanchina.csp.dew.core.test.cluster;
 
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.DewBootApplication;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
@@ -11,14 +10,9 @@ import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
 import com.tairanchina.csp.dew.core.cluster.spi.redis.RedisClusterDistLock;
 import com.tairanchina.csp.dew.core.test.cluster.entity.TestMapObj;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,21 +20,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-@RunWith(SpringRunner.class)
-@SpringBootApplication
-@SpringBootTest(classes = DewBootApplication.class)
-@ComponentScan(basePackageClasses = {Dew.class, ClusterTest.class})
+@Component
 public class ClusterTest {
 
     private Logger logger = LoggerFactory.getLogger(ClusterTest.class);
+
+    public void testAll()throws Exception{
+        testCache();
+        testDistMapExp();
+        testDistLock();
+        testDistLockWithFun();
+        testSameThreadLock();
+        testDiffentTreadLock();
+        testUnLock();
+        testWaitLock();
+        testConnection();
+        testDistMap();
+    }
+
+    public void testMQ() throws Exception {
+        testMQReq();
+        testMQTopic();
+    }
 
     /**
      * redis测试通过
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testCache() throws InterruptedException {
+    private void testCache() throws InterruptedException {
         Assert.assertTrue(true);
         Dew.cluster.cache.flushdb();
         Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
@@ -111,8 +119,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testDistMap() throws InterruptedException {
+    private void testDistMap() throws InterruptedException {
         // map
         ClusterDistMap<TestMapObj> mapObj = Dew.cluster.dist.map("test_obj_map", TestMapObj.class);
         mapObj.regEntryAddedEvent(entryEvent ->
@@ -139,8 +146,12 @@ public class ClusterTest {
         Thread.sleep(15000);
     }
 
-    @Test
-    public void testDistMapExp() throws InterruptedException {
+    /**
+     * 另起线程测试
+     *
+     * @throws InterruptedException
+     */
+    private void testDistMapExp() throws InterruptedException {
         ClusterDistMap<TestMapObj> mapObj = Dew.cluster.dist.map("test_obj_map_exp", TestMapObj.class);
         TestMapObj obj = new TestMapObj();
         obj.setA("测试");
@@ -162,8 +173,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testDistLock() throws InterruptedException {
+    private void testDistLock() throws InterruptedException {
         //lock
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
         lock.delete();
@@ -235,8 +245,7 @@ public class ClusterTest {
         t4.join();
     }
 
-    @Test
-    public void testDistLockWithFun() throws Exception {
+    private void testDistLockWithFun() throws Exception {
         RedisClusterDistLock redisClusterDistLock = (RedisClusterDistLock) Dew.cluster.dist.lock("test_lock_fun");
         VoidProcessFun voidProcessFun = () -> {
             try {
@@ -260,8 +269,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testMQTopic() throws InterruptedException {
+    private void testMQTopic() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
         // pub-sub
         new Thread(() -> {
@@ -278,7 +286,6 @@ public class ClusterTest {
             });
             countDownLatch.countDown();
         }).start();
-
         Thread.sleep(2000);
         logger.info("count   " + countDownLatch.getCount());
         countDownLatch.await();
@@ -286,6 +293,7 @@ public class ClusterTest {
         Thread.sleep(3000);
         logger.info("测试2     " + Thread.activeCount());
         for (int i = 0; i < 10; i++) {
+
             logger.info(Thread.activeCount() + "");
             logger.info("单位开始");
             Thread.sleep(1000);
@@ -302,8 +310,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testMQReq() throws InterruptedException {
+    private void testMQReq() throws InterruptedException {
         // req-resp
         List<String> conflictFlag = new ArrayList<>();
         new Thread(() -> {
@@ -366,8 +373,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testSameThreadLock() throws InterruptedException {
+    private void testSameThreadLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_A");
         Boolean temp = lock.tryLock(0, 10000);
         Assert.assertTrue(temp);
@@ -383,8 +389,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testDiffentTreadLock() throws InterruptedException {
+    private void testDiffentTreadLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_B");
         Boolean temp = lock.tryLock(0, 100000);
         logger.info("*********" + temp);
@@ -432,7 +437,6 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
     public void testUnLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_D");
         //测试还没有加锁前去解锁
@@ -459,8 +463,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testWaitLock() throws InterruptedException {
+    private void testWaitLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_E");
         Boolean temp = lock.tryLock(0, 10000);
         Assert.assertTrue(temp);
@@ -475,8 +478,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    @Test
-    public void testConnection() throws InterruptedException {
+    private void testConnection() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_DA");
         Boolean temp = lock.tryLock(0, 100000);
         Assert.assertTrue(temp);

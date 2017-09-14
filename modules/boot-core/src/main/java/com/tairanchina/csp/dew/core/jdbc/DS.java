@@ -116,14 +116,14 @@ public class DS {
 
     public void deleteById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
+        jdbcTemplate.update(String.format("DELETE FROM `%s` WHERE `%s` = ?",
                 entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
                 id);
     }
 
     public void deleteByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        jdbcTemplate.update(String.format("DELETE FROM %s WHERE `%s` = ?",
+        jdbcTemplate.update(String.format("DELETE FROM `%s` WHERE `%s` = ?",
                 entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
                 code);
     }
@@ -170,7 +170,7 @@ public class DS {
 
     public boolean existById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE `%s` = ?",
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM `%s` WHERE `%s` = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
                 new Object[]{id}, Long.class) != 0;
@@ -178,7 +178,7 @@ public class DS {
 
     public boolean existByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE `%s` = ?",
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM `%s` WHERE `%s` = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
                 new Object[]{code}, Long.class) != 0;
@@ -224,7 +224,7 @@ public class DS {
 
     public long countAll(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s",
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM `%s`",
                 entityClassInfo.tableName),
                 new Object[]{}, Long.class);
     }
@@ -232,7 +232,7 @@ public class DS {
     public long countEnabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM `%s` WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
                 new Object[]{!column.reverse}, Long.class);
@@ -241,7 +241,7 @@ public class DS {
     public long countDisabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM %s WHERE %s = ?",
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM `%s` WHERE %s = ?",
                 entityClassInfo.tableName,
                 entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
                 new Object[]{column.reverse}, Long.class);
@@ -375,7 +375,7 @@ public class DS {
             if (sql == null) {
                 // Package
                 StringBuilder sb = new StringBuilder();
-                sb.append("INSERT INTO ").append(entityClassInfo.tableName);
+                sb.append("INSERT INTO ").append("`" + entityClassInfo.tableName + "`");
                 sb.append(values.entrySet().stream()
                         .map(entry -> "`" + entityClassInfo.columns.get(entry.getKey()).columnName + "`")
                         .collect(Collectors.joining(", ", " (", ") ")));
@@ -455,7 +455,7 @@ public class DS {
         // Package
         StringBuilder sb = new StringBuilder();
         List<Object> params = new ArrayList<>();
-        sb.append("UPDATE ").append(entityClassInfo.tableName).append(" SET ");
+        sb.append("UPDATE ").append("`" + entityClassInfo.tableName + "`").append(" SET ");
         sb.append(values.entrySet().stream()
                 .map(entry -> {
                     params.add(entry.getValue());
@@ -482,7 +482,7 @@ public class DS {
         sb.append("SELECT ");
         sb.append(entityClassInfo.columns.values().stream()
                 .map(col -> "`" + col.columnName + "`").collect(Collectors.joining(", ")));
-        sb.append(" FROM ").append(entityClassInfo.tableName);
+        sb.append(" FROM ").append("`" + entityClassInfo.tableName + "`");
         if (where != null && !where.isEmpty()) {
             sb.append(" WHERE ");
             sb.append(where.entrySet().stream()

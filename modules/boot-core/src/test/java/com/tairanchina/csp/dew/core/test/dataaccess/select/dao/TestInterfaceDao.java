@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.select.dao;
+package com.tairanchina.csp.dew.core.test.dataaccess.select.dao;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.jdbc.DewDao;

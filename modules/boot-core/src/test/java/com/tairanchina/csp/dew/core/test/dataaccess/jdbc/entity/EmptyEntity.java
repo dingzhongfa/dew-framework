@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.jdbc.entity;
+package com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity;
 
 public class EmptyEntity {
 

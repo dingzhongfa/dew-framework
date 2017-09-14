@@ -1,11 +1,11 @@
-package com.tairanchina.csp.dew.core.test.jdbc;
+package com.tairanchina.csp.dew.core.test.dataaccess.jdbc;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.*;
-import com.tairanchina.csp.dew.core.test.jdbc.entity.BasicEntity;
-import com.tairanchina.csp.dew.core.test.jdbc.entity.EmptyEntity;
-import com.tairanchina.csp.dew.core.test.jdbc.entity.FullEntity;
-import com.tairanchina.csp.dew.core.test.jdbc.util.TxService;
+import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.BasicEntity;
+import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.EmptyEntity;
+import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.FullEntity;
+import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.util.TxService;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

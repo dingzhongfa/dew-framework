@@ -1,9 +1,9 @@
-package com.tairanchina.csp.dew.core.test.select.dao;
+package com.tairanchina.csp.dew.core.test.dataaccess.select.dao;
 
 import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
-import com.tairanchina.csp.dew.core.test.select.entity.SystemConfig;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.entity.SystemConfig;
 
 import java.util.Map;
 

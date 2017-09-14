@@ -1,11 +1,13 @@
 package com.tairanchina.csp.dew.core.test;
 
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.test.cluster.ClusterTest;
+import com.tairanchina.csp.dew.core.test.cluster.RabbitMQTest;
+import com.tairanchina.csp.dew.core.test.cluster.RedisTest;
 import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
-import com.tairanchina.csp.dew.core.test.jdbc.JDBCTest;
+import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.JDBCTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,7 +21,7 @@ import javax.annotation.Resource;
 public class TestAll {
 
     @Resource
-    private ClusterTest clusterTest;
+    private RedisTest redisTest;
 
     @Resource
     private JDBCTest jdbcTest;
@@ -27,14 +29,18 @@ public class TestAll {
     @Resource
     private CRUDSTest crudsTest;
 
+    @Resource
+    private RabbitMQTest rabbitMQTest;
+
     @Test
     public void testCluster() throws Exception{
-        clusterTest.testAll();
+        redisTest.testAll();
     }
 
     @Test
     public void testMQ() throws Exception{
-        clusterTest.testMQ();
+        redisTest.testMQ();
+
     }
 
     @Test

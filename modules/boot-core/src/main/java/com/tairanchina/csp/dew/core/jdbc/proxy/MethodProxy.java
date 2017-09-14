@@ -14,9 +14,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by 迹_Jason on 2017/7/26.
- */
+
 public class MethodProxy implements InvocationHandler {
 
     private static final Map<Method, MethodHandle> METHOD_HANDLE_CACHE = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);

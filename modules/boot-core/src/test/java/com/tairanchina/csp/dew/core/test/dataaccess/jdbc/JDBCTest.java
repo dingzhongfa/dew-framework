@@ -30,6 +30,8 @@ public class JDBCTest {
     private JdbcTemplate jdbcTemplate2;
 
 
+
+
     /**
      * 测试没有配置多数据库的情况
      * 在配置中注释掉multi-datasources:
@@ -207,13 +209,13 @@ public class JDBCTest {
         txService.testCommit();
         try {
             txService.testRollBack();
-        } catch (Exception e){
+        } catch (Exception ignored){
 
         }
         txService.testMultiCommit();
         try {
             txService.testMultiRollBack();
-        } catch (Exception e){
+        } catch (Exception ignored){
 
         }
         int res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA1'").size();

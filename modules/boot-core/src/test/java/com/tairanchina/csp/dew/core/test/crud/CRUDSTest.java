@@ -5,11 +5,14 @@ import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.core.test.crud.service.CRUDSTestService;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,11 +26,40 @@ public class CRUDSTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
+    @Autowired
+    private TestInterfaceDao dao;
+
+    @Autowired
+    private CRUDSTestService crudsTestService;
 
     public void testAll() throws Exception {
         initialize();
         testCRUD();
         testCRUDS();
+        testServiceAndDao();
+    }
+
+    private void testServiceAndDao(){
+        List<TestSelectEntity> list = new ArrayList<>();
+        for (int i=0;i<10;i++){
+            TestSelectEntity testSelectEntity = new TestSelectEntity();
+            testSelectEntity.setId(100+i);
+            testSelectEntity.setFieldA("aaa");
+            testSelectEntity.setFieldB("ccc");
+            list.add(testSelectEntity);
+        }
+        dao.insert(list);
+        Assert.assertTrue(crudsTestService.existById(102).getBody());
+        TestSelectEntity testSelectEntity = crudsTestService.getById(102).getBody();
+        Assert.assertTrue(crudsTestService.existByCode(testSelectEntity.getCode()).getBody());
+        long num = dao.countAll();
+        long enNum = dao.countEnabled();
+        long disNum = dao.countDisabled();
+        Assert.assertTrue(num==enNum+disNum);
+        Page<TestSelectEntity> pagingEnabled = dao.pagingEnabled(1,10);
+        Assert.assertTrue(pagingEnabled.getObjects().size() ==10 || (pagingEnabled.getObjects().size() == enNum));
+        Page<TestSelectEntity> pagingDisabled = dao.pagingDisabled(1,10);
+        Assert.assertTrue(pagingEnabled.getObjects().size() == 10 || (pagingDisabled.getObjects().size() == disNum));
     }
 
     private void testCRUD() throws Exception {

@@ -5,9 +5,9 @@ import com.tairanchina.csp.dew.core.test.cluster.RabbitMQTest;
 import com.tairanchina.csp.dew.core.test.cluster.RedisTest;
 import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.JDBCTest;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.SelectTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,6 +32,9 @@ public class TestAll {
     @Resource
     private RabbitMQTest rabbitMQTest;
 
+    @Resource
+    private SelectTest selectTest;
+
     @Test
     public void testCluster() throws Exception{
         redisTest.testAll();
@@ -48,6 +51,11 @@ public class TestAll {
         jdbcTest.testAll();
         jdbcTest.testPoolA();
         jdbcTest.testPool();
+    }
+
+    @Test
+    public void testSelect() throws Exception{
+        selectTest.testAll();
     }
 
     @Test

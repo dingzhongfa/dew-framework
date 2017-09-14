@@ -145,13 +145,5 @@ public interface DewDao<P,E> {
         return Dew.ds(ds()).pagingDisabled(pageNumber, pageSize, orderDesc, getClazz());
     }
 
-    default Page<E> paging(String sql, Object[] params, long pageNumber, int pageSize) {
-        return Dew.ds(ds()).paging(sql, params, pageNumber, pageSize, getClazz());
-    }
-
-    default <T> Page<T> paging(String sql, Object[] params, long pageNumber, int pageSize, Class<T> dtoClazz) {
-        return Dew.ds(ds()).paging(sql, params, pageNumber, pageSize, dtoClazz);
-    }
-
 }
 

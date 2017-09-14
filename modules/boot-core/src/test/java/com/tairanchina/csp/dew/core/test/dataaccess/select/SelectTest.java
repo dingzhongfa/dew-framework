@@ -2,29 +2,20 @@ package com.tairanchina.csp.dew.core.test.dataaccess.select;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.DewBootApplication;
+import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.SystemConfigDao;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
+import com.tairanchina.csp.dew.core.test.dataaccess.select.dto.ModelDTO;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.entity.SystemConfig;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
-@SpringBootApplication
-@SpringBootTest(classes = DewBootApplication.class)
-@ComponentScan(basePackageClasses = {Dew.class, JDBCAnnotationsTest.class})
-public class JDBCAnnotationsTest {
+@Component
+public class SelectTest {
 
     @Autowired
     private TestInterfaceDao dao;
@@ -32,8 +23,13 @@ public class JDBCAnnotationsTest {
     @Autowired
     private SystemConfigDao systemConfigDao;
 
-    @Before
-    public void initialize() throws Exception {
+    public void testAll() throws Exception {
+        initialize();
+        testMulty();
+        testInterface();
+    }
+
+    private void initialize() throws Exception {
         Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
@@ -64,12 +60,8 @@ public class JDBCAnnotationsTest {
                 "VALUES ('id','value','description','level','jiaj','2017-07-08','j','2017-07-08')");
     }
 
-    @Test
-    public void testInterface() throws Exception {
+    private void testInterface() throws Exception {
         TestSelectEntity model = new TestSelectEntity();
-        List<TestSelectEntity> testSelectEntities = dao.findAll();
-        List<SystemConfig> systemConfigs = systemConfigDao.findAll();
-        Assert.assertNotNull(testSelectEntities);
         model.setFieldA("测试A");
         Page<TestSelectEntity> page = dao.queryByCustomPaging(model, 1L, 10);
         Assert.assertTrue(page != null);
@@ -87,14 +79,14 @@ public class JDBCAnnotationsTest {
         Assert.assertTrue(model != null);
     }
 
-    @Test
-    public void testLink() {
+    private void testMulty() {
+        // 加载entityclassinfo
         List<TestSelectEntity> testSelectEntities = dao.findAll();
         List<SystemConfig> systemConfigs = systemConfigDao.findAll();
         TestSelectEntity model = new TestSelectEntity();
         Page<TestSelectEntity> page = dao.queryByCustomPaging(model, 1L, 10);
         Assert.assertTrue(page != null);
-        Map map = systemConfigDao.testLink("value");
-        Assert.assertNotNull(map);
+        ModelDTO modelDTO = systemConfigDao.testLink("value");
+        Assert.assertNotNull(modelDTO);
     }
 }

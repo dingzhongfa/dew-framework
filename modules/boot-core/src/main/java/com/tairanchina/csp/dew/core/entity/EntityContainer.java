@@ -16,8 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @ConditionalOnClass({JdbcTemplate.class})
 public class EntityContainer {
 
-    private static final Logger logger = LoggerFactory.getLogger(EntityContainer.class);
-
     private static final Map<String, EntityClassInfo> COLUMN_INFO = new ConcurrentHashMap<>();
 
     private static void loadEntityClassInfo(Class clazz) {

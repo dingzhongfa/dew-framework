@@ -3,7 +3,7 @@
 [IMPORTANT]
 .使用申明
 ====
-`SNAPSHOT` 版本未经过测试，线上项目务必使用 `Release` 版本。
+`SNAPSHOT` 版本未经过测试，不得用于生产。
 ====
 
 ====
@@ -13,7 +13,7 @@ https://www.google.ca/search?dcr=0&q=pet+store+sample+application&oq=pet+store+s
 本章节的代码见：example/guide-petstore
 ====
 
-=== 先构建一个脚手架工程
+=== 构建一个脚手架工程
 
 * 建立 `guide-petstore` 目录，添加 `pom.xml` 文件，加入如下内容：
 
@@ -89,8 +89,9 @@ https://www.google.ca/search?dcr=0&q=pet+store+sample+application&oq=pet+store+s
 </project>
 ----
 
-TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号
-TIP: `dew` 支持 `Spring boot` 下各类数据持久化框架，此处使用基于 `Spring jdbc template` 封装的轻量实现，此实现对应的连接池必须为 `Druid`
+TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版本号。
+
+TIP: `dew` 支持 `Spring boot` 下各类数据持久化框架，此处使用基于 `Spring jdbc template` 封装的轻量实现，此实现对应的连接池必须为 `Druid` 。
 
 * 添加添加文件到 `src/main/resources/application.yml` ，内容如下：
 
@@ -160,7 +161,7 @@ guide-petstore
     |-pom.xml
 ----
 
-TIP: `.gitignore` 是标准的git忽略文件，`logback-spring.xml` 为 `logback` 在 `spring` 下的配置文件，与项目说明关系不大，详见源代码
+TIP: `.gitignore` 是标准的git忽略文件，`logback-spring.xml` 为 `logback` 在 `spring` 下的配置文件，与项目说明关系不大，详见源代码。
 
 === 添加数据访问处理
 
@@ -261,10 +262,10 @@ public class Order {
 .注解说明
 ====
 . 表名/字段名在注解中没有特别指定时均以驼峰转下划线规则处理
-. `PkColumn` 标识主键字段，支持int/String类型
-. `Column` 标识普通字段
-. `CreateTimeColumn/UpdateTimeColumn` 标识创建/更新字段，会自动添加日期
-. `EnabledColumn` 标识状态字段，用于软删除操作
+. `@PkColumn` 标识主键字段，支持int/String类型
+. `@Column` 标识普通字段
+. `@CreateTimeColumn/@UpdateTimeColumn` 标识创建/更新字段，会自动添加日期
+. `@EnabledColumn` 标识状态字段，用于软删除操作
 ====
 
 * 添加 `DAO` 到 `src/main/java/your/group/dao` 下，共3个接口：
@@ -445,7 +446,7 @@ public class OrderController implements CRUController<OrderService, Integer, Ord
 .Controller说明
 ====
 * 和Service一样，框架提供了C(Create)R(Read)U(Update)D(Delete)S(Status,软删除)脚手架，对应于各个服务父类
-* `@Api` `@ApiOperation` 为 `swagger` 文档的功能，详见 `使用手册`
+* `@Api` `@ApiOperation` 为 `swagger` 文档的功能
 ====
 
 === 开始测试
@@ -520,6 +521,8 @@ public class DocTest {
 ----
 
 `mvn -Dtest=DocTest clean test -P doc`
+
+在项目路径下 `api-docs` 就可以看到生成的文档了。
 
 * 打包
 

@@ -186,7 +186,7 @@ public interface ClusterCache {
     void expire(String key, int expireSec);
 
     /**
-     * 删除当前数据库中的所有Key  dbIndex参数 就是指定的库
+     * 删除当前数据库中的所有Key
      */
     void flushdb();
 

@@ -394,7 +394,7 @@ dew:
     format:
       use-unity-error: true
     error-mapping:
-      "[com.tairanchina.csp.dew.core.AuthException]":
+      "[com.tairanchina.csp.dew.core.test.postman.AuthException]":
         http-code: 401
         business-code: x00010
         message: 认证错误
@@ -1463,6 +1463,8 @@ public class OptInfo {
     List<RoleInfo> roles;
     // 最后一次登录时间
     Date lastLoginTime;
+    // 扩展信息(Json格式)
+    String ext;
     // 角色信息
     public static class RoleInfo {
         // 角色编码
@@ -1823,3 +1825,35 @@ thrift:
 ----
 
 TIP: 详见：`thrift-service-example`
+
+==== 测试支持
+
+良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
+但实际上我们会的代码往往会与数据库、缓存、MQ等外部工具交互，这会使单测的结果不可控，通常的解决方案是使用Mock，但这无行中引入了单测撰写的成本，
+Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded redis` ，由于 `Dew` 集群的 `Cache` `Map` `Lock` `MQ` 都支持 `Redis` 实现，所以可以做到对主流操作的全覆盖。
+
+[source,xml]
+.配置示例
+----
+# maven
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>test-starter</artifactId>
+</dependency>
+
+# config
+dew:
+  cluster: #所有集群操作都使用reids模拟
+    cache: redis
+    dist: redis
+    mq: redis
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+
+----

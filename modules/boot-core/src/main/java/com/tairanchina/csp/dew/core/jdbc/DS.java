@@ -4,6 +4,12 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.db2.parser.DB2StatementParser;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.phoenix.parser.PhoenixStatementParser;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
@@ -12,6 +18,7 @@ import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
+import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -527,14 +534,14 @@ public class DS {
     }
 
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {
-        Object[] result = packageSelect(sql, params);
+        Object[] result = packageSelect(sql, params, dialect.getDialectType());
         List<Map<String, Object>> list = jdbcTemplate.queryForList((String) result[0], (Object[]) result[1]);
         return entityClazz.isAssignableFrom(Map.class) ? (List<E>) list : list.stream().map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
     }
 
     public <E> Page<E> selectForPaging(Class<E> entityClazz, MethodConstruction method, String sql) {
-        Object[] result = packageSelect(sql, method.getParamsMap());
+        Object[] result = packageSelect(sql, method.getParamsMap(), dialect.getDialectType());
         String countSql = wrapCountSql((String) result[0]);
         String pagedSql = wrapPagingSql((String) result[0], method.getPageNumber(), method.getPageSize());
         long totalRecords = jdbcTemplate.queryForObject(countSql, (Object[]) result[1], Long.class);
@@ -544,7 +551,7 @@ public class DS {
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
     }
 
-    public static Object[] packageSelect(String sql, Map<String, Object> params) {
+    public static Object[] packageSelect(String sql, Map<String, Object> params, DialectType dialectType) {
         Matcher m = FIELD_PLACE_HOLDER_PATTERN.matcher(sql);
         List<String> matchRegexList = new ArrayList<>();
         //将#{...}抠出来
@@ -562,8 +569,30 @@ public class DS {
                 list.add(v);
             }
         }
-        SQLStatementParser parser = new SQLStatementParser(sql);
-        SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
+        SQLSelectStatement statement;
+        switch (dialectType) {
+            case H2:
+            case MYSQL:
+                statement = (SQLSelectStatement) new MySqlStatementParser(sql).parseSelect();
+                break;
+            case ORACLE:
+                statement = (SQLSelectStatement) new OracleStatementParser(sql).parseStatement();
+                break;
+            case POSTGRE:
+                statement = (SQLSelectStatement) new PGSQLStatementParser(sql).parseStatement();
+                break;
+            case SQLSERVER:
+                statement = (SQLSelectStatement) new SQLServerStatementParser(sql).parseStatement();
+                break;
+            case DB2:
+                statement = (SQLSelectStatement) new DB2StatementParser(sql).parseStatement();
+                break;
+            case PHOENIX:
+                statement = (SQLSelectStatement) new PhoenixStatementParser(sql).parseStatement();
+                break;
+            default:
+                statement = (SQLSelectStatement) new SQLStatementParser(sql).parseStatementList().get(0);
+        }
         if (sql.contains("#{")) {
             SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
             formatWhere(sqlExpr);

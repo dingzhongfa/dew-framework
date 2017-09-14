@@ -29,20 +29,18 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void subscribe(String topic, Consumer<String> consumer) {
-        new Thread(()->{
-            redisTemplate.execute((RedisCallback<Void>) connection -> {
-                connection.subscribe((message, pattern) -> {
-                    try {
-                        String msg = new String(message.getBody(), "UTF-8");
-                        logger.trace("[MQ] subscribe {}:{}", topic, msg);
-                        consumer.accept(msg);
-                    } catch (Exception e) {
-                        logger.error("Redis Subscribe error.", e);
-                    }
-                }, topic.getBytes());
-                return null;
-            });
-        }).start();
+        new Thread(() -> redisTemplate.execute((RedisCallback<Void>) connection -> {
+            connection.subscribe((message, pattern) -> {
+                try {
+                    String msg = new String(message.getBody(), "UTF-8");
+                    logger.trace("[MQ] subscribe {}:{}", topic, msg);
+                    consumer.accept(msg);
+                } catch (Exception e) {
+                    logger.error("Redis Subscribe error.", e);
+                }
+            }, topic.getBytes());
+            return null;
+        })).start();
     }
 
     @Override

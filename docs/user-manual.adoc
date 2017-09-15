@@ -1493,6 +1493,8 @@ public class OptInfo {
 
 TIP: `OptInfo` 为认证缓存信息的基类，使用时可以继承并扩展自己的属性。
 
+IMPORTANT: 使用 `OptInfo` 扩展类型时需要在工程启动时指定扩展类： `DewContext.setOptInfoClazz(<扩展类型>)` 。
+
 [source,java]
 .认证缓存示例
 ----

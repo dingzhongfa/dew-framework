@@ -104,19 +104,19 @@ public class ErrorController extends AbstractErrorController {
                                         .put("msg", cv.getMessage()))
                         );
                 message += DETAIL_FLAG + $.json.toJsonString(errorExt);
-            }
-        } else {
-            if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
-                ArrayNode errorExt = $.json.createArrayNode();
-                Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
-                while (errorExtIt.hasNext()) {
-                    JsonNode json = errorExtIt.next();
-                    errorExt.add($.json.createObjectNode()
-                            .put("field", json.get("field").asText(""))
-                            .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
-                            .put("msg", json.get("defaultMessage").asText("")));
+            } else {
+                if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
+                    ArrayNode errorExt = $.json.createArrayNode();
+                    Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
+                    while (errorExtIt.hasNext()) {
+                        JsonNode json = errorExtIt.next();
+                        errorExt.add($.json.createObjectNode()
+                                .put("field", json.get("field").asText(""))
+                                .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
+                                .put("msg", json.get("defaultMessage").asText("")));
+                    }
+                    message += DETAIL_FLAG + $.json.toJsonString(errorExt);
                 }
-                message += DETAIL_FLAG + $.json.toJsonString(errorExt);
             }
         }
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);

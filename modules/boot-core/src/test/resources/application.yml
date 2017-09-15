@@ -14,6 +14,10 @@ dew:
     mq: rabbit
   dao:
     base-package: com.tairanchina.csp.dew.core
+  security:
+    token-flag: _token_
+    token-in-header: true
+    token-hash: false
 #  security:
 #   includeServices: ["a-serv"]
 

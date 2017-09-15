@@ -1,10 +1,13 @@
-package com.tairanchina.csp.dew.example.auth;
+package com.tairanchina.csp.dew.core.test.auth;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
-import com.tairanchina.csp.dew.example.auth.dto.OptInfoExt;
+import com.tairanchina.csp.dew.core.logger.DewLogger;
+import com.tairanchina.csp.dew.core.test.auth.dto.OptInfoExt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +20,9 @@ import java.util.Optional;
 public class AuthExampleController {
 
     private static Map<String, User> MOCK_USER_CONTAINER = new HashMap<>();
+
+    private Logger dewLogger = DewLogger.getLogger(AuthExampleController.class);
+    private Logger oriLogger = LoggerFactory.getLogger(AuthExampleController.class);
 
     @PostConstruct
     public void init(){
@@ -31,6 +37,8 @@ public class AuthExampleController {
         // 实际注册处理
         user.setId($.field.createUUID());
         MOCK_USER_CONTAINER.put(user.getId(), user);
+        dewLogger.info("dewLogger:        TEST");
+        oriLogger.info("oriLogger:        TEST");
         return Resp.success(null);
     }
 
@@ -38,9 +46,12 @@ public class AuthExampleController {
      * 模拟用户登录
      */
     @PostMapping(value = "auth/login")
-    public Resp<String> login(@RequestBody LoginDTO loginDTO) {
+    public Resp<String> login(@RequestBody LoginDTO loginDTO) throws Exception {
         // 实际登录处理
         User user = MOCK_USER_CONTAINER.values().stream().filter(u -> u.getIdCard().equals(loginDTO.getIdCard())).findFirst().get();
+        if (!loginDTO.getPassword().equals(user.getPassword())) {
+            throw Dew.E.e("ASXXX0", new Exception("密码错误"));
+        }
         String token = $.field.createUUID();
         Dew.Auth.setOptInfo(new OptInfoExt()
                 .setIdCard(user.getIdCard())
@@ -48,6 +59,8 @@ public class AuthExampleController {
                 .setToken(token)
                 .setName(user.getName())
                 .setMobile(user.getPhone()));
+        dewLogger.info("dewLogger:        TEST");
+        oriLogger.info("oriLogger:        TEST");
         return Resp.success(token);
     }
 
@@ -55,15 +68,13 @@ public class AuthExampleController {
      * 模拟业务操作
      */
     @GetMapping(value = "business/someopt")
-    public Resp<Void> someOpt() {
+    public Resp<? extends Object> someOpt() {
+
         // 获取登录用户信息
         Optional<OptInfoExt> optInfoExtOpt = Dew.Auth.getOptInfo();
-        if (!optInfoExtOpt.isPresent()) {
-            return Resp.unAuthorized("用户认证错误");
-        }
-        // 登录用户的信息
-        optInfoExtOpt.get();
-        return Resp.success(null);
+        dewLogger.info("dewLogger:        TEST");
+        oriLogger.info("oriLogger:        TEST");
+        return optInfoExtOpt.<Resp<? extends Object>>map(Resp::success).orElseGet(() -> Resp.unAuthorized("用户认证错误"));
     }
 
     /**
@@ -71,6 +82,8 @@ public class AuthExampleController {
      */
     @DeleteMapping(value = "auth/logout")
     public Resp<Void> logout() {
+        dewLogger.info("dewLogger:        TEST");
+        oriLogger.info("oriLogger:        TEST");
         // 实际注册处理
         Dew.Auth.removeOptInfo();
         return Resp.success(null);

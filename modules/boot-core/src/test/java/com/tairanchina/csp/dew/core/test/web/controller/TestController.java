@@ -1,9 +1,9 @@
-package com.tairanchina.csp.dew.core.test.postman;
+package com.tairanchina.csp.dew.core.test.web.controller;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.test.postman.AuthException;
+import com.tairanchina.csp.dew.core.test.web.AuthException;
 import com.tairanchina.csp.dew.core.validation.CreateGroup;
 import com.tairanchina.csp.dew.core.validation.IdNumber;
 import com.tairanchina.csp.dew.core.validation.Phone;
@@ -60,6 +60,7 @@ public class TestController {
     public String t4(@RequestParam String q) throws IOException {
         throw Dew.E.e("A000", new IOException("io error"), StandardCode.UNAUTHORIZED);
     }
+
 
     @PostMapping(value = "valid-create")
     public String validCreate(@Validated(CreateGroup.class) @RequestBody User user) {

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -250,36 +249,6 @@ public class JDBCTest {
         Assert.assertTrue(temp == 0);
     }
 
-    @Transactional
-    public void testPool() {
-        Boolean[] hasFinish={false};
-        Dew.ds().jdbc().queryForList("select * from basic_entity").size();
-        new Thread(() -> {
-            Dew.ds().jdbc().queryForList("select * from basic_entity").size();
-            Assert.assertTrue(hasFinish[0]);
-        }).start();
-        try {
-            Thread.sleep(1);
-            hasFinish[0]=true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
-    @Transactional("test2TransactionManager")
-    public void testPoolA() {
-        Boolean[] hasFinish={false};
-        Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size();
-        new Thread(() -> {
-            Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size();
-            Assert.assertTrue(hasFinish[0]);
-        }).start();
-        try {
-            Thread.sleep(1);
-            hasFinish[0]=true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

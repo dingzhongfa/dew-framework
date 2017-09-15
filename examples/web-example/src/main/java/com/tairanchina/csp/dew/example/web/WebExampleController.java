@@ -31,8 +31,8 @@ public class WebExampleController {
      * 数据验证示例，针对 CreateGroup 这一标识组的 bean认证
      */
     @PostMapping(value = "valid-create")
-    public String validCreate(@Validated(CreateGroup.class) @RequestBody User user) {
-        return "";
+    public User validCreate(@Validated(CreateGroup.class) @RequestBody User user) {
+        return user;
     }
 
     /**

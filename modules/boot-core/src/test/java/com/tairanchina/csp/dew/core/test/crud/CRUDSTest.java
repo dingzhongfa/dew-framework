@@ -240,7 +240,7 @@ public class CRUDSTest {
 
     private void initialize() throws Exception {
         // ddl
-        // Dew.ds.jdbc().execute("DROP TABLE t_test_crud_s_entity");
+        Dew.ds().jdbc().execute("DROP TABLE if EXISTS test_select_entity");
         Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +

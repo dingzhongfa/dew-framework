@@ -13,6 +13,11 @@ import java.util.Map;
 
 public interface TestInterfaceDao extends DewDao<Integer,TestSelectEntity>{
 
+    @Override
+    default String ds() {
+        return "other";
+    }
+
     @Select(value = "select * from `test_select_entity` where field_a= #{ fieldA }", entityClass = TestSelectEntity.class)
     Page<TestSelectEntity> queryByCustomPaging(@ModelParam TestSelectEntity model, @Param("pageNumber") Long pageNumber, @Param("pageSize") Integer pageSize);
 

@@ -523,7 +523,9 @@ public class DS {
                 }
             } else {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
-                    $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), entry.getValue());
+                    if (entityClassInfo.columnRel.containsKey(entry.getKey().toLowerCase())) {
+                        $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), entry.getValue());
+                    }
                 }
             }
             return entity;
@@ -641,7 +643,6 @@ public class DS {
                 entityClassInfo.columns.forEach((filedName, column) -> addList.add(new SQLSelectItem(new SQLIdentifierExpr(column.columnName))));
             }
         }
-
     }
 
     private static void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr expr_owner, EntityContainer.EntityClassInfo.Column column) {

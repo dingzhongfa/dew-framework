@@ -618,8 +618,8 @@ assert pet.getType().equals("狗");
 ----
 // 在配置文件中添加Dao的路径
 Dew:
-  dao:
-    basePackage: com.tairanchina.csp.dew.example.jdbc.dao
+  jdbc:
+    base-packages: ["com.tairanchina.csp.dew.example.jdbc.jdbc"]
 
 // 添加CustomerDao
 public interface CustomerDao extends DewDao<In, Customer> {
@@ -629,13 +629,13 @@ public interface CustomerDao extends DewDao<In, Customer> {
 private PetDao petDao;
 
 // =============== Dao 示例 ===============
-// insert by dao
+// insert by jdbc
 pet = new Pet();
 pet.setType("猫");
 pet.setPrice(new BigDecimal(2000));
 pet.setEnabled(true);
 id = petDao.insert(pet);
-// getById by dao
+// getById by jdbc
 pet = petDao.getById(id);
 assert pet.getType().equals("猫");
 ----

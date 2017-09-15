@@ -118,11 +118,11 @@ dew:
     desc: 宠物商店
     web-site:
     doc:
-      basePackage: your.group.controller # API文档路径
+      base-package: your.group.controller # API文档路径
   cluster:
     cache: redis # 指定集群缓存实现为redis
-  dao:
-    basePackage: your.group.dao
+  jdbc:
+    base-packages: ["your.group.jdbc"]
 ----
 
 * 添加工程启动类
@@ -268,7 +268,7 @@ public class Order {
 . `@EnabledColumn` 标识状态字段，用于软删除操作
 ====
 
-* 添加 `DAO` 到 `src/main/java/your/group/dao` 下，共3个接口：
+* 添加 `DAO` 到 `src/main/java/your/group/jdbc` 下，共3个接口：
 
 [source,java]
 ----

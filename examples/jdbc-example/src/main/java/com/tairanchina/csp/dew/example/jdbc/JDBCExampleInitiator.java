@@ -58,7 +58,7 @@ public class JDBCExampleInitiator {
         pet = Dew.ds().getById(id, Pet.class);
         assert pet.getType().equals("狗");
 
-        // =============== Dao 示例 ===============
+        // =============== jdbc 示例 ===============
         // insert by dao
         pet = new Pet();
         pet.setType("猫");

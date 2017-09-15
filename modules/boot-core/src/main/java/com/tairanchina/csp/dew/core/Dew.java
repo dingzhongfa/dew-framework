@@ -20,14 +20,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -93,11 +91,11 @@ public class Dew {
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
         Info.name = applicationName;
         // JDBC Scan
-        if (StringUtils.hasLength(Dew.dewConfig.getDao().getBasePackage())) {
+        if (!Dew.dewConfig.getJdbc().getBasePackages().isEmpty()) {
             ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
             scanner.setResourceLoader(Dew.applicationContext);
             scanner.registerFilters();
-            scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+            scanner.scan(Dew.dewConfig.getJdbc().getBasePackages().toArray(new String[]{}));
         }
     }
 

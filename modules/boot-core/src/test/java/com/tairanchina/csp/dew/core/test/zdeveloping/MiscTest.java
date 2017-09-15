@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DS;
+import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class MiscTest {
             put("a", "1");
             put("c", "3");
             put("ee", "5");
-        }});
+        }}, DialectType.H2);
         System.out.println(result);
     }
 

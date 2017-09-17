@@ -29,8 +29,6 @@ public class JDBCTest {
     private JdbcTemplate jdbcTemplate2;
 
 
-
-
     /**
      * 测试没有配置多数据库的情况
      * 在配置中注释掉multi-datasources:
@@ -201,7 +199,8 @@ public class JDBCTest {
         // selectForList
         Map<String, Object> params = new HashMap<>();
         params.put("code", "1");
-        Dew.ds().selectForList(fullEntity.getClass(), params, "select t.* from full_entity t where t.code = #{code}");
+        Dew.ds().selectForList(fullEntity.getClass(), params,
+                "select f.*, b.* from full_entity f LEFT JOIN basic_entity b ON f.field_a = b.field_a where f.code = #{code}");
     }
 
     private void testTx(){

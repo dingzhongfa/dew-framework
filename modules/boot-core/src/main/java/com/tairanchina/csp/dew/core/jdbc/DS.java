@@ -610,6 +610,9 @@ public class DS {
         return new Object[]{sql, list.toArray()};
     }
 
+    /**
+     * 格式化select中的 * 为对应table 字段
+     */
     private static void formatFrom(SQLTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
         if (sqlTableSource == null) {
             return;

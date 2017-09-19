@@ -11,3 +11,18 @@ eureka:
       defaultZone: http://registry:123456@localhost:10000/eureka
 
 management.security.enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 请按实际情况设置配置
+            timeoutInMilliseconds: 10000
+
+ribbon:
+  ConnectTimeout: 3000
+  # 请按实际情况配置
+  ReadTimeout: 10000
+

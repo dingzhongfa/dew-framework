@@ -89,4 +89,11 @@ public interface ClusterDistLock {
      */
     void delete();
 
+    /**
+     * 判断是否有锁
+     *
+     * @return
+     */
+    boolean isLocked();
+
 }

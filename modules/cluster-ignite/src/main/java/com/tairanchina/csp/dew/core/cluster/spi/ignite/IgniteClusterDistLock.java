@@ -77,11 +77,11 @@ public class IgniteClusterDistLock implements ClusterDistLock {
 
     @Override
     public boolean unLock() {
-        try{
+        try {
             lock.unlock();
             return true;
-        }catch (IllegalStateException e){
-            logger.error("Ignite Unlock error.",e);
+        } catch (IllegalStateException e) {
+            logger.error("Ignite Unlock error.", e);
             return false;
         }
     }
@@ -89,5 +89,10 @@ public class IgniteClusterDistLock implements ClusterDistLock {
     @Override
     public void delete() {
         ignite.destroyCache(key);
+    }
+
+    @Override
+    public boolean isLocked() {
+        return tryLock();
     }
 }

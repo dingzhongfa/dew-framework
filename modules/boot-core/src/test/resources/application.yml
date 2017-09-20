@@ -10,8 +10,8 @@ dew:
         message: 认证错误
   cluster:
     cache: redis
-    dist: redis
-    mq: redis
+    dist: ignite
+    mq: ignite
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core"]
   security:
@@ -22,6 +22,8 @@ dew:
 #   includeServices: ["a-serv"]
 
 spring:
+  cache:
+    type: redis
   application:
     name: core-test
   redis:

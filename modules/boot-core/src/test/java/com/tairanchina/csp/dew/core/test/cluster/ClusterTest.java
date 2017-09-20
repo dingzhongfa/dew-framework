@@ -34,7 +34,6 @@ public class ClusterTest {
         testDistLockWithFun();
         testDifferentTreadLock();
         testUnLock();
-        testWaitLock();
         testConnection();
         testDistMap();
         // MQ Test
@@ -183,7 +182,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testDistLock() throws InterruptedException {
+    private void testDistLock() throws InterruptedException {
         //lock
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock");
         lock.delete();
@@ -270,7 +269,7 @@ public class ClusterTest {
         t4.join();
     }
 
-    void testDistLockWithFun() throws Exception {
+    private void testDistLockWithFun() throws Exception {
 
         ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
         clusterDistLock.delete();
@@ -280,13 +279,12 @@ public class ClusterTest {
         // 可重入
         Assert.assertTrue(flag2);
         new Thread(() -> {
-            boolean flag3 = clusterDistLock.tryLock();
-            Assert.assertFalse(flag3);
-            clusterDistLock.unLock();
+            Assert.assertFalse(clusterDistLock.tryLock());
+            Assert.assertFalse(clusterDistLock.unLock());
         }).start();
         VoidProcessFun voidProcessFun = () -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(200);
                 Assert.assertTrue(clusterDistLock.tryLock());
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -296,8 +294,8 @@ public class ClusterTest {
         Assert.assertTrue(clusterDistLock.tryLock());
         clusterDistLock.unLock();
         clusterDistLock.tryLockWithFun(voidProcessFun);
-        clusterDistLock.tryLockWithFun(1000, 10000, voidProcessFun);
-        clusterDistLock.tryLockWithFun(8000, voidProcessFun);
+        clusterDistLock.tryLockWithFun(100, 1000, voidProcessFun);
+        clusterDistLock.tryLockWithFun(800, voidProcessFun);
     }
 
     /**
@@ -306,7 +304,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testMQTopic() throws InterruptedException {
+    private void testMQTopic() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(2);
         // pub-sub
         new Thread(() -> {
@@ -347,7 +345,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testMQReq() throws InterruptedException {
+    private void testMQReq() throws InterruptedException {
         // req-resp
         List<String> conflictFlag = new ArrayList<>();
         new Thread(() -> {
@@ -409,7 +407,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testDifferentTreadLock() throws InterruptedException {
+    private void testDifferentTreadLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_B");
         Boolean temp = lock.tryLock(0, 100000);
         logger.info("*********" + temp);
@@ -457,13 +455,13 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testUnLock() throws InterruptedException {
+    private void testUnLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_D");
         //测试还没有加锁前去解锁
         Boolean temp = lock.unLock();
         Assert.assertFalse(temp);
         //加锁
-        temp = lock.tryLock(0, 200000);
+        temp = lock.tryLock(0, 2000);
         Assert.assertTrue(temp);
         Thread thread = new Thread(() -> {
             ClusterDistLock lockChild = Dew.cluster.dist.lock("test_lock_D");
@@ -479,31 +477,16 @@ public class ClusterTest {
     }
 
     /**
-     * 测试等待获取锁【同一个线程】
-     *
-     * @throws InterruptedException
-     */
-    void testWaitLock() throws InterruptedException {
-        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_E");
-        Boolean temp = lock.tryLock(0, 10000);
-        Assert.assertTrue(temp);
-        temp = lock.tryLock(3000, 10000);
-        Assert.assertFalse(temp);
-        temp = lock.tryLock(7001, 10000);
-        Assert.assertTrue(temp);
-    }
-
-    /**
      * 测试连接是否被关闭，连接池默认设置最大连接数1，设置两次值
      *
      * @throws InterruptedException
      */
-    void testConnection() throws InterruptedException {
+    private void testConnection() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_DA");
-        Boolean temp = lock.tryLock(0, 100000);
+        Boolean temp = lock.tryLock(0, 1000);
         Assert.assertTrue(temp);
         lock = Dew.cluster.dist.lock("test_lock_DE");
-        temp = lock.tryLock(0, 100000);
+        temp = lock.tryLock(0, 1000);
         Assert.assertTrue(temp);
     }
 

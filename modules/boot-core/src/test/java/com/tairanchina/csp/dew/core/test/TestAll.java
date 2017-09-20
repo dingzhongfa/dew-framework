@@ -16,12 +16,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.net.URL;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ComponentScan(basePackageClasses = {Dew.class, TestAll.class})
 public class TestAll {
+
+    public static final String  URL = "http://127.0.0.1:8080/";
 
     @Resource
     private ClusterTest clusterTest;

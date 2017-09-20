@@ -4,6 +4,7 @@ import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.test.TestAll;
 import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import com.tairanchina.csp.dew.core.test.crud.service.CRUDSTestService;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
@@ -18,7 +19,7 @@ import java.util.List;
 @Component
 public class CRUDSTest {
 
-    private String url = "http://127.0.0.1:8080/crud";
+    private String url = TestAll.URL+"crud";
 
     private long pageNumber = 1;
     private long pageSize = 10;

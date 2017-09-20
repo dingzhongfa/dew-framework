@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core.test.web;
 
 import com.ecfront.dew.common.$;
+import com.tairanchina.csp.dew.core.test.TestAll;
 import com.tairanchina.csp.dew.core.test.web.controller.TestController;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Component
 public class WebTest {
 
-    private String URL = "http://127.0.0.1:8080/test/";
+    private String URL = TestAll.URL + "test/";
 
     private Logger logger = LoggerFactory.getLogger(WebTest.class);
 

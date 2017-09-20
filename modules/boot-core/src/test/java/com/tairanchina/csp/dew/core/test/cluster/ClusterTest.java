@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 @Component
@@ -25,7 +26,9 @@ public class ClusterTest {
     private Logger logger = LoggerFactory.getLogger(ClusterTest.class);
 
     public void testAll() throws Exception {
+        // Cache Test
         testCache();
+        // Dist Test
         testDistMapExp();
         testDistLock();
         testDistLockWithFun();
@@ -35,9 +38,7 @@ public class ClusterTest {
         testWaitLock();
         testConnection();
         testDistMap();
-    }
-
-    public void testMQ() throws Exception {
+        // MQ Test
         testMQReq();
         testMQTopic();
     }
@@ -47,7 +48,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testCache() throws InterruptedException {
+    private void testCache() throws InterruptedException {
         Assert.assertTrue(true);
         Dew.cluster.cache.flushdb();
         Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
@@ -118,7 +119,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testDistMap() throws InterruptedException {
+    private void testDistMap() throws InterruptedException {
         // map
         ClusterDistMap<TestMapObj> mapObj = Dew.cluster.dist.map("test_obj_map", TestMapObj.class);
         mapObj.regEntryAddedEvent(entryEvent ->
@@ -140,9 +141,20 @@ public class ClusterTest {
         mapObj.clear();
         ClusterDistMap<Long> map = Dew.cluster.dist.map("test_map", Long.class);
         map.clear();
-        Dew.Timer.periodic(1, () -> map.put("a" + System.currentTimeMillis(), System.currentTimeMillis()));
-        Dew.Timer.periodic(10, () -> map.getAll().forEach((key, value) -> logger.info(">>a:" + value)));
-        Thread.sleep(15000);
+        Map<String, Long> checkMap = new ConcurrentHashMap<>();
+        CountDownLatch cdl=new CountDownLatch(1);
+        Dew.Timer.periodic(1, () -> {
+            long t=System.currentTimeMillis();
+            map.put("a" + t, t);
+            checkMap.put("a" + t, t);
+        });
+        Dew.Timer.periodic(5, () -> {
+            Map<String, Long> m = map.getAll();
+            Assert.assertEquals(checkMap.size(),m.size());
+            Assert.assertFalse(checkMap.entrySet().stream().anyMatch(entry -> !m.get(entry.getKey()).equals(entry.getValue())));
+            cdl.countDown();
+        });
+        cdl.await();
     }
 
     /**
@@ -150,7 +162,7 @@ public class ClusterTest {
      *
      * @throws InterruptedException
      */
-    void testDistMapExp() throws InterruptedException {
+    private void testDistMapExp() throws InterruptedException {
         ClusterDistMap<TestMapObj> mapObj = Dew.cluster.dist.map("test_obj_map_exp", TestMapObj.class);
         TestMapObj obj = new TestMapObj();
         obj.setA("测试");
@@ -182,7 +194,8 @@ public class ClusterTest {
             try {
                 Thread.sleep(500);
             } catch (Exception e) {
-
+                logger.error(e.getMessage());
+                Assert.assertTrue(false);
             } finally {
                 logger.info("UnLock1 > " + Thread.currentThread().getId());
                 lock.unLock();
@@ -195,47 +208,61 @@ public class ClusterTest {
             try {
                 Assert.assertTrue(lockLocal.tryLock());
                 logger.info("Lock2 > " + Thread.currentThread().getId());
-                Thread.sleep(10000);
+                Thread.sleep(2000);
             } catch (Exception e) {
-                logger.info(e.getMessage());
+                logger.error(e.getMessage());
+                Assert.assertTrue(false);
             } finally {
                 lockLocal.unLock();
                 logger.info("UnLock2 > " + Thread.currentThread().getId());
             }
         });
         t2.start();
-        Thread.sleep(1000);
+        Thread.sleep(100);
         Thread t3 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
+            int hitTimes = 0;
             try {
                 while (!lockLocal.tryLock()) {
                     logger.info("waiting 1 unlock");
+                    hitTimes++;
                     Thread.sleep(100);
                 }
                 logger.info("Lock3 > " + Thread.currentThread().getId());
             } catch (Exception e) {
+                logger.error(e.getMessage());
+                Assert.assertTrue(false);
             } finally {
                 logger.info("UnLock3 > " + Thread.currentThread().getId());
                 lockLocal.unLock();
+                if (hitTimes < 15) {
+                    Assert.assertTrue(false);
+                }
             }
         });
         t3.start();
         Thread t4 = new Thread(() -> {
             ClusterDistLock lockLocal = Dew.cluster.dist.lock("test_lock");
             long start = 1;
+            int hitTimes = 0;
             try {
-                while (!lockLocal.tryLock(2000, 20000)) {
+                while (!lockLocal.tryLock(1000, 2000)) {
                     logger.info("waiting 2 unlock");
-                    Thread.sleep(100);
+                    hitTimes++;
                 }
                 start = System.currentTimeMillis();
                 logger.info("Lock4 > " + System.currentTimeMillis() + "********");
                 logger.info("Lock4 > " + Thread.currentThread().getId());
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                Assert.assertTrue(false);
             } finally {
                 logger.info("UnLock4 > " + System.currentTimeMillis() + "********");
                 logger.info("Lock4持续时间" + (System.currentTimeMillis() - start));
                 lockLocal.unLock();
+                if (hitTimes != 1) {
+                    Assert.assertTrue(false);
+                }
             }
         });
         t4.start();
@@ -248,7 +275,7 @@ public class ClusterTest {
         ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
         boolean flag = clusterDistLock.tryLock();
         boolean flag2 = clusterDistLock.tryLock();
-        if (flag==true){
+        if (flag == true) {
             clusterDistLock.unLock();
         }
         VoidProcessFun voidProcessFun = () -> {

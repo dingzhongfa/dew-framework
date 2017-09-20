@@ -10,7 +10,7 @@ dew:
         message: 认证错误
   cluster:
     cache: redis
-    dist: hazelcast
+    dist: redis
     mq: redis
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core"]

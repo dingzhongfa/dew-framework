@@ -2,6 +2,8 @@ package com.tairanchina.csp.dew.core.test.auth;
 
 
 import com.ecfront.dew.common.$;
+import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.test.auth.dto.OptInfoExt;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,17 +29,23 @@ public class AuthTest {
         AuthExampleController.LoginDTO loginDTO = new AuthExampleController.LoginDTO();
         loginDTO.setIdCard(user.getIdCard());
         loginDTO.setPassword(user.getPassword());
-        String loginRes = $.http.post(URL + "auth/login", loginDTO);
-        String token = $.json.toJson(loginRes).get("body").asText();
-        logger.info(loginRes);
-        Assert.assertEquals("200", $.json.toJson(loginRes).get("code").asText());
-        String businRes = $.http.get(URL + "business/someopt", new HashMap<String, String>() {{
-                put("_token_", token);
+        String loginRes1 = $.http.post(URL + "auth/login", loginDTO);
+        String loginRes2 = $.http.post(URL + "auth/login", loginDTO);
+        String token1 = $.json.toJson(loginRes1).get("body").asText();
+        String token2 = $.json.toJson(loginRes2).get("body").asText();
+        Assert.assertEquals("200", $.json.toJson(loginRes1).get("code").asText());
+        Assert.assertEquals("200", $.json.toJson(loginRes2).get("code").asText());
+        String businRes1 = $.http.get(URL + "business/someopt", new HashMap<String, String>() {{
+                put("_token_", token1);
         }});
-        logger.info(businRes);
-        Assert.assertEquals("200", $.json.toJson(businRes).get("code").asText());
+
+        logger.info("businRes1:   " +businRes1);
+        Assert.assertEquals("200", $.json.toJson(businRes1).get("code").asText());
+        OptInfoExt optInfoExt = (OptInfoExt) Dew.Auth.getOptInfo(token2).get();
+        OptInfoExt optInfoExt2 = (OptInfoExt)Dew.Auth.getOptInfoByAccCode(optInfoExt.getAccountCode()).get();
+        Dew.Auth.removeOptInfo(optInfoExt2.getToken());
         String logoutRes = $.http.delete(URL + "auth/logout",new HashMap<String ,String>(){{
-            put("_token_", token);
+            put("_token_", token1);
         }});
         Assert.assertEquals("200", $.json.toJson(logoutRes).get("code").asText());
     }

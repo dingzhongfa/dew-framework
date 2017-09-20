@@ -15,6 +15,9 @@
     <name>Dew Thrift Starter</name>
     <description>Dew Thrift Starter</description>
 
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

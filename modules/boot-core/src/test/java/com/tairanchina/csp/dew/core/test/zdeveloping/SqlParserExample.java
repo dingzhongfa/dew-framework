@@ -6,7 +6,9 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import org.junit.Assert;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ public class SqlParserExample {
 
     public static void main(String[] args) {
 
+        Assert.assertTrue(true);
 
         String sql = "SELECT *\n" +
                 "FROM app_version a\n" +
@@ -112,8 +115,7 @@ public class SqlParserExample {
                 "\tGROUP BY\n" +
                 "\t\tprovince\n" +
                 ") AS t3 ON tt.province = t3.province";
-        SQLStatementParser parser = new SQLStatementParser(sql5);
-        SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
+        SQLSelectStatement statement = (SQLSelectStatement) new MySqlStatementParser(sql3).parseSelect();
         SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
         SQLTableSource sqlTableSource = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getFrom();
         List<SQLSelectItem> selectList = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getSelectList();

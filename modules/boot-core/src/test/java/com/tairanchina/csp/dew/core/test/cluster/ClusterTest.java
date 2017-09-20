@@ -7,11 +7,11 @@ import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
 import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;
-import com.tairanchina.csp.dew.core.cluster.spi.redis.RedisClusterDistLock;
 import com.tairanchina.csp.dew.core.test.cluster.entity.TestMapObj;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,9 +19,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+@Component
 public class ClusterTest {
 
     private Logger logger = LoggerFactory.getLogger(ClusterTest.class);
+
+    public void testAll() throws Exception {
+        testCache();
+        testDistMapExp();
+        testDistLock();
+        testDistLockWithFun();
+        testSameThreadLock();
+        testDiffentTreadLock();
+        testUnLock();
+        testWaitLock();
+        testConnection();
+        testDistMap();
+    }
+
+    public void testMQ() throws Exception {
+        testMQReq();
+        testMQTopic();
+    }
 
     /**
      * redis测试通过
@@ -226,21 +245,26 @@ public class ClusterTest {
     }
 
     void testDistLockWithFun() throws Exception {
-        RedisClusterDistLock redisClusterDistLock = (RedisClusterDistLock) Dew.cluster.dist.lock("test_lock_fun");
+        ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
+        boolean flag = clusterDistLock.tryLock();
+        boolean flag2 = clusterDistLock.tryLock();
+        if (flag==true){
+            clusterDistLock.unLock();
+        }
         VoidProcessFun voidProcessFun = () -> {
             try {
                 Thread.sleep(2000);
-                Assert.assertFalse(redisClusterDistLock.tryLock());
+                Assert.assertFalse(clusterDistLock.tryLock());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         };
-        redisClusterDistLock.lockWithFun(voidProcessFun);
-        Assert.assertTrue(redisClusterDistLock.tryLock());
-        redisClusterDistLock.unLock();
-        redisClusterDistLock.tryLockWithFun(voidProcessFun);
-        redisClusterDistLock.tryLockWithFun(1000, 10000, voidProcessFun);
-        redisClusterDistLock.tryLockWithFun(8000, voidProcessFun);
+        clusterDistLock.lockWithFun(voidProcessFun);
+        Assert.assertTrue(clusterDistLock.tryLock());
+        clusterDistLock.unLock();
+        clusterDistLock.tryLockWithFun(voidProcessFun);
+        clusterDistLock.tryLockWithFun(1000, 10000, voidProcessFun);
+        clusterDistLock.tryLockWithFun(8000, voidProcessFun);
     }
 
     /**
@@ -257,6 +281,7 @@ public class ClusterTest {
                 Assert.assertTrue(message.contains("msg"));
                 logger.info("1 pub_sub>>" + message);
             });
+            logger.info("另起线程");
             countDownLatch.countDown();
         }).start();
         new Thread(() -> {
@@ -273,7 +298,6 @@ public class ClusterTest {
         Thread.sleep(3000);
         logger.info("测试2     " + Thread.activeCount());
         for (int i = 0; i < 10; i++) {
-
             logger.info(Thread.activeCount() + "");
             logger.info("单位开始");
             Thread.sleep(1000);

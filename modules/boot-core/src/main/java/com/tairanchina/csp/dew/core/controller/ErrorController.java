@@ -95,7 +95,7 @@ public class ErrorController extends AbstractErrorController {
         if (specialError != null) {
             if (specialError instanceof ConstraintViolationException) {
                 ArrayNode errorExt = $.json.createArrayNode();
-                ((ConstraintViolationException) specialError).getConstraintViolations().stream()
+                ((ConstraintViolationException) specialError).getConstraintViolations()
                         .forEach(cv ->
                                 errorExt.add($.json.createObjectNode()
                                         .put("field", "")

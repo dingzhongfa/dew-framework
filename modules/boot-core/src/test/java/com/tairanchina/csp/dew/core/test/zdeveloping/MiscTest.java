@@ -17,14 +17,12 @@ import java.util.stream.Collectors;
 
 public class MiscTest {
 
-    @Test
     public void testReplaceAll() {
         String str = "select * from t_test_crud_s_entity where 1 =1 and  field_a= #{ fieldA } and field_c = #{fc} order by code desc";
         str = str.replaceAll("((and)|(or)|(AND)|(OR))(\\s*\\S*)*\\#(\\s*\\S*)*\\}", "");
         System.out.println(str);
     }
 
-    @Test
     public void testSqlReplace() {
         String sql = "select * from table where" +
                 " id = #{b} and ( name1= #{a} or name2 = #{c} or name3 = #{d} ) " +
@@ -37,7 +35,6 @@ public class MiscTest {
         System.out.println(result);
     }
 
-    @Test
     public void testSqlParser() {
         String sql = "select * from table";
         SQLStatementParser parser = new SQLStatementParser(sql);
@@ -77,7 +74,6 @@ public class MiscTest {
         System.out.println(statement.toString());
     }
 
-    @Test
     public void testError() {
         Map<String, String> a = new HashMap<>();
         a.put("1", "1");
@@ -88,7 +84,6 @@ public class MiscTest {
     }
 
 
-    @Test
     public void testInvokeAll() throws InterruptedException {
         int taskNum = 1000;
         int tempNum = taskNum;

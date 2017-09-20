@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -31,7 +32,8 @@ public class HazelcastAdapter {
         clientConfig.getNetworkConfig().setConnectionAttemptLimit(hazelcastConfig.getConnectionAttemptLimit());
         clientConfig.getNetworkConfig().setConnectionAttemptPeriod(hazelcastConfig.getConnectionAttemptPeriod());
         hazelcastConfig.getAddresses().forEach(i -> clientConfig.getNetworkConfig().addAddress(i));
-        hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
+        // hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
+        hazelcastInstance = Hazelcast.newHazelcastInstance();
         active=true;
     }
 

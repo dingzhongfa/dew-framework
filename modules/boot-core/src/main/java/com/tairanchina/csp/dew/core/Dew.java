@@ -107,7 +107,7 @@ public class Dew {
 
         public static final String TOKEN_ID_REL_FLAG = "dew:auth:token:id:rel:";
 
-        public static final String MQ_AUTH_TENANT_ADD = "dew.auth.tenant.add";
+        /*public static final String MQ_AUTH_TENANT_ADD = "dew.auth.tenant.add";
         public static final String MQ_AUTH_TENANT_REMOVE = "dew.auth.tenant.remove";
         public static final String MQ_AUTH_RESOURCE_ADD = "dew.auth.resource.add";
         public static final String MQ_AUTH_RESOURCE_REMOVE = "dew.auth.resource.remove";
@@ -116,7 +116,7 @@ public class Dew {
         public static final String MQ_AUTH_ACCOUNT_ADD = "dew.auth.account.add";
         public static final String MQ_AUTH_ACCOUNT_REMOVE = "dew.auth.account.remove";
 
-        public static final String MQ_AUTH_REFRESH = "dew.auth.refresh";
+        public static final String MQ_AUTH_REFRESH = "dew.auth.refresh";*/
 
     }
 

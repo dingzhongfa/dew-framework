@@ -272,7 +272,9 @@ public class ClusterTest {
     }
 
     void testDistLockWithFun() throws Exception {
+
         ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
+        clusterDistLock.delete();
         boolean flag = clusterDistLock.tryLock();
         boolean flag2 = clusterDistLock.tryLock();
         if (flag == true) {

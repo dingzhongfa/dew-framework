@@ -16,7 +16,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.net.URL;
 
 
 @RunWith(SpringRunner.class)
@@ -58,7 +57,6 @@ public class TestAll {
     public void testCluster() throws Exception {
         clusterTest.testAll();
     }
-
 
     /**
      *

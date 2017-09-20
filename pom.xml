@@ -30,6 +30,7 @@
         <module>components/config</module>
         <module>components/gateway</module>
         <module>components/monitor</module>
+        <module>examples/performance-test-service</module>
         <module>examples/guide-petstore</module>
         <module>examples/bone-example</module>
         <module>examples/web-example</module>

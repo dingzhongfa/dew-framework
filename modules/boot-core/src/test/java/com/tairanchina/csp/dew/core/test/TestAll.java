@@ -57,15 +57,6 @@ public class TestAll {
     }
 
     /**
-     * MQ测试
-     * @throws Exception
-     */
-    @Test
-    public void testMQ() throws Exception {
-        clusterTest.testMQ();
-    }
-
-    /**
      *
      * @throws Exception
      */

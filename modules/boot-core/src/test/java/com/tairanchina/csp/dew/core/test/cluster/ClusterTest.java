@@ -142,15 +142,15 @@ public class ClusterTest {
         ClusterDistMap<Long> map = Dew.cluster.dist.map("test_map", Long.class);
         map.clear();
         Map<String, Long> checkMap = new ConcurrentHashMap<>();
-        CountDownLatch cdl=new CountDownLatch(1);
+        CountDownLatch cdl = new CountDownLatch(1);
         Dew.Timer.periodic(1, () -> {
-            long t=System.currentTimeMillis();
+            long t = System.currentTimeMillis();
             map.put("a" + t, t);
             checkMap.put("a" + t, t);
         });
         Dew.Timer.periodic(5, () -> {
             Map<String, Long> m = map.getAll();
-            Assert.assertEquals(checkMap.size(),m.size());
+            Assert.assertEquals(checkMap.size(), m.size());
             Assert.assertFalse(checkMap.entrySet().stream().anyMatch(entry -> !m.get(entry.getKey()).equals(entry.getValue())));
             cdl.countDown();
         });
@@ -274,10 +274,10 @@ public class ClusterTest {
     void testDistLockWithFun() throws Exception {
         ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
         boolean flag = clusterDistLock.tryLock();
+        Assert.assertTrue(flag);
         boolean flag2 = clusterDistLock.tryLock();
-        if (flag == true) {
-            clusterDistLock.unLock();
-        }
+        Assert.assertFalse(flag2);
+        clusterDistLock.unLock();
         VoidProcessFun voidProcessFun = () -> {
             try {
                 Thread.sleep(2000);

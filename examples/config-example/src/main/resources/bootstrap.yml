@@ -8,6 +8,7 @@ spring:
         service-id: config
       username: config
       password: 123456
+      profile: dev, prd
 
 server:
   port: 7000
@@ -16,3 +17,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone:  http://registry:123456@localhost:10000/eureka
+
+management:
+  security:
+    enabled: false

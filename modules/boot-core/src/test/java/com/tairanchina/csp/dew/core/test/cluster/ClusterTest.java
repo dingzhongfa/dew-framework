@@ -32,8 +32,7 @@ public class ClusterTest {
         testDistMapExp();
         testDistLock();
         testDistLockWithFun();
-        testSameThreadLock();
-        testDiffentTreadLock();
+        testDifferentTreadLock();
         testUnLock();
         testWaitLock();
         testConnection();
@@ -276,12 +275,17 @@ public class ClusterTest {
         boolean flag = clusterDistLock.tryLock();
         Assert.assertTrue(flag);
         boolean flag2 = clusterDistLock.tryLock();
-        Assert.assertFalse(flag2);
-        clusterDistLock.unLock();
+        // 可重入
+        Assert.assertTrue(flag2);
+        new Thread(() -> {
+            boolean flag3 = clusterDistLock.tryLock();
+            Assert.assertFalse(flag3);
+            clusterDistLock.unLock();
+        }).start();
         VoidProcessFun voidProcessFun = () -> {
             try {
                 Thread.sleep(2000);
-                Assert.assertFalse(clusterDistLock.tryLock());
+                Assert.assertTrue(clusterDistLock.tryLock());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -398,29 +402,12 @@ public class ClusterTest {
 
     }
 
-
-    /**
-     * 测试同一个线程能否锁住
-     *
-     * @throws InterruptedException
-     */
-    void testSameThreadLock() throws InterruptedException {
-        ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_A");
-        Boolean temp = lock.tryLock(0, 10000);
-        Assert.assertTrue(temp);
-        temp = lock.tryLock(0, 10000);
-        Assert.assertFalse(temp);
-        Thread.sleep(10000);
-        temp = lock.tryLock(0, 10000);
-        Assert.assertTrue(temp);
-    }
-
     /**
      * 测试不同线程能否锁住
      *
      * @throws InterruptedException
      */
-    void testDiffentTreadLock() throws InterruptedException {
+    void testDifferentTreadLock() throws InterruptedException {
         ClusterDistLock lock = Dew.cluster.dist.lock("test_lock_B");
         Boolean temp = lock.tryLock(0, 100000);
         logger.info("*********" + temp);

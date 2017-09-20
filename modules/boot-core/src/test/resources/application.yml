@@ -22,8 +22,6 @@ dew:
 #   includeServices: ["a-serv"]
 
 spring:
-  cache:
-    type: redis
   application:
     name: core-test
   redis:

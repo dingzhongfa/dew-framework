@@ -12,12 +12,10 @@ import java.util.Date;
 public class RedisClusterDistLock implements ClusterDistLock {
 
     private String key;
-    private String currThreadId;
     private RedisTemplate<String, String> redisTemplate;
 
     RedisClusterDistLock(String key, RedisTemplate<String, String> redisTemplate) {
         this.key = "dew:dist:lock:" + key;
-        currThreadId = Cluster.CLASS_LOAD_UNIQUE_FLAG + "-" + Thread.currentThread().getId();
         this.redisTemplate = redisTemplate;
     }
 
@@ -60,12 +58,12 @@ public class RedisClusterDistLock implements ClusterDistLock {
 
     @Override
     public void lock() {
-        redisTemplate.opsForValue().setIfAbsent(key, currThreadId);
+        redisTemplate.opsForValue().setIfAbsent(key, getCurrThreadId());
     }
 
     @Override
     public boolean tryLock() {
-        return redisTemplate.opsForValue().setIfAbsent(key, currThreadId);
+        return redisTemplate.opsForValue().setIfAbsent(key, getCurrThreadId()) || redisTemplate.opsForValue().get(key).equals(getCurrThreadId());
     }
 
     @Override
@@ -107,7 +105,7 @@ public class RedisClusterDistLock implements ClusterDistLock {
 
     @Override
     public boolean unLock() {
-        if (currThreadId.equals(redisTemplate.opsForValue().get(key))) {
+        if (getCurrThreadId().equals(redisTemplate.opsForValue().get(key))) {
             redisTemplate.delete(key);
             return true;
         } else {
@@ -124,10 +122,14 @@ public class RedisClusterDistLock implements ClusterDistLock {
         redisTemplate.delete(key);
     }
 
-    private Boolean putLockKey(long leaseMillSec) {
+    private boolean putLockKey(long leaseMillSec) {
         RedisConnection redisConnection = redisTemplate.getConnectionFactory().getConnection();
-        String res = ((JedisCommands) redisConnection.getNativeConnection()).set(key, currThreadId, "NX", "PX", leaseMillSec);
+        String res = ((JedisCommands) redisConnection.getNativeConnection()).set(key, getCurrThreadId(), "NX", "PX", leaseMillSec);
         redisConnection.close();
-        return res != null && "OK".equalsIgnoreCase(res);
+        return (res != null && "OK".equalsIgnoreCase(res)) || redisTemplate.opsForValue().get(key).equals(getCurrThreadId());
+    }
+
+    private String getCurrThreadId(){
+        return Cluster.CLASS_LOAD_UNIQUE_FLAG + "-" + Thread.currentThread().getId();
     }
 }

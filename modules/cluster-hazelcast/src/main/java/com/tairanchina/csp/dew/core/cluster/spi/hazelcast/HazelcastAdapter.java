@@ -32,8 +32,7 @@ public class HazelcastAdapter {
         clientConfig.getNetworkConfig().setConnectionAttemptLimit(hazelcastConfig.getConnectionAttemptLimit());
         clientConfig.getNetworkConfig().setConnectionAttemptPeriod(hazelcastConfig.getConnectionAttemptPeriod());
         hazelcastConfig.getAddresses().forEach(i -> clientConfig.getNetworkConfig().addAddress(i));
-        // hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
-        hazelcastInstance = Hazelcast.newHazelcastInstance();
+        hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
         active=true;
     }
 

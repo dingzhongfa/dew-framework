@@ -5,7 +5,6 @@ import com.tairanchina.csp.dew.core.test.auth.AuthTest;
 import com.tairanchina.csp.dew.core.test.cluster.ClusterTest;
 import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.JDBCTest;
-import com.tairanchina.csp.dew.core.test.dataaccess.multydata.MultyDataTest;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.SelectTest;
 import com.tairanchina.csp.dew.core.test.dewutil.DewUtilTest;
 import com.tairanchina.csp.dew.core.test.web.WebTest;
@@ -23,7 +22,7 @@ import javax.annotation.Resource;
 @ComponentScan(basePackageClasses = {Dew.class, TestAll.class})
 public class TestAll {
 
-    public static final String  URL = "http://127.0.0.1:8080/";
+    public static final String URL = "http://127.0.0.1:8080/";
 
     @Resource
     private ClusterTest clusterTest;
@@ -41,9 +40,6 @@ public class TestAll {
     private WebTest webTest;
 
     @Resource
-    private MultyDataTest multyDataTest;
-
-    @Resource
     private AuthTest authTest;
 
     @Resource
@@ -51,6 +47,7 @@ public class TestAll {
 
     /**
      * 缓存，map缓存，分布式锁测试
+     *
      * @throws Exception
      */
     @Test
@@ -59,7 +56,6 @@ public class TestAll {
     }
 
     /**
-     *
      * @throws Exception
      */
     @Test
@@ -67,16 +63,10 @@ public class TestAll {
         jdbcTest.testAll();
     }
 
-    /**
-     * 多数据源测试
-     */
-    @Test
-    public void testMultyData() {
-        multyDataTest.testAll();
-    }
 
     /**
      * Select注解测试
+     *
      * @throws Exception
      */
     @Test
@@ -86,6 +76,7 @@ public class TestAll {
 
     /**
      * 脚手架测试
+     *
      * @throws Exception
      */
     @Test
@@ -95,6 +86,7 @@ public class TestAll {
 
     /**
      * 数据验证测、响应格式、异常处理等测试
+     *
      * @throws Exception
      */
     @Test
@@ -104,6 +96,7 @@ public class TestAll {
 
     /**
      * 权限测试，含logger测试
+     *
      * @throws Exception
      */
     @Test
@@ -113,10 +106,11 @@ public class TestAll {
 
     /**
      * Dew类的util测试
+     *
      * @throws Exception
      */
     @Test
-    public void testDewUtil() throws Exception{
+    public void testDewUtil() throws Exception {
         dewUtilTest.testAll();
     }
 }

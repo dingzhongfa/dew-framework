@@ -82,12 +82,21 @@ public class HazelcastClusterDistLock implements ClusterDistLock {
 
     @Override
     public boolean unLock() {
-        lock.unlock();
+        try {
+            lock.unlock();
+        } catch (Throwable e) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public void delete() {
         lock.forceUnlock();
+    }
+
+    @Override
+    public boolean isLocked() {
+        return lock.isLocked();
     }
 }

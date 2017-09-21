@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core.test.dataaccess.jdbc;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.*;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.BasicEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.EmptyEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.FullEntity;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,31 +39,31 @@ public class JDBCTest {
         int temp = Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         Assert.assertTrue(temp == 1);
     }*/
-
-   private void init(){
-       Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
-               "(\n" +
-               "id int primary key auto_increment,\n" +
-               "field_a varchar(255)\n" +
-               ")");
-       Dew.ds().jdbc().execute("CREATE TABLE full_entity\n" +
-               "(\n" +
-               "id int primary key auto_increment,\n" +
-               "code varchar(255),\n" +
-               "field_a varchar(255),\n" +
-               "field_c varchar(255) not null,\n" +
-               "create_user varchar(255) not null,\n" +
-               "create_time datetime,\n" +
-               "update_user varchar(255) not null,\n" +
-               "update_time datetime,\n" +
-               "enabled bool\n" +
-               ")");
-   }
+    private void init() {
+        Dew.ds().jdbc().execute("CREATE TABLE basic_entity\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "field_a varchar(255)\n" +
+                ")");
+        Dew.ds().jdbc().execute("CREATE TABLE full_entity\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "code varchar(255),\n" +
+                "field_a varchar(255),\n" +
+                "field_c varchar(255) not null,\n" +
+                "create_user varchar(255) not null,\n" +
+                "create_time datetime,\n" +
+                "update_user varchar(255) not null,\n" +
+                "update_time datetime,\n" +
+                "enabled bool\n" +
+                ")");
+    }
 
     public void testAll() throws Exception {
         testEntity();
         testMultiDS();
         testTx();
+        multiplyData();
     }
 
     private void testEntity() throws InterruptedException {
@@ -203,17 +204,17 @@ public class JDBCTest {
                 "select f.*, b.* from full_entity f LEFT JOIN basic_entity b ON f.field_a = b.field_a where f.code = #{code}");
     }
 
-    private void testTx(){
+    private void testTx() {
         txService.testCommit();
         try {
             txService.testRollBack();
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         txService.testMultiCommit();
         try {
             txService.testMultiRollBack();
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         int res = Dew.ds().jdbc().queryForList("select * from basic_entity where field_a = 'TransactionA1'").size();
@@ -226,20 +227,20 @@ public class JDBCTest {
         Assert.assertTrue(res == 0);
     }
 
-    private void testMultiDS(){
+    private void testMultiDS() {
         Dew.ds().jdbc().queryForList("select * from basic_entity").size();
         try {
             Dew.ds("test1").jdbc().queryForList("select * from basic_entity").size();
-            Assert.assertFalse(1==1);
-        }catch (Exception e){
-            Assert.assertTrue(1==1);
+            Assert.assertFalse(1 == 1);
+        } catch (Exception e) {
+            Assert.assertTrue(1 == 1);
         }
         Dew.ds("test2").jdbc().execute("CREATE TABLE basic_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +
                 ")");
-        Assert.assertEquals(0,Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
+        Assert.assertEquals(0, Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
 
         // 测试spring 直接注入jdbcTemplate的情况，是否生效
         int temp = jdbcTemplate.queryForList("select * from basic_entity").size();
@@ -249,5 +250,77 @@ public class JDBCTest {
     }
 
 
+    private void multiplyData() {
+        multiplyInit();
+        testPool();
+        testPoolA();
+    }
 
+    private void multiplyInit() {
+        Dew.ds().jdbc().execute("DROP TABLE if EXISTS test_select_entity");
+        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "code varchar(32),\n" +
+                "field_a varchar(255),\n" +
+                "field_c varchar(255) not null,\n" +
+                "create_user varchar(32) not null,\n" +
+                "create_time datetime,\n" +
+                "update_user varchar(32) not null,\n" +
+                "update_time datetime,\n" +
+                "enabled bool\n" +
+                ")");
+        Dew.ds().jdbc().execute("INSERT  INTO  test_select_entity " +
+                "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+
+        Dew.ds("test2").jdbc().execute("DROP TABLE if EXISTS test_select_entity");
+        Dew.ds("test2").jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+                "(\n" +
+                "id int primary key auto_increment,\n" +
+                "code varchar(32),\n" +
+                "field_a varchar(255),\n" +
+                "field_c varchar(255) not null,\n" +
+                "create_user varchar(32) not null,\n" +
+                "create_time datetime,\n" +
+                "update_user varchar(32) not null,\n" +
+                "update_time datetime,\n" +
+                "enabled bool\n" +
+                ")");
+        Dew.ds("test2").jdbc().execute("INSERT  INTO  test_select_entity " +
+                "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+    }
+
+    @Transactional
+    private void testPool() {
+        Boolean[] hasFinish = {false};
+        Dew.ds().jdbc().queryForList("select * from test_select_entity").size();
+        new Thread(() -> {
+            Dew.ds().jdbc().queryForList("select * from test_select_entity").size();
+            Assert.assertTrue(hasFinish[0]);
+        }).start();
+        try {
+            Thread.sleep(1);
+            hasFinish[0] = true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional("test2TransactionManager")
+    private void testPoolA() {
+        Boolean[] hasFinish = {false};
+        Dew.ds("test2").jdbc().queryForList("select * from test_select_entity").size();
+        new Thread(() -> {
+            Dew.ds("test2").jdbc().queryForList("select * from test_select_entity").size();
+            Assert.assertTrue(hasFinish[0]);
+        }).start();
+        try {
+            Thread.sleep(1);
+            hasFinish[0] = true;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

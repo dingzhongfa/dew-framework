@@ -3,6 +3,7 @@ package com.tairanchina.csp.dew.core.test.auth;
 
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.test.TestAll;
 import com.tairanchina.csp.dew.core.test.auth.dto.OptInfoExt;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 @Component
 public class AuthTest {
 
-    private String URL = "http://127.0.0.1:8080/";
+
 
     private Logger logger = LoggerFactory.getLogger(AuthTest.class);
 
@@ -24,18 +25,18 @@ public class AuthTest {
         user.setName("辰");
         user.setPassword("123456");
         user.setPhone("15957199704");
-        String registerRes = $.http.post(URL + "user/register", user);
+        String registerRes = $.http.post(TestAll.URL + "user/register", user);
         Assert.assertEquals("200", $.json.toJson(registerRes).get("code").asText());
         AuthExampleController.LoginDTO loginDTO = new AuthExampleController.LoginDTO();
         loginDTO.setIdCard(user.getIdCard());
         loginDTO.setPassword(user.getPassword());
-        String loginRes1 = $.http.post(URL + "auth/login", loginDTO);
-        String loginRes2 = $.http.post(URL + "auth/login", loginDTO);
+        String loginRes1 = $.http.post(TestAll.URL + "auth/login", loginDTO);
+        String loginRes2 = $.http.post(TestAll.URL + "auth/login", loginDTO);
         String token1 = $.json.toJson(loginRes1).get("body").asText();
         String token2 = $.json.toJson(loginRes2).get("body").asText();
         Assert.assertEquals("200", $.json.toJson(loginRes1).get("code").asText());
         Assert.assertEquals("200", $.json.toJson(loginRes2).get("code").asText());
-        String businRes1 = $.http.get(URL + "business/someopt", new HashMap<String, String>() {{
+        String businRes1 = $.http.get(TestAll.URL + "business/someopt", new HashMap<String, String>() {{
                 put("_token_", token1);
         }});
 
@@ -44,7 +45,7 @@ public class AuthTest {
         OptInfoExt optInfoExt = (OptInfoExt) Dew.Auth.getOptInfo(token2).get();
         OptInfoExt optInfoExt2 = (OptInfoExt)Dew.Auth.getOptInfoByAccCode(optInfoExt.getAccountCode()).get();
         Dew.Auth.removeOptInfo(optInfoExt2.getToken());
-        String logoutRes = $.http.delete(URL + "auth/logout",new HashMap<String ,String>(){{
+        String logoutRes = $.http.delete(TestAll.URL + "auth/logout",new HashMap<String ,String>(){{
             put("_token_", token1);
         }});
         Assert.assertEquals("200", $.json.toJson(logoutRes).get("code").asText());

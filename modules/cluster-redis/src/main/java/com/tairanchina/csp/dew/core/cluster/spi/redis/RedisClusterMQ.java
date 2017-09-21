@@ -29,6 +29,7 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void subscribe(String topic, Consumer<String> consumer) {
+
         new Thread(() -> redisTemplate.execute((RedisCallback<Void>) connection -> {
             connection.subscribe((message, pattern) -> {
                 try {
@@ -55,8 +56,7 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void response(String address, Consumer<String> consumer) {
-        new Thread(() ->
-                redisTemplate.execute((RedisCallback<Void>) connection -> {
+        new Thread(() -> redisTemplate.execute((RedisCallback<Void>) connection -> {
                     try {
                         while (!connection.isClosed()) {
                             List<byte[]> messages = connection.bRPop(30, address.getBytes());
@@ -71,7 +71,8 @@ public class RedisClusterMQ implements ClusterMQ {
                         logger.error("Redis Response error.", e);
                     }
                     return null;
-                })).start();
+                }
+        )).start();
     }
 
 }

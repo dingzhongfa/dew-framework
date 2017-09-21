@@ -5,6 +5,7 @@ import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.tairanchina.csp.dew.core.Container;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.test.TestAll;
 import com.tairanchina.csp.dew.core.test.dewutil.controller.UtilController;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ public class DewUtilTest {
 
     private Logger logger = LoggerFactory.getLogger(DewUtilTest.class);
 
-    private final String URL = "http://127.0.0.1:8080/consumer/";
+    private final String URL = TestAll.URL+"consumer/";
 
     public void testAll() throws Exception {
         testDewRest();

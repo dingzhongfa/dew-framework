@@ -70,7 +70,7 @@ public class RedisClusterDistLock implements ClusterDistLock {
     public boolean tryLock(long waitMillSec) throws InterruptedException {
         long now = new Date().getTime();
         while (new Date().getTime() - now < waitMillSec) {
-            if (isLock()) {
+            if (isLocked()) {
                 Thread.sleep(100);
             } else {
                 if (tryLock()) {
@@ -93,7 +93,7 @@ public class RedisClusterDistLock implements ClusterDistLock {
         } else {
             long now = new Date().getTime();
             while (new Date().getTime() - now < waitMillSec) {
-                if (isLock()) {
+                if (isLocked()) {
                     Thread.sleep(100);
                 } else if (putLockKey(leaseMillSec)) {
                     return Boolean.TRUE;
@@ -113,7 +113,8 @@ public class RedisClusterDistLock implements ClusterDistLock {
         }
     }
 
-    private boolean isLock() {
+    @Override
+    public boolean isLocked() {
         return redisTemplate.hasKey(key);
     }
 

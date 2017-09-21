@@ -15,12 +15,14 @@
 
 * [功能]支持 `EnabledColumn` 结果反转，EnabledColumn用于标识是否启用状态的注解，默认是true是否用，false是禁用，但有些情况下状态字段会使用`del_flag`表示是否删除，这时需要设置结果反转
 * [功能]统一Body及Url Path/Query的异常捕获
+* [功能] `tryLock` 支持重入
 * [测试]引入 `embedded redis` 以支持单元测试
 * [文档]添加 以宠物商店为例的 `新手入门` 章节
 * [修改]原 `dew.dao.base-package` 改成 `dew.jdbc.base-packages` 支持多个路径
 
 ==== Fixed
 
+* 修正Redis锁 `Unlock` 处理的线程问题
 * 修正jacoco单元测试覆盖率偏少的问题
 
 === 1.0.0-beta5

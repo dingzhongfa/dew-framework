@@ -30,8 +30,8 @@ public class ClusterTest {
         testCache();
         // Dist Test
         testDistMapExp();
-        testDistLock();
         testDistLockWithFun();
+        testDistLock();
         testDifferentTreadLock();
         testUnLock();
         testConnection();
@@ -272,7 +272,7 @@ public class ClusterTest {
     private void testDistLockWithFun() throws Exception {
 
         ClusterDistLock clusterDistLock = Dew.cluster.dist.lock("test_lock_fun");
-        clusterDistLock.delete();
+//        clusterDistLock.delete();
         boolean flag = clusterDistLock.tryLock();
         Assert.assertTrue(flag);
         boolean flag2 = clusterDistLock.tryLock();

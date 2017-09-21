@@ -415,6 +415,14 @@ dew:
 
 ===== 注解式缓存
 
+[NOTE]
+.配置注册式缓存
+====
+spring:
+  cache:
+    type: # 支持 redis hazelcast 等
+====
+
 `Dew` 支持 `Spring Boot` 的缓存注解，详见示例 `example/cache-example`
 
 ===== 访问在线API文档

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -205,6 +206,10 @@ public class JDBCTest {
     }
 
     private void testTx() {
+        BasicEntity basicEntity = new BasicEntity();
+        basicEntity.setFieldA("TransactionA1");
+        basicEntity.setFieldB("TransactionA1");
+        Object id = Dew.ds().insert(basicEntity);
         txService.testCommit();
         try {
             txService.testRollBack();
@@ -235,9 +240,10 @@ public class JDBCTest {
         } catch (Exception e) {
             Assert.assertTrue(1 == 1);
         }
+        Dew.ds("test2").jdbc().execute("DROP TABLE if EXISTS basic_entity");
         Dew.ds("test2").jdbc().execute("CREATE TABLE basic_entity\n" +
                 "(\n" +
-                "id int primary key auto_increment,\n" +
+                "id int primary key ,\n" +
                 "field_a varchar(255)\n" +
                 ")");
         Assert.assertEquals(0, Dew.ds("test2").jdbc().queryForList("select * from basic_entity").size());
@@ -254,42 +260,44 @@ public class JDBCTest {
         multiplyInit();
         testPool();
         testPoolA();
+        destory();
+    }
+
+    private void destory() {
+        List<String> list = new ArrayList<>();
+        list.add("");
+        list.add("test1");
+        list.add("test2");
+        for (String data: list){
+            Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
+            Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS basic_entity");
+        }
     }
 
     private void multiplyInit() {
-        Dew.ds().jdbc().execute("DROP TABLE if EXISTS test_select_entity");
-        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
-                "(\n" +
-                "id int primary key auto_increment,\n" +
-                "code varchar(32),\n" +
-                "field_a varchar(255),\n" +
-                "field_c varchar(255) not null,\n" +
-                "create_user varchar(32) not null,\n" +
-                "create_time datetime,\n" +
-                "update_user varchar(32) not null,\n" +
-                "update_time datetime,\n" +
-                "enabled bool\n" +
-                ")");
-        Dew.ds().jdbc().execute("INSERT  INTO  test_select_entity " +
-                "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
-                "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+        List<String> list = new ArrayList<>();
+        list.add("");
+        list.add("test1");
+        list.add("test2");
+        for (String data: list){
+            Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
+            Dew.ds(data).jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+                    "(\n" +
+                    "id int primary key auto_increment,\n" +
+                    "code varchar(32),\n" +
+                    "field_a varchar(255),\n" +
+                    "field_c varchar(255) not null,\n" +
+                    "create_user varchar(32) not null,\n" +
+                    "create_time datetime,\n" +
+                    "update_user varchar(32) not null,\n" +
+                    "update_time datetime,\n" +
+                    "enabled bool\n" +
+                    ")");
+            Dew.ds(data).jdbc().execute("INSERT  INTO  test_select_entity " +
+                    "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                    "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+        }
 
-        Dew.ds("test2").jdbc().execute("DROP TABLE if EXISTS test_select_entity");
-        Dew.ds("test2").jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
-                "(\n" +
-                "id int primary key auto_increment,\n" +
-                "code varchar(32),\n" +
-                "field_a varchar(255),\n" +
-                "field_c varchar(255) not null,\n" +
-                "create_user varchar(32) not null,\n" +
-                "create_time datetime,\n" +
-                "update_user varchar(32) not null,\n" +
-                "update_time datetime,\n" +
-                "enabled bool\n" +
-                ")");
-        Dew.ds("test2").jdbc().execute("INSERT  INTO  test_select_entity " +
-                "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
-                "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
     }
 
     @Transactional

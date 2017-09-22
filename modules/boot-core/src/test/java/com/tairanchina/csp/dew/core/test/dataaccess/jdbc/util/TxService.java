@@ -6,9 +6,7 @@ import org.junit.Assert;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Created by panshuai on 17/6/29.
- */
+
 @Component
 public class TxService {
 

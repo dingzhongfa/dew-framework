@@ -10,4 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/crud/")
 public class CRUDSTestController implements CRUDSController<CRUDSTestService,Integer, TestSelectEntity> {
 
+    @Override
+    public boolean convertAble() {
+        return true;
+    }
+
+
 }

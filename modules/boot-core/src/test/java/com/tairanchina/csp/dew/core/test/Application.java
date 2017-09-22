@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Date;
 
-@EnableTransactionManagement
 public class Application extends DewBootApplication {
 
     public static void main(String[] args) {

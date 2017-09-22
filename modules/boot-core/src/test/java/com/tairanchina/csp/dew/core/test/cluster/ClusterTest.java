@@ -37,8 +37,8 @@ public class ClusterTest {
         testConnection();
         testDistMap();
         // MQ Test
-        testMQReq();
         testMQTopic();
+        testMQReq();
     }
 
     /**
@@ -322,19 +322,19 @@ public class ClusterTest {
             });
             countDownLatch.countDown();
         }).start();
-        Thread.sleep(2000);
+        Thread.sleep(500);
         logger.info("count   " + countDownLatch.getCount());
         countDownLatch.await();
         logger.info("测试1     " + Thread.activeCount());
-        Thread.sleep(3000);
+        Thread.sleep(500);
         logger.info("测试2     " + Thread.activeCount());
         for (int i = 0; i < 10; i++) {
             logger.info(Thread.activeCount() + "");
             logger.info("单位开始");
-            Thread.sleep(1000);
+            Thread.sleep(500);
             Dew.cluster.mq.publish("test_pub_sub", "msgA");
             Dew.cluster.mq.publish("test_pub_sub", "msgB");
-            Thread.sleep(1000);
+            Thread.sleep(500);
             logger.info("单位结束");
         }
     }

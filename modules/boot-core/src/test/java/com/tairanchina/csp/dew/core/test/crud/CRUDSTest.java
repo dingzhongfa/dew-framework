@@ -5,6 +5,7 @@ import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.test.TestAll;
+import com.tairanchina.csp.dew.core.test.crud.convert.VOConvert;
 import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 import com.tairanchina.csp.dew.core.test.crud.service.CRUDSTestService;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
@@ -67,6 +68,8 @@ public class CRUDSTest {
         // findAll
         Resp<List<TestSelectEntity>> entitiesResp = Resp.genericList(testRestTemplate.getForObject(url + "/", String.class), TestSelectEntity.class);
         long recordTotal = entitiesResp.getBody().size();
+        VOConvert voConvert = new VOConvert();
+        voConvert.convertList(entitiesResp);
         // paging
         Resp<Page<TestSelectEntity>> entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), TestSelectEntity.class);
         Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
@@ -142,12 +145,14 @@ public class CRUDSTest {
         Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());
         Assert.assertEquals(pageSize, entitiesPageResp.getBody().getPageSize());
         Assert.assertEquals(recordTotal + 1, entitiesPageResp.getBody().getRecordTotal());
+        voConvert.convertPage(entitiesPageResp);
         // deleteById
         Resp deleteResp = Resp.generic($.http.delete(url + "/" + id), Void.class);
         Assert.assertTrue(deleteResp.ok());
         // findAll
         entitiesResp = Resp.genericList($.http.get(url + "/"), TestSelectEntity.class);
         Assert.assertEquals(recordTotal, entitiesResp.getBody().size());
+        voConvert.convertObject(entityResp);
         // paging
         entitiesPageResp = Resp.genericPage($.http.get(url + String.format("/%d/%d/", pageNumber, pageSize)), TestSelectEntity.class);
         Assert.assertEquals(pageNumber, entitiesPageResp.getBody().getPageNumber());

@@ -28,7 +28,7 @@ public class TestController {
     public String getAtOnce() {
         long st = System.currentTimeMillis();
         try {
-            return "get at once";
+            return "{\"message\": \"test\"}";
         } finally {
             long et = System.currentTimeMillis();
             logger.info("get at once used ms :" + (et - st));
@@ -71,7 +71,7 @@ public class TestController {
     public String postAtOnce() {
         long st = System.currentTimeMillis();
         try {
-            return "post at once";
+            return "{\"message\": \"test\"}";
         } finally {
             long et = System.currentTimeMillis();
             logger.info("post at once used ms :" + (et - st));

@@ -42,15 +42,13 @@ public class DS {
     private static final String STAR = "*";
     private static final String POINT = ".";
     private static final String EMPTY = "";
-    private static String DECORATED_LEFT;
-    private static String DECORATED_RIGHT;
+    private String DECORATED_LEFT;
+    private String DECORATED_RIGHT;
     private JdbcTemplate jdbcTemplate;
     private String jdbcUrl;
 
     private Dialect dialect;
 
-
-    @PostConstruct
     private void init() {
         dialect = DialectFactory.parseDialect(jdbcUrl);
         switch (dialect.getDialectType()) {

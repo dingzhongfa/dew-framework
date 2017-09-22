@@ -87,9 +87,18 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 }
 ----
 
+=== 服务调用开发期使用
 
-    
+在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
 
+. 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
+. 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）
+. 需要启动 `Eureka` 服务，多了一个依赖(下面方法还是需要启动 `Eureka` 服务0.0)
 
+为解决上述问题,在使用Spring Cloud的 `RestTemplate` 时,增加 `Ribbon` 的服务配置.
+
+    # <client>为service-id
+    <client>.ribbon.listOfServers: 127.0.0.1:8888
+    performance-service.ribbon.listOfServers: 127.0.0.1:8812
 
 

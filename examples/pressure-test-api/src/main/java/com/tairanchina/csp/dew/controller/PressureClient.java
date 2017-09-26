@@ -18,6 +18,12 @@ public class PressureClient {
         return pressureService.getBalance(userId);
     }
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public Integer test() {
+        System.out.println("test 111111");
+        return pressureService.test();
+    }
+
     @RequestMapping(value = "/account/transfer", method = RequestMethod.GET)
     public boolean transfer(@RequestParam(value = "turnOutUser") int turnOutUser,
                         @RequestParam(value = "turnIntUser") int turnIntUser,

@@ -629,8 +629,8 @@ Dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.example.jdbc.jdbc"]
 
-// 添加CustomerDao
-public interface CustomerDao extends DewDao<In, Customer> {
+// 添加PetDao
+public interface PetDao extends DewDao<Integer, Pet> {
 }
 
 @Autowired

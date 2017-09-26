@@ -222,7 +222,7 @@ public class DewConfig {
 
         private String tokenFlag = "__dew_token__";
 
-        private boolean tokenInHeader = false;
+        private boolean tokenInHeader = true;
 
         private boolean tokenHash = false;
 

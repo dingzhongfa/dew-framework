@@ -87,9 +87,32 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 }
 ----
 
+=== feign配置特定方法超时时间
+*`hystrix` 超时时间配置*
+
+ # 配置默认的hystrix超时时间
+ hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000
+ # 配置特定方法的超时时间,优于默认配置
+ hystrix.command.<hystrixcommandkey>.execution.isolation.thread.timeoutInMilliseconds=10000
+ # <hystrixcommandkey>的format为FeignClassName#methodSignature,下面是示例配置
+ hystrix.command.PressureService#getBalance(int).execution.isolation.thread.timeoutInMilliseconds=10000
+
+*`ribbon` 超时时间配置*
+
+ # 配置默认ribbon超时时间
+ ribbon.ReadTimeout=60000
+ # 配置特定服务超时时间,优于默认配置
+ <client>.ribbon.ReadTimeout=6000
+ # <client>为实际服务名,下面是示例配置
+ pressure-service.ribbon.ReadTimeout=5000
+
+*`hystrix` 和 `ribbon` 的超时时间配置相互独立,以低为准,使用时请根据实际情况进行配置*
+
+TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置;在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置.
+
 === 服务调用开发期使用
 
-在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：
+在Spring Cloud体系下，服务调用需要启动 `Eureka` 服务（对于Dew中的 `Regstry` 组件），这对开发阶段并不友好：
 
 . 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
 . 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）

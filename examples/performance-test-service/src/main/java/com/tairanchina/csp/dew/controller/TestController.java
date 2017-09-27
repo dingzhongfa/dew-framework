@@ -1,5 +1,7 @@
 package com.tairanchina.csp.dew.controller;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +26,6 @@ public class TestController {
      *  收到get请求立马返回
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    @ResponseBody
     public String getAtOnce() {
         long st = System.currentTimeMillis();
         try {
@@ -75,6 +76,46 @@ public class TestController {
         } finally {
             long et = System.currentTimeMillis();
             logger.info("post at once used ms :" + (et - st));
+        }
+    }
+
+    /**
+     * 模拟大事务接口 sleep 10秒
+     */
+    @RequestMapping(value = "file", method = RequestMethod.GET)
+    public Integer doWithLargeTime() {
+        long st = System.currentTimeMillis();
+        try {
+            try {
+                Thread.sleep(8000L);
+            } catch (InterruptedException e) {
+                logger.error("sleep error", e);
+            }
+            return 1;
+        } finally {
+            long et = System.currentTimeMillis();
+            logger.info("file used ms :" + (et - st));
+        }
+    }
+
+    /**
+     * 混合接口 3成200ms,7成600ms
+     */
+    @RequestMapping(value = "mix", method = RequestMethod.GET)
+    public Integer doMix() {
+        long st = System.currentTimeMillis();
+        try {
+            try {
+                Integer random = new Random().nextInt(10);
+                Long delay = random >= 3 ? 200L : 600L;
+                Thread.sleep(delay);
+            } catch (InterruptedException e) {
+                logger.error("sleep error", e);
+            }
+            return 1;
+        } finally {
+            long et = System.currentTimeMillis();
+            logger.info("mix used ms :" + (et - st));
         }
     }
 

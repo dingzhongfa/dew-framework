@@ -42,6 +42,7 @@
         <module>examples/dubbo-example</module>
         <module>examples/monitor-example</module>
         <module>examples/hystrix-example</module>
+        <module>examples/performance-test-api</module>
         <!--<module>examples/thrift-definition-example</module>
         <module>examples/thrift-process-example</module>
        <module>examples/config-example</module>

@@ -15,6 +15,8 @@ dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core"]
   security:
+    app-id: app-1
+    app-secret: app-sec-1
     token-flag: _token_
     token-in-header: true
     token-hash: false
@@ -27,7 +29,7 @@ spring:
   application:
     name: core-test
   redis:
-    host: 127.0.0.1
+    host: redis.fengdai.org
     port: 6379
     database: 0
     pool:
@@ -35,6 +37,7 @@ spring:
       max-wait: -1
       max-idle: 1
       min-idle: 0
+    password: tairan2017@
   rabbitmq:
     host: mq.fengdai.org
     port: 5672

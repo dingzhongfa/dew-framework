@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.core.test;
 
-import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.test.auth.AuthTest;
 import com.tairanchina.csp.dew.core.test.cluster.ClusterTest;
 import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
@@ -11,7 +10,6 @@ import com.tairanchina.csp.dew.core.test.web.WebTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -19,7 +17,6 @@ import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, TestAll.class})
 public class TestAll {
 
     public static final String URL = "http://127.0.0.1:8080/";

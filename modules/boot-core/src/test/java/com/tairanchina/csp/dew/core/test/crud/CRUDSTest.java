@@ -26,9 +26,6 @@ public class CRUDSTest {
     private long pageSize = 10;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    @Autowired
     private TestInterfaceDao dao;
 
     @Autowired
@@ -66,7 +63,7 @@ public class CRUDSTest {
 
     private void testCRUD() throws Exception {
         // findAll
-        Resp<List<TestSelectEntity>> entitiesResp = Resp.genericList(testRestTemplate.getForObject(url + "/", String.class), TestSelectEntity.class);
+        Resp<List<TestSelectEntity>> entitiesResp = Resp.genericList($.http.get(url + "/" ), TestSelectEntity.class);
         long recordTotal = entitiesResp.getBody().size();
         VOConvert voConvert = new VOConvert();
         voConvert.convertList(entitiesResp);

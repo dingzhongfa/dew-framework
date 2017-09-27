@@ -87,7 +87,7 @@ public class TestController {
         long st = System.currentTimeMillis();
         try {
             try {
-                Thread.sleep(8000L);
+                Thread.sleep(1000L);
             } catch (InterruptedException e) {
                 logger.error("sleep error", e);
             }

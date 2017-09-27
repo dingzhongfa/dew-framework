@@ -15,6 +15,9 @@ public interface PressureService {
     @RequestMapping(value = "/account/{userId}/balance", method = RequestMethod.GET)
     Integer getBalance(@PathVariable(value = "userId") int userId);
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    Integer test();
+
 
     @RequestMapping(value = "/account/transfer", method = RequestMethod.GET)
     Boolean transfer(@RequestParam(value = "turnOutUser") int turnOutUser,

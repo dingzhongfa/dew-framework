@@ -16,6 +16,11 @@ public class PressureServiceHystrix implements PressureService{
     }
 
     @Override
+    public Integer test() {
+        return -1;
+    }
+
+    @Override
     public Boolean transfer(@RequestParam(value = "turnOutUser") int turnOutUser, @RequestParam(value = "turnIntUser") int turnIntUser, @RequestParam(value = "amount") int amount) {
         return Boolean.FALSE;
     }

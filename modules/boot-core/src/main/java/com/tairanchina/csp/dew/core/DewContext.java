@@ -51,7 +51,7 @@ public class DewContext {
             return innerOptInfo;
         }
         if (token != null && !token.isEmpty()) {
-            innerOptInfo = Dew.Auth.getOptInfo(token);
+            innerOptInfo = Dew.auth.getOptInfo(token);
         } else {
             innerOptInfo = Optional.empty();
         }

@@ -222,12 +222,38 @@ public class DewConfig {
 
         private String tokenFlag = "__dew_token__";
 
-        private boolean tokenInHeader = false;
+        private boolean tokenInHeader = true;
 
         private boolean tokenHash = false;
 
         private List<String> includeServices;
         private List<String> excludeServices;
+
+        private String authAdapter="basic";
+
+        private UCAuth ucAuthAdapter=new UCAuth();
+
+        public static class UCAuth{
+
+            private String appId;
+            private String appSecret;
+
+            public String getAppId() {
+                return appId;
+            }
+
+            public void setAppId(String appId) {
+                this.appId = appId;
+            }
+
+            public String getAppSecret() {
+                return appSecret;
+            }
+
+            public void setAppSecret(String appSecret) {
+                this.appSecret = appSecret;
+            }
+        }
 
         public List<String> getIncludeServices() {
             return includeServices;
@@ -275,6 +301,22 @@ public class DewConfig {
 
         public void setTokenHash(boolean tokenHash) {
             this.tokenHash = tokenHash;
+        }
+
+        public String getAuthAdapter() {
+            return authAdapter;
+        }
+
+        public void setAuthAdapter(String authAdapter) {
+            this.authAdapter = authAdapter;
+        }
+
+        public UCAuth getUcAuthAdapter() {
+            return ucAuthAdapter;
+        }
+
+        public void setUcAuthAdapter(UCAuth ucAuthAdapter) {
+            this.ucAuthAdapter = ucAuthAdapter;
         }
     }
 

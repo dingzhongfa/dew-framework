@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="v1.0.0-rc,2017-09-14">
+<meta name="author" content="v1.0.0-rc,2017-09-27">
 <title>Dew-Framework（轻量服务框架）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Dew-Framework（轻量服务框架）</h1>
 <div class="details">
-<span id="author" class="author">v1.0.0-rc,2017-09-14</span><br>
+<span id="author" class="author">v1.0.0-rc,2017-09-27</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -493,29 +493,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#truejdbc">4.1. JDBC框架的选择</a></li>
 <li><a href="#true--37">4.2. 缓存处理</a></li>
 <li><a href="#true--38">4.3. 断路保护</a></li>
+<li><a href="#true--39">4.4. 配置中心</a></li>
+<li><a href="#truefeign">4.5. feign配置特定方法超时时间</a></li>
+<li><a href="#true--40">4.6. 服务调用开发期使用</a></li>
 </ul>
 </li>
-<li><a href="#true--39">5. 技术指标</a>
+<li><a href="#true--41">5. 技术指标</a>
 <ul class="sectlevel2">
-<li><a href="#true--40">5.1. 可靠性</a></li>
-<li><a href="#true--41">5.2. 性能</a></li>
+<li><a href="#true--42">5.1. 可靠性</a></li>
+<li><a href="#true--43">5.2. 性能</a></li>
 </ul>
 </li>
 <li><a href="#truescm">6. SCM</a></li>
-<li><a href="#true--42">7. 编译部署</a>
+<li><a href="#true--44">7. 编译部署</a>
 <ul class="sectlevel2">
-<li><a href="#true--43">7.1. 开发期热部署</a></li>
-<li><a href="#true--44">7.2. 打包</a></li>
-<li><a href="#true--45">7.3. 部署</a>
+<li><a href="#true--45">7.1. 开发期热部署</a></li>
+<li><a href="#true--46">7.2. 打包</a></li>
+<li><a href="#true--47">7.3. 部署</a>
 <ul class="sectlevel3">
-<li><a href="#true--46">7.3.1. 准备</a></li>
-<li><a href="#true--47">7.3.2. 手工发布</a></li>
+<li><a href="#true--48">7.3.1. 准备</a></li>
+<li><a href="#true--49">7.3.2. 手工发布</a></li>
 <li><a href="#trueci">7.3.3. CI</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#true--48">8. 配置速查</a>
+<li><a href="#true--50">8. 配置速查</a>
 <ul class="sectlevel2">
 <li><a href="#true-code-dew-code">8.1. <code>Dew</code> 参数</a></li>
 <li><a href="#true-code-spring-boot-code">8.2. <code>Spring boot</code> 核心参数</a></li>
@@ -523,7 +526,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#true-code-spring-cloud-code">8.4. <code>Spring cloud</code> 核心参数</a></li>
 </ul>
 </li>
-<li><a href="#true--49">9. 版本说明</a>
+<li><a href="#true--51">9. 版本说明</a>
 <ul class="sectlevel2">
 <li><a href="#true1-0-0-rc">9.1. 1.0.0-rc</a>
 <ul class="sectlevel3">
@@ -569,7 +572,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#true--50">10. 路线图</a></li>
+<li><a href="#true--52">10. 路线图</a></li>
 </ul>
 </div>
 </div>
@@ -803,11 +806,11 @@ dew:
     desc: 宠物商店
     web-site:
     doc:
-      basePackage: your.group.controller # API文档路径
+      base-package: your.group.controller # API文档路径
   cluster:
     cache: redis # 指定集群缓存实现为redis
   jdbc:
-    basePackage: your.group.jdbc</code></pre>
+    base-packages: ["your.group.jdbc"]</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -2098,6 +2101,23 @@ dew:
 </div>
 <div class="sect4">
 <h5 id="true--21"><a class="anchor" href="#true--21"></a>注解式缓存</h5>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">配置注册式缓存</div>
+<div class="paragraph">
+<p>spring:
+  cache:
+    type: # 支持 redis hazelcast 等</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p><code>Dew</code> 支持 <code>Spring Boot</code> 的缓存注解，详见示例 <code>example/cache-example</code></p>
 </div>
@@ -2200,6 +2220,18 @@ public class DocTest {
 </td>
 <td class="content">
 <code>JdbcTemplate</code> 知识见 <a href="https://spring.io/guides/gs/relational-data-access/">https://spring.io/guides/gs/relational-data-access/</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+SQL输出日志需要在 <code>logback-spring.xml</code> 中添加 <code>&lt;logger name="org.springframework.jdbc.core" level="TRACE"/&gt;</code>
 </td>
 </tr>
 </table>
@@ -2363,28 +2395,28 @@ public class Pet implements Serializable {
 <p><strong>更新</strong> <code>Dew.ds().updateById(P id, Object entity) / Dew.ds().updateByCode(String code, Object entity)</code></p>
 </li>
 <li>
-<p><strong>获取单条</strong> <code>Dew.ds().getById(P id, Class&lt;E&gt; entityClazz) / Dew.ds().getByCode(String code, Class&lt;E&gt; entityClazz)</code></p>
+<p><strong>获取单条</strong> <code>Dew.ds().getById(P id, Class&lt;E&gt; entityClazz) / Dew.ds().getByCode(String code, Class&lt;E&gt; entityClazz) / Dew.ds().get(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>获取多条</strong> <code>Dew.ds().findAll(Class&lt;E&gt; entityClazz) / Dew.ds().findAll(LinkedHashMap&lt;String, Boolean&gt; orderDesc, Class&lt;E&gt; entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…)</code></p>
+<p><strong>获取多条</strong> <code>Dew.ds().findAll(Class&lt;E&gt; entityClazz) / Dew.ds().findEnabled(…) / Dew.ds().findDisabled(…) / Dew.ds().find(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>获取分页</strong> <code>Dew.ds().paging(long pageNumber, int pageSize, LinkedHashMap&lt;String, Boolean&gt; orderDesc, Class&lt;E&gt; entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…)</code></p>
+<p><strong>获取分页</strong> <code>Dew.ds().paging(long pageNumber, int pageSize, Class&lt;E&gt; entityClazz) / Dew.ds().pagingEnabled(…) / Dew.ds().pagingDisabled(…) / Dew.ds().paging(SB sqlBuilder, long pageNumber, int pageSize, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>计数</strong> <code>Dew.ds().countAll(Class&lt;?&gt; entityClazz) / Dew.ds().countEnabled(Class&lt;?&gt; entityClazz) / Dew.ds().countDisabled(Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>计数</strong> <code>Dew.ds().countAll(Class&lt;?&gt; entityClazz) / Dew.ds().countEnabled(Class&lt;?&gt; entityClazz) / Dew.ds().countDisabled(Class&lt;?&gt; entityClazz) / Dew.ds().count(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>启用</strong> <code>Dew.ds().enableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().enableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>启用</strong> <code>Dew.ds().enableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().enableByCode(String code, Class&lt;?&gt; entityClazz) / Dew.ds().enable(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>禁用</strong> <code>Dew.ds().disableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().disableByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>禁用</strong> <code>Dew.ds().disableById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().disableByCode(String code, Class&lt;?&gt; entityClazz) / Dew.ds().disable(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>是否存在</strong> <code>Dew.ds().existById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().existByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>是否存在</strong> <code>Dew.ds().existById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().existByCode(String code, Class&lt;?&gt; entityClazz) / Dew.ds().exist(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 <li>
-<p><strong>物理删除</strong> <code>Dew.ds().deleteById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().deleteByCode(String code, Class&lt;?&gt; entityClazz)</code></p>
+<p><strong>物理删除</strong> <code>Dew.ds().deleteById(P id, Class&lt;?&gt; entityClazz) / Dew.ds().deleteByCode(String code, Class&lt;?&gt; entityClazz) / Dew.ds().delete(SB sqlBuilder, Class&lt;E&gt; entityClazz)</code></p>
 </li>
 </ul>
 </div>
@@ -2437,6 +2469,41 @@ assert pet.getType().equals("狗");</code></pre>
 </div>
 </div>
 <div class="sect5">
+<h6 id="truesb-sql"><a class="anchor" href="#truesb-sql"></a>SB，SQL构造器</h6>
+<div class="paragraph">
+<p>每个类型的操作都支持使用SQL构造器构造SQL，目前支持针对单表多条件AND连接的Where条件拼装和排序设置。</p>
+</div>
+<div class="listingblock">
+<div class="title">SB方法</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">SB eq(String field, Object value)
+SB notEq(String field, Object value)
+SB gt(String field, Object value)
+SB ge(String field, Object value)
+SB lt(String field, Object value)
+SB le(String field, Object value)
+SB like(String field, Object value)
+SB in(String field, List&lt;Object&gt; values)
+SB notIn(String field, List&lt;Object&gt; values)
+SB isNull(String field)
+SB notNull(String field)
+SB between(String field, Object value1, Object value2)
+SB asc(String filed)
+SB desc(String filed)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">SB示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">DS.SB.inst()
+   .eq("fieldA", "测试A2")
+   .like("fieldB", "%B2")
+   .notNull("code")
+   .desc("createTime")</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
 <h6 id="truedewdao"><a class="anchor" href="#truedewdao"></a>DewDao</h6>
 <div class="paragraph">
 <p><code>DewDao</code> 是一个泛型基础 <code>Dao</code> 类，实现了常用的操作。</p>
@@ -2450,10 +2517,10 @@ assert pet.getType().equals("狗");</code></pre>
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 在配置文件中添加Dao的路径
 Dew:
   jdbc:
-    basePackage: com.tairanchina.csp.dew.example.jdbc.jdbc
+    base-packages: ["com.tairanchina.csp.dew.example.jdbc.jdbc"]
 
-// 添加CustomerDao
-public interface CustomerDao extends DewDao&lt;In, Customer&gt; {
+// 添加PetDao
+public interface PetDao extends DewDao&lt;Integer, Pet&gt; {
 }
 
 @Autowired
@@ -2513,7 +2580,7 @@ assert pet.getType().equals("猫");</code></pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-<code>@Select</code> 中默认对、* 和 .* 自动解析成表对应字段，但不支持表的嵌套查询。
+<code>@Select</code> 中默认对 * 和 .* 自动解析成表对应字段，但不支持表的嵌套查询。
 </td>
 </tr>
 </table>
@@ -2538,25 +2605,27 @@ CRUDSTestEntity getById(@Param("id") P id);
 Map&lt;String,Object&gt; getMapById(@Param("id") P id);</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>限定</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">使用限制</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><code>@Select</code> 只能用于接口</p>
-</li>
-<li>
-<p><code>@Select</code> 暂不支持DSL SQL，比如（HQL）</p>
+<p><code>@Select</code> 只能用于接口、暂不支持DSL SQL，比如（HQL）</p>
 </li>
 <li>
 <p><code>@ModelParam</code> 参数不支持 <code>null</code> 查询</p>
 </li>
 </ol>
 </div>
-</li>
-</ul>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -2587,7 +2656,7 @@ Map&lt;String,Object&gt; getMapById(@Param("id") P id);</code></pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-其它数据源务必配置在 <code>spring.datasource.multi-datasources</code> 下，格式是 <code>spring.datasource.multi-datasources.&lt;DS Name&gt;.&lt;属性名&gt;=&lt;属性值&gt;</code>
+其它数据源务必配置在 <code>spring.multi-datasources</code> 下，格式是 <code>spring.multi-datasources.&lt;DS Name&gt;.&lt;属性名&gt;=&lt;属性值&gt;</code>
 </td>
 </tr>
 </table>
@@ -2754,11 +2823,11 @@ private JdbcTemplate secondaryJdbcTemplate;
 <div class="title">增加配置</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew:
-    cluster:
-        cache: redis
-        dist: hazelcast # 可选 redis/hazelcast
-        mq: hazelcast # 可选 redis/hazelcast/rabbit
-        election: eureka
+    cluster: # 集群功能
+        cache: # 缓存实现，默认为 redis
+        dist: # 分布式锁和Map实现，默认为 redis，可选 redis/hazelcast
+        mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
+        election: # 领导者选举实现，默认为 eureka
 
 spring:
     redis:
@@ -3374,7 +3443,7 @@ boolean isLeader();</code></pre>
 <td class="content">
 <div class="title">Rabbit Confirm模式支持</div>
 <div class="paragraph">
-<p>((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)
+<p>((RabbitClusterMQ)Dew.cluster.mq).publish(String topic, String message, boolean confirm)<br>
 ((RabbitClusterMQ)Dew.cluster.mq).request(String address, String message, boolean confirm)</p>
 </div>
 </td>
@@ -3446,7 +3515,7 @@ boolean isLeader();</code></pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-详见API文档
+详见API文档。
 </td>
 </tr>
 </table>
@@ -3486,9 +3555,28 @@ boolean isLeader();</code></pre>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Dew 内核不支持鉴权处理（Auth组件功能），但它支持<code>认证缓存</code>，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。</p>
+<p>Dew 内核不支持鉴权处理（Auth组件），现支持两种模式</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>basic模式，它支持<code>认证缓存</code>，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。</p>
+</li>
+<li>
+<p>uc模式，支持用户中心权限系统</p>
+</li>
+</ol>
 </div>
 </blockquote>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>basic模式</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="title">配置认证缓存</div>
@@ -3513,16 +3601,16 @@ boolean isLeader();</code></pre>
 </table>
 </div>
 <div class="listingblock">
-<div class="title">认证缓存接口</div>
+<div class="title">basic 认证缓存接口</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 添加登录信息，optInfo封装自鉴权系统过来的登录信息
 // 一般在登录认证后操作
-Dew.Auth.setOptInfo(OptInfo optInfo);
+Dew.auth.setOptInfo(OptInfo optInfo);
 // 获取登录信息，要求在http请求加上token信息
 Dew.context().optInfo();
 // 删除登录信息
 // 一般在注销登录后操作
-Dew.Auth.removeOptInfo();
+Dew.auth.removeOptInfo();
 
 // 登录信息
 public class OptInfo {
@@ -3530,25 +3618,6 @@ public class OptInfo {
     String token;
     // 账号编码
     String accountCode;
-    // 手机号
-    String mobile;
-    // 邮箱
-    String email;
-    // 姓名
-    String name;
-    // 角色列表
-    List&lt;RoleInfo&gt; roles;
-    // 最后一次登录时间
-    Date lastLoginTime;
-    // 角色信息
-    public static class RoleInfo {
-        // 角色编码
-        String code;
-        // 角色显示名称
-        String name;
-        // 租户编码
-        String tenantCode;
-    }
 }</code></pre>
 </div>
 </div>
@@ -3564,21 +3633,22 @@ public class OptInfo {
 </tr>
 </table>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+使用 <code>OptInfo</code> 扩展类型时需要在工程启动时指定扩展类： <code>DewContext.setOptInfoClazz(&lt;扩展类型&gt;)</code> 。
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
-<div class="title">认证缓存示例</div>
+<div class="title">basic 认证缓存示例</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">/**
- * 模拟用户注册
- */
-@PostMapping(value = "user/register")
-public Resp&lt;Void&gt; register(@RequestBody User user) {
-    // 实际注册处理
-    user.setId($.field.createUUID());
-    MOCK_USER_CONTAINER.put(user.getId(), user);
-    return Resp.success(null);
-}
-
-/**
  * 模拟用户登录
  */
 @PostMapping(value = "auth/login")
@@ -3586,7 +3656,7 @@ public Resp&lt;String&gt; login(@RequestBody LoginDTO loginDTO) {
     // 实际登录处理
     User user = MOCK_USER_CONTAINER.values().stream().filter(u -&gt; u.getIdCard().equals(loginDTO.getIdCard())).findFirst().get();
     String token = $.field.createUUID();
-    Dew.Auth.setOptInfo(new OptInfoExt()
+    Dew.auth.setOptInfo(new OptInfoExt()
             .setIdCard(user.getIdCard())
             .setAccountCode($.field.createShortUUID())
             .setToken(token)
@@ -3601,7 +3671,7 @@ public Resp&lt;String&gt; login(@RequestBody LoginDTO loginDTO) {
 @GetMapping(value = "business/someopt")
 public Resp&lt;Void&gt; someOpt() {
     // 获取登录用户信息
-    Optional&lt;OptInfoExt&gt; optInfoExtOpt = Dew.Auth.getOptInfo();
+    Optional&lt;OptInfoExt&gt; optInfoExtOpt = Dew.auth.getOptInfo();
     if (!optInfoExtOpt.isPresent()) {
         return Resp.unAuthorized("用户认证错误");
     }
@@ -3616,9 +3686,100 @@ public Resp&lt;Void&gt; someOpt() {
 @DeleteMapping(value = "auth/logout")
 public Resp&lt;Void&gt; logout() {
     // 实际注册处理
-    Dew.Auth.removeOptInfo();
+    Dew.auth.removeOptInfo();
     return Resp.success(null);
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>uc模式</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">uc模式配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew:
+    security:
+        token-flag: # token key的名称
+        token-in-header: # token key是否在http header中，为false是会从url query中获取
+        token-hash: # token 值是否做hash（MD5）处理
+        auth-adapter: uc  #开启uc模式
+        uc-auth-adapter:
+             app-id: #app-id
+             app-secret: #app-secret 秘钥</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">uc模式接口</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 添加登录信息，optInfo封装自鉴权系统过来的登录信息
+// 一般在登录认证后操作（废弃）
+Dew.auth.setOptInfo(OptInfo optInfo);
+// 获取登录信息，要求在http请求加上token信息
+Dew.context().optInfo();
+// 删除登录信息
+// 一般在注销登录后操作(废弃)
+Dew.auth.removeOptInfo();
+
+// 登录信息
+public class OptInfo&lt;E&gt; {
+    // Token
+    String token;
+    // 账号编码
+    String accountCode;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<code>OptInfo</code> 为认证缓存信息的基类，使用时可以继承并扩展自己的属性。
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+使用 <code>OptInfo</code> 扩展类型时需要在工程启动时指定扩展类： <code>DewContext.setOptInfoClazz(&lt;扩展类型&gt;)</code> 。
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">uc模式示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">/**
+ * 模拟业务操作
+ */
+@GetMapping(value = "business/someopt")
+public Resp&lt;Void&gt; someOpt() {
+    // 获取登录用户信息
+    Optional&lt;OptInfoExt&gt; optInfoExtOpt = Dew.auth.getOptInfo();
+    if (!optInfoExtOpt.isPresent()) {
+        return Resp.unAuthorized("用户认证错误");
+    }
+    // 登录用户的信息
+    optInfoExtOpt.get();
+    return Resp.success(null);
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3818,7 +3979,7 @@ public @interface Service {
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-如提供没有权限访问，请设置 <code>sonar.forceAuthentication=false</code>
+如提供没有权限访问，请设置 <code>sonar.forceAuthentication=false</code> 。
 </td>
 </tr>
 </table>
@@ -3928,7 +4089,9 @@ management.security.enabled: false # 需要关闭安全管理，可通过IP来�
 </div>
 <div class="sect3">
 <h4 id="true-code-zipkin-code"><a class="anchor" href="#true-code-zipkin-code"></a>3.4.4. <code>Zipkin</code> 集成</h4>
-
+<div class="paragraph">
+<p>TBD</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true--35"><a class="anchor" href="#true--35"></a>3.4.5. 服务调用开发期优化</h4>
@@ -4066,19 +4229,124 @@ public &lt;return&gt; someMethod(..., DewContext context) {
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="true--39"><a class="anchor" href="#true--39"></a>4.4. 配置中心</h3>
+<div class="paragraph">
+<p>使用spring config 配置中心refresh时,在@RefreshScope注解的类中,@Scheduled注解的自动任务会失效。
+建议使用实现SchedulingConfigurer接口的方式添加自动任务。</p>
+</div>
+<div class="listingblock">
+<div class="title">自动任务添加</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableScheduling
+public class SchedulingConfiguration implements SchedulingConfigurer {
+
+    private Logger logger = LoggerFactory.getLogger(SchedulingConfiguration.class);
+
+    @Autowired
+    private ConfigExampleConfig config;
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.addTriggerTask(() -&gt; logger.info("task1: " + config.getVersion()), triggerContext -&gt; {
+            Instant instant = Instant.now().plus(5, SECONDS);
+            return Date.from(instant);
+        });
+
+        taskRegistrar.addTriggerTask(() -&gt; logger.info("task2: " + config.getVersion()), new CronTrigger("1/3 * * * * ?"));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truefeign"><a class="anchor" href="#truefeign"></a>4.5. feign配置特定方法超时时间</h3>
+<div class="paragraph">
+<p><strong><code>hystrix</code> 超时时间配置</strong></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre># 配置默认的hystrix超时时间
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000
+# 配置特定方法的超时时间,优于默认配置
+hystrix.command.&lt;hystrixcommandkey&gt;.execution.isolation.thread.timeoutInMilliseconds=10000
+# &lt;hystrixcommandkey&gt;的format为FeignClassName#methodSignature,下面是示例配置
+hystrix.command.PressureService#getBalance(int).execution.isolation.thread.timeoutInMilliseconds=10000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong><code>ribbon</code> 超时时间配置</strong></p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre># 配置默认ribbon超时时间
+ribbon.ReadTimeout=60000
+# 配置特定服务超时时间,优于默认配置
+&lt;client&gt;.ribbon.ReadTimeout=6000
+# &lt;client&gt;为实际服务名,下面是示例配置
+pressure-service.ribbon.ReadTimeout=5000</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong><code>hystrix</code> 和 <code>ribbon</code> 的超时时间配置相互独立,以低为准,使用时请根据实际情况进行配置</strong></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+如果要针对某个服务做超时设置,建议使用 <code>ribbon</code> 的配置；在同时使用 <code>ribbon</code> 和 <code>hystrix</code> 时,请特别注意超时时间的配置。
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true--40"><a class="anchor" href="#true--40"></a>4.6. 服务调用开发期使用</h3>
+<div class="paragraph">
+<p>在Spring Cloud体系下，服务调用需要启动 <code>Eureka</code> 服务（对于Dew中的 <code>Regstry</code> 组件），这对开发阶段并不友好：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>开发期间会不断启停服务，<code>Eureka</code> 保护机制会影响服务注册（当然这是可以关闭的）</p>
+</li>
+<li>
+<p>多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）</p>
+</li>
+<li>
+<p>需要启动 <code>Eureka</code> 服务，多了一个依赖(下面方法还是需要启动 <code>Eureka</code> 服务0.0)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>为解决上述问题,在使用Spring Cloud的 <code>RestTemplate</code> 时,增加 <code>Ribbon</code> 的服务配置.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre># &lt;client&gt;为service-id
+&lt;client&gt;.ribbon.listOfServers: 127.0.0.1:8888
+# 如
+performance-service.ribbon.listOfServers: 127.0.0.1:8812</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--39"><a class="anchor" href="#true--39"></a>5. 技术指标</h2>
+<h2 id="true--41"><a class="anchor" href="#true--41"></a>5. 技术指标</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--40"><a class="anchor" href="#true--40"></a>5.1. 可靠性</h3>
+<h3 id="true--42"><a class="anchor" href="#true--42"></a>5.1. 可靠性</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--41"><a class="anchor" href="#true--41"></a>5.2. 性能</h3>
+<h3 id="true--43"><a class="anchor" href="#true--43"></a>5.2. 性能</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
@@ -4324,10 +4592,10 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--42"><a class="anchor" href="#true--42"></a>7. 编译部署</h2>
+<h2 id="true--44"><a class="anchor" href="#true--44"></a>7. 编译部署</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--43"><a class="anchor" href="#true--43"></a>7.1. 开发期热部署</h3>
+<h3 id="true--45"><a class="anchor" href="#true--45"></a>7.1. 开发期热部署</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -4369,13 +4637,13 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--44"><a class="anchor" href="#true--44"></a>7.2. 打包</h3>
+<h3 id="true--46"><a class="anchor" href="#true--46"></a>7.2. 打包</h3>
 <div class="paragraph">
 <p><code>mvn clean package -P fatjar</code> 即可打出一个包含所有依赖的包，后把<code>target</code>目录下生成的jar放到<code>release/apps</code>下。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--45"><a class="anchor" href="#true--45"></a>7.3. 部署</h3>
+<h3 id="true--47"><a class="anchor" href="#true--47"></a>7.3. 部署</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -4392,7 +4660,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </table>
 </div>
 <div class="sect3">
-<h4 id="true--46"><a class="anchor" href="#true--46"></a>7.3.1. 准备</h4>
+<h4 id="true--48"><a class="anchor" href="#true--48"></a>7.3.1. 准备</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -4414,7 +4682,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="true--47"><a class="anchor" href="#true--47"></a>7.3.2. 手工发布</h4>
+<h4 id="true--49"><a class="anchor" href="#true--49"></a>7.3.2. 手工发布</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -4446,7 +4714,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--48"><a class="anchor" href="#true--48"></a>8. 配置速查</h2>
+<h2 id="true--50"><a class="anchor" href="#true--50"></a>8. 配置速查</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="true-code-dew-code"><a class="anchor" href="#true-code-dew-code"></a>8.1. <code>Dew</code> 参数</h3>
@@ -4474,14 +4742,14 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
         mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
         election: # 领导者选举实现，默认为 eureka
     jdbc: # DewJDBC功能
-        base-package: # 要扫描的根包，多指定到 jdbc 包中
+        base-packages:[""] # 要扫描的根包，多指定到 jdbc 包中
     security: # 安全功能
         cors:
             allow-origin: # 允许的来源，默认为 * ，建议修改
             allow-methods: # 允许的方法，默认为所有常用方法
             allow-headers: # 允许的头信息，默认为 x-requested-with,content-type
         token-flag: # token 标识，默认为  __dew_token__
-        token-in-header: # true：token标识在 header 中，反之在url参数中，默认为false
+        token-in-header: # true：token标识在 header 中，反之在url参数中，默认为true
         token-hash: # token值是否需要hash，用于解决token值有特殊字符的情况，默认为false
         include-services: [""] # 服务白名单，要求源服务头部带上 Request-From
         exclude-services: [""] # 服务黑名单，要求源服务头部带上 Request-From
@@ -4543,14 +4811,16 @@ spring:
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--49"><a class="anchor" href="#true--49"></a>9. 版本说明</h2>
+<h2 id="true--51"><a class="anchor" href="#true--51"></a>9. 版本说明</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="true1-0-0-rc"><a class="anchor" href="#true1-0-0-rc"></a>9.1. 1.0.0-rc</h3>
 <div class="sect3">
 <h4 id="truefeature"><a class="anchor" href="#truefeature"></a>9.1.1. Feature</h4>
 <div class="paragraph">
-<p>[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除</p>
+<p>[功能]支持用户权限中心认证适配
+[功能]新增SqlBuilder用于快速构建SQL语句
+[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除</p>
 </div>
 </div>
 <div class="sect3">
@@ -4573,10 +4843,16 @@ spring:
 <p>[功能]统一Body及Url Path/Query的异常捕获</p>
 </li>
 <li>
+<p>[功能] <code>tryLock</code> 支持重入</p>
+</li>
+<li>
 <p>[测试]引入 <code>embedded redis</code> 以支持单元测试</p>
 </li>
 <li>
 <p>[文档]添加 以宠物商店为例的 <code>新手入门</code> 章节</p>
+</li>
+<li>
+<p>[修改]原 <code>dew.dao.base-package</code> 改成 <code>dew.jdbc.base-packages</code> 支持多个路径</p>
 </li>
 </ul>
 </div>
@@ -4585,6 +4861,9 @@ spring:
 <h4 id="truefixed"><a class="anchor" href="#truefixed"></a>9.1.3. Fixed</h4>
 <div class="ulist">
 <ul>
+<li>
+<p>修正Redis锁 <code>Unlock</code> 处理的线程问题</p>
+</li>
 <li>
 <p>修正jacoco单元测试覆盖率偏少的问题</p>
 </li>
@@ -4854,7 +5133,7 @@ spring:
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--50"><a class="anchor" href="#true--50"></a>10. 路线图</h2>
+<h2 id="true--52"><a class="anchor" href="#true--52"></a>10. 路线图</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>见 <a href="https://rep.360taihe.com/csp/dew-framework/milestones" class="bare">https://rep.360taihe.com/csp/dew-framework/milestones</a></p>
@@ -4864,7 +5143,7 @@ spring:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-14 09:17:26 CST
+Last updated 2017-09-27 20:15:57 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

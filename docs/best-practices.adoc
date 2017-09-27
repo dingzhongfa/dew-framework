@@ -60,8 +60,8 @@ public <return> someMethod(..., DewContext context) {
 
 === 配置中心
 
-使用spring config 配置中心refresh时,在@RefreshScope注解的类中,@Scheduled注解的自动任务会失效.
-建议使用实现SchedulingConfigurer接口的方式添加自动任务.
+使用spring config 配置中心refresh时,在@RefreshScope注解的类中,@Scheduled注解的自动任务会失效。
+建议使用实现SchedulingConfigurer接口的方式添加自动任务。
 
 [source,java]
 .自动任务添加
@@ -88,6 +88,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 ----
 
 === feign配置特定方法超时时间
+
 *`hystrix` 超时时间配置*
 
  # 配置默认的hystrix超时时间
@@ -108,7 +109,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 
 *`hystrix` 和 `ribbon` 的超时时间配置相互独立,以低为准,使用时请根据实际情况进行配置*
 
-TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置;在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置.
+TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置；在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置。
 
 === 服务调用开发期使用
 
@@ -122,6 +123,5 @@ TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置
 
     # <client>为service-id
     <client>.ribbon.listOfServers: 127.0.0.1:8888
+    # 如
     performance-service.ribbon.listOfServers: 127.0.0.1:8812
-
-

@@ -4,22 +4,23 @@ import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.ucenter.tool.sdk.jwt.JwtHelper;
 import com.tairanchina.csp.ucenter.tool.sdk.model.BasicJwtInfo;
-import com.tairanchina.csp.ucenter.tool.sdk.model.UserInfo;
 import com.tairanchina.csp.ucenter.tool.sdk.user.UserInfoHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Component
+@ConditionalOnExpression("#{'${dew.security.auth-adapter}'=='uc'}")
 public class UCAuthAdapter implements AuthAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(UCAuthAdapter.class);
 
     private JwtHelper jwtHelper;
-    private  UserInfoHelper userInfoHelper;
+    private UserInfoHelper userInfoHelper;
     private String appId;
     private String secret;
     private String serverJwt;
@@ -41,7 +42,7 @@ public class UCAuthAdapter implements AuthAdapter {
     public <E extends OptInfo> Optional<E> getOptInfo(String token) {
         // 拿到公钥后 对用户的jwt进行校验 并获取其中的信息
         BasicJwtInfo basicJwtInfo = jwtHelper.validateClientToken(publicKey, token);
-        return Optional.of(convertOptInfo(token,basicJwtInfo.getPartyId()));
+        return Optional.of(convertOptInfo(token, basicJwtInfo.getPartyId()));
     }
 
     @Override
@@ -54,12 +55,12 @@ public class UCAuthAdapter implements AuthAdapter {
         logger.error("Not implemented", new Exception("Not implemented"));
     }
 
-    private <E extends OptInfo> E convertOptInfo(String jwtToken,String partyId) {
-        E  optInfo = null;
+    private <E extends OptInfo> E convertOptInfo(String jwtToken, String partyId) {
+        E optInfo = null;
         try {
             optInfo = (E) Dew.context().getOptInfoClazz().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            logger.error("Convert OptInfo error",e);
+            logger.error("Convert OptInfo error", e);
         }
         optInfo.setToken(jwtToken);
         optInfo.setAccountCode(partyId);

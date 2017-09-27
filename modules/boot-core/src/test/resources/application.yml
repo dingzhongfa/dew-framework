@@ -15,11 +15,13 @@ dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core"]
   security:
-    app-id: app-1
-    app-secret: app-sec-1
+    auth-adapter: uc
     token-flag: _token_
     token-in-header: true
     token-hash: false
+    uc-auth-adapter:
+      app-id: app-1
+      app-secret: app-sec-1
 #  security:
 #   includeServices: ["a-serv"]
 

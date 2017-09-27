@@ -1444,8 +1444,14 @@ IMPORTANT: 目前服务脚手架需与 `Dew JDBC` 配合使用，后期会适配
 
 [quote,]
 ____
-Dew 内核不支持鉴权处理（Auth组件功能），但它支持`认证缓存`，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。
+Dew 内核不支持鉴权处理（Auth组件），现支持两种模式
+
+. basic模式，它支持`认证缓存`，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。
+
+. uc模式，支持用户中心权限系统
 ____
+====
+- basic模式
 
 [source,yml]
 .配置认证缓存
@@ -1460,16 +1466,16 @@ dew:
 IMPORTANT: 认证缓存需要 `集群缓存` 服务支持，请引入相关的依赖并配置对应的连接信息等。
 
 [source,java]
-.认证缓存接口
+.basic 认证缓存接口
 ----
 // 添加登录信息，optInfo封装自鉴权系统过来的登录信息
 // 一般在登录认证后操作
-Dew.Auth.setOptInfo(OptInfo optInfo);
+Dew.auth.setOptInfo(OptInfo optInfo);
 // 获取登录信息，要求在http请求加上token信息
 Dew.context().optInfo();
 // 删除登录信息
 // 一般在注销登录后操作
-Dew.Auth.removeOptInfo();
+Dew.auth.removeOptInfo();
 
 // 登录信息
 public class OptInfo {
@@ -1485,19 +1491,8 @@ TIP: `OptInfo` 为认证缓存信息的基类，使用时可以继承并扩展�
 IMPORTANT: 使用 `OptInfo` 扩展类型时需要在工程启动时指定扩展类： `DewContext.setOptInfoClazz(<扩展类型>)` 。
 
 [source,java]
-.认证缓存示例
+.basic 认证缓存示例
 ----
-/**
- * 模拟用户注册
- */
-@PostMapping(value = "user/register")
-public Resp<Void> register(@RequestBody User user) {
-    // 实际注册处理
-    user.setId($.field.createUUID());
-    MOCK_USER_CONTAINER.put(user.getId(), user);
-    return Resp.success(null);
-}
-
 /**
  * 模拟用户登录
  */
@@ -1506,7 +1501,7 @@ public Resp<String> login(@RequestBody LoginDTO loginDTO) {
     // 实际登录处理
     User user = MOCK_USER_CONTAINER.values().stream().filter(u -> u.getIdCard().equals(loginDTO.getIdCard())).findFirst().get();
     String token = $.field.createUUID();
-    Dew.Auth.setOptInfo(new OptInfoExt()
+    Dew.auth.setOptInfo(new OptInfoExt()
             .setIdCard(user.getIdCard())
             .setAccountCode($.field.createShortUUID())
             .setToken(token)
@@ -1521,7 +1516,7 @@ public Resp<String> login(@RequestBody LoginDTO loginDTO) {
 @GetMapping(value = "business/someopt")
 public Resp<Void> someOpt() {
     // 获取登录用户信息
-    Optional<OptInfoExt> optInfoExtOpt = Dew.Auth.getOptInfo();
+    Optional<OptInfoExt> optInfoExtOpt = Dew.auth.getOptInfo();
     if (!optInfoExtOpt.isPresent()) {
         return Resp.unAuthorized("用户认证错误");
     }
@@ -1536,11 +1531,72 @@ public Resp<Void> someOpt() {
 @DeleteMapping(value = "auth/logout")
 public Resp<Void> logout() {
     // 实际注册处理
-    Dew.Auth.removeOptInfo();
+    Dew.auth.removeOptInfo();
     return Resp.success(null);
 }
 ----
+====
+====
+- uc模式
 
+[source,yml]
+.uc模式配置
+----
+dew:
+    security:
+        token-flag: # token key的名称
+        token-in-header: # token key是否在http header中，为false是会从url query中获取
+        token-hash: # token 值是否做hash（MD5）处理
+        auth-adapter: uc  #开启uc模式
+        uc-auth-adapter:
+             app-id: #app-id
+             app-secret: #app-secret 秘钥
+----
+
+[source,java]
+.uc模式接口
+----
+// 添加登录信息，optInfo封装自鉴权系统过来的登录信息
+// 一般在登录认证后操作（废弃）
+Dew.auth.setOptInfo(OptInfo optInfo);
+// 获取登录信息，要求在http请求加上token信息
+Dew.context().optInfo();
+// 删除登录信息
+// 一般在注销登录后操作(废弃)
+Dew.auth.removeOptInfo();
+
+// 登录信息
+public class OptInfo<E> {
+    // Token
+    String token;
+    // 账号编码
+    String accountCode;
+}
+----
+
+TIP: `OptInfo` 为认证缓存信息的基类，使用时可以继承并扩展自己的属性。
+
+IMPORTANT: 使用 `OptInfo` 扩展类型时需要在工程启动时指定扩展类： `DewContext.setOptInfoClazz(<扩展类型>)` 。
+
+[source,java]
+.uc模式示例
+----
+/**
+ * 模拟业务操作
+ */
+@GetMapping(value = "business/someopt")
+public Resp<Void> someOpt() {
+    // 获取登录用户信息
+    Optional<OptInfoExt> optInfoExtOpt = Dew.auth.getOptInfo();
+    if (!optInfoExtOpt.isPresent()) {
+        return Resp.unAuthorized("用户认证错误");
+    }
+    // 登录用户的信息
+    optInfoExtOpt.get();
+    return Resp.success(null);
+}
+----
+====
 ==== 追踪日志
 
 `Dew` 集成了可追踪日志的功能，本质上一个 `slf4j` 的装饰器，会在每条日志内容前面打印 `用户账号 #` 。

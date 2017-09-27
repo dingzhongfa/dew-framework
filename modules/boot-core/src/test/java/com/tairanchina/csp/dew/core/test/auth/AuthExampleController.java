@@ -55,7 +55,7 @@ public class AuthExampleController {
             throw Dew.E.e("ASXXX0", new Exception("密码错误"));
         }
         String token = $.field.createUUID();
-        Dew.Auth.setOptInfo(new OptInfoExt()
+        Dew.auth.setOptInfo(new OptInfoExt()
                 .setIdCard(user.getIdCard())
                 .setAccountCode($.field.createShortUUID())
                 .setToken(token)
@@ -74,7 +74,7 @@ public class AuthExampleController {
         dewLogger.info("Dew.context().getId():     " + Dew.context().getId());
         dewLogger.info("Dew.context().getToken():     " + Dew.context().getToken());
         // 获取登录用户信息
-        Optional<OptInfoExt> optInfoExtOpt = Dew.Auth.getOptInfo();
+        Optional<OptInfoExt> optInfoExtOpt = Dew.auth.getOptInfo();
         dewLogger.info("-----test-----");
         dewLogger.info("dewLogger:        info");
         oriLogger.info("oriLogger:        info");
@@ -204,7 +204,7 @@ public class AuthExampleController {
         dewLogger.info("dewLogger:        TEST");
         oriLogger.info("oriLogger:        TEST");
         // 实际注册处理
-        Dew.Auth.removeOptInfo();
+        Dew.auth.removeOptInfo();
         return Resp.success(null);
     }
 

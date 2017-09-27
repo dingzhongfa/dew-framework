@@ -1,8 +1,9 @@
 package com.tairanchina.csp.dew.core.test.auth.dto;
 
+import com.tairanchina.csp.dew.core.dto.BasicOptInfo;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 
-public class OptInfoExt extends OptInfo {
+public class OptInfoExt extends BasicOptInfo<OptInfoExt> {
 
     private String idCard;
 

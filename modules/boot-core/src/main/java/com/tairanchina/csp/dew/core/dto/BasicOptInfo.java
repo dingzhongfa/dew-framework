@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @ApiModel(value = "登录信息")
-public class BasicOptInfo extends OptInfo {
+public class BasicOptInfo<E> extends OptInfo<E> {
 
     @ApiModelProperty(value = "手机号", required = true)
     protected String mobile;
@@ -62,45 +62,45 @@ public class BasicOptInfo extends OptInfo {
         return mobile;
     }
 
-    public BasicOptInfo setMobile(String mobile) {
+    public E setMobile(String mobile) {
         this.mobile = mobile;
-        return this;
+        return (E)this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public BasicOptInfo setEmail(String email) {
+    public E setEmail(String email) {
         this.email = email;
-        return this;
+        return (E) this;
     }
 
     public String getName() {
         return name;
     }
 
-    public BasicOptInfo setName(String name) {
+    public E setName(String name) {
         this.name = name;
-        return this;
+        return (E) this;
     }
 
     public List<RoleInfo> getRoles() {
         return roles;
     }
 
-    public BasicOptInfo setRoles(List<RoleInfo> roles) {
+    public E setRoles(List<RoleInfo> roles) {
         this.roles = roles;
-        return this;
+        return (E) this;
     }
 
     public Date getLastLoginTime() {
         return lastLoginTime;
     }
 
-    public BasicOptInfo setLastLoginTime(Date lastLoginTime) {
+    public E setLastLoginTime(Date lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
-        return this;
+        return (E) this;
     }
 
 }

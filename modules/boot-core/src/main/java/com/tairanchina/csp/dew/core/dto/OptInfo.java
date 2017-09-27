@@ -4,11 +4,8 @@ package com.tairanchina.csp.dew.core.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
-import java.util.List;
-
 @ApiModel(value = "登录信息")
-public class OptInfo {
+public class OptInfo<E> {
 
     @ApiModelProperty(value = "Token", required = true)
     protected String token;
@@ -19,15 +16,17 @@ public class OptInfo {
         return token;
     }
 
-    public void setToken(String token) {
+    public E setToken(String token) {
         this.token = token;
+        return (E) this;
     }
 
     public Object getAccountCode() {
         return accountCode;
     }
 
-    public void setAccountCode(Object accountCode) {
+    public E setAccountCode(Object accountCode) {
         this.accountCode = accountCode;
+        return (E) this;
     }
 }

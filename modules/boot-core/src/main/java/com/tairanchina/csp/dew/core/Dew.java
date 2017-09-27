@@ -102,7 +102,7 @@ public class Dew {
         // Select Auth Adapter
         if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")){
             auth=Dew.applicationContext.getBean(BasicAuthAdapter.class);
-        }else{
+        }else if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")){
             auth=Dew.applicationContext.getBean(UCAuthAdapter.class);
         }
     }

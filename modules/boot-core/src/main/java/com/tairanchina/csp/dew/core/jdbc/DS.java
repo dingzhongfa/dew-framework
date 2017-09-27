@@ -20,13 +20,14 @@ import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.annotation.PostConstruct;
 import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,6 +36,8 @@ import java.util.stream.Collectors;
 
 public class DS {
 
+    private static final Logger logger = LoggerFactory.getLogger(DS.class);
+
     private static final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}"; // 正则匹配 #{key}
     private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
 
@@ -42,8 +45,8 @@ public class DS {
     private static final String STAR = "*";
     private static final String POINT = ".";
     private static final String EMPTY = "";
-    private String DECORATED_LEFT;
-    private String DECORATED_RIGHT;
+    private String leftDecorated;
+    private String rightDecorated;
     private JdbcTemplate jdbcTemplate;
     private String jdbcUrl;
 
@@ -53,32 +56,32 @@ public class DS {
         dialect = DialectFactory.parseDialect(jdbcUrl);
         switch (dialect.getDialectType()) {
             case H2:
-                DECORATED_LEFT = "`";
-                DECORATED_RIGHT = "`";
+                leftDecorated = "`";
+                rightDecorated = "`";
                 break;
             case MYSQL:
-                DECORATED_LEFT = "`";
-                DECORATED_RIGHT = "`";
+                leftDecorated = "`";
+                rightDecorated = "`";
                 break;
             case ORACLE:
-                DECORATED_LEFT = "\"";
-                DECORATED_RIGHT = "\"";
+                leftDecorated = "\"";
+                rightDecorated = "\"";
                 break;
             case POSTGRE:
-                DECORATED_LEFT = "\"";
-                DECORATED_RIGHT = "\"";
+                leftDecorated = "\"";
+                rightDecorated = "\"";
                 break;
             case SQLSERVER:
-                DECORATED_LEFT = "[";
-                DECORATED_RIGHT = "]";
+                leftDecorated = "[";
+                rightDecorated = "]";
                 break;
             case DB2:
-                DECORATED_LEFT = "[";
-                DECORATED_RIGHT = "]";
+                leftDecorated = "[";
+                rightDecorated = "]";
                 break;
             case PHOENIX: // TODO
-                DECORATED_LEFT = "[";
-                DECORATED_RIGHT = "]";
+                leftDecorated = "[";
+                rightDecorated = "]";
                 break;
             default:
         }
@@ -119,207 +122,196 @@ public class DS {
         jdbcTemplate.batchUpdate((String) packageInsert[0], (List<Object[]>) packageInsert[1]);
     }
 
-    public void updateById(Object id, Object entity) {
+    public int updateById(Object id, Object entity) {
         try {
             $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).pkFieldNameOpt.get(), id);
             Object[] packageUpdate = packageUpdate(entity, true);
-            jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
+            return jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
         } catch (NoSuchFieldException e) {
-            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+            logger.error("UpdateById error", e);
+            return 0;
         }
     }
 
-    public void updateByCode(String code, Object entity) {
+    public int updateByCode(String code, Object entity) {
         try {
             $.bean.setValue(entity, EntityContainer.getEntityClassByClazz(entity.getClass()).codeFieldNameOpt.get(), code);
             Object[] packageUpdate = packageUpdate(entity, true);
-            jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
+            return jdbcTemplate.update((String) packageUpdate[0], (Object[]) packageUpdate[1]);
         } catch (NoSuchFieldException e) {
-            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+            logger.error("updateByCode error", e);
+            return 0;
         }
     }
 
     public <E> E getById(Object id, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] packageSelect = packageSelect(entityClazz, new LinkedHashMap<String, Object>() {{
-            put(entityClassInfo.pkFieldNameOpt.get(), id);
-        }}, null);
-        return convertRsToObj(jdbcTemplate.queryForMap((String) packageSelect[0], (Object[]) packageSelect[1]), entityClazz);
+        return get(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public <E> E getByCode(String code, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] packageSelect = packageSelect(entityClazz, new LinkedHashMap<String, Object>() {{
-            put(entityClassInfo.codeFieldNameOpt.get(), code);
-        }}, null);
+        return get(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+    }
+
+    public <E> E get(SB sqlBuilder, Class<E> entityClazz) {
+        Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
         return convertRsToObj(jdbcTemplate.queryForMap((String) packageSelect[0], (Object[]) packageSelect[1]), entityClazz);
     }
 
-    public void deleteById(Object id, Class<?> entityClazz) {
+    public int deleteById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        jdbcTemplate.update(String.format("DELETE FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
-                entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                id);
+        return delete(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
-    public void deleteByCode(String code, Class<?> entityClazz) {
+    public int deleteByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        jdbcTemplate.update(String.format("DELETE FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
-                entityClassInfo.tableName, entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                code);
+        return delete(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
-    public void enableById(Object id, Class<?> entityClazz) {
+    public int deleteAll(Class<?> entityClazz) {
+        return delete(SB.inst(), entityClazz);
+    }
+
+    public int delete(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
+        return jdbcTemplate.update(String.format("DELETE FROM " + leftDecorated + "%s" + rightDecorated + " %s",
+                entityClassInfo.tableName, sb[0]),
+                ((List) sb[1]).toArray());
+    }
+
+    public int enableById(Object id, Class<?> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        return enable(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+    }
+
+    public int enableByCode(String code, Class<?> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        return enable(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+    }
+
+    public int enable(SB sqlBuilder, Class<?> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        jdbcTemplate.update(String.format("UPDATE %s SET " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ? WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
+        ((List) sb[1]).add(0, !column.reverse);
+        return jdbcTemplate.update(String.format("UPDATE %s SET " + leftDecorated + "%s" + rightDecorated + " = ? %s",
                 entityClassInfo.tableName,
                 column.columnName,
-                entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                !column.reverse, id);
+                sb[0]),
+                ((List) sb[1]).toArray());
     }
 
-    public void enableByCode(String code, Class<?> entityClazz) {
+    public int disableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        jdbcTemplate.update(String.format("UPDATE %s SET " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ? WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
-                entityClassInfo.tableName,
-                column.columnName,
-                entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                !column.reverse, code);
+        return disable(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
-    public void disableById(Object id, Class<?> entityClazz) {
+    public int disableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        jdbcTemplate.update(String.format("UPDATE %s SET " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ? WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
-                entityClassInfo.tableName,
-                column.columnName,
-                entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                column.reverse, id);
+        return disable(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
-    public void disableByCode(String code, Class<?> entityClazz) {
+    public int disable(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        jdbcTemplate.update(String.format("UPDATE %s SET " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ? WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
+        ((List) sb[1]).add(0, column.reverse);
+        return jdbcTemplate.update(String.format("UPDATE %s SET " + leftDecorated + "%s" + rightDecorated + " = ? %s",
                 entityClassInfo.tableName,
                 column.columnName,
-                entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                column.reverse, code);
+                sb[0]),
+                ((List) sb[1]).toArray());
     }
 
     public boolean existById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
-                entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.pkFieldNameOpt.get()).columnName),
-                new Object[]{id}, Long.class) != 0;
+        return exist(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public boolean existByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?",
+        return exist(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+    }
+
+    public boolean exist(SB sqlBuilder, Class<?> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.codeFieldNameOpt.get()).columnName),
-                new Object[]{code}, Long.class) != 0;
+                sb[0]),
+                ((List) sb[1]).toArray(), Long.class) != 0;
     }
 
     public <E> List<E> findAll(Class<E> entityClazz) {
-        return find(null, null, entityClazz);
-    }
-
-    public <E> List<E> findAll(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return find(null, orderDesc, entityClazz);
+        return find(SB.inst(), entityClazz);
     }
 
     public <E> List<E> findEnabled(Class<E> entityClazz) {
-        return find(true, null, entityClazz);
-    }
-
-
-    public <E> List<E> findEnabled(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return find(true, orderDesc, entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        return find(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), true), entityClazz);
     }
 
     public <E> List<E> findDisabled(Class<E> entityClazz) {
-        return find(false, null, entityClazz);
-    }
-
-    public <E> List<E> findDisabled(LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return find(false, orderDesc, entityClazz);
-    }
-
-    private <E> List<E> find(Boolean enable, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        LinkedHashMap where = new LinkedHashMap<>();
-        if (enable != null) {
-            EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-            where.put(entityClassInfo.enabledFieldNameOpt.get(), column.reverse ? !enable : enable);
-        }
-        Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
+        return find(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), false), entityClazz);
+    }
+
+    public <E> List<E> find(SB sqlBuilder, Class<E> entityClazz) {
+        Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
         return jdbcTemplate.queryForList((String) packageSelect[0], (Object[]) packageSelect[1]).stream()
                 .map(row -> convertRsToObj(row, entityClazz))
                 .collect(Collectors.toList());
     }
 
+    public <E> List<E> find(String sql, Object[] params, Class<E> entityClazz) {
+        return jdbcTemplate.queryForList(sql, params).stream()
+                .map(row -> convertRsToObj(row, entityClazz))
+                .collect(Collectors.toList());
+    }
+
     public long countAll(Class<?> entityClazz) {
-        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + "",
-                entityClassInfo.tableName),
-                new Object[]{}, Long.class);
+        return count(SB.inst(), entityClazz);
     }
 
     public long countEnabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE %s = ?",
-                entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
-                new Object[]{!column.reverse}, Long.class);
+        return count(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), !column.reverse), entityClazz);
     }
 
     public long countDisabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " WHERE %s = ?",
+        return count(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), column.reverse), entityClazz);
+    }
+
+    public long count(SB sqlBuilder, Class<?> entityClazz) {
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
+        return jdbcTemplate.queryForObject(String.format("SELECT COUNT(1) FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
-                entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get()).columnName),
-                new Object[]{column.reverse}, Long.class);
+                sb[0]),
+                ((List) sb[1]).toArray(), Long.class);
     }
 
     public <E> Page<E> paging(long pageNumber, int pageSize, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, null, null, entityClazz);
-    }
-
-    public <E> Page<E> paging(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, null, orderDesc, entityClazz);
+        return paging(SB.inst(), pageNumber, pageSize, entityClazz);
     }
 
     public <E> Page<E> pagingEnabled(long pageNumber, int pageSize, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, true, null, entityClazz);
-    }
-
-    public <E> Page<E> pagingEnabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, true, orderDesc, entityClazz);
+        EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
+        return paging(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), true), pageNumber, pageSize, entityClazz);
     }
 
     public <E> Page<E> pagingDisabled(long pageNumber, int pageSize, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, false, null, entityClazz);
-    }
-
-    public <E> Page<E> pagingDisabled(long pageNumber, int pageSize, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
-        return paging(pageNumber, pageSize, false, orderDesc, entityClazz);
-    }
-
-    private <E> Page<E> paging(long pageNumber, int pageSize, Boolean enable, LinkedHashMap<String, Boolean> orderDesc, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        LinkedHashMap where = new LinkedHashMap<>();
-        if (enable != null) {
-            EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-            where.put(entityClassInfo.enabledFieldNameOpt.get(), column.reverse ? !enable : enable);
-        }
-        Object[] packageSelect = packageSelect(entityClazz, where, orderDesc);
+        return paging(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), false), pageNumber, pageSize, entityClazz);
+    }
+
+    public <E> Page<E> paging(SB sqlBuilder, long pageNumber, int pageSize, Class<E> entityClazz) {
+        Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
         return paging((String) packageSelect[0], (Object[]) packageSelect[1], pageNumber, pageSize, entityClazz);
     }
 
@@ -416,9 +408,9 @@ public class DS {
             if (sql == null) {
                 // Package
                 StringBuilder sb = new StringBuilder();
-                sb.append("INSERT INTO ").append(DECORATED_LEFT + entityClassInfo.tableName + DECORATED_RIGHT);
+                sb.append("INSERT INTO ").append(leftDecorated + entityClassInfo.tableName + rightDecorated);
                 sb.append(values.entrySet().stream()
-                        .map(entry -> DECORATED_LEFT + entityClassInfo.columns.get(entry.getKey()).columnName + DECORATED_RIGHT)
+                        .map(entry -> leftDecorated + entityClassInfo.columns.get(entry.getKey()).columnName + rightDecorated)
                         .collect(Collectors.joining(", ", " (", ") ")));
                 sb.append("VALUES");
                 sb.append(values.keySet().stream().map(o -> "?").collect(Collectors.joining(", ", " (", ") ")));
@@ -496,14 +488,14 @@ public class DS {
         // Package
         StringBuilder sb = new StringBuilder();
         List<Object> params = new ArrayList<>();
-        sb.append("UPDATE ").append(DECORATED_LEFT + entityClassInfo.tableName + DECORATED_RIGHT).append(" SET ");
+        sb.append("UPDATE ").append(leftDecorated + entityClassInfo.tableName + rightDecorated).append(" SET ");
         sb.append(values.entrySet().stream()
                 .map(entry -> {
                     params.add(entry.getValue());
-                    return DECORATED_LEFT + entityClassInfo.columns.get(entry.getKey()).columnName + "` = ?";
+                    return leftDecorated + entityClassInfo.columns.get(entry.getKey()).columnName + "` = ?";
                 })
                 .collect(Collectors.joining(", ")));
-        sb.append(String.format(" WHERE " + DECORATED_LEFT + "%s" + DECORATED_RIGHT + " = ?", whereColumnName));
+        sb.append(String.format(" WHERE " + leftDecorated + "%s" + rightDecorated + " = ?", whereColumnName));
         params.add(whereValue);
         return new Object[]{sb.toString(), params.toArray()};
     }
@@ -512,32 +504,23 @@ public class DS {
      * 组装查询SQL
      *
      * @param entityClazz 实体类型
-     * @param where       查询条件 fieldName -> value , 确保有序，用于查询优化
-     * @param orderDesc   排序条件 fieldName -> 是否降序 , 确保有序
+     * @param sqlBuilder  SQL构造器
      * @return 格式 Object[]{Sql:String,params:Object[]}
      */
-    private Object[] packageSelect(Class<?> entityClazz, LinkedHashMap<String, Object> where, LinkedHashMap<String, Boolean> orderDesc) {
+    private Object[] packageSelect(Class<?> entityClazz, SB sqlBuilder) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sql = new StringBuilder();
         Object[] params = new Object[]{};
-        sb.append("SELECT ");
-        sb.append(entityClassInfo.columns.values().stream()
-                .map(col -> DECORATED_LEFT + col.columnName + DECORATED_RIGHT).collect(Collectors.joining(", ")));
-        sb.append(" FROM ").append(DECORATED_LEFT + entityClassInfo.tableName + DECORATED_RIGHT);
-        if (where != null && !where.isEmpty()) {
-            sb.append(" WHERE ");
-            sb.append(where.entrySet().stream()
-                    .map(col -> DECORATED_LEFT + entityClassInfo.columns.get(col.getKey()).columnName + "` = ? ")
-                    .collect(Collectors.joining("AND")));
-            params = where.values().toArray();
+        sql.append("SELECT ");
+        sql.append(entityClassInfo.columns.values().stream()
+                .map(col -> leftDecorated + col.columnName + rightDecorated).collect(Collectors.joining(", ")));
+        sql.append(" FROM ").append(leftDecorated + entityClassInfo.tableName + rightDecorated);
+        if (sqlBuilder != null) {
+            Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
+            sql.append(sb[0]);
+            params = ((List) sb[1]).toArray();
         }
-        if (orderDesc != null && !orderDesc.isEmpty()) {
-            sb.append(" ORDER BY ");
-            sb.append(orderDesc.entrySet().stream()
-                    .map(col -> DECORATED_LEFT + entityClassInfo.columns.get(col.getKey()).columnName + "` " + (col.getValue() ? "DESC" : "ASC"))
-                    .collect(Collectors.joining(" ")));
-        }
-        return new Object[]{sb.toString(), params};
+        return new Object[]{sql.toString(), params};
     }
 
     /**
@@ -757,5 +740,180 @@ public class DS {
     public void setJdbcUrl(String jdbcUrl) {
         this.jdbcUrl = jdbcUrl;
     }
+
+    public static class SB {
+
+        private List<SQLCondition> conditions = new ArrayList();
+        private Map<String, Boolean> order = new LinkedHashMap<>();
+
+        private SB() {
+        }
+
+        public static SB inst() {
+            return new SB();
+        }
+
+        public Object[] build(Class entityClazz, String leftDecorated, String rightDecorated) {
+            return build(EntityContainer.getEntityClassByClazz(entityClazz), leftDecorated, rightDecorated);
+        }
+
+        public Object[] build(EntityContainer.EntityClassInfo classInfo, String leftDecorated, String rightDecorated) {
+            StringBuilder sb = new StringBuilder(" WHERE 1 = 1");
+            List<Object> parameters = new ArrayList<>();
+            conditions.forEach(cond -> {
+                String f = leftDecorated + classInfo.columns.get(cond.field).columnName + rightDecorated;
+                switch (cond.op) {
+                    case EQUAL:
+                        sb.append(" AND " + f + " = ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case NOT_EQUAL:
+                        sb.append(" AND " + f + " != ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case GT:
+                        sb.append(" AND " + f + " > ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case GE:
+                        sb.append(" AND " + f + " >= ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case LT:
+                        sb.append(" AND " + f + " < ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case LE:
+                        sb.append(" AND " + f + " <= ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case LIKE:
+                        sb.append(" AND " + f + " LIKE ?");
+                        parameters.add(cond.value1);
+                        break;
+                    case IN:
+                        sb.append(" AND " + f + " IN " + ((List) cond.value1).stream()
+                                .map(o -> "?")
+                                .collect(Collectors.joining(",", "(", ")")));
+                        parameters.add(cond.value1);
+                        break;
+                    case NOT_IN:
+                        sb.append(" AND " + f + " NOT IN " + ((List) cond.value1).stream()
+                                .map(o -> "?")
+                                .collect(Collectors.joining(",", "(", ")")));
+                        parameters.add(cond.value1);
+                        break;
+                    case IS_NULL:
+                        sb.append(" AND " + f + " IS NULL");
+                        break;
+                    case NOT_NULL:
+                        sb.append(" AND " + f + " IS NOT NULL");
+                        break;
+                    case BETWEEN:
+                        sb.append(" AND " + f + " BETWEEN ? AND ?");
+                        parameters.add(cond.value1);
+                        parameters.add(cond.value2);
+                        break;
+                }
+            });
+            if (!order.isEmpty()) {
+                sb.append(" ORDER BY " + order.entrySet().stream()
+                        .map(entry -> leftDecorated + classInfo.columns.get(entry.getKey()).columnName + rightDecorated + " " + (entry.getValue() ? "ASC" : "DESC"))
+                        .collect(Collectors.joining(", ", " ", " ")));
+            }
+            return new Object[]{sb.toString(), parameters};
+        }
+
+        public SB eq(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.EQUAL, field, value, null));
+            return this;
+        }
+
+        public SB notEq(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_EQUAL, field, value, null));
+            return this;
+        }
+
+        public SB gt(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.GT, field, value, null));
+            return this;
+        }
+
+        public SB ge(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.GE, field, value, null));
+            return this;
+        }
+
+        public SB lt(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.LT, field, value, null));
+            return this;
+        }
+
+        public SB le(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.LE, field, value, null));
+            return this;
+        }
+
+        public SB like(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.LIKE, field, value, null));
+            return this;
+        }
+
+        public SB in(String field, List<Object> values) {
+            conditions.add(new SQLCondition(SQLCondition.OP.IN, field, values, null));
+            return this;
+        }
+
+        public SB notIn(String field, List<Object> values) {
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_IN, field, values, null));
+            return this;
+        }
+
+        public SB isNull(String field) {
+            conditions.add(new SQLCondition(SQLCondition.OP.IS_NULL, field, null, null));
+            return this;
+        }
+
+        public SB notNull(String field) {
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_NULL, field, null, null));
+            return this;
+        }
+
+        public SB between(String field, Object value1, Object value2) {
+            conditions.add(new SQLCondition(SQLCondition.OP.BETWEEN, field, value1, value2));
+            return this;
+        }
+
+        public SB asc(String filed) {
+            order.put(filed, true);
+            return this;
+        }
+
+        public SB desc(String filed) {
+            order.put(filed, false);
+            return this;
+        }
+
+        private static class SQLCondition {
+
+            private OP op;
+            private String field;
+            private Object value1;
+            private Object value2;
+
+            SQLCondition(OP op, String field, Object value1, Object value2) {
+                this.op = op;
+                this.field = field;
+                this.value1 = value1;
+                this.value2 = value2;
+            }
+
+            enum OP {
+                EQUAL, NOT_EQUAL, GT, GE, LT, LE, IN, NOT_IN, LIKE, IS_NULL, NOT_NULL, BETWEEN
+            }
+        }
+    }
+
+
 }
 

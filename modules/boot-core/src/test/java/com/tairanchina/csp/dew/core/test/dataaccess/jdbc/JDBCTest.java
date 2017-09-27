@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.test.dataaccess.jdbc;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.BasicEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.EmptyEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.FullEntity;
@@ -193,6 +194,15 @@ public class JDBCTest {
         // pagingDisabled
         fullEntities = Dew.ds().pagingDisabled(1, 2, FullEntity.class);
         Assert.assertEquals(1, fullEntities.getRecordTotal());
+        // Sql Builder
+        fullEntities = Dew.ds().paging(
+                DS.SB.inst()
+                        .eq("fieldA", "测试A2")
+                        .like("fieldB", "%B2")
+                        .notNull("code")
+                        .desc("createTime"),
+                1, 2, FullEntity.class);
+        Assert.assertEquals(1, fullEntities.getRecordTotal());
         // deleteById
         Dew.ds().deleteById(fullEntity.getId(), FullEntity.class);
         // deleteByCode
@@ -268,7 +278,7 @@ public class JDBCTest {
         list.add("");
         list.add("test1");
         list.add("test2");
-        for (String data: list){
+        for (String data : list) {
             Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
             Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS basic_entity");
         }
@@ -279,7 +289,7 @@ public class JDBCTest {
         list.add("");
         list.add("test1");
         list.add("test2");
-        for (String data: list){
+        for (String data : list) {
             Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
             Dew.ds(data).jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                     "(\n" +
@@ -301,7 +311,7 @@ public class JDBCTest {
     }
 
     @Transactional
-    private void testPool() {
+    public void testPool() {
         Boolean[] hasFinish = {false};
         Dew.ds().jdbc().queryForList("select * from test_select_entity").size();
         new Thread(() -> {
@@ -317,7 +327,7 @@ public class JDBCTest {
     }
 
     @Transactional("test2TransactionManager")
-    private void testPoolA() {
+    public void testPoolA() {
         Boolean[] hasFinish = {false};
         Dew.ds("test2").jdbc().queryForList("select * from test_select_entity").size();
         new Thread(() -> {

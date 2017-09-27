@@ -1477,25 +1477,6 @@ public class OptInfo {
     String token;
     // 账号编码
     String accountCode;
-    // 手机号
-    String mobile;
-    // 邮箱
-    String email;
-    // 姓名
-    String name;
-    // 角色列表
-    List<RoleInfo> roles;
-    // 最后一次登录时间
-    Date lastLoginTime;
-    // 角色信息
-    public static class RoleInfo {
-        // 角色编码
-        String code;
-        // 角色显示名称
-        String name;
-        // 租户编码
-        String tenantCode;
-    }
 }
 ----
 

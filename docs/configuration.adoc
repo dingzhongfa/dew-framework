@@ -40,6 +40,7 @@ dew: # Dew 参数key前缀
         auth-adapter: uc  #uc或basic,默认为basic
             #开启uc模式后的app配置
             uc-auth-adapter:
+                host: #用户中心地址
                 app-id: #app-id
                 app-secret: #app-secret 秘钥
 

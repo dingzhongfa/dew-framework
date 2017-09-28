@@ -237,6 +237,15 @@ public class DewConfig {
 
             private String appId;
             private String appSecret;
+            private String host;
+
+            public String getHost() {
+                return host;
+            }
+
+            public void setHost(String host) {
+                this.host = host;
+            }
 
             public String getAppId() {
                 return appId;

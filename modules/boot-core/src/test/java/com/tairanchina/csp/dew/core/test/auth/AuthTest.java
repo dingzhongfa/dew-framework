@@ -16,7 +16,6 @@ import java.util.HashMap;
 public class AuthTest {
 
 
-
     private Logger logger = LoggerFactory.getLogger(AuthTest.class);
 
     public void testAuth() throws Exception {
@@ -37,16 +36,25 @@ public class AuthTest {
         Assert.assertEquals("200", $.json.toJson(loginRes1).get("code").asText());
         Assert.assertEquals("200", $.json.toJson(loginRes2).get("code").asText());
         String businRes1 = $.http.get(TestAll.URL + "business/someopt", new HashMap<String, String>() {{
-                put("_token_", token1);
+            put("_token_", token1);
         }});
 
-        logger.info("businRes1:   " +businRes1);
+        logger.info("businRes1:   " + businRes1);
         Assert.assertEquals("200", $.json.toJson(businRes1).get("code").asText());
         OptInfoExt optInfoExt = (OptInfoExt) Dew.auth.getOptInfo(token2).get();
         Dew.auth.removeOptInfo(optInfoExt.getToken());
-        String logoutRes = $.http.delete(TestAll.URL + "auth/logout",new HashMap<String ,String>(){{
+        String logoutRes = $.http.delete(TestAll.URL + "auth/logout", new HashMap<String, String>() {{
             put("_token_", token1);
         }});
         Assert.assertEquals("200", $.json.toJson(logoutRes).get("code").asText());
+    }
+
+    public void testAuth2() throws Exception {
+        String token1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0X2lkIiwiaV92IjoxNTAzODk5ODY2NTIyLCJrX3QiOiJrX3QiLCJpZGVudF9pZCI6ImlkZW50X2lkIiwiaXNzIjoidWNiaXdrdDRzOXI1dmgzNHJiIiwic192IjoxNTAzODk5ODY2NTIzLCJleHAiOjE1MDY2NzE4MTMsImlhdCI6MTUwNjU4NTQyNX0.h-Ld_sa3NxuvCYBQ0Hd3AxyPpmdi0Mh7gNTCz-l-ed-XFcbVzSQshhUrLRJ769fctUjIafMO7kEdL8Xl6tjvkwVIHhNRsIeVJWPgejPO6V3hTefMq8oru4EUmALFlctb6_JVyHIAG99_LnCjdbLzUn3R0IZglQVmkDT1rngCJNM";
+        String businRes1 = $.http.get(TestAll.URL + "business/someopt", new HashMap<String, String>() {{
+            put("_token_", token1);
+        }});
+
+        logger.info("businRes1:   " + businRes1);
     }
 }

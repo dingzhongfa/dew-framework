@@ -1582,6 +1582,7 @@ dew:
         token-hash: # token 值是否做hash（MD5）处理
         auth-adapter: uc  #开启uc模式
         uc-auth-adapter:
+             host: #用户中心地址
              app-id: #app-id
              app-secret: #app-secret 秘钥
 ----

@@ -15,7 +15,7 @@ dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core"]
   security:
-    auth-adapter: uc
+    #auth-adapter: uc
     token-flag: _token_
     token-in-header: true
     token-hash: false

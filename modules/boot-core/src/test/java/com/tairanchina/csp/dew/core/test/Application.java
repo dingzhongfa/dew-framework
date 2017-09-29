@@ -2,7 +2,6 @@ package com.tairanchina.csp.dew.core.test;
 
 import com.tairanchina.csp.dew.core.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Date;
 

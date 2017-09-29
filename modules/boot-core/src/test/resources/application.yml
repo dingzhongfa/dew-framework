@@ -13,7 +13,7 @@ dew:
     dist: redis
     mq: rabbit
   jdbc:
-    base-packages: ["com.tairanchina.csp.dew.core"]
+    base-packages: ["com.tairanchina.csp.dew.core.**.dao"]
   security:
     #auth-adapter: uc
     token-flag: _token_

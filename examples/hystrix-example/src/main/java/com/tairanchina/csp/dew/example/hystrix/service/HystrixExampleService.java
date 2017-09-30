@@ -23,7 +23,7 @@ public class HystrixExampleService {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
     })
     public String getStores(Map<String, Object> parameters, DewContext context) {
-        // ！！！ Hystrix使用新线程执行代码，导致Threadlocal数据能同步，
+        // ！！！ Hystrix使用新线程执行代码，导致Threadlocal数据不能同步，
         // 使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文需要先传入再设值
         DewContext.setContext(context);
         try {

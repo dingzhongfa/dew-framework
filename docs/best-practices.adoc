@@ -84,15 +84,34 @@ hystrix.threadpool.default.coreSize=10
 ** http://hwood.lofter.com/post/1cc7fbdc_e8c5c96
 
 使用断路保护可有效果的防止系统雪崩，`Spring Cloud` 对` Hystrix` 做了封装，详见：http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_circuit_breaker_hystrix_clients
-需要说明的是 `Hystrix` 使用新线程执行代码，导致Threadlocal数据能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.
+需要说明的是 `Hystrix` 使用新线程执行代码，导致Threadlocal数据不能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.
 
 [source,java]
-.Context处理
+.Hystrix Command 示例,及Context处理
 ----
-@HystrixCommand(...)
-public <return> someMethod(..., DewContext context) {
-    DewContext.setContext(context);
-    ....
+public class HystrixExampleService {
+    @HystrixCommand(fallbackMethod = "defaultFallback", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+    })
+    public String someMethod(Map<String, Object> parameters, DewContext context) {
+        // ！！！ Hystrix使用新线程执行代码，导致Threadlocal数据不能同步，
+        // 使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文需要先传入再设值
+        DewContext.setContext(context);
+        try {
+            Thread.sleep(new Random().nextInt(3000));
+            logger.info("Normal Service Token:" + Dew.context().getToken());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "ok";
+    }
+
+    // 降级处理方法定义
+    public String defaultFallback(Map<String, Object> parameters, DewContext context, Throwable e) {
+        DewContext.setContext(context);
+        logger.info("Error Service Token:" + Dew.context().getToken());
+        return "fail";
+    }
 }
 ----
 

@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.example.mybatisplus;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
 import com.tairanchina.csp.dew.example.mybatisplus.service.UserService;
 import org.slf4j.Logger;
@@ -25,7 +26,19 @@ public class MybatisplusExampleInitiator {
 
     @PostConstruct
     public void init() {
+        Dew.ds().jdbc().execute("CREATE TABLE user\n" +
+                "(\n" +
+                "test_id int primary key,\n" +
+                "name varchar(50),\n" +
+                "age INT ,\n" +
+                "test_type INT ,\n" +
+                "test_date datetime,\n" +
+                "role long,\n" +
+                "phone varchar(50)\n" +
+                ")");
+
         User user = new User();
+        user.setId(1L);
         user.setName("Tom");
         userService.insert(user);
         logger.info("======================");

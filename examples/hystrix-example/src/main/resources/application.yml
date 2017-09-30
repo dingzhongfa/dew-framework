@@ -9,6 +9,11 @@ spring:
 server:
   port: 8080
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://registry:123456@localhost:10000/eureka
+
 dew:
   cluster:
     cache: redis

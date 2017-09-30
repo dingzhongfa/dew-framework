@@ -19,7 +19,7 @@ spring:
 
 dew:
   jdbc:
-    base-packages: ["com.tairanchina.csp.dew.example.jdbc.jdbc"]
+    base-packages: ["com.tairanchina.csp.dew.example.jdbc.dao"]
 
 logging:
   path: ./logs

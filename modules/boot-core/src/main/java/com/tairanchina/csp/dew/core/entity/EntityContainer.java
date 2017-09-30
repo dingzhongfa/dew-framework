@@ -2,15 +2,12 @@ package com.tairanchina.csp.dew.core.entity;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.BeanHelper;
-import com.tairanchina.csp.dew.core.Dew;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,26 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ConditionalOnClass({JdbcTemplate.class})
 public class EntityContainer {
 
-    private static final Logger logger = LoggerFactory.getLogger(EntityContainer.class);
-
     private static final Map<String, EntityClassInfo> COLUMN_INFO = new ConcurrentHashMap<>();
-
-    @PostConstruct
-    private void init() {
-        if (Dew.dewConfig.getBasic().getEntity().getBasePackages().isEmpty()) {
-            return;
-        }
-        Dew.dewConfig.getBasic().getEntity().getBasePackages().stream().parallel().forEach(s -> {
-            try {
-                // Find has Entity annotation
-                $.clazz.scan(s, new HashSet<Class<? extends Annotation>>() {{
-                    add(Entity.class);
-                }}, null).stream().forEach(EntityContainer::loadEntityClassInfo);
-            } catch (IOException | ClassNotFoundException e) {
-                logger.error("Entity Scan error.", e);
-            }
-        });
-    }
 
     private static void loadEntityClassInfo(Class clazz) {
         Map<String, BeanHelper.FieldInfo> fieldInfo = $.bean.findFieldsInfo(
@@ -120,7 +98,9 @@ public class EntityContainer {
                         EnabledColumn enabledColumn = (EnabledColumn) field.getAnnotations().stream().filter(ann -> ann.annotationType() == EnabledColumn.class).findAny().get();
                         entityClassInfo.enabledFieldNameOpt = Optional.of(field.getName());
                         entityClassInfo.columns.put(field.getName(),
-                                EntityClassInfo.Column.build(enabledColumn.columnName().isEmpty() ? camelToUnderline(field.getName()) : enabledColumn.columnName(), false));
+                                EntityClassInfo.Column.build(enabledColumn.columnName().isEmpty() ? camelToUnderline(field.getName()) : enabledColumn.columnName(),
+                                        false,
+                                        enabledColumn.reverse()));
                         isContinue = true;
                     }
                     if (!isContinue) {
@@ -141,6 +121,16 @@ public class EntityContainer {
         }
         return COLUMN_INFO.get(clazz.getName());
     }
+
+    public static EntityClassInfo getEntityClassByClazz(String tableName) {
+        for (Map.Entry<String, EntityClassInfo> entry : COLUMN_INFO.entrySet()) {
+            if (entry.getValue().tableName.equals(tableName)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
 
     public static String camelToUnderline(String name) {
         StringBuilder sb = new StringBuilder();
@@ -182,11 +172,17 @@ public class EntityContainer {
         public static class Column {
             public String columnName;
             public boolean notNull;
+            public boolean reverse;
 
             public static Column build(String columnName, boolean notNull) {
+                return build(columnName, notNull, false);
+            }
+
+            public static Column build(String columnName, boolean notNull, boolean reverse) {
                 Column column = new Column();
                 column.columnName = columnName.toLowerCase();
                 column.notNull = notNull;
+                column.reverse = reverse;
                 return column;
             }
         }

@@ -5,22 +5,53 @@ import com.tairanchina.csp.dew.core.dto.OptInfo;
 
 import java.util.Optional;
 
+/**
+ * Dew 上下文处理
+ */
 public class DewContext {
 
     private static ThreadLocal<DewContext> context = new ThreadLocal<>();
 
-    private String id;
-    private String sourceIP;
-    private String requestUri;
-    private String token;
-    private Optional<OptInfo> innerOptInfo = Optional.empty();
+    private static Class optInfoClazz = OptInfo.class;
 
-    public Optional<OptInfo> optInfo() {
+    /**
+     * 当次请求的ID
+     */
+    private String id;
+    /**
+     * 请求来源IP
+     */
+    private String sourceIP;
+    /**
+     * 请求最初的URL
+     */
+    private String requestUri;
+    /**
+     * 请求对应的token
+     */
+    private String token;
+
+    private Optional innerOptInfo = Optional.empty();
+
+    public static <E extends OptInfo> Class<E> getOptInfoClazz() {
+        return optInfoClazz;
+    }
+
+    /**
+     * 设置自定义的OptInfo
+     *
+     * @param optInfoClazz
+     */
+    public static <E extends OptInfo> void setOptInfoClazz(Class<E> optInfoClazz) {
+        DewContext.optInfoClazz = optInfoClazz;
+    }
+
+    public <E extends OptInfo> Optional<E> optInfo() {
         if (innerOptInfo.isPresent()) {
             return innerOptInfo;
         }
         if (token != null && !token.isEmpty()) {
-            innerOptInfo = Dew.Auth.getOptInfo(token);
+            innerOptInfo = Dew.auth.getOptInfo(token);
         } else {
             innerOptInfo = Optional.empty();
         }

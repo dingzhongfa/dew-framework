@@ -3,7 +3,7 @@ spring:
     name: web-example
 
 server:
-  port: 8080
+  port: 8080 # http端口号
 
 dew:
   basic:
@@ -12,7 +12,10 @@ dew:
     desc: desc
     web-site: www.tairanchina.com
     doc:
-      base-package: com.tairanchina
+      base-package: com.tairanchina # API文档路径
+    format:
+      use-unity-error: true #是否启用统一响应，默认true
+      reuse-http-state: false # 默认true， true:重用http状态码，false:使用协议无关格式
 
 logging:
   path: ./logs

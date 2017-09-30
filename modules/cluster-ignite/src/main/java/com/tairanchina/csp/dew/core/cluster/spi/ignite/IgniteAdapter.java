@@ -2,7 +2,11 @@ package com.tairanchina.csp.dew.core.cluster.spi.ignite;
 
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.cache.CacheAtomicityMode;
+import org.apache.ignite.cache.store.jdbc.CacheJdbcBlobStoreFactory;
+import org.apache.ignite.configuration.CacheConfiguration;
 import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.configuration.TransactionConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
@@ -11,6 +15,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 @Component
 @ConditionalOnExpression("#{'${dew.cluster.cache}'=='ignite' || '${dew.cluster.mq}'=='ignite' || '${dew.cluster.dist}'=='ignite'}")
@@ -45,6 +50,12 @@ public class IgniteAdapter {
         if (config.isClient()) {
             cfg.setClientMode(true);
         }
+        CacheConfiguration cacheConfiguration = new CacheConfiguration();
+        cacheConfiguration.setName("dew-boot");
+        cacheConfiguration.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
+        cfg.setCacheConfiguration(cacheConfiguration);
+        TransactionConfiguration transactionConfiguration = new TransactionConfiguration();
+        cfg.setTransactionConfiguration(transactionConfiguration);
         ignite = Ignition.start(cfg);
     }
 

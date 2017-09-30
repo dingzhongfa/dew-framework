@@ -15,9 +15,10 @@ public class IgniteClusterMQ implements ClusterMQ {
     private IgniteAdapter igniteAdapter;
 
     @Override
-    public void publish(String topic, String message) {
+    public boolean publish(String topic, String message) {
         logger.trace("[MQ] publish {}:{}", topic, message);
         igniteAdapter.getIgnite().message(igniteAdapter.getIgnite().cluster().forRemotes()).send(topic, message);
+        return true;
     }
 
     @Override
@@ -30,16 +31,16 @@ public class IgniteClusterMQ implements ClusterMQ {
                         consumer.accept(msg);
                         return true;
                     } catch (Exception e) {
-                        logger.error("Ignite Subscribe error.",e);
+                        logger.error("Ignite Subscribe error.", e);
                         return false;
                     }
                 });
     }
 
     @Override
-    public void request(String address, String message) {
+    public boolean request(String address, String message) {
         logger.trace("[MQ] request {}:{}", address, message);
-        igniteAdapter.getIgnite().queue(address, 0, null).add(message);
+        return igniteAdapter.getIgnite().queue(address, 0, null).add(message);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class IgniteClusterMQ implements ClusterMQ {
                     consumer.accept(message);
                 }
             } catch (Exception e) {
-                logger.error("Ignite Response error.",e);
+                logger.error("Ignite Response error.", e);
             }
         }).start();
     }

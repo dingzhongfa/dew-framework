@@ -25,8 +25,6 @@ public class MethodConstruction {
 
     private Method method;
 
-    private Object[] params;
-
     private Annotation[] methodAnnotations;
 
     private Annotation[][] paramAnnotations;
@@ -37,7 +35,6 @@ public class MethodConstruction {
         setMethod(method);
         setMethodAnnotations(method.getAnnotations());
         setParamAnnotations(method.getParameterAnnotations());
-        setParams(args);
         bindingParams(method.getParameters(), args);
     }
 
@@ -85,9 +82,6 @@ public class MethodConstruction {
         });
     }
 
-    public Object[] getParameters() {
-        return method.getParameters();
-    }
 
     Annotation[] getMethodAnnotations() {
         return methodAnnotations;
@@ -119,14 +113,6 @@ public class MethodConstruction {
 
     private void setParamAnnotations(Annotation[][] paramAnnotations) {
         this.paramAnnotations = paramAnnotations;
-    }
-
-    private void setParams(Object[] params) {
-        this.params = params;
-    }
-
-    public Object[] getParams() {
-        return params;
     }
 
     public Map<String, Object> getParamsMap() {

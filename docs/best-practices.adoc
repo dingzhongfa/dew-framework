@@ -1,4 +1,4 @@
-== 最佳实践（TBD）
+== 最佳实践
 
 === JDBC框架的选择
 
@@ -13,23 +13,173 @@
 
 上述是几个主流JDBC框架的使用场景分析，Dew默认的是哪个呢？Dew默认的是基于Spring JDBC Template的封装，其理由如下：
 
-1. Dew做为内部框架，需要能从容地处理公司规划的领域模型结构，但这一数据模型无法与对象模型对应，所以JPA的优势无法体现
-1. Dew希望尽可能保持“轻巧”，结构简单、容易上手，Hibernate相对而言过重了
+. Dew做为内部框架，需要能从容地处理公司规划的领域模型结构，但这一数据模型无法与对象模型对应，所以JPA的优势无法体现
+. Dew希望尽可能保持“轻巧”，结构简单、容易上手，Hibernate相对而言过重了
 
 基于两个原因Hibernate并不适合使用，又因为：
 
-1. 在数据库设计上一般会存在业务主键、是否启用状态等字段，经常需要针对这些字段查询、修改
-1. 在数据库设计上一般会存在创建人/时间、更新人/时间等常规字段，在创建、更新对象时需要自动赋值
-1. 希望能有自动化的ORMPPING功能
-1. 要求能很好的支持多数据源操作
+. 在数据库设计上一般会存在业务主键、是否启用状态等字段，经常需要针对这些字段查询、修改
+. 在数据库设计上一般会存在创建人/时间、更新人/时间等常规字段，在创建、更新对象时需要自动赋值
+. 希望能有自动化的ORMPPING功能
+. 要求能很好的支持多数据源操作
 
 基于这三个原因MyBatis、Ebean、DBUtils及Spring JDBC Template都无法满足要求。
 
 所以为适应这一场景需求，Dew基于Spring JDBC Template做了扩展以支持上述功能。
 
 
-    
+=== 缓存处理
+`Spring Cache` 提供了很好的注解式缓存，但默认没有超时，需要根据使用的缓存容器特殊配置，e.g.
 
+[source,java]
+.Redis缓存过期时间设置
+----
+@Bean
+RedisCacheManager cacheManager() {
+    final RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
+    redisCacheManager.setUsePrefix(true);
+    redisCacheManager.setDefaultExpiration(<过期秒数>);
+    return redisCacheManager;
+}
+----
 
+=== 断路保护
 
+[source,properties]
+.Hystrix配置
+----
+# 执行的隔离策略 THREAD, SEMAPHORE 默认THREAD
+hystrix.command.default.execution.isolation.strategy=THREAD
+# 执行hystrix command的超时时间,超时后会进入fallback方法 默认1000
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=1000
+# 执行hystrix command是否限制超时,默认是true
+hystrix.command.default.execution.timeout.enabled=true
+# hystrix command 执行超时后是否中断 默认true
+hystrix.command.default.execution.isolation.thread.interruptOnTimeout=true
+# 使用信号量隔离时,信号量大小,默认10
+hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests=10
+# fallback方法最大并发请求数 默认是10
+hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests=10
+# 服务降级是否开启,默认为true
+hystrix.command.default.fallback.enabled=true
+# 是否使用断路器来跟踪健康指标和熔断请求
+hystrix.command.default.circuitBreaker.enabled=true
+# 熔断器的最小请求数,默认20. (这个不是很理解,欢迎补充)
+hystrix.command.default.circuitBreaker.requestVolumeThreshold=20
+# 断路器打开后的休眠时间,默认5000
+hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds=5000
+# 断路器打开的容错比,默认50
+hystrix.command.default.circuitBreaker.errorThresholdPercentage=50
+# 强制打开断路器,拒绝所有请求. 默认false, 优先级高于forceClosed
+hystrix.command.default.circuitBreaker.forceOpen=false
+# 强制关闭断路器,接收所有请求,默认false,优先级低于forceOpen
+hystrix.command.default.circuitBreaker.forceClosed=false
 
+# hystrix command 命令执行核心线程数,最大并发 默认10
+hystrix.threadpool.default.coreSize=10
+----
+
+* 信息参见:
+** https://github.com/Netflix/Hystrix/wiki/Configuration
+** http://hwood.lofter.com/post/1cc7fbdc_e8c5c96
+
+使用断路保护可有效果的防止系统雪崩，`Spring Cloud` 对` Hystrix` 做了封装，详见：http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_circuit_breaker_hystrix_clients
+
+需要说明的是 `Hystrix` 使用新线程执行代码，导致Threadlocal数据不能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.
+
+[source,java]
+.Hystrix Command 示例,及Context处理
+----
+public class HystrixExampleService {
+    @HystrixCommand(fallbackMethod = "defaultFallback", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+    })
+    public String someMethod(Map<String, Object> parameters, DewContext context) {
+        // ！！！ Hystrix使用新线程执行代码，导致Threadlocal数据不能同步，
+        // 使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文需要先传入再设值
+        DewContext.setContext(context);
+        try {
+            Thread.sleep(new Random().nextInt(3000));
+            logger.info("Normal Service Token:" + Dew.context().getToken());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "ok";
+    }
+
+    // 降级处理方法定义
+    public String defaultFallback(Map<String, Object> parameters, DewContext context, Throwable e) {
+        DewContext.setContext(context);
+        logger.info("Error Service Token:" + Dew.context().getToken());
+        return "fail";
+    }
+}
+----
+
+=== 配置中心
+
+使用 `Spring Config`  配置中心 `refresh` 时,在 `@RefreshScope` 注解的类中,` @Scheduled` 注解的自动任务会失效。
+建议使用实现 `SchedulingConfigurer` 接口的方式添加自动任务。
+
+[source,java]
+.自动任务添加
+----
+@Configuration
+@EnableScheduling
+public class SchedulingConfiguration implements SchedulingConfigurer {
+
+    private Logger logger = LoggerFactory.getLogger(SchedulingConfiguration.class);
+
+    @Autowired
+    private ConfigExampleConfig config;
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.addTriggerTask(() -> logger.info("task1: " + config.getVersion()), triggerContext -> {
+            Instant instant = Instant.now().plus(5, SECONDS);
+            return Date.from(instant);
+        });
+
+        taskRegistrar.addTriggerTask(() -> logger.info("task2: " + config.getVersion()), new CronTrigger("1/3 * * * * ?"));
+    }
+}
+----
+
+=== `feign` 配置特定方法超时时间
+
+*`hystrix` 超时时间配置*
+
+ # 配置默认的hystrix超时时间
+ hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=10000
+ # 配置特定方法的超时时间,优于默认配置
+ hystrix.command.<hystrixcommandkey>.execution.isolation.thread.timeoutInMilliseconds=10000
+ # <hystrixcommandkey>的format为FeignClassName#methodSignature,下面是示例配置
+ hystrix.command.PressureService#getBalance(int).execution.isolation.thread.timeoutInMilliseconds=10000
+
+*`ribbon` 超时时间配置*
+
+ # 配置默认ribbon超时时间
+ ribbon.ReadTimeout=60000
+ # 配置特定服务超时时间,优于默认配置
+ <client>.ribbon.ReadTimeout=6000
+ # <client>为实际服务名,下面是示例配置
+ pressure-service.ribbon.ReadTimeout=5000
+
+*`hystrix` 和 `ribbon` 的超时时间配置相互独立,以低为准,使用时请根据实际情况进行配置*
+
+TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置；在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置。
+
+=== 服务调用开发期使用
+
+在Spring Cloud体系下，服务调用需要启动 `Eureka` 服务（对于Dew中的 `Regstry` 组件），这对开发阶段并不友好：
+
+. 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
+. 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）
+. 需要启动 `Eureka` 服务，多了一个依赖
+
+为解决上述问题,在使用` Spring Cloud` 的 `RestTemplate` 时,增加 `Ribbon` 的服务配置.
+
+    # <client>为service-id
+    <client>.ribbon.listOfServers: <直接访问的IPs>
+    # 如
+    performance-service.ribbon.listOfServers: 127.0.0.1:8812

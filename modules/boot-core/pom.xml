@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-RC</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
@@ -15,10 +15,10 @@
     <name>Dew Boot Core</name>
     <description>Dew Spring Boot 封装</description>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
 
     <properties>
-
+        <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
     </properties>
 
     <dependencies>
@@ -55,7 +55,7 @@
             <artifactId>cluster-spi-rabbit</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--<dependency>
+       <!-- <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-ignite</artifactId>
             <scope>test</scope>
@@ -99,16 +99,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <optional>true</optional>
@@ -117,6 +107,24 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.tairanchina.csp.ucenter</groupId>
+            <artifactId>tool-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.4</version>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>test-starter</artifactId>
         </dependency>
     </dependencies>
 

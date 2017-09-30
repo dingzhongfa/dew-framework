@@ -17,6 +17,7 @@ public class GatewayApplication extends DewCloudApplication {
         new SpringApplicationBuilder(GatewayApplication.class).web(true).run(args);
     }
 
+    @Bean
     public LoggingFilter loggingFilter() {
         return new LoggingFilter();
     }

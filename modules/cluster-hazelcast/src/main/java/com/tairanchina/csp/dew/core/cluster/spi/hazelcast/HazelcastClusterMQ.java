@@ -16,9 +16,10 @@ public class HazelcastClusterMQ implements ClusterMQ {
     private HazelcastAdapter hazelcastAdapter;
 
     @Override
-    public void publish(String topic, String message) {
+    public boolean publish(String topic, String message) {
         logger.trace("[MQ] publish {}:{}", topic, message);
         hazelcastAdapter.getHazelcastInstance().getTopic(topic).publish(message);
+        return true;
     }
 
     @Override
@@ -29,16 +30,16 @@ public class HazelcastClusterMQ implements ClusterMQ {
                 logger.trace("[MQ] subscribe {}:{}", topic, msg);
                 consumer.accept(msg);
             } catch (Exception e) {
-                logger.error("Hazelcast Subscribe error.",e);
+                logger.error("Hazelcast Subscribe error.", e);
             }
         });
 
     }
 
     @Override
-    public void request(String address, String message) {
+    public boolean request(String address, String message) {
         logger.trace("[MQ] request {}:{}", address, message);
-        hazelcastAdapter.getHazelcastInstance().getQueue(address).add(message);
+        return hazelcastAdapter.getHazelcastInstance().getQueue(address).add(message);
     }
 
     @Override
@@ -52,10 +53,10 @@ public class HazelcastClusterMQ implements ClusterMQ {
                 }
             } catch (HazelcastClientNotActiveException e) {
                 if (hazelcastAdapter.isActive()) {
-                    logger.error("Hazelcast Response error.",e);
+                    logger.error("Hazelcast Response error.", e);
                 }
             } catch (Exception e) {
-                logger.error("Hazelcast Response error.",e);
+                logger.error("Hazelcast Response error.", e);
             }
         }).start();
     }

@@ -1,5 +1,5 @@
 = Dew-Framework（轻量服务框架）
-v1.0.0-beta5,2017-09-2
+v1.0.0-RC,2017-09-30
 :doctype: book
 :encoding: utf-8
 :lang: zh-CN
@@ -8,6 +8,8 @@ v1.0.0-beta5,2017-09-2
 :numbered:
 
 include::../README.adoc[]
+
+include::guide.adoc[]
 
 include::user-manual.adoc[]
 
@@ -18,6 +20,8 @@ include::specification.adoc[]
 include::develop.adoc[]
 
 include::deploy.adoc[]
+
+include::configuration.adoc[]
 
 include::../CHANGELOG.adoc[]
 

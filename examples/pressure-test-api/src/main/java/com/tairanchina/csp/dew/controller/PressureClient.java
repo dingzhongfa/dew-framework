@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.controller;
 
-import com.tairanchina.csp.dew.service.PressureService;
+import com.tairanchina.csp.dew.example.mybatisplus.service.PressureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +16,12 @@ public class PressureClient {
     @RequestMapping(value = "/account/{userId}/balance", method = RequestMethod.GET)
     public int getBalance(@PathVariable(value = "userId") int userId){
         return pressureService.getBalance(userId);
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public Integer test() {
+        System.out.println("test 111111");
+        return pressureService.test();
     }
 
     @RequestMapping(value = "/account/transfer", method = RequestMethod.GET)

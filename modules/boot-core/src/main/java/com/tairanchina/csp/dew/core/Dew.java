@@ -3,6 +3,9 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.ecfront.dew.common.StandardCode;
+import com.tairanchina.csp.dew.core.auth.AuthAdapter;
+import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
+import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
@@ -20,16 +23,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -49,6 +48,7 @@ public class Dew {
     public static Cluster cluster = new Cluster();
     public static ApplicationContext applicationContext;
     public static DewConfig dewConfig;
+    public static AuthAdapter auth;
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -60,28 +60,21 @@ public class Dew {
     @Autowired
     private ApplicationContext innerApplicationContext;
 
-    @Bean
-    public MethodValidationPostProcessor methodValidationPostProcessor() {
-        return new MethodValidationPostProcessor();
-    }
-
     @PostConstruct
     private void init() {
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
-            if (Dew.applicationContext.containsBean("cacheProperties")) {
-                CacheProperties cacheProperties = Dew.applicationContext.getBean(CacheProperties.class);
-                switch (innerDewConfig.getCluster().getCache().toUpperCase()) {
-                    case "REDIS":
-                        cacheProperties.setType(CacheType.REDIS);
-                        break;
-                    case "HAZELCAST":
-                        cacheProperties.setType(CacheType.HAZELCAST);
-                        break;
-                    default:
-                        break;
-                }
+            CacheProperties cacheProperties = Dew.applicationContext.getBean(CacheProperties.class);
+            switch (innerDewConfig.getCluster().getCache().toUpperCase()) {
+                case "REDIS":
+                    cacheProperties.setType(CacheType.REDIS);
+                    break;
+                case "HAZELCAST":
+                    cacheProperties.setType(CacheType.HAZELCAST);
+                    break;
+                default:
+                    break;
             }
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getDist() + "ClusterDist")) {
@@ -100,33 +93,22 @@ public class Dew {
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
         Info.name = applicationName;
         // JDBC Scan
-        if (StringUtils.hasLength(Dew.dewConfig.getDao().getBasePackage())) {
+        if (!Dew.dewConfig.getJdbc().getBasePackages().isEmpty()) {
             ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
             scanner.setResourceLoader(Dew.applicationContext);
             scanner.registerFilters();
-            scanner.scan(StringUtils.tokenizeToStringArray(Dew.dewConfig.getDao().getBasePackage(), ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+            scanner.scan(Dew.dewConfig.getJdbc().getBasePackages().toArray(new String[]{}));
+        }
+        // Select Auth Adapter
+        if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")){
+            auth=Dew.applicationContext.getBean(BasicAuthAdapter.class);
+        }else if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")){
+            auth=Dew.applicationContext.getBean(UCAuthAdapter.class);
         }
     }
 
     public static class Constant {
-        // token存储key
-        public static final String TOKEN_INFO_FLAG = "dew:auth:token:info:";
-        // Token Id 关联 key : dew:auth:token:id:rel:<code> value : <token Id>
         public static final String HTTP_REQUEST_FROM_FLAG = "Request-From";
-
-        public static final String TOKEN_ID_REL_FLAG = "dew:auth:token:id:rel:";
-
-        public static final String MQ_AUTH_TENANT_ADD = "dew.auth.tenant.add";
-        public static final String MQ_AUTH_TENANT_REMOVE = "dew.auth.tenant.remove";
-        public static final String MQ_AUTH_RESOURCE_ADD = "dew.auth.resource.add";
-        public static final String MQ_AUTH_RESOURCE_REMOVE = "dew.auth.resource.remove";
-        public static final String MQ_AUTH_ROLE_ADD = "dew.auth.role.add";
-        public static final String MQ_AUTH_ROLE_REMOVE = "dew.auth.role.remove";
-        public static final String MQ_AUTH_ACCOUNT_ADD = "dew.auth.account.add";
-        public static final String MQ_AUTH_ACCOUNT_REMOVE = "dew.auth.account.remove";
-
-        public static final String MQ_AUTH_REFRESH = "dew.auth.refresh";
-
     }
 
     /**
@@ -369,54 +351,6 @@ public class Dew {
                 DewContext.setContext(context);
                 fun.exec();
             }
-        }
-
-    }
-
-    public static class Auth {
-
-        public static Optional<OptInfo> getOptInfo() {
-            return Dew.context().optInfo();
-        }
-
-        public static Optional<OptInfo> getOptInfo(String token) {
-            String optInfoStr = Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token);
-            if (optInfoStr != null && !optInfoStr.isEmpty()) {
-                return Optional.of($.json.toObject(optInfoStr, OptInfo.class));
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        public static void removeOptInfo() {
-            Optional<OptInfo> tokenInfoOpt = getOptInfo();
-            if (tokenInfoOpt.isPresent()) {
-                Dew.cluster.cache.del(Dew.Constant.TOKEN_ID_REL_FLAG + tokenInfoOpt.get().getAccountCode());
-                Dew.cluster.cache.del(Dew.Constant.TOKEN_INFO_FLAG + tokenInfoOpt.get().getToken());
-            }
-        }
-
-        public static void removeOptInfo(String token) {
-            Optional<OptInfo> tokenInfoOpt = getOptInfo(token);
-            if (tokenInfoOpt.isPresent()) {
-                Dew.cluster.cache.del(Dew.Constant.TOKEN_ID_REL_FLAG + tokenInfoOpt.get().getAccountCode());
-                Dew.cluster.cache.del(Dew.Constant.TOKEN_INFO_FLAG + token);
-            }
-        }
-
-        public static Optional<OptInfo> getOptInfoByAccCode(String accountCode) {
-            String token = Dew.cluster.cache.get(Dew.Constant.TOKEN_ID_REL_FLAG + accountCode);
-            if (token != null && !token.isEmpty()) {
-                return Optional.of($.json.toObject(Dew.cluster.cache.get(Dew.Constant.TOKEN_INFO_FLAG + token), OptInfo.class));
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        public static void setOptInfo(OptInfo optInfo) {
-            Dew.cluster.cache.del(Dew.Constant.TOKEN_INFO_FLAG + Dew.cluster.cache.get(Dew.Constant.TOKEN_ID_REL_FLAG + optInfo.getAccountCode()));
-            Dew.cluster.cache.set(Dew.Constant.TOKEN_ID_REL_FLAG + optInfo.getAccountCode(), optInfo.getToken());
-            Dew.cluster.cache.set(Dew.Constant.TOKEN_INFO_FLAG + optInfo.getToken(), $.json.toJsonString(optInfo));
         }
 
     }

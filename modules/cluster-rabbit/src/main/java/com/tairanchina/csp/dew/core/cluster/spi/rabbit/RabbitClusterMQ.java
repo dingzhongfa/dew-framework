@@ -22,15 +22,34 @@ public class RabbitClusterMQ implements ClusterMQ {
     private RabbitAdapter rabbitAdapter;
 
     @Override
-    public void publish(String topic, String message) {
+    public boolean publish(String topic, String message) {
+        return publish(topic, message, false);
+    }
+
+    public boolean publish(String topic, String message, boolean confirm) {
         logger.trace("[MQ] publish {}:{}", topic, message);
         Connection connection = rabbitAdapter.getConnection();
         Channel channel = connection.createChannel(false);
         try {
+            if (confirm) {
+                channel.confirmSelect();
+            }
             channel.exchangeDeclare(topic, "fanout");
             channel.basicPublish(topic, "", null, message.getBytes());
+            if (confirm) {
+                try {
+                    return channel.waitForConfirms();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("[MQ] Rabbit publish error.", e);
+                    return false;
+                }
+            }else{
+                return true;
+            }
         } catch (IOException e) {
             logger.error("[MQ] Rabbit publish error.", e);
+            return false;
         } finally {
             try {
                 channel.close();
@@ -67,15 +86,34 @@ public class RabbitClusterMQ implements ClusterMQ {
     }
 
     @Override
-    public void request(String address, String message) {
+    public boolean request(String address, String message) {
+        return request(address, message, false);
+    }
+
+    public boolean request(String address, String message, boolean confirm) {
         logger.trace("[MQ] request {}:{}", address, message);
         Connection connection = rabbitAdapter.getConnection();
         Channel channel = connection.createChannel(false);
         try {
+            if (confirm) {
+                channel.confirmSelect();
+            }
             channel.queueDeclare(address, true, false, false, null);
             channel.basicPublish("", address, null, message.getBytes());
+            if (confirm) {
+                try {
+                    return channel.waitForConfirms();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("[MQ] Rabbit request error.", e);
+                    return false;
+                }
+            }else{
+                return true;
+            }
         } catch (IOException e) {
             logger.error("[MQ] Rabbit request error.", e);
+            return false;
         } finally {
             try {
                 channel.close();

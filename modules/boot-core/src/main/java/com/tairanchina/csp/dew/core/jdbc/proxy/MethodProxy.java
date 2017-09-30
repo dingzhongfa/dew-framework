@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core.jdbc.proxy;
 
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.jdbc.DewDao;
 import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
 import org.springframework.cglib.proxy.InvocationHandler;
 import org.springframework.util.ConcurrentReferenceHashMap;
@@ -14,15 +15,16 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by 迹_Jason on 2017/7/26.
- */
+
 public class MethodProxy implements InvocationHandler {
 
     private static final Map<Method, MethodHandle> METHOD_HANDLE_CACHE = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
 
+    private static final Map<Class, String> REL_DAO_DS = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        String dsName = getRelDAOAndDS(method.getDeclaringClass(), proxy);
         if (!method.getDeclaringClass().isInterface() && !method.isDefault()) {
             // This proxy is class and method has not impl
             return method.invoke(this, args);
@@ -32,9 +34,30 @@ public class MethodProxy implements InvocationHandler {
                     .invokeWithArguments(args);
         } else {
             // This proxy is interface
-            return run(method, args);
+            return run(method, args, dsName);
         }
     }
+
+    private String getRelDAOAndDS(Class clazz, Object proxy) throws Throwable {
+        if (clazz == DewDao.class) {
+            return "";
+        }
+        String dsName = REL_DAO_DS.getOrDefault(clazz, null);
+        if (dsName != null) {
+            return dsName;
+        }
+        Method dsMethod = clazz.getMethod("ds");
+        if (!clazz.isInterface() && !dsMethod.isDefault()) {
+            // This proxy is class and method has not impl
+            dsName = (String) dsMethod.invoke(this);
+        } else if (dsMethod.isDefault()) {
+            // This proxy is interface but method has impl
+            dsName = (String) getMethodHandle(dsMethod).bindTo(proxy).invokeWithArguments();
+        }
+        REL_DAO_DS.put(clazz, dsName);
+        return dsName;
+    }
+
 
     private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         MethodHandle handle = METHOD_HANDLE_CACHE.get(method);
@@ -54,14 +77,14 @@ public class MethodProxy implements InvocationHandler {
     /**
      * 实现接口的核心方法
      */
-    public Object run(Method m, Object[] args) {
+    public Object run(Method m, Object[] args, String dsName) {
         MethodConstruction method = new MethodConstruction(m, args);
         for (Annotation annotation : method.getMethodAnnotations()) {
             if (annotation instanceof Select) {
                 if (method.flagOfPaging()) {
-                    return Dew.ds().selectForPaging(((Select) annotation).entityClass(), method, ((Select) annotation).value());
+                    return Dew.ds(dsName).selectForPaging(((Select) annotation).entityClass(), method, ((Select) annotation).value());
                 } else {
-                    List list = Dew.ds().selectForList(((Select) annotation).entityClass(), method.getParamsMap(), ((Select) annotation).value());
+                    List list = Dew.ds(dsName).selectForList(((Select) annotation).entityClass(), method.getParamsMap(), ((Select) annotation).value());
                     if (!method.getReturnType().isAssignableFrom(List.class)) {
                         return !list.isEmpty() ? list.get(0) : null;
                     } else {

@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
 
     <properties>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
@@ -24,29 +24,36 @@
         <module>modules/cluster-eureka</module>
         <module>modules/boot-core</module>
         <module>modules/cloud-core</module>
-        <module>modules/boot-thrift-starter</module>
+        <module>modules/test-starter</module>
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>
         <module>components/monitor</module>
+        <module>examples/performance-test-service</module>
+        <module>examples/guide-petstore</module>
         <module>examples/bone-example</module>
-        <module>examples/cache-example</module>
         <module>examples/web-example</module>
         <module>examples/jdbc-example</module>
+        <module>examples/cache-example</module>
         <module>examples/cluster-example</module>
-        <module>examples/config-example</module>
+        <module>examples/mybatisplus-example</module>
+        <module>examples/auth-example</module>
         <module>examples/dubbo-example</module>
         <module>examples/monitor-example</module>
-        <module>examples/mybatisplus-example</module>
-        <module>examples/pressure-test-api</module>
-        <module>examples/pressure-test-service</module>
-        <module>examples/service-cloud-example</module>
+        <module>examples/hystrix-example</module>
+        <module>examples/performance-test-api</module>
+        <!--
+        <module>modules/boot-thrift-starter</module>
         <module>examples/thrift-definition-example</module>
-        <module>examples/thrift-service-example</module>
-        <module>examples/zipkin-example</module>
-        <module>examples/zipkin-service-example</module>
-        <module>examples/zipkin-service2-example</module>
-        <module>examples/zipkin-service3-example</module>
+        <module>examples/thrift-process-example</module>
+       <module>examples/config-example</module>
+             <module>examples/pressure-test-api</module>
+               <module>examples/pressure-test-service</module>
+               <module>examples/service-cloud-example</module>
+               <module>examples/zipkin-example</module>
+               <module>examples/zipkin-service-example</module>
+               <module>examples/zipkin-service2-example</module>
+               <module>examples/zipkin-service3-example</module>-->
     </modules>
 
 </project>

@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 
 @SpringCloudApplication
+@ComponentScan(basePackageClasses = {Dew.class, DewCloudApplication.class})
 public abstract class DewCloudApplication extends DewBootApplication {
 
     @Autowired
@@ -21,7 +23,7 @@ public abstract class DewCloudApplication extends DewBootApplication {
     }
 
     @PostConstruct
-    private void initCloudCore(){
+    private void initCloudCore() {
         Dew.EB.setServiceClient(restTemplate);
     }
 

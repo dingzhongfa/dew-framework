@@ -6,15 +6,18 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-RC</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
     <artifactId>boot-thrift-starter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
     <packaging>jar</packaging>
     <name>Dew Thrift Starter</name>
     <description>Dew Thrift Starter</description>
 
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -16,17 +16,18 @@ public class DewConfig {
     private Basic basic = new Basic();
     private Cluster cluster = new Cluster();
     private Security security = new Security();
-    private Dao dao = new Dao();
+    private jdbc jdbc = new jdbc();
 
-    public static class Dao {
-        private String basePackage = "";
+    public static class jdbc {
 
-        public String getBasePackage() {
-            return basePackage;
+        private List<String> basePackages = new ArrayList<>();
+
+        public List<String> getBasePackages() {
+            return basePackages;
         }
 
-        public void setBasePackage(String basePackage) {
-            this.basePackage = basePackage;
+        public void setBasePackages(List<String> basePackages) {
+            this.basePackages = basePackages;
         }
     }
 
@@ -38,9 +39,8 @@ public class DewConfig {
         private String webSite = "";
 
         private Doc doc = new Doc();
-        private Entity entity = new Entity();
         private Format format = new Format();
-        private Map<String,ErrorMapping> errorMapping = new HashMap<>();
+        private Map<String, ErrorMapping> errorMapping = new HashMap<>();
 
         public String getName() {
             return name;
@@ -87,22 +87,9 @@ public class DewConfig {
             }
         }
 
-        public static class Entity {
-
-            private List<String> basePackages = new ArrayList<>();
-
-            public List<String> getBasePackages() {
-                return basePackages;
-            }
-
-            public void setBasePackages(List<String> basePackages) {
-                this.basePackages = basePackages;
-            }
-        }
-
         public static class Format {
 
-            private boolean useUnityError = false;
+            private boolean useUnityError = true;
             private boolean reuseHttpState = false;
             // 兼容原系统设置
             private String messageFieldName = "message";
@@ -130,7 +117,6 @@ public class DewConfig {
             public void setMessageFieldName(String messageFieldName) {
                 this.messageFieldName = messageFieldName;
             }
-
 
         }
 
@@ -171,14 +157,6 @@ public class DewConfig {
 
         public void setDoc(Doc doc) {
             this.doc = doc;
-        }
-
-        public Entity getEntity() {
-            return entity;
-        }
-
-        public void setEntity(Entity entity) {
-            this.entity = entity;
         }
 
         public Format getFormat() {
@@ -244,12 +222,47 @@ public class DewConfig {
 
         private String tokenFlag = "__dew_token__";
 
-        private boolean tokenInHeader = false;
+        private boolean tokenInHeader = true;
 
         private boolean tokenHash = false;
 
         private List<String> includeServices;
         private List<String> excludeServices;
+
+        private String authAdapter="basic";
+
+        private UCAuth ucAuthAdapter=new UCAuth();
+
+        public static class UCAuth{
+
+            private String appId;
+            private String appSecret;
+            private String host;
+
+            public String getHost() {
+                return host;
+            }
+
+            public void setHost(String host) {
+                this.host = host;
+            }
+
+            public String getAppId() {
+                return appId;
+            }
+
+            public void setAppId(String appId) {
+                this.appId = appId;
+            }
+
+            public String getAppSecret() {
+                return appSecret;
+            }
+
+            public void setAppSecret(String appSecret) {
+                this.appSecret = appSecret;
+            }
+        }
 
         public List<String> getIncludeServices() {
             return includeServices;
@@ -297,6 +310,22 @@ public class DewConfig {
 
         public void setTokenHash(boolean tokenHash) {
             this.tokenHash = tokenHash;
+        }
+
+        public String getAuthAdapter() {
+            return authAdapter;
+        }
+
+        public void setAuthAdapter(String authAdapter) {
+            this.authAdapter = authAdapter;
+        }
+
+        public UCAuth getUcAuthAdapter() {
+            return ucAuthAdapter;
+        }
+
+        public void setUcAuthAdapter(UCAuth ucAuthAdapter) {
+            this.ucAuthAdapter = ucAuthAdapter;
         }
     }
 
@@ -356,11 +385,11 @@ public class DewConfig {
         this.security = security;
     }
 
-    public Dao getDao() {
-        return dao;
+    public jdbc getJdbc() {
+        return jdbc;
     }
 
-    public void setDao(Dao dao) {
-        this.dao = dao;
+    public void setJdbc(jdbc jdbc) {
+        this.jdbc = jdbc;
     }
 }

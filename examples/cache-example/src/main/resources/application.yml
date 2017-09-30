@@ -2,9 +2,15 @@ spring:
   application:
     name: cache-example
   redis:
-    host: localhost
+    host: redis.fengdai.org
     port: 6379
     database: 0
+    pool:
+        max-active: 10
+        max-wait: -1
+        max-idle: 1
+        min-idle: 0
+    password: tairan2017@
 
 dew:
   cluster:

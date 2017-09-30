@@ -32,7 +32,7 @@ spring:
   application:
     name: core-test
   redis:
-    host: redis.fengdai.org
+    host: 127.0.0.1
     port: 6379
     database: 0
     pool:
@@ -40,7 +40,7 @@ spring:
       max-wait: -1
       max-idle: 1
       min-idle: 0
-    password: tairan2017@
+    #password: tairan2017@
   rabbitmq:
     host: mq.fengdai.org
     port: 5672

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.tairanchina.csp.dew</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0-RC</version>
 		<relativePath>../../modules/parent/</relativePath>
 	</parent>
 
@@ -14,7 +14,7 @@
 	<name>Dew mybatis plus 示例</name>
 	<description>Dew Mybatis Plus 示例</description>
 	<packaging>jar</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-RC</version>
 
 	<properties>
 		<mybatisplus-spring-boot-starter.version>1.0.2</mybatisplus-spring-boot-starter.version>

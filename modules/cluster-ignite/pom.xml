@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.tairanchina.csp.dew</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0-RC</version>
         <relativePath>../../modules/parent/</relativePath>
     </parent>
 
@@ -15,7 +15,7 @@
     <name>Dew Cluster Ignite</name>
     <description>Dew 集群 Ignite 实现</description>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
 
     <properties>
         <ignite.version>2.2.0</ignite.version>

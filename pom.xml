@@ -8,7 +8,7 @@
     <artifactId>build</artifactId>
     <name>Dew Build</name>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-RC</version>
 
     <properties>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>

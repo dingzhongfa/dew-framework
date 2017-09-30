@@ -72,7 +72,6 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 |`cluster-ignite` |集群能力-Ignite实现(开发中）
 |`cluster-rabbit` |集群能力-Rabbit实现
 |`cluster-eureka` |集群能力-Eureka实现
-|`boot-thrift-starter` |Thrift RPC
 |`test-starter` |Dew的单元测试封装
 |`config` |统一配置中心组件
 |`registry` |服务注册中心组件

@@ -216,10 +216,6 @@ public class JDBCTest {
     }
 
     private void testTx() {
-        BasicEntity basicEntity = new BasicEntity();
-        basicEntity.setFieldA("TransactionA1");
-        basicEntity.setFieldB("TransactionA1");
-        Object id = Dew.ds().insert(basicEntity);
         txService.testCommit();
         try {
             txService.testRollBack();
@@ -291,7 +287,7 @@ public class JDBCTest {
         list.add("test2");
         for (String data : list) {
             Dew.ds(data).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
-            Dew.ds(data).jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+            String sql = "CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                     "(\n" +
                     "id int primary key auto_increment,\n" +
                     "code varchar(32),\n" +
@@ -302,10 +298,19 @@ public class JDBCTest {
                     "update_user varchar(32) not null,\n" +
                     "update_time datetime,\n" +
                     "enabled bool\n" +
-                    ")");
-            Dew.ds(data).jdbc().execute("INSERT  INTO  test_select_entity " +
-                    "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
-                    "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+                    ")";
+            if (data.equals("test2")) {
+                Dew.ds(data).jdbc().execute(sql.replaceAll("datetime", "timestamp").replaceFirst("auto_increment", ""));
+                Dew.ds(data).jdbc().execute("INSERT  INTO  test_select_entity " +
+                        "(id,code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                        "(1,'A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+            } else {
+                Dew.ds(data).jdbc().execute(sql);
+                Dew.ds(data).jdbc().execute("INSERT  INTO  test_select_entity " +
+                        "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
+                        "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
+            }
+
         }
 
     }

@@ -32,6 +32,7 @@ public class TxService {
     @Transactional("test2TransactionManager")
     public void testMultiCommit() {
         BasicEntity basicEntity = new BasicEntity();
+        basicEntity.setId(1);
         basicEntity.setFieldA("TransactionA1");
         basicEntity.setFieldB("TransactionA1");
         Object id = Dew.ds("test2").insert(basicEntity);
@@ -41,6 +42,7 @@ public class TxService {
     @Transactional(value = ("test2TransactionManager"), rollbackFor = {Exception.class, RuntimeException.class, NullPointerException.class})
     public void testMultiRollBack() throws Exception {
         BasicEntity basicEntity = new BasicEntity();
+        basicEntity.setId(2);
         basicEntity.setFieldA("TransactionA2");
         basicEntity.setFieldB("TransactionA2");
         Object id = Dew.ds("test2").insert(basicEntity);

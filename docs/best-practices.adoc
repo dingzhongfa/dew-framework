@@ -84,6 +84,7 @@ hystrix.threadpool.default.coreSize=10
 ** http://hwood.lofter.com/post/1cc7fbdc_e8c5c96
 
 使用断路保护可有效果的防止系统雪崩，`Spring Cloud` 对` Hystrix` 做了封装，详见：http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_circuit_breaker_hystrix_clients
+
 需要说明的是 `Hystrix` 使用新线程执行代码，导致Threadlocal数据不能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.
 
 [source,java]
@@ -117,8 +118,8 @@ public class HystrixExampleService {
 
 === 配置中心
 
-使用spring config 配置中心refresh时,在@RefreshScope注解的类中,@Scheduled注解的自动任务会失效。
-建议使用实现SchedulingConfigurer接口的方式添加自动任务。
+使用 `Spring Config`  配置中心 `refresh` 时,在 `@RefreshScope` 注解的类中,` @Scheduled` 注解的自动任务会失效。
+建议使用实现 `SchedulingConfigurer` 接口的方式添加自动任务。
 
 [source,java]
 .自动任务添加
@@ -144,7 +145,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 }
 ----
 
-=== feign配置特定方法超时时间
+=== `feign` 配置特定方法超时时间
 
 *`hystrix` 超时时间配置*
 
@@ -174,11 +175,11 @@ TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置
 
 . 开发期间会不断启停服务，`Eureka` 保护机制会影响服务注册（当然这是可以关闭的）
 . 多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）
-. 需要启动 `Eureka` 服务，多了一个依赖(下面方法还是需要启动 `Eureka` 服务0.0)
+. 需要启动 `Eureka` 服务，多了一个依赖
 
-为解决上述问题,在使用Spring Cloud的 `RestTemplate` 时,增加 `Ribbon` 的服务配置.
+为解决上述问题,在使用` Spring Cloud` 的 `RestTemplate` 时,增加 `Ribbon` 的服务配置.
 
     # <client>为service-id
-    <client>.ribbon.listOfServers: 127.0.0.1:8888
+    <client>.ribbon.listOfServers: <直接访问的IPs>
     # 如
     performance-service.ribbon.listOfServers: 127.0.0.1:8812

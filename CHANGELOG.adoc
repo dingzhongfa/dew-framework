@@ -4,9 +4,9 @@
 
 ==== Feature
 
-[功能]支持用户权限中心认证适配
-[功能]新增SqlBuilder用于快速构建SQL语句
-[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除
+* [功能]支持新版用户权限中心认证适配(* 新版用户权限中心Release后，此功能代码会有一定变更)
+* [功能]新增SqlBuilder用于快速构建SQL语句
+* [移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除
 
 ==== Improvement
 

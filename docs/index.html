@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="v1.0.0-rc,2017-09-27">
+<meta name="author" content="v1.0.0-rc,2017-09-30">
 <title>Dew-Framework（轻量服务框架）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Dew-Framework（轻量服务框架）</h1>
 <div class="details">
-<span id="author" class="author">v1.0.0-rc,2017-09-27</span><br>
+<span id="author" class="author">v1.0.0-rc,2017-09-30</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -494,7 +494,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#true--37">4.2. 缓存处理</a></li>
 <li><a href="#true--38">4.3. 断路保护</a></li>
 <li><a href="#true--39">4.4. 配置中心</a></li>
-<li><a href="#truefeign">4.5. feign配置特定方法超时时间</a></li>
+<li><a href="#true-code-feign-code">4.5. <code>feign</code> 配置特定方法超时时间</a></li>
 <li><a href="#true--40">4.6. 服务调用开发期使用</a></li>
 </ul>
 </li>
@@ -2108,7 +2108,7 @@ dew:
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="title">配置注册式缓存</div>
+<div class="title">配置注解式缓存</div>
 <div class="paragraph">
 <p>spring:
   cache:
@@ -2140,9 +2140,7 @@ dew:
 <div class="title">建立如下测试类，WebExampleApplication修改成对应的启动类</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">@RunWith(SpringRunner.class)
-@SpringBootApplication
 @SpringBootTest(classes = WebExampleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, WebExampleApplication.class})
 public class DocTest {
 
     @Test
@@ -3649,6 +3647,17 @@ public class OptInfo {
 <div class="title">basic 认证缓存示例</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">/**
+ * 模拟用户注册
+ */
+@PostMapping(value = "user/register")
+public Resp&lt;Void&gt; register(@RequestBody User user) {
+    // 实际注册处理
+    user.setId($.field.createUUID());
+    MOCK_USER_CONTAINER.put(user.getId(), user);
+    return Resp.success(null);
+}
+
+/**
  * 模拟用户登录
  */
 @PostMapping(value = "auth/login")
@@ -3712,6 +3721,7 @@ public Resp&lt;Void&gt; logout() {
         token-hash: # token 值是否做hash（MD5）处理
         auth-adapter: uc  #开启uc模式
         uc-auth-adapter:
+             host: #用户中心地址
              app-id: #app-id
              app-secret: #app-secret 秘钥</code></pre>
 </div>
@@ -4214,17 +4224,89 @@ RedisCacheManager cacheManager() {
 </div>
 <div class="sect2">
 <h3 id="true--38"><a class="anchor" href="#true--38"></a>4.3. 断路保护</h3>
+<div class="listingblock">
+<div class="title">Hystrix配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties" data-lang="properties"># 执行的隔离策略 THREAD, SEMAPHORE 默认THREAD
+hystrix.command.default.execution.isolation.strategy=THREAD
+# 执行hystrix command的超时时间,超时后会进入fallback方法 默认1000
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=1000
+# 执行hystrix command是否限制超时,默认是true
+hystrix.command.default.execution.timeout.enabled=true
+# hystrix command 执行超时后是否中断 默认true
+hystrix.command.default.execution.isolation.thread.interruptOnTimeout=true
+# 使用信号量隔离时,信号量大小,默认10
+hystrix.command.default.execution.isolation.semaphore.maxConcurrentRequests=10
+# fallback方法最大并发请求数 默认是10
+hystrix.command.default.fallback.isolation.semaphore.maxConcurrentRequests=10
+# 服务降级是否开启,默认为true
+hystrix.command.default.fallback.enabled=true
+# 是否使用断路器来跟踪健康指标和熔断请求
+hystrix.command.default.circuitBreaker.enabled=true
+# 熔断器的最小请求数,默认20. (这个不是很理解,欢迎补充)
+hystrix.command.default.circuitBreaker.requestVolumeThreshold=20
+# 断路器打开后的休眠时间,默认5000
+hystrix.command.default.circuitBreaker.sleepWindowInMilliseconds=5000
+# 断路器打开的容错比,默认50
+hystrix.command.default.circuitBreaker.errorThresholdPercentage=50
+# 强制打开断路器,拒绝所有请求. 默认false, 优先级高于forceClosed
+hystrix.command.default.circuitBreaker.forceOpen=false
+# 强制关闭断路器,接收所有请求,默认false,优先级低于forceOpen
+hystrix.command.default.circuitBreaker.forceClosed=false
+
+# hystrix command 命令执行核心线程数,最大并发 默认10
+hystrix.threadpool.default.coreSize=10</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>信息参见:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/Netflix/Hystrix/wiki/Configuration" class="bare">https://github.com/Netflix/Hystrix/wiki/Configuration</a></p>
+</li>
+<li>
+<p><a href="http://hwood.lofter.com/post/1cc7fbdc_e8c5c96" class="bare">http://hwood.lofter.com/post/1cc7fbdc_e8c5c96</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>使用断路保护可有效果的防止系统雪崩，<code>Spring Cloud</code> 对` Hystrix` 做了封装，详见：http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_circuit_breaker_hystrix_clients
-需要说明的是 <code>Hystrix</code> 使用新线程执行代码，导致Threadlocal数据能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.</p>
+<p>使用断路保护可有效果的防止系统雪崩，<code>Spring Cloud</code> 对` Hystrix` 做了封装，详见：http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_circuit_breaker_hystrix_clients</p>
+</div>
+<div class="paragraph">
+<p>需要说明的是 <code>Hystrix</code> 使用新线程执行代码，导致Threadlocal数据不能同步，使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文（请求链路/用户等获取）需要先传入再设值，e.g.</p>
 </div>
 <div class="listingblock">
-<div class="title">Context处理</div>
+<div class="title">Hystrix Command 示例,及Context处理</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@HystrixCommand(...)
-public &lt;return&gt; someMethod(..., DewContext context) {
-    DewContext.setContext(context);
-    ....
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class HystrixExampleService {
+    @HystrixCommand(fallbackMethod = "defaultFallback", commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
+    })
+    public String someMethod(Map&lt;String, Object&gt; parameters, DewContext context) {
+        // ！！！ Hystrix使用新线程执行代码，导致Threadlocal数据不能同步，
+        // 使用时需要将用到的数据做为参数传入，如果需要使用Dew框架的上下文需要先传入再设值
+        DewContext.setContext(context);
+        try {
+            Thread.sleep(new Random().nextInt(3000));
+            logger.info("Normal Service Token:" + Dew.context().getToken());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return "ok";
+    }
+
+    // 降级处理方法定义
+    public String defaultFallback(Map&lt;String, Object&gt; parameters, DewContext context, Throwable e) {
+        DewContext.setContext(context);
+        logger.info("Error Service Token:" + Dew.context().getToken());
+        return "fail";
+    }
 }</code></pre>
 </div>
 </div>
@@ -4232,8 +4314,8 @@ public &lt;return&gt; someMethod(..., DewContext context) {
 <div class="sect2">
 <h3 id="true--39"><a class="anchor" href="#true--39"></a>4.4. 配置中心</h3>
 <div class="paragraph">
-<p>使用spring config 配置中心refresh时,在@RefreshScope注解的类中,@Scheduled注解的自动任务会失效。
-建议使用实现SchedulingConfigurer接口的方式添加自动任务。</p>
+<p>使用 <code>Spring Config</code>  配置中心 <code>refresh</code> 时,在 <code>@RefreshScope</code> 注解的类中,` @Scheduled` 注解的自动任务会失效。
+建议使用实现 <code>SchedulingConfigurer</code> 接口的方式添加自动任务。</p>
 </div>
 <div class="listingblock">
 <div class="title">自动任务添加</div>
@@ -4261,7 +4343,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 </div>
 </div>
 <div class="sect2">
-<h3 id="truefeign"><a class="anchor" href="#truefeign"></a>4.5. feign配置特定方法超时时间</h3>
+<h3 id="true-code-feign-code"><a class="anchor" href="#true-code-feign-code"></a>4.5. <code>feign</code> 配置特定方法超时时间</h3>
 <div class="paragraph">
 <p><strong><code>hystrix</code> 超时时间配置</strong></p>
 </div>
@@ -4318,17 +4400,17 @@ pressure-service.ribbon.ReadTimeout=5000</pre>
 <p>多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）</p>
 </li>
 <li>
-<p>需要启动 <code>Eureka</code> 服务，多了一个依赖(下面方法还是需要启动 <code>Eureka</code> 服务0.0)</p>
+<p>需要启动 <code>Eureka</code> 服务，多了一个依赖</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>为解决上述问题,在使用Spring Cloud的 <code>RestTemplate</code> 时,增加 <code>Ribbon</code> 的服务配置.</p>
+<p>为解决上述问题,在使用` Spring Cloud` 的 <code>RestTemplate</code> 时,增加 <code>Ribbon</code> 的服务配置.</p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre># &lt;client&gt;为service-id
-&lt;client&gt;.ribbon.listOfServers: 127.0.0.1:8888
+&lt;client&gt;.ribbon.listOfServers: &lt;直接访问的IPs&gt;
 # 如
 performance-service.ribbon.listOfServers: 127.0.0.1:8812</pre>
 </div>
@@ -4603,7 +4685,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-使用 <code>Dubbo</code> 的工程不能此插件兼容！
+使用 <code>Dubbo</code> 的工程不能与此插件兼容！
 </td>
 </tr>
 </table>
@@ -4639,7 +4721,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <div class="sect2">
 <h3 id="true--46"><a class="anchor" href="#true--46"></a>7.2. 打包</h3>
 <div class="paragraph">
-<p><code>mvn clean package -P fatjar</code> 即可打出一个包含所有依赖的包，后把<code>target</code>目录下生成的jar放到<code>release/apps</code>下。</p>
+<p><code>mvn clean package -P fatjar</code> 即可打出一个包含所有依赖的包，后把 <code>target</code> 目录下生成的jar放到 <code>release/apps</code> 下。</p>
 </div>
 </div>
 <div class="sect2">
@@ -4653,7 +4735,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <td class="content">
 <div class="title">release目录说明</div>
 <div class="paragraph">
-<p>release是发布用的目录，对应的目录<code>apps</code>是应用级目录，所有的应用都放在这个目录下，<code>apps</code>是可用服务的目录，<code>dew</code>这是部署用的shell脚本。</p>
+<p>release是发布用的目录，对应的目录 <code>apps</code> 是应用级目录，所有的应用都放在这个目录下， <code>apps</code> 是可用服务的目录， <code>dew</code> 这是部署用的shell脚本。</p>
 </div>
 </td>
 </tr>
@@ -4664,19 +4746,19 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>在服务器上创建根目录，如<code>/opt/dew/</code></p>
+<p>在服务器上创建根目录，如 <code>/opt/dew/</code></p>
 </li>
 <li>
-<p>将服务器上<code>dew</code>文件赋予可执行权限</p>
+<p>将服务器上 <code>dew</code> 文件赋予可执行权限</p>
 </li>
 <li>
 <p>修改本地 <code>release/apps</code> 中各组件的配置信息，主要关注日志的路径、第三方服务的连接信息、应用的端口等</p>
 </li>
 <li>
-<p>清空数据库、redis，Redis使用<code>flushall命令</code></p>
+<p>清空数据库、redis，Redis使用 <code>flushall命令</code></p>
 </li>
 <li>
-<p>执行<code>./dew start_dew</code>启动dew的各服务</p>
+<p>执行 <code>./dew start_dew</code> 启动dew的各服务</p>
 </li>
 </ol>
 </div>
@@ -4686,13 +4768,13 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>手工打包各组件放到<code>release/apps</code>目录下</p>
+<p>手工打包各组件放到 <code>release/apps</code> 目录下</p>
 </li>
 <li>
-<p>将项目<code>release</code>上传到服务器<code>/opt/dew/services</code>目录</p>
+<p>将项目 <code>release</code> 上传到服务器 <code>/opt/dew/services</code> 目录</p>
 </li>
 <li>
-<p>执行<code>./dew deploy &lt;组件名&gt;</code></p>
+<p>执行 <code>./dew deploy &lt;组件名&gt;</code></p>
 </li>
 </ol>
 </div>
@@ -4702,10 +4784,10 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>在CI中将打包的jar放置在<code>prepare</code>目录中</p>
+<p>在CI中将打包的jar放置在 <code>prepare</code> 目录中</p>
 </li>
 <li>
-<p>在CI中运程执行<code>./dew deploy &lt;组件名&gt;</code></p>
+<p>在CI中运程执行 <code>./dew deploy &lt;组件名&gt;</code></p>
 </li>
 </ol>
 </div>
@@ -4753,6 +4835,12 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
         token-hash: # token值是否需要hash，用于解决token值有特殊字符的情况，默认为false
         include-services: [""] # 服务白名单，要求源服务头部带上 Request-From
         exclude-services: [""] # 服务黑名单，要求源服务头部带上 Request-From
+        auth-adapter: uc  #uc或basic,默认为basic
+            #开启uc模式后的app配置
+            uc-auth-adapter:
+                host: #用户中心地址
+                app-id: #app-id
+                app-secret: #app-secret 秘钥
 
 spring:
   datasource: # 主数据源配置
@@ -4817,10 +4905,18 @@ spring:
 <h3 id="true1-0-0-rc"><a class="anchor" href="#true1-0-0-rc"></a>9.1. 1.0.0-rc</h3>
 <div class="sect3">
 <h4 id="truefeature"><a class="anchor" href="#truefeature"></a>9.1.1. Feature</h4>
-<div class="paragraph">
-<p>[功能]支持用户权限中心认证适配
-[功能]新增SqlBuilder用于快速构建SQL语句
-[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除</p>
+<div class="ulist">
+<ul>
+<li>
+<p>[功能]支持新版用户权限中心认证适配(* 新版用户权限中心Release后，此功能代码会有一定变更)</p>
+</li>
+<li>
+<p>[功能]新增SqlBuilder用于快速构建SQL语句</p>
+</li>
+<li>
+<p>[移除]由于 Spring Cloud Thrift RPC 测试不够充分，此版本中暂时移除</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">
@@ -5143,7 +5239,7 @@ spring:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-27 20:15:57 CST
+Last updated 2017-09-30 15:19:49 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

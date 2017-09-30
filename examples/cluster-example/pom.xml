@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cluster-spi-ignite</artifactId>
-        </dependency>
+        </dependency>z
     </dependencies>
 
 </project>

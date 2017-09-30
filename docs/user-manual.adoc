@@ -1527,6 +1527,17 @@ IMPORTANT: 使用 `OptInfo` 扩展类型时需要在工程启动时指定扩展�
 .basic 认证缓存示例
 ----
 /**
+ * 模拟用户注册
+ */
+@PostMapping(value = "user/register")
+public Resp<Void> register(@RequestBody User user) {
+    // 实际注册处理
+    user.setId($.field.createUUID());
+    MOCK_USER_CONTAINER.put(user.getId(), user);
+    return Resp.success(null);
+}
+
+/**
  * 模拟用户登录
  */
 @PostMapping(value = "auth/login")

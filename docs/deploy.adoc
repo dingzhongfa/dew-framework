@@ -2,7 +2,7 @@
 
 === 开发期热部署
 
-IMPORTANT: 使用 `Dubbo` 的工程不能此插件兼容！
+IMPORTANT: 使用 `Dubbo` 的工程不能与此插件兼容！
 
 [source,xml]
 .引入依赖

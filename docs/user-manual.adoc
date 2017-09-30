@@ -439,9 +439,7 @@ image:http://swagger2markup.github.io/swagger2markup/1.3.1/images/Swagger2Markup
 .建立如下测试类，WebExampleApplication修改成对应的启动类
 ----
 @RunWith(SpringRunner.class)
-@SpringBootApplication
 @SpringBootTest(classes = WebExampleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ComponentScan(basePackageClasses = {Dew.class, WebExampleApplication.class})
 public class DocTest {
 
     @Test

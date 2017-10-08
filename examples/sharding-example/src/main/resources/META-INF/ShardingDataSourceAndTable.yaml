@@ -25,6 +25,7 @@ tables:
       #- columnName: order_id
     tableStrategy:
       shardingColumns: order_id
+      #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
       algorithmExpression: t_order_${order_id.longValue() % 2}
         
   t_order_item:
@@ -32,6 +33,7 @@ tables:
     #绑定表中其余的表的策略与第一张表的策略相同
     tableStrategy: 
       shardingColumns: order_id
+      #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
       algorithmExpression: t_order_item_${order_id.longValue() % 2}
 
 bindingTables:
@@ -40,6 +42,7 @@ bindingTables:
 #默认数据库分片策略
 defaultDatabaseStrategy:
   shardingColumns: user_id
+  #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
   algorithmExpression: ds_${user_id.longValue() % 2}
 
 defaultTableStrategy:

@@ -34,6 +34,7 @@
         <module>examples/bone-example</module>
         <module>examples/web-example</module>
         <module>examples/jdbc-example</module>
+        <module>examples/sharding-example</module>
         <module>examples/cache-example</module>
         <module>examples/cluster-example</module>
         <module>examples/mybatisplus-example</module>

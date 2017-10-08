@@ -11,6 +11,8 @@ public class Application extends DewBootApplication {
         long start = new Date().getTime();
         new SpringApplicationBuilder(Application.class).web(true).run(args);
         System.out.println(">>>>>>>>>>>>"+(new Date().getTime() - start));
+
     }
+
 
 }

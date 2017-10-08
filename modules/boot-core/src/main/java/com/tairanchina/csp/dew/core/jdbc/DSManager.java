@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.dangdang.ddframe.rdb.sharding.config.yaml.api.YamlShardingDataSource;
 import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -41,7 +45,7 @@ public class DSManager {
     private DefaultListableBeanFactory beanFactory;
 
     @PostConstruct
-    private void init() throws NoSuchFieldException {
+    private void init() throws IOException, SQLException {
         // Register TransactionManager
         beanFactory = (DefaultListableBeanFactory) ((ConfigurableApplicationContext) Dew.applicationContext).getBeanFactory();
         AbstractBeanDefinition transactionManager = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class)
@@ -88,6 +92,12 @@ public class DSManager {
                 ds.setConnectProperties(properties);
                 register(dsName, entry.getValue().get("url"), ds);
             }
+        }
+        // Register sharding-jdbc DS
+        if (Dew.dewConfig.getSharding().isShardingFlag()) {
+            DataSource shardingDataSource = new YamlShardingDataSource(
+                    new File(Dew.class.getResource("/META-INF/" + Dew.dewConfig.getSharding().getFileName()).getFile()));
+            register("sharding", null, shardingDataSource);
         }
     }
 

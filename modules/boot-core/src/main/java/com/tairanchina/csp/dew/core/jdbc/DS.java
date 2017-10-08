@@ -27,6 +27,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.util.*;
@@ -53,6 +54,11 @@ public class DS {
     private Dialect dialect;
 
     private void init() {
+        if (StringUtils.isEmpty(jdbcUrl)){
+            leftDecorated = "`";
+            rightDecorated = "`";
+            return;
+        }
         dialect = DialectFactory.parseDialect(jdbcUrl);
         switch (dialect.getDialectType()) {
             case H2:

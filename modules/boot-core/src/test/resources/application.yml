@@ -2,7 +2,7 @@ dew:
   basic:
     format:
       use-unity-error: true
-      reuse-http-state: false
+      reuse-http-state: true
     error-mapping:
       "[com.tairanchina.csp.dew.core.AuthException]":
         http-code: 401
@@ -14,6 +14,9 @@ dew:
     mq: rabbit
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core.**.dao"]
+  sharding:
+    sharding-flag: true
+    file-name: withAssignedDataSource.yaml
   security:
     #auth-adapter: uc
     token-flag: _token_

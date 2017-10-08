@@ -19,6 +19,7 @@
 
     <properties>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
+        <sharding-jdbc.version>1.5.4.1</sharding-jdbc.version>
     </properties>
 
     <dependencies>
@@ -120,6 +121,28 @@
             <version>42.1.4</version>
             <scope>test</scope>
             <optional>true</optional>
+        </dependency>
+        <!--sharding-jdbc-->
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>${sharding-jdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>sharding-jdbc-config-yaml</artifactId>
+            <version>${sharding-jdbc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.dangdang</groupId>
+            <artifactId>sharding-jdbc-config-common</artifactId>
+            <version>${sharding-jdbc.version}</version>
         </dependency>
 
         <dependency>

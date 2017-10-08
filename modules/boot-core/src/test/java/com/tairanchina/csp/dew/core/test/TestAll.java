@@ -6,6 +6,7 @@ import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.JDBCTest;
 import com.tairanchina.csp.dew.core.test.dataaccess.select.SelectTest;
 import com.tairanchina.csp.dew.core.test.dewutil.DewUtilTest;
+import com.tairanchina.csp.dew.core.test.sharding.ShardingTest;
 import com.tairanchina.csp.dew.core.test.web.WebTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +42,9 @@ public class TestAll {
 
     @Resource
     private DewUtilTest dewUtilTest;
+
+    @Resource
+    private ShardingTest shardingTest;
 
     /**
      * 缓存，map缓存，分布式锁测试
@@ -109,5 +113,10 @@ public class TestAll {
     @Test
     public void testDewUtil() throws Exception {
         dewUtilTest.testAll();
+    }
+
+    @Test
+    public void testShardingJDBC()throws Exception{
+        shardingTest.testSharding();
     }
 }

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: sharding-example
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_1
+    username: root
+    password: tairan2017!
+    type: com.alibaba.druid.pool.DruidDataSource
+dew:
+  sharding:
+    sharding-flag: true
+    file-name: ShardingDataSourceAndTable.yaml #分库分表（pass）
+    #file-name: ShardingAndMasterSlave.yaml #读写分离+分库分表（待完善，可能这版本的yaml配置不支持读写分离，还未确定）

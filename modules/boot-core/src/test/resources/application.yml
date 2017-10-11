@@ -15,7 +15,7 @@ dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core.**.dao"]
   sharding:
-    sharding-flag: true
+    sharding-flag: false
     file-name: withAssignedDataSource.yaml
   security:
     #auth-adapter: uc
@@ -30,6 +30,9 @@ dew:
 #   includeServices: ["a-serv"]
 
 spring:
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
   cache:
     type: redis
   application:

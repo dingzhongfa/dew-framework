@@ -30,6 +30,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.StringUtils;
 
 import java.sql.PreparedStatement;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -380,7 +383,7 @@ public class DS {
                             values.get(entityClassInfo.codeFieldNameOpt.get()).toString().isEmpty())) {
                 values.put(entityClassInfo.codeFieldNameOpt.get(), $.field.createUUID());
             }
-            Date now = new Date();
+            LocalDateTime now = LocalDateTime.now();
             if (entityClassInfo.createUserFieldNameOpt.isPresent()) {
                 if (Dew.context().optInfo().isPresent()) {
                     values.put(entityClassInfo.createUserFieldNameOpt.get(), Dew.context().optInfo().get().getAccountCode());
@@ -481,7 +484,7 @@ public class DS {
             values.remove(entityClassInfo.createUserFieldNameOpt.get());
         }
         if (entityClassInfo.updateTimeFieldNameOpt.isPresent()) {
-            values.put(entityClassInfo.updateTimeFieldNameOpt.get(), new Date());
+            values.put(entityClassInfo.updateTimeFieldNameOpt.get(), LocalDateTime.now());
         }
         if (entityClassInfo.createTimeFieldNameOpt.isPresent()) {
             values.remove(entityClassInfo.createTimeFieldNameOpt.get());
@@ -542,20 +545,36 @@ public class DS {
             E entity = entityClazz.newInstance();
             if (entityClassInfo == null) {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
-                    $.bean.setValue(entity, underlineToCamel(entry.getKey().toLowerCase()), entry.getValue());
+                    Object r = convertRsToObject(entry);
+                    $.bean.setValue(entity, underlineToCamel(entry.getKey().toLowerCase()), r);
                 }
             } else {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
                     if (entityClassInfo.columnRel.containsKey(entry.getKey().toLowerCase())) {
-                        $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), entry.getValue());
+                        Object r = convertRsToObject(entry);
+                        $.bean.setValue(entity, entityClassInfo.columnRel.get(entry.getKey().toLowerCase()), r);
                     }
                 }
             }
             return entity;
-        } catch (InstantiationException | IllegalAccessException | NoSuchFieldException e) {
-            Dew.E.e(StandardCode.INTERNAL_SERVER_ERROR.toString(), e);
+        } catch (InstantiationException | IllegalAccessException | NoSuchFieldException | IllegalArgumentException e) {
+            logger.error("Convert ResultSet to Object error", e);
             return null;
         }
+    }
+
+    private Object convertRsToObject(Map.Entry<String, Object> entry) {
+        Object r;
+        if (entry.getValue() instanceof Timestamp) {
+            r = ((Timestamp) entry.getValue()).toLocalDateTime();
+        } else if (entry.getValue() instanceof java.sql.Date) {
+            r = ((java.sql.Date) entry.getValue()).toLocalDate();
+        } else if (entry.getValue() instanceof Time) {
+            r = ((Time) entry.getValue()).toLocalTime();
+        } else {
+            r = entry.getValue();
+        }
+        return r;
     }
 
     public <E> List<E> selectForList(Class<E> entityClazz, Map<String, Object> params, String sql) {

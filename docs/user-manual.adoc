@@ -550,9 +550,9 @@ public class Pet implements Serializable {
     @Column(notNull = true)
     private BigDecimal price;
     @CreateTimeColumn
-    private Date createTime;
+    private LocalDateTime createTime;
     @UpdateTimeColumn
-    private Date updateTime;
+    private LocalDateTime updateTime;
     @EnabledColumn
     private boolean enabled;
 

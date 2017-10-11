@@ -20,6 +20,7 @@ import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
@@ -155,12 +156,14 @@ public class DS {
 
     public <E> E getById(Object id, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return get(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+        return get(SB.inst()
+                .eqVL(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public <E> E getByCode(String code, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return get(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+        return get(SB.inst()
+                .eqVL(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
     public <E> E get(SB sqlBuilder, Class<E> entityClazz) {
@@ -170,12 +173,14 @@ public class DS {
 
     public int deleteById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return delete(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+        return delete(SB.inst()
+                .eqVL(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public int deleteByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return delete(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+        return delete(SB.inst()
+                .eqVL(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
     public int deleteAll(Class<?> entityClazz) {
@@ -192,12 +197,13 @@ public class DS {
 
     public int enableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return enable(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+        return enable(SB.inst()
+                .eqVL(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public int enableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return enable(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+        return enable(SB.inst().eqVL(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
     public int enable(SB sqlBuilder, Class<?> entityClazz) {
@@ -214,12 +220,14 @@ public class DS {
 
     public int disableById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return disable(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+        return disable(SB.inst()
+                .eqVL(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public int disableByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return disable(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+        return disable(SB.inst()
+                .eqVL(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
     public int disable(SB sqlBuilder, Class<?> entityClazz) {
@@ -236,12 +244,14 @@ public class DS {
 
     public boolean existById(Object id, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return exist(SB.inst().eq(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
+        return exist(SB.inst()
+                .eqVL(entityClassInfo.pkFieldNameOpt.get(), id), entityClazz);
     }
 
     public boolean existByCode(String code, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return exist(SB.inst().eq(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
+        return exist(SB.inst()
+                .eqVL(entityClassInfo.codeFieldNameOpt.get(), code), entityClazz);
     }
 
     public boolean exist(SB sqlBuilder, Class<?> entityClazz) {
@@ -259,12 +269,12 @@ public class DS {
 
     public <E> List<E> findEnabled(Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return find(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), true), entityClazz);
+        return find(SB.inst().eqVL(entityClassInfo.enabledFieldNameOpt.get(), true), entityClazz);
     }
 
     public <E> List<E> findDisabled(Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return find(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), false), entityClazz);
+        return find(SB.inst().eqVL(entityClassInfo.enabledFieldNameOpt.get(), false), entityClazz);
     }
 
     public <E> List<E> find(SB sqlBuilder, Class<E> entityClazz) {
@@ -287,13 +297,15 @@ public class DS {
     public long countEnabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return count(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), !column.reverse), entityClazz);
+        return count(SB.inst()
+                .eqVL(entityClassInfo.enabledFieldNameOpt.get(), !column.reverse), entityClazz);
     }
 
     public long countDisabled(Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
-        return count(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), column.reverse), entityClazz);
+        return count(SB.inst()
+                .eqVL(entityClassInfo.enabledFieldNameOpt.get(), column.reverse), entityClazz);
     }
 
     public long count(SB sqlBuilder, Class<?> entityClazz) {
@@ -311,12 +323,14 @@ public class DS {
 
     public <E> Page<E> pagingEnabled(long pageNumber, int pageSize, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return paging(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), true), pageNumber, pageSize, entityClazz);
+        return paging(SB.inst()
+                .eqVL(entityClassInfo.enabledFieldNameOpt.get(), true), pageNumber, pageSize, entityClazz);
     }
 
     public <E> Page<E> pagingDisabled(long pageNumber, int pageSize, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        return paging(SB.inst().eq(entityClassInfo.enabledFieldNameOpt.get(), false), pageNumber, pageSize, entityClazz);
+        return paging(SB.inst()
+                .eqVL(entityClassInfo.enabledFieldNameOpt.get(), false), pageNumber, pageSize, entityClazz);
     }
 
     public <E> Page<E> paging(SB sqlBuilder, long pageNumber, int pageSize, Class<E> entityClazz) {
@@ -768,8 +782,11 @@ public class DS {
 
     public static class SB {
 
-        private List<SQLCondition> conditions = new ArrayList();
+        private List<SQLCondition> conditions = new ArrayList<>();
         private Map<String, Boolean> order = new LinkedHashMap<>();
+        private List<String> tables = new ArrayList<>();
+        private List<SQLJoin> joins = new ArrayList<>();
+        private List<String> selectFields = new ArrayList<>();
 
         private SB() {
         }
@@ -778,157 +795,366 @@ public class DS {
             return new SB();
         }
 
-        public Object[] build(Class entityClazz, String leftDecorated, String rightDecorated) {
-            return build(EntityContainer.getEntityClassByClazz(entityClazz), leftDecorated, rightDecorated);
+        public Object[] build(String leftDecorated, String rightDecorated) {
+            return build(null, leftDecorated, rightDecorated);
         }
 
-        public Object[] build(EntityContainer.EntityClassInfo classInfo, String leftDecorated, String rightDecorated) {
-            StringBuilder sb = new StringBuilder(" WHERE 1 = 1");
+        /**
+         * 构建SQL语句 
+         * selectFields 和 tables 必须同时存在
+         * joins 若存在,则tables 必须存在
+         * @param defaultClassInfo field不带表名时,使用此默认信息
+         */
+        public Object[] build(EntityContainer.EntityClassInfo defaultClassInfo, String leftDecorated, String rightDecorated) {
+            StringBuilder sb = new StringBuilder();
             List<Object> parameters = new ArrayList<>();
-            conditions.forEach(cond -> {
-                String f = leftDecorated + classInfo.columns.get(cond.field).columnName + rightDecorated;
-                switch (cond.op) {
-                    case EQUAL:
-                        sb.append(" AND " + f + " = ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case NOT_EQUAL:
-                        sb.append(" AND " + f + " != ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case GT:
-                        sb.append(" AND " + f + " > ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case GE:
-                        sb.append(" AND " + f + " >= ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case LT:
-                        sb.append(" AND " + f + " < ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case LE:
-                        sb.append(" AND " + f + " <= ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case LIKE:
-                        sb.append(" AND " + f + " LIKE ?");
-                        parameters.add(cond.value1);
-                        break;
-                    case IN:
-                        sb.append(" AND " + f + " IN " + ((List) cond.value1).stream()
-                                .map(o -> "?")
-                                .collect(Collectors.joining(",", "(", ")")));
-                        parameters.add(cond.value1);
-                        break;
-                    case NOT_IN:
-                        sb.append(" AND " + f + " NOT IN " + ((List) cond.value1).stream()
-                                .map(o -> "?")
-                                .collect(Collectors.joining(",", "(", ")")));
-                        parameters.add(cond.value1);
-                        break;
-                    case IS_NULL:
-                        sb.append(" AND " + f + " IS NULL");
-                        break;
-                    case NOT_NULL:
-                        sb.append(" AND " + f + " IS NOT NULL");
-                        break;
-                    case BETWEEN:
-                        sb.append(" AND " + f + " BETWEEN ? AND ?");
-                        parameters.add(cond.value1);
-                        parameters.add(cond.value2);
-                        break;
-                }
-            });
-            if (!order.isEmpty()) {
-                sb.append(" ORDER BY " + order.entrySet().stream()
-                        .map(entry -> leftDecorated + classInfo.columns.get(entry.getKey()).columnName + rightDecorated + " " + (entry.getValue() ? "ASC" : "DESC"))
-                        .collect(Collectors.joining(", ", " ", " ")));
-            }
+            // select 构建
+            buildSelect(sb, defaultClassInfo, leftDecorated, rightDecorated);
+            // from 构建
+            buildFrom(sb, leftDecorated, rightDecorated);
+            // join 构建
+            buildJoin(sb, leftDecorated, rightDecorated);
+            // where 构建
+            buildWhere(sb, parameters, defaultClassInfo, leftDecorated, rightDecorated);
+            // order 构建
+            buildOrder(sb, defaultClassInfo, leftDecorated, rightDecorated);
+
             return new Object[]{sb.toString(), parameters};
         }
 
-        public SB eq(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.EQUAL, field, value, null));
+        // select 构建
+        public String buildSelect(StringBuilder sb, EntityContainer.EntityClassInfo defaultClassInfo,
+                                  String leftDecorated, String rightDecorated) {
+            if (!selectFields.isEmpty()) {
+                StringBuilder selection = new StringBuilder(" SELECT ");
+                selectFields.forEach(field -> {
+                    String[] fv = parseField(defaultClassInfo, field);
+                    if (!"".equals(fv[0])) {
+                        selection.append(leftDecorated).append(fv[0]).append(rightDecorated).append(POINT);
+                    }
+                    selection.append(leftDecorated).append(fv[1]).append(rightDecorated).append(", ");
+                });
+                if (sb != null) {
+                    sb.append(selection.substring(0, selection.lastIndexOf(", ")));
+                }
+                return selection.substring(0, selection.lastIndexOf(", "));
+            }
+            return null;
+        }
+
+        // from 构建
+        public String buildFrom(StringBuilder sb, String leftDecorated, String rightDecorated) {
+            if (!tables.isEmpty()) {
+                StringBuilder from = new StringBuilder(" FROM ");
+                tables.forEach(table -> {
+                    EntityContainer.EntityClassInfo classInfo = EntityContainer.getEntityClassByClazz(table);
+                    if (classInfo != null) {
+                        from.append(leftDecorated).append(classInfo.tableName).append(rightDecorated).append(", ");
+                    } else {
+                        logger.info("can't find the table that named {}", table);
+                    }
+                });
+                if (sb != null) {
+                    sb.append(from.substring(0, from.lastIndexOf(", ")));
+                }
+                return from.substring(0, from.lastIndexOf(", "));
+            }
+            return null;
+        }
+
+        // join 构建
+        public String buildJoin(StringBuilder sb, String leftDecorated, String rightDecorated) {
+            if (!joins.isEmpty()) {
+                StringBuilder join = new StringBuilder();
+                joins.forEach(item -> {
+                    EntityContainer.EntityClassInfo classInfo = EntityContainer.getEntityClassByClazz(item.table);
+                    if (classInfo != null) {
+                        join.append(" ").append(item.op.toString()).append(" JOIN ").append(leftDecorated)
+                                .append(classInfo.tableName).append(rightDecorated).append(" ON ")
+                                .append(item.condition) // TODO: 2017/10/11 condition need to be parsed
+                                .append(", ");
+                    } else {
+                        logger.info("can't find the table that named {}", item.table);
+                    }
+                });
+                if (sb != null) {
+                    sb.append(join.substring(0, join.lastIndexOf(", ")));
+                }
+                return join.substring(0, join.lastIndexOf(", "));
+            }
+            return null;
+        }
+
+        // where 构建
+        public Object[] buildWhere(StringBuilder sb, List<Object> parameters, EntityContainer.EntityClassInfo defaultClassInfo,
+                                   String leftDecorated, String rightDecorated) {
+            if (!conditions.isEmpty()) {
+                StringBuilder condition = new StringBuilder();
+                List<Object> values = new ArrayList<>();
+                conditions.forEach(cond -> {
+                    String[] fv = parseField(defaultClassInfo, cond.field1);
+                    String f = "";
+                    if (!"".equals(fv[0])) {
+                        f += leftDecorated + fv[0] + rightDecorated + POINT;
+                    }
+                    f += leftDecorated + fv[1] + rightDecorated;
+                    switch (cond.op) {
+                        case EQUAL:
+                            // 联表条件处理
+                            if (cond.field2 != null && cond.value1 == null) {
+                                String[] fv2 = parseField(null, cond.field2);
+                                // 联表查询必须传带表名的field,这里认为能找到对应的表和列,否则生成错误SQL
+                                String f2 = leftDecorated + fv2[0] + rightDecorated + POINT
+                                        + leftDecorated + fv2[1] + rightDecorated;
+                                condition.append(" AND ").append(f).append(" = ").append(f2);
+                            } else {
+                                condition.append(" AND " + f + " = ?");
+                                values.add(cond.value1);
+                            }
+                            break;
+                        case NOT_EQUAL:
+                            condition.append(" AND " + f + " != ?");
+                            values.add(cond.value1);
+                            break;
+                        case GT:
+                            condition.append(" AND " + f + " > ?");
+                            values.add(cond.value1);
+                            break;
+                        case GE:
+                            condition.append(" AND " + f + " >= ?");
+                            values.add(cond.value1);
+                            break;
+                        case LT:
+                            condition.append(" AND " + f + " < ?");
+                            values.add(cond.value1);
+                            break;
+                        case LE:
+                            condition.append(" AND " + f + " <= ?");
+                            values.add(cond.value1);
+                            break;
+                        case LIKE:
+                            condition.append(" AND " + f + " LIKE ?");
+                            values.add(cond.value1);
+                            break;
+                        case IN:
+                            condition.append(" AND " + f + " IN " + ((List) cond.value1).stream()
+                                    .map(o -> "?")
+                                    .collect(Collectors.joining(",", "(", ")")));
+                            values.add(cond.value1);
+                            break;
+                        case NOT_IN:
+                            condition.append(" AND " + f + " NOT IN " + ((List) cond.value1).stream()
+                                    .map(o -> "?")
+                                    .collect(Collectors.joining(",", "(", ")")));
+                            values.add(cond.value1);
+                            break;
+                        case IS_NULL:
+                            condition.append(" AND " + f + " IS NULL");
+                            break;
+                        case NOT_NULL:
+                            condition.append(" AND " + f + " IS NOT NULL");
+                            break;
+                        case BETWEEN:
+                            condition.append(" AND " + f + " BETWEEN ? AND ?");
+                            values.add(cond.value1);
+                            values.add(cond.value2);
+                            break;
+                    }
+                });
+                StringBuilder where = new StringBuilder();
+                if (condition.length() > 0) {
+                    where.append(" WHERE ");
+                    // 去掉前面多余的 " AND "
+                    where.append(condition.toString().substring(5));
+                }
+                if (sb != null) {
+                    sb.append(where);
+                    parameters.addAll(values);
+                }
+                return new Object[]{where.toString(), values};
+            }
+            return new Object[]{};
+        }
+
+        // order 构建
+        public String buildOrder(StringBuilder sb, EntityContainer.EntityClassInfo defaultClassInfo,
+                                 String leftDecorated, String rightDecorated) {
+            if (!order.isEmpty()) {
+                StringBuilder o = new StringBuilder();
+                o.append(" ORDER BY ");
+                order.forEach((key, value) -> {
+                    String[] fv = parseField(defaultClassInfo, key);
+                    String f = "";
+                    if (!"".equals(fv[0])) {
+                        f += leftDecorated + fv[0] + rightDecorated + POINT;
+                    }
+                    f += leftDecorated + fv[1] + rightDecorated;
+                    o.append(f).append(" ").append(value ? "ASC" : "DESC").append(", ");
+                });
+                if (sb != null) {
+                    sb.append(o.substring(0, o.lastIndexOf(", ")));
+                }
+                return o.substring(0, o.lastIndexOf(", "));
+            }
+            return null;
+        }
+
+        public SB select(String... fields) {
+            for (int i = 0; i < fields.length; i++) {
+                selectFields.add(fields[i]);
+            }
+            return this;
+        }
+
+        public SB from(String... tables) {
+            for (int i = 0; i < tables.length; i++) {
+                this.tables.add(tables[i]);
+            }
+            return this;
+        }
+
+        public SB leftJoin(String table, String condition) {
+            joins.add(new SQLJoin(SQLJoin.OP.LEFT, table, condition));
+            return this;
+        }
+
+        /**
+         * 解析Field,将类名.属性名解析成表名.列表
+         * @param field class.field
+         * @return [table,column]
+         */
+        private String[] parseField(EntityContainer.EntityClassInfo defaultClassInfo, String field) {
+            String table = "";
+            String column = field;
+            if (field.indexOf(POINT) > 0) {
+                String[] sv = field.split("\\.");
+                table = sv[0];
+                column = sv[1];
+            }
+            // 传入field带有表名,以此优先
+            if (!"".equals(table)) {
+                EntityContainer.EntityClassInfo classInfo = EntityContainer.getEntityClassByClazz(table);
+                // 如果为空,说明传入不正确
+                if (classInfo != null) {
+                    table = classInfo.tableName;
+                    // it will throw null point exception when the column name is error
+                    if (!"*".equals(column)) {
+                        column = classInfo.columns.get(column).columnName;
+                    }
+                }
+            } else if (defaultClassInfo != null) {
+                table = defaultClassInfo.tableName;
+                // it will throw null point exception when the column name is error
+                column = defaultClassInfo.columns.get(column).columnName;
+            }
+            return new String[]{table, column};
+        }
+
+        // 字段条件 table.field = ?
+        public SB eqVL(String field, Object value) {
+            conditions.add(new SQLCondition(SQLCondition.OP.EQUAL, field, null, value, null));
+            return this;
+        }
+
+        // 联表条件相等 table1.field = table2.field
+        public SB eqFD(String field1, String field2) {
+            conditions.add(new SQLCondition(SQLCondition.OP.EQUAL, field1, field2, null, null));
             return this;
         }
 
         public SB notEq(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.NOT_EQUAL, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_EQUAL, field, null, value, null));
             return this;
         }
 
         public SB gt(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.GT, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.GT, field, null, value, null));
             return this;
         }
 
         public SB ge(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.GE, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.GE, field, null, value, null));
             return this;
         }
 
         public SB lt(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.LT, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.LT, field, null, value, null));
             return this;
         }
 
         public SB le(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.LE, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.LE, field, null, value, null));
             return this;
         }
 
         public SB like(String field, Object value) {
-            conditions.add(new SQLCondition(SQLCondition.OP.LIKE, field, value, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.LIKE, field, null, value, null));
             return this;
         }
 
         public SB in(String field, List<Object> values) {
-            conditions.add(new SQLCondition(SQLCondition.OP.IN, field, values, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.IN, field, null, values, null));
             return this;
         }
 
         public SB notIn(String field, List<Object> values) {
-            conditions.add(new SQLCondition(SQLCondition.OP.NOT_IN, field, values, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_IN, field, null,values, null));
             return this;
         }
 
         public SB isNull(String field) {
-            conditions.add(new SQLCondition(SQLCondition.OP.IS_NULL, field, null, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.IS_NULL, field, null, null, null));
             return this;
         }
 
         public SB notNull(String field) {
-            conditions.add(new SQLCondition(SQLCondition.OP.NOT_NULL, field, null, null));
+            conditions.add(new SQLCondition(SQLCondition.OP.NOT_NULL, field, null, null, null));
             return this;
         }
 
         public SB between(String field, Object value1, Object value2) {
-            conditions.add(new SQLCondition(SQLCondition.OP.BETWEEN, field, value1, value2));
+            conditions.add(new SQLCondition(SQLCondition.OP.BETWEEN, field, null, value1, value2));
             return this;
         }
 
-        public SB asc(String filed) {
-            order.put(filed, true);
+        public SB asc(String field) {
+            order.put(field, true);
             return this;
         }
 
-        public SB desc(String filed) {
-            order.put(filed, false);
+        public SB desc(String field) {
+            order.put(field, false);
             return this;
+        }
+
+        private static class SQLJoin {
+            private OP op;
+            private String table;
+            private String condition;
+
+            public SQLJoin(OP op, String table, String condition) {
+                this.op = op;
+                this.table = table;
+                this.condition = condition;
+            }
+
+            enum OP {
+                LEFT, RIGHT, INNER
+            }
         }
 
         private static class SQLCondition {
 
             private OP op;
-            private String field;
+            private String field1;
+            private String field2;
             private Object value1;
             private Object value2;
 
-            SQLCondition(OP op, String field, Object value1, Object value2) {
+            SQLCondition(OP op, String field1, String field2, Object value1, Object value2) {
                 this.op = op;
-                this.field = field;
+                this.field1 = field1;
+                this.field2 = field2;
                 this.value1 = value1;
                 this.value2 = value2;
             }

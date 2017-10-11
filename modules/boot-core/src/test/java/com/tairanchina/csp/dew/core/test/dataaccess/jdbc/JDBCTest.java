@@ -197,7 +197,7 @@ public class JDBCTest {
         // Sql Builder
         fullEntities = Dew.ds().paging(
                 DS.SB.inst()
-                        .eq("fieldA", "测试A2")
+                        .eqVL("fieldA", "测试A2")
                         .like("fieldB", "%B2")
                         .notNull("code")
                         .desc("createTime"),
@@ -213,6 +213,10 @@ public class JDBCTest {
         params.put("code", "1");
         Dew.ds().selectForList(fullEntity.getClass(), params,
                 "select f.*, b.* from full_entity f LEFT JOIN basic_entity b ON f.field_a = b.field_a where f.code = #{code}");
+        Object[] sql = DS.SB.inst().select("full_entity.*").from("full_entity")
+                .leftJoin("basic_entity", "basic_entity.field_a = full_entity.field_a")
+                .eqVL("full_entity.code", "1").eqFD("full_entity.id", "basic_entity.id").build("", "");
+        Dew.ds().paging((String) sql[0], ((List)sql[1]).toArray(), 1, 2, FullEntity.class);
     }
 
     private void testTx() {

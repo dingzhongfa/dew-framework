@@ -183,3 +183,50 @@ TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置
     <client>.ribbon.listOfServers: <直接访问的IPs>
     # 如
     performance-service.ribbon.listOfServers: 127.0.0.1:8812
+
+=== 主要性能影响参数
+
+*内置 `tomcat` 参数* tomcat参数调整效果并不大,如果需要调整,建议适当调大 `max-treads` 和 `accept-count`
+
+  # 最大等待请求数 默认100
+  server.tomcat.accept-count=1000
+  # 最大并发数 默认200
+  server.tomcat.max-threads=1000
+  # 最大连接数 默认BIO:200 NIO:10000 APR:8192
+  server.tomcat.max-connections=2000
+
+*`zuul` 性能参数说明*
+
+  # 连接池最大连接，默认是200
+  zuul.host.maxTotalConnections=1000
+  每个route可用的最大连接数，默认值是20
+  zuul.host.maxPerRouteConnections=1000
+  Hystrix最大的并发请求 默认值是100
+  zuul.semaphore.maxSemaphores=1000
+
+NOTE: `zuul` 的最大并发数主要调整 `maxSemaphores` 优先级高于 `hystrix` 的最大线程数配置.
+
+*`ribbon` 性能参数说明* 调整 `MaxTotalConnections`和 `MaxConnectionsPerHost` 时建议同比调整 `Pool` 相关的参数
+
+  # ribbon 单主机最大连接数,默认50
+  ribbon.MaxConnectionsPerHost=500
+  # ribbon 总连接数,默认 200
+  ribbon.MaxTotalConnections=1000
+  # 默认200
+  ribbon.PoolMaxThreads=1000
+  # 默认1
+  ribbon.PoolMinThreads=500
+
+NOTE: `zuul` 和其它使用 `ribbon` 的服务一样,TPS主要调整 `ribbon` 的 `MaxConnectionsPerHost` 和 `MaxTotalConnections`
+
+*`hystrix` 性能参数说明*
+
+  # 并发执行的最大线程数,默认10
+  hystrix.threadpool.default.coreSize=100
+
+NOTE: 普通 `service` 使用 `hystrix` 时,最大并发主要调整 `hystrix.threadpool.default.coreSize`
+
+WARNING: `hystrix` 的默认超时时间为5s,在高并发下容易出现超时,建议将默认超时时间适当调长,
+特殊接口需要将时间调短或更长的,使用特定配置,见上面 `feign` 配置特定方法超时时间.
+
+TIP: 详细参见文档 file://./files/Spring%20Cloud框架负载测试报告.pdf[Spring Cloud框架负载测试报告]

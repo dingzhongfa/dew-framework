@@ -19,7 +19,6 @@
 
     <properties>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
-        <sharding-jdbc.version>1.5.4.1</sharding-jdbc.version>
     </properties>
 
     <dependencies>
@@ -56,11 +55,11 @@
             <artifactId>cluster-spi-rabbit</artifactId>
             <optional>true</optional>
         </dependency>
-       <!-- <dependency>
-            <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>cluster-spi-ignite</artifactId>
-            <scope>test</scope>
-        </dependency>-->
+        <!-- <dependency>
+             <groupId>com.tairanchina.csp.dew</groupId>
+             <artifactId>cluster-spi-ignite</artifactId>
+             <scope>test</scope>
+         </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -122,16 +121,25 @@
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
-        <!--sharding-jdbc-->
+        <!--sharding-jdbc 2.0.0.M1-->
         <dependency>
+            <groupId>io.shardingjdbc</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>${sharding-jdbc.version}</version>
+        </dependency>
+
+        <!--sharding-jdbc-->
+        <!--<dependency>
             <groupId>com.dangdang</groupId>
             <artifactId>sharding-jdbc-core</artifactId>
             <version>${sharding-jdbc.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.dangdang</groupId>
             <artifactId>sharding-jdbc-config-yaml</artifactId>
             <version>${sharding-jdbc.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <exclusion>
                     <artifactId>snakeyaml</artifactId>
@@ -143,7 +151,8 @@
             <groupId>com.dangdang</groupId>
             <artifactId>sharding-jdbc-config-common</artifactId>
             <version>${sharding-jdbc.version}</version>
-        </dependency>
+            <optional>true</optional>
+        </dependency>-->
 
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>

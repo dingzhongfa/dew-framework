@@ -49,6 +49,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.shardingjdbc</groupId>
+            <artifactId>sharding-jdbc-core</artifactId>
+            <version>${sharding-jdbc.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

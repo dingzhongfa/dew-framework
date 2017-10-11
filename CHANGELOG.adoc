@@ -1,5 +1,21 @@
 == 版本说明
 
+=== 1.1.0-beta1
+
+==== Feature
+
+* [功能]支持局部 `SharingJDBC`
+
+==== Improvement
+
+* [优化]增强 `SqlBuilder`
+* [优化]支持Java8时间
+* [文档]添加性能调优章节
+
+WARNING: Java8时间
+
+==== Fixed
+
 === 1.0.0-RC
 
 ==== Feature

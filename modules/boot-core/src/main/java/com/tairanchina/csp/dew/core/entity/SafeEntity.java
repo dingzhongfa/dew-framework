@@ -3,17 +3,17 @@ package com.tairanchina.csp.dew.core.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public abstract class SafeEntity<P> extends PkEntity<P> {
 
     @ApiModelProperty("创建时间")
     @CreateTimeColumn
-    protected Date createTime;
+    protected LocalDateTime createTime;
 
     @ApiModelProperty("更新时间")
     @UpdateTimeColumn
-    protected Date updateTime;
+    protected LocalDateTime updateTime;
 
     @ApiModelProperty("创建人编码")
     @CreateUserColumn
@@ -23,19 +23,19 @@ public abstract class SafeEntity<P> extends PkEntity<P> {
     @UpdateUserColumn
     protected String updateUser;
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 

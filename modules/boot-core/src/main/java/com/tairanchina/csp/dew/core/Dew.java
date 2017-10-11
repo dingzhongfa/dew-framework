@@ -3,11 +3,11 @@ package com.tairanchina.csp.dew.core;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.ecfront.dew.common.StandardCode;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
-import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.cache.CacheType;
+import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpEntity;
@@ -56,6 +57,9 @@ public class Dew {
     @Autowired
     @Qualifier("dewConfig")
     private DewConfig innerDewConfig;
+
+    @Autowired
+    private JacksonProperties jacksonProperties;
 
     @Autowired
     private ApplicationContext innerApplicationContext;
@@ -105,6 +109,9 @@ public class Dew {
         }else if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")){
             auth=Dew.applicationContext.getBean(UCAuthAdapter.class);
         }
+        // Support java8 Time
+        jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
     }
 
     public static class Constant {

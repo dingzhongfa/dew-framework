@@ -6,7 +6,6 @@ import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.cglib.proxy.Proxy;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DewDao<P,E> {

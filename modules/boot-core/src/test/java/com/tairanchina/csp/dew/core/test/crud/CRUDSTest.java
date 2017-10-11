@@ -80,7 +80,7 @@ public class CRUDSTest {
         Resp<TestSelectEntity> entityResp = Resp.generic($.http.post(url + "/", entity), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertTrue(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Object id = entityResp.getBody().getId();
         String code = entityResp.getBody().getCode();
@@ -88,7 +88,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.get(url + "/" + id), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertTrue(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());
@@ -96,7 +96,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.get(url + "/code/" + code), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertTrue(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());
@@ -105,7 +105,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.put(url + "/" + id, entity), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertFalse(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());
@@ -114,7 +114,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.put(url + "/code/" + code, entity), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertFalse(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());
@@ -122,7 +122,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.get(url + "/" + id), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertFalse(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());
@@ -130,7 +130,7 @@ public class CRUDSTest {
         entityResp = Resp.generic($.http.get(url + "/code/" + code), TestSelectEntity.class);
         Assert.assertEquals(entity.getFieldA(), entityResp.getBody().getFieldA());
         Assert.assertEquals(entity.getFieldB(), entityResp.getBody().getFieldB());
-        Assert.assertNotEquals(entityResp.getBody().getCreateTime().getTime(), entityResp.getBody().getUpdateTime().getTime());
+        Assert.assertFalse(entityResp.getBody().getCreateTime().isEqual(entityResp.getBody().getUpdateTime()));
         Assert.assertTrue(entityResp.getBody().getEnabled());
         Assert.assertEquals(id, entityResp.getBody().getId());
         Assert.assertEquals(code, entityResp.getBody().getCode());

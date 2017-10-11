@@ -4,7 +4,7 @@ package com.tairanchina.csp.dew.core.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApiModel(value = "登录信息")
@@ -19,7 +19,7 @@ public class BasicOptInfo<E> extends OptInfo<E> {
     @ApiModelProperty(value = "角色列表", required = true)
     protected List<RoleInfo> roles;
     @ApiModelProperty(value = "最后一次登录时间", required = true)
-    protected Date lastLoginTime;
+    protected LocalDateTime lastLoginTime;
 
     @ApiModel(value = "角色信息")
     public static class RoleInfo {
@@ -94,11 +94,11 @@ public class BasicOptInfo<E> extends OptInfo<E> {
         return (E) this;
     }
 
-    public Date getLastLoginTime() {
+    public LocalDateTime getLastLoginTime() {
         return lastLoginTime;
     }
 
-    public E setLastLoginTime(Date lastLoginTime) {
+    public E setLastLoginTime(LocalDateTime lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
         return (E) this;
     }

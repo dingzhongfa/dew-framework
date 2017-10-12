@@ -128,11 +128,6 @@
             <version>${sharding-jdbc.version}</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>io.shardingjdbc</groupId>
-            <artifactId>sharding-jdbc-plugin</artifactId>
-            <version>${sharding-jdbc.version}</version>
-        </dependency>
 
         <!--sharding-jdbc-->
         <!--<dependency>

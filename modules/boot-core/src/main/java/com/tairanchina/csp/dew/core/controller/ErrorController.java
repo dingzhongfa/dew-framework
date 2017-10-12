@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.AbstractErrorController;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
@@ -122,13 +123,13 @@ public class ErrorController extends AbstractErrorController {
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
-            return ResponseEntity.status(200).body($.json.toJsonString(resp));
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
         } else {
             JsonNode jsonNode = $.json.createObjectNode()
                     .set("error", $.json.createObjectNode()
                             .put("code", busCode)
                             .put("message", message));
-            return ResponseEntity.status(httpCode).body(jsonNode.toString());
+            return ResponseEntity.status(httpCode).contentType(MediaType.APPLICATION_JSON_UTF8).body(jsonNode.toString());
         }
     }
 

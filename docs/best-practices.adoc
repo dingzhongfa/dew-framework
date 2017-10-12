@@ -169,11 +169,6 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 
 TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置；在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置。
 
-=== `feign` 返回值解码配置
-
-
-TIP:  接口抛出异常经过异常处理接口解析后，feign解码返回值时会在消费端报 `feign.codec.DecodeException` 异常，需在FeignClient接口上加 `@RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)` ，指定响应类型和编码集。
-
 === 服务调用开发期使用
 
 在Spring Cloud体系下，服务调用需要启动 `Eureka` 服务（对于Dew中的 `Regstry` 组件），这对开发阶段并不友好：

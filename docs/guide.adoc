@@ -98,6 +98,8 @@ TIP: `dew` 支持 `Spring boot` 下各类数据持久化框架，此处使用基
 [source,yml]
 ----
 spring:
+  cache:
+    type: redis
   application:
     name: pet-store # 项目名称，对Spring Cloud而言也是service-id
   datasource: # 数据库连接信息

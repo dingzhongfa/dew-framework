@@ -69,17 +69,6 @@ public class Dew {
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
-            CacheProperties cacheProperties = Dew.applicationContext.getBean(CacheProperties.class);
-            switch (innerDewConfig.getCluster().getCache().toUpperCase()) {
-                case "REDIS":
-                    cacheProperties.setType(CacheType.REDIS);
-                    break;
-                case "HAZELCAST":
-                    cacheProperties.setType(CacheType.HAZELCAST);
-                    break;
-                default:
-                    break;
-            }
         }
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getDist() + "ClusterDist")) {
             Dew.cluster.dist = (ClusterDist) Dew.applicationContext.getBean(innerDewConfig.getCluster().getDist() + "ClusterDist");

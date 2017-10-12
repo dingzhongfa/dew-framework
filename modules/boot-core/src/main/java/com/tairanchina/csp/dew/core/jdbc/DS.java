@@ -870,17 +870,38 @@ public class DS {
                     EntityContainer.EntityClassInfo classInfo = EntityContainer.getEntityClassByClazz(item.table);
                     if (classInfo != null) {
                         join.append(" ").append(item.op.toString()).append(" JOIN ").append(leftDecorated)
-                                .append(classInfo.tableName).append(rightDecorated).append(" ON ")
-                                .append(item.condition) // TODO: 2017/10/11 condition need to be parsed
-                                .append(", ");
+                                .append(classInfo.tableName).append(rightDecorated).append(" ON ");
+                        // condition need to be parsed  JOIN t2 ON t1.f1 = t2.f1
+                        /////// 下面这段代码太丑了,谁给优化下
+                        String field;
+                        String[] fv;
+                        String f;
+                        field = item.getCondition().field1;
+                        fv = parseField(null, field);
+                        f = "";
+                        if (!"".equals(fv[0])) {
+                            f += leftDecorated + fv[0] + rightDecorated + POINT;
+                        }
+                        f += leftDecorated + fv[1] + rightDecorated;
+                        join.append(f);
+                        join.append(" = "); // 先只支持 相等 的条件
+                        field = item.getCondition().field2;
+                        fv = parseField(null, field);
+                        f = "";
+                        if (!"".equals(fv[0])) {
+                            f += leftDecorated + fv[0] + rightDecorated + POINT;
+                        }
+                        f += leftDecorated + fv[1] + rightDecorated;
+                        join.append(f);
+                        /////// 上面这段代码太丑了,谁给优化下
                     } else {
                         logger.info("can't find the table that named {}", item.table);
                     }
                 });
                 if (sb != null) {
-                    sb.append(join.substring(0, join.lastIndexOf(", ")));
+                    sb.append(join.toString());
                 }
-                return join.substring(0, join.lastIndexOf(", "));
+                return join.toString();
             }
             return null;
         }
@@ -999,13 +1020,30 @@ public class DS {
             return null;
         }
 
+        /**
+         * fields 支持单个列添加,也支持多列在一个参数中添加
+         * @param fields example  table.code /  table.code,table.name
+         */
         public SB select(String... fields) {
             for (int i = 0; i < fields.length; i++) {
-                selectFields.add(fields[i]);
+                // 分离多个列在一起的表达式
+                String field = fields[i];
+                if (field.indexOf(",") > 0) {
+                    String[] fv = field.split(",");
+                    for (int j = 0; j < fv.length; j++) {
+                        selectFields.add(fv[j].trim());
+                    }
+                    continue;
+                }
+                selectFields.add(field);
             }
             return this;
         }
 
+        /**
+         * tables 一个参数只支持一个表的添加,不允许在一个参数中直接写多张表
+         * @return
+         */
         public SB from(String... tables) {
             for (int i = 0; i < tables.length; i++) {
                 this.tables.add(tables[i]);
@@ -1013,8 +1051,8 @@ public class DS {
             return this;
         }
 
-        public SB leftJoin(String table, String condition) {
-            joins.add(new SQLJoin(SQLJoin.OP.LEFT, table, condition));
+        public SB leftJoin(String table, String field1, String field2) {
+            joins.add(new SQLJoin(SQLJoin.OP.LEFT, table, new SQLCondition(SQLCondition.OP.EQUAL, field1, field2, null, null)));
             return this;
         }
 
@@ -1037,15 +1075,15 @@ public class DS {
                 // 如果为空,说明传入不正确
                 if (classInfo != null) {
                     table = classInfo.tableName;
-                    // it will throw null point exception when the column name is error
+                    // it will build error sql when the column name is error
                     if (!"*".equals(column)) {
-                        column = classInfo.columns.get(column).columnName;
+                        column = classInfo.columns.get(column) == null ? column: classInfo.columns.get(column).columnName;
                     }
                 }
             } else if (defaultClassInfo != null) {
                 table = defaultClassInfo.tableName;
-                // it will throw null point exception when the column name is error
-                column = defaultClassInfo.columns.get(column).columnName;
+                // it will build error sql when the column name is error
+                column = defaultClassInfo.columns.get(column) == null ? column: defaultClassInfo.columns.get(column).columnName;
             }
             return new String[]{table, column};
         }
@@ -1130,12 +1168,16 @@ public class DS {
         private static class SQLJoin {
             private OP op;
             private String table;
-            private String condition;
+            private SQLCondition condition;
 
-            public SQLJoin(OP op, String table, String condition) {
+            public SQLJoin(OP op, String table, SQLCondition condition) {
                 this.op = op;
                 this.table = table;
                 this.condition = condition;
+            }
+
+            public SQLCondition getCondition() {
+                return condition;
             }
 
             enum OP {

@@ -28,8 +28,8 @@ dew: # Dew 参数key前缀
     jdbc: # DewJDBC功能
         base-packages:[""] # 要扫描的根包，多指定到 jdbc 包中
     sharding:
-        sharding-flag: true #默认为false，true-开起shardingJDBC分库分表功能
-        file-name: #yaml配置文件的文件名，需加上文件后缀名，文件必须放在/resources/META-INF/ 下
+        sharding-flag: true #默认为false，true-开启shardingJDBC分库分表功能
+        file-name: #yaml配置文件的文件名，需加上文件后缀名(.yaml)，文件必须放在/resources/META-INF/ 下
     security: # 安全功能
         cors:
             allow-origin: # 允许的来源，默认为 * ，建议修改

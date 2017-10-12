@@ -1,8 +1,8 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.dangdang.ddframe.rdb.sharding.config.yaml.api.YamlShardingDataSource;
 import com.tairanchina.csp.dew.core.Dew;
+import io.shardingjdbc.core.api.ShardingDataSourceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -95,7 +95,7 @@ public class DSManager {
         }
         // Register sharding-jdbc DS
         if (Dew.dewConfig.getSharding().isShardingFlag()) {
-            DataSource shardingDataSource = new YamlShardingDataSource(
+            DataSource shardingDataSource = ShardingDataSourceFactory.createDataSource(
                     new File(Dew.class.getResource("/META-INF/" + Dew.dewConfig.getSharding().getFileName()).getFile()));
             register("sharding", null, shardingDataSource);
         }

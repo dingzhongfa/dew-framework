@@ -58,7 +58,7 @@ public class Dew {
     @Qualifier("dewConfig")
     private DewConfig innerDewConfig;
 
-    @Autowired
+    @Autowired(required = false)
     private JacksonProperties jacksonProperties;
 
     @Autowired
@@ -110,8 +110,9 @@ public class Dew {
             auth=Dew.applicationContext.getBean(UCAuthAdapter.class);
         }
         // Support java8 Time
-        jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
+        if (jacksonProperties != null) {
+            jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        }
     }
 
     public static class Constant {

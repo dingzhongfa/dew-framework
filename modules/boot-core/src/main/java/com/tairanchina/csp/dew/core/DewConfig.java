@@ -17,7 +17,6 @@ public class DewConfig {
     private Cluster cluster = new Cluster();
     private Security security = new Security();
     private jdbc jdbc = new jdbc();
-    private Sharding sharding = new Sharding();
 
     public static class jdbc {
 
@@ -29,29 +28,6 @@ public class DewConfig {
 
         public void setBasePackages(List<String> basePackages) {
             this.basePackages = basePackages;
-        }
-    }
-
-    public static class Sharding{
-
-        private boolean shardingFlag = false;
-
-        private String fileName;
-
-        public boolean isShardingFlag() {
-            return shardingFlag;
-        }
-
-        public void setShardingFlag(boolean shardingFlag) {
-            this.shardingFlag = shardingFlag;
-        }
-
-        public String getFileName() {
-            return fileName;
-        }
-
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
         }
     }
 
@@ -417,11 +393,4 @@ public class DewConfig {
         this.jdbc = jdbc;
     }
 
-    public Sharding getSharding() {
-        return sharding;
-    }
-
-    public void setSharding(Sharding sharding) {
-        this.sharding = sharding;
-    }
 }

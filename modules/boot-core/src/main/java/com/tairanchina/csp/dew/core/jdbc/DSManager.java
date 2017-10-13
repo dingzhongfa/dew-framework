@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.tairanchina.csp.dew.core.Dew;
-import io.shardingjdbc.core.api.ShardingDataSourceFactory;
+import com.tairanchina.csp.dew.core.sharding.ShardingConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
@@ -38,6 +37,9 @@ public class DSManager {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private ShardingConfiguration shardingConfiguration;
 
     @Value("${spring.datasource.url}")
     private String primaryJdbcUrl;
@@ -93,12 +95,9 @@ public class DSManager {
                 register(dsName, entry.getValue().get("url"), ds);
             }
         }
-        // Register sharding-jdbc DS
-        if (Dew.dewConfig.getSharding().isShardingFlag()) {
-            DataSource shardingDataSource = ShardingDataSourceFactory.createDataSource(
-                    new File(Dew.class.getResource("/META-INF/" + Dew.dewConfig.getSharding().getFileName()).getFile()));
-            register("sharding", null, shardingDataSource);
-        }
+        // Register sharding ds
+        register("sharding", shardingConfiguration.getJdbcUrls().iterator().next(), shardingConfiguration.dataSource());
+
     }
 
     private void register(String dsName, String jdbcUrl, DataSource dataSource) {

@@ -58,11 +58,6 @@ public class DS {
     private Dialect dialect;
 
     private void init() {
-        if (StringUtils.isEmpty(jdbcUrl)){
-            leftDecorated = "`";
-            rightDecorated = "`";
-            return;
-        }
         dialect = DialectFactory.parseDialect(jdbcUrl);
         switch (dialect.getDialectType()) {
             case H2:
@@ -169,6 +164,10 @@ public class DS {
     public <E> E get(SB sqlBuilder, Class<E> entityClazz) {
         Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
         return convertRsToObj(jdbcTemplate.queryForMap((String) packageSelect[0], (Object[]) packageSelect[1]), entityClazz);
+    }
+
+    public <E> E get(String sql, Object[] params, Class<E> entityClazz) {
+        return convertRsToObj(jdbcTemplate.queryForMap(sql, (Object[]) params), entityClazz);
     }
 
     public int deleteById(Object id, Class<?> entityClazz) {

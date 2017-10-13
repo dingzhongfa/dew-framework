@@ -15,28 +15,28 @@ tables:
     #generateKeyColumns:
       #- columnName: order_id
     tableStrategy:
-      inline:
+      standard: #标准分片策略，用于单分片键的场景
         shardingColumn: order_id
-        #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
-        algorithmInlineExpression: t_order_${order_id.longValue() % 2}
+        preciseAlgorithmClassName: com.tairanchina.csp.dew.core.sharding.algorithm.DewLongShardingAlgorithm
+      #inline:
+        #shardingColumn: order_id
+        #algorithmInlineExpression: t_order_${order_id.longValue() % 2}
+    #keyGeneratorColumnName: order_id
+    #keyGeneratorClass: io.shardingjdbc.core.yaml.fixture.IncrementKeyGenerator
   t_order_item:
     actualDataNodes: ds_${0..1}.t_order_item_${0..1}
     #绑定表中其余的表的策略与第一张表的策略相同
     tableStrategy:
-      inline:
+      standard: #标准分片策略，用于单分片键的场景
         shardingColumn: order_id
-        #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
-        algorithmInlineExpression: t_order_item_${order_id.longValue() % 2}
+        preciseAlgorithmClassName: com.tairanchina.csp.dew.core.sharding.algorithm.DewLongShardingAlgorithm
 bindingTables:
   - t_order,t_order_item
   
 #默认数据库分片策略
 defaultDatabaseStrategy:
-  inline:
+  standard:
     shardingColumn: user_id
-    #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
-    algorithmInlineExpression: ds_${user_id.longValue() % 2}
-
-
+    preciseAlgorithmClassName: com.tairanchina.csp.dew.core.sharding.algorithm.DewIntegerShardingAlgorithm
 props:
   sql.show: true

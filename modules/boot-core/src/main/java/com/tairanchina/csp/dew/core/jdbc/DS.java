@@ -20,16 +20,14 @@ import com.tairanchina.csp.dew.core.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
 import com.tairanchina.csp.dew.core.jdbc.proxy.MethodConstruction;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.util.StringUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.Time;
@@ -164,11 +162,18 @@ public class DS {
 
     public <E> E get(SB sqlBuilder, Class<E> entityClazz) {
         Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
-        return convertRsToObj(jdbcTemplate.queryForMap((String) packageSelect[0], (Object[]) packageSelect[1]), entityClazz);
+        return get((String) packageSelect[0], (Object[]) packageSelect[1], entityClazz);
     }
 
     public <E> E get(String sql, Object[] params, Class<E> entityClazz) {
-        return convertRsToObj(jdbcTemplate.queryForMap(sql, (Object[]) params), entityClazz);
+        List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, (Object[]) params);
+        if (result.size() == 1) {
+            return convertRsToObj(result.get(0), entityClazz);
+        } else if (result.size() == 0) {
+            return null;
+        } else {
+            throw new IncorrectResultSizeDataAccessException(1);
+        }
     }
 
     public int deleteById(Object id, Class<?> entityClazz) {
@@ -243,7 +248,7 @@ public class DS {
     }
 
     public int update(String sql, Object[] params) {
-        return jdbcTemplate.update(sql,params);
+        return jdbcTemplate.update(sql, params);
     }
 
     public boolean existById(Object id, Class<?> entityClazz) {
@@ -261,14 +266,14 @@ public class DS {
     public boolean exist(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
-        return jdbcTemplate.queryForRowSet(dialect.exist(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
+        return exist(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
-                sb[0])),
-                ((List) sb[1]).toArray()).next();
+                sb[0]),
+                ((List) sb[1]).toArray());
     }
 
     public boolean exist(String sql, Object[] params) {
-        return jdbcTemplate.queryForObject(dialect.count(sql),params, Long.class) != 0;
+        return jdbcTemplate.queryForRowSet(dialect.exist(sql), params).next();
     }
 
     public <E> List<E> findAll(Class<E> entityClazz) {
@@ -287,9 +292,7 @@ public class DS {
 
     public <E> List<E> find(SB sqlBuilder, Class<E> entityClazz) {
         Object[] packageSelect = packageSelect(entityClazz, sqlBuilder);
-        return jdbcTemplate.queryForList((String) packageSelect[0], (Object[]) packageSelect[1]).stream()
-                .map(row -> convertRsToObj(row, entityClazz))
-                .collect(Collectors.toList());
+        return find((String) packageSelect[0], (Object[]) packageSelect[1], entityClazz);
     }
 
     public <E> List<E> find(String sql, Object[] params, Class<E> entityClazz) {
@@ -319,14 +322,14 @@ public class DS {
     public long count(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         Object[] sb = sqlBuilder.build(entityClassInfo, leftDecorated, rightDecorated);
-        return jdbcTemplate.queryForObject(dialect.count(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
+        return count(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
-                sb[0])),
-                ((List) sb[1]).toArray(), Long.class);
+                sb[0]),
+                ((List) sb[1]).toArray());
     }
 
     public long count(String sql, Object[] params) {
-        return jdbcTemplate.queryForObject(dialect.count(sql),params, Long.class);
+        return jdbcTemplate.queryForObject(dialect.count(sql), params, Long.class);
     }
 
     public <E> Page<E> paging(long pageNumber, int pageSize, Class<E> entityClazz) {

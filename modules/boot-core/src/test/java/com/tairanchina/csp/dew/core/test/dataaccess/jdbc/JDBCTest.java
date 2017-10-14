@@ -112,6 +112,8 @@ public class JDBCTest {
         fullEntity.setFieldB("测试B");
         id = Dew.ds().insert(fullEntity);
         // getById
+        fullEntity = Dew.ds().getById("11", FullEntity.class);
+        Assert.assertNull(fullEntity);
         fullEntity = Dew.ds().getById(id, FullEntity.class);
         Assert.assertTrue(!fullEntity.getCode().isEmpty());
         Assert.assertEquals("测试A", fullEntity.getFieldA());

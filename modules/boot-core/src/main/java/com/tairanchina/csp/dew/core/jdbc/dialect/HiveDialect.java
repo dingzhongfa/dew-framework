@@ -10,7 +10,12 @@ class HiveDialect implements Dialect {
 
     @Override
     public String count(String sql) {
-        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + System.currentTimeMillis();
+        return "SELECT COUNT(1) FROM ( " + sql + " ) _" + (Math.abs(sql.hashCode()) & 0x7fffffff);
+    }
+
+    @Override
+    public String exist(String sql) {
+        return "SELECT 1 FROM ( " + sql + " LIMIT 1 ) _" + (Math.abs(sql.hashCode()) & 0x7fffffff);
     }
 
     @Override

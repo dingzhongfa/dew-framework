@@ -6,6 +6,8 @@ public interface Dialect {
 
     String count(String sql);
 
+    String exist(String sql);
+
     String getTableInfo(String tableName);
 
     String getDriver();

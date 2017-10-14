@@ -8,8 +8,8 @@
 
 ==== Improvement
 
-* [优化]增强 `SqlBuilder`
 * [优化]支持Java8时间
+* [优化]Dew DS性能优化
 * [文档]添加性能调优章节
 
 WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!

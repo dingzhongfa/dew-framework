@@ -13,6 +13,11 @@ class H2Dialect implements Dialect {
     }
 
     @Override
+    public String exist(String sql) {
+        return "SELECT 1 FROM ( " + sql + " LIMIT 1 ) ";
+    }
+
+    @Override
     public String getTableInfo(String tableName) {
         return "SELECT * FROM INFORMATION_SCHEMA.TABLES t WHERE t.table_name ='" + tableName + "'";
     }

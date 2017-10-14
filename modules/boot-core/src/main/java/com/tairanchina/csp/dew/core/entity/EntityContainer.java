@@ -124,12 +124,7 @@ public class EntityContainer {
 
     public static EntityClassInfo getEntityClassByClazz(String tableName) {
         for (Map.Entry<String, EntityClassInfo> entry : COLUMN_INFO.entrySet()) {
-            // 根据表名查找
             if (entry.getValue().tableName.equals(tableName)) {
-                return entry.getValue();
-            }
-            // 根据实体类名查找
-            if (entry.getKey().endsWith(tableName)) {
                 return entry.getValue();
             }
         }

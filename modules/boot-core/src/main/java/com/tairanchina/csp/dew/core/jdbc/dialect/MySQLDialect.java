@@ -13,6 +13,11 @@ class MySQLDialect implements Dialect {
     }
 
     @Override
+    public String exist(String sql) {
+        return "SELECT 1 FROM ( " + sql + " LIMIT 1 ) _" + (Math.abs(sql.hashCode()) & 0x7fffffff);
+    }
+
+    @Override
     public String getTableInfo(String tableName) {
         //TODO
         throw new RuntimeException("NotImplemented");

@@ -38,7 +38,7 @@ public class DSManager {
     @Autowired
     private DataSource dataSource;
 
-    @Autowired
+    @Autowired(required = false)
     private ShardingConfiguration shardingConfiguration;
 
     @Value("${spring.datasource.url}")
@@ -96,7 +96,9 @@ public class DSManager {
             }
         }
         // Register sharding ds
-        register("sharding", shardingConfiguration.getJdbcUrls().iterator().next(), shardingConfiguration.dataSource());
+        if (shardingConfiguration != null) {
+            register("sharding", shardingConfiguration.getJdbcUrls().iterator().next(), shardingConfiguration.dataSource());
+        }
 
     }
 

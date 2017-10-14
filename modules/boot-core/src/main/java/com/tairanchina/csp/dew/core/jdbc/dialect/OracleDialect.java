@@ -4,12 +4,17 @@ public class OracleDialect implements Dialect {
 
     @Override
     public String paging(String sql, long pageNumber, int pageSize) {
-        return "SELECT * FROM (SELECT rownum rn , originaltable.* FROM (" + sql + ") originaltable  WHERE rownum<=" + (pageNumber * pageSize) + ") WHERE rn > " + (pageNumber - 1) * pageSize;
+        return "SELECT * FROM (SELECT rownum rn , originaltable.* FROM (" + sql + ") originaltable  WHERE rownum <= " + (pageNumber * pageSize) + ") WHERE rn > " + (pageNumber - 1) * pageSize;
     }
 
     @Override
     public String count(String sql) {
         return "SELECT COUNT(1) FROM ( " + sql + " ) ";
+    }
+
+    @Override
+    public String exist(String sql) {
+        return "SELECT 1 FROM (SELECT rownum rn , originaltable.* FROM (" + sql + ") originaltable  WHERE rownum <= 1)";
     }
 
     @Override

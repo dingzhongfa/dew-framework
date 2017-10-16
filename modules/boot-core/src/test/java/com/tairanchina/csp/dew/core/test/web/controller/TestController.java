@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.test.web.controller;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.test.web.AuthException;
 import com.tairanchina.csp.dew.core.validation.CreateGroup;
 import com.tairanchina.csp.dew.core.validation.IdNumber;

@@ -1,6 +1,6 @@
 dew:
   jdbc:
-    base-packages: ["com.tairanchina.csp.dew.jdbc.select.dao"]
+    base-packages: ["com.tairanchina.csp.dew.jdbc.test.select.dao"]
 
 spring:
   application:

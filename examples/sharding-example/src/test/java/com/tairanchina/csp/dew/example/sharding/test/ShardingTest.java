@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.example.sharding.test;
 
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DS;
 import com.tairanchina.csp.dew.example.sharding.ShardingApplication;
 import com.tairanchina.csp.dew.example.sharding.entity.TOrder;

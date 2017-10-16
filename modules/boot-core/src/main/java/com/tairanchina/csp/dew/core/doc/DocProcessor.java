@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.doc;
 
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

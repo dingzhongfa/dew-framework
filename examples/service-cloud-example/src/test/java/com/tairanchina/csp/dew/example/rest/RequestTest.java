@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.example.rest;
 
 import com.ecfront.dew.common.HttpHelper;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

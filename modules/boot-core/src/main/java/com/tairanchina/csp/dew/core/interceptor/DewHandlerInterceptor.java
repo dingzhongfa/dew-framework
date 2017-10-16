@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core.interceptor;
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

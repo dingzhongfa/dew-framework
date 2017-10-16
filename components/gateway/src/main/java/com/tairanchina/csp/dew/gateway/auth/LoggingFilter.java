@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.gateway.auth;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

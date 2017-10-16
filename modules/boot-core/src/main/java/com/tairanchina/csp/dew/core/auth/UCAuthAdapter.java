@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.core.auth;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import com.tairanchina.csp.ucenter.tool.sdk.UCenterSDK;
 import com.tairanchina.csp.ucenter.tool.sdk.exception.InvalidClientTokenException;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
-import static com.tairanchina.csp.dew.core.Dew.Info.host;
+import static com.tairanchina.csp.dew.Dew.Info.host;
 
 
 @Component

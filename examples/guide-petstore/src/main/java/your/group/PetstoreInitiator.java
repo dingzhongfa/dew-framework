@@ -1,7 +1,7 @@
 package your.group;
 
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

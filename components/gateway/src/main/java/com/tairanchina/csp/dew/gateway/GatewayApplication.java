@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.gateway;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewCloudApplication;
 import com.tairanchina.csp.dew.gateway.auth.LoggingFilter;
 import org.springframework.boot.builder.SpringApplicationBuilder;

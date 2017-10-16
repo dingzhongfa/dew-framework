@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example.mybatisplus;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
 import com.tairanchina.csp.dew.example.mybatisplus.service.UserService;
 import com.tairanchina.csp.dew.jdbc.DewDS;

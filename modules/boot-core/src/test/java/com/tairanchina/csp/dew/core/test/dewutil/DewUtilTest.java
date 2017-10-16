@@ -4,7 +4,7 @@ package com.tairanchina.csp.dew.core.test.dewutil;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.HttpHelper;
 import com.tairanchina.csp.dew.core.Container;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.test.TestAll;
 import com.tairanchina.csp.dew.core.test.dewutil.controller.UtilController;
 import org.junit.Assert;

@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.jdbc.proxy;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.DewDao;
 import com.tairanchina.csp.dew.jdbc.annotations.Select;

@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example.auth;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.example.auth.dto.OptInfoExt;
 import org.springframework.web.bind.annotation.*;

@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.example.auth.AuthExampleApplication;
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.core.logger;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

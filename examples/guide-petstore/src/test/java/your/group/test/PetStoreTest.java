@@ -2,7 +2,7 @@ package your.group.test;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

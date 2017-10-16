@@ -74,28 +74,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.tomcat</groupId>
-                    <artifactId>tomcat-jdbc</artifactId>
-                </exclusion>
-            </exclusions>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -114,47 +93,6 @@
             <version>1.0.0-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>
-        <!--sharding-jdbc 2.0.0.M1-->
-        <dependency>
-            <groupId>io.shardingjdbc</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-
-        <!--sharding-jdbc-->
-        <!--<dependency>
-            <groupId>com.dangdang</groupId>
-            <artifactId>sharding-jdbc-core</artifactId>
-            <version>${sharding-jdbc.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.dangdang</groupId>
-            <artifactId>sharding-jdbc-config-yaml</artifactId>
-            <version>${sharding-jdbc.version}</version>
-            <optional>true</optional>
-            <exclusions>
-                <exclusion>
-                    <artifactId>snakeyaml</artifactId>
-                    <groupId>org.yaml</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.dangdang</groupId>
-            <artifactId>sharding-jdbc-config-common</artifactId>
-            <version>${sharding-jdbc.version}</version>
-            <optional>true</optional>
-        </dependency>-->
-
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>test-starter</artifactId>

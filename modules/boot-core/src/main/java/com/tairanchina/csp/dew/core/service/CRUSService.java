@@ -2,13 +2,13 @@ package com.tairanchina.csp.dew.core.service;
 
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.jdbc.DewDao;
+import com.tairanchina.csp.dew.core.jdbc.Dao;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CRUSService<T extends DewDao<P, E>, P, E> extends CRUService<T, P, E> {
+public interface CRUSService<T extends Dao<P, E>, P, E> extends CRUService<T, P, E> {
 
     default Resp<Optional<Object>> preEnableById(P id) {
         return Resp.success(Optional.empty());

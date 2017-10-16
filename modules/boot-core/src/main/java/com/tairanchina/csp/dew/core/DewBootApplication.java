@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

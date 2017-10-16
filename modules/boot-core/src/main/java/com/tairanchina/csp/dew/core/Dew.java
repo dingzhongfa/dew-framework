@@ -1,17 +1,16 @@
-package com.tairanchina.csp.dew.core;
+package com.tairanchina.csp.dew;
 
 import com.ecfront.dew.common.$;
-import com.ecfront.dew.common.HttpHelper;
 import com.ecfront.dew.common.StandardCode;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.tairanchina.csp.dew.core.DewConfig;
+import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
-import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
-import com.tairanchina.csp.dew.core.jdbc.ClassPathScanner;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import org.slf4j.Logger;
@@ -19,25 +18,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -83,20 +74,12 @@ public class Dew {
         if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {
             Dew.applicationContext.getBean(DSManager.class);
         }
-        Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
-        Info.name = applicationName;
-        // JDBC Scan
-        if (!Dew.dewConfig.getJdbc().getBasePackages().isEmpty()) {
-            ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
-            scanner.setResourceLoader(Dew.applicationContext);
-            scanner.registerFilters();
-            scanner.scan(Dew.dewConfig.getJdbc().getBasePackages().toArray(new String[]{}));
-        }
+        Dew.Info.name = applicationName;
         // Select Auth Adapter
-        if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")){
-            auth=Dew.applicationContext.getBean(BasicAuthAdapter.class);
-        }else if(Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")){
-            auth=Dew.applicationContext.getBean(UCAuthAdapter.class);
+        if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")) {
+            auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);
+        } else if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")) {
+            auth = Dew.applicationContext.getBean(UCAuthAdapter.class);
         }
         // Support java8 Time
         if (jacksonProperties != null) {
@@ -148,119 +131,6 @@ public class Dew {
      */
     public static DewContext context() {
         return DewContext.getContext();
-    }
-
-    /**
-     * 请求消息（基于RestTemplate）辅助工具
-     */
-    public static class EB {
-
-        private static RestTemplate serviceClient;
-
-        public static void setServiceClient(RestTemplate inputServiceClient) {
-            serviceClient = inputServiceClient;
-        }
-
-        public static HttpHelper.ResponseWrap get(String url) throws Exception {
-            return get(url, null);
-        }
-
-        public static HttpHelper.ResponseWrap get(String url, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.GET, url, null, header);
-        }
-
-        public static HttpHelper.ResponseWrap delete(String url) throws Exception {
-            return delete(url, null);
-        }
-
-        public static HttpHelper.ResponseWrap delete(String url, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.DELETE, url, null, header);
-        }
-
-        public static HttpHelper.ResponseWrap head(String url) throws Exception {
-            return head(url, null);
-        }
-
-        public static HttpHelper.ResponseWrap head(String url, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.HEAD, url, null, header);
-        }
-
-        public static HttpHelper.ResponseWrap options(String url) throws Exception {
-            return options(url, null);
-        }
-
-        public static HttpHelper.ResponseWrap options(String url, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.OPTIONS, url, null, header);
-        }
-
-        public static HttpHelper.ResponseWrap post(String url, Object body) throws Exception {
-            return post(url, body, null);
-        }
-
-        public static HttpHelper.ResponseWrap post(String url, Object body, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.POST, url, body, header);
-        }
-
-        public static HttpHelper.ResponseWrap put(String url, Object body) throws Exception {
-            return put(url, body, null);
-        }
-
-        public static HttpHelper.ResponseWrap put(String url, Object body, Map<String, String> header) throws Exception {
-            return exchange(HttpMethod.PUT, url, body, header);
-        }
-
-        public static HttpHelper.ResponseWrap exchange(HttpMethod httpMethod, String url, Object body, Map<String, String> header) throws Exception {
-            try {
-                if (header == null) {
-                    header = new HashMap<>();
-                    header.put(Constant.HTTP_REQUEST_FROM_FLAG, Info.name.toUpperCase());
-                }
-                if (!$.field.isIPv4Address(new URL(url).getHost())) {
-                    HttpHeaders headers = new HttpHeaders();
-                    header.forEach(headers::add);
-                    tryAttachTokenToHeader(headers);
-                    HttpEntity entity;
-                    if (body != null) {
-                        entity = new HttpEntity(body, headers);
-                    } else {
-                        entity = new HttpEntity(headers);
-                    }
-                    ResponseEntity resp = serviceClient.exchange(tryAttachTokenToUrl(url), httpMethod, entity, Object.class);
-                    HttpHelper.ResponseWrap responseWrap = new HttpHelper.ResponseWrap();
-                    responseWrap.head = new HashMap<>();
-                    for (Map.Entry<String, List<String>> entry : resp.getHeaders().entrySet()) {
-                        responseWrap.head.put(entry.getKey(), !entry.getValue().isEmpty() ? entry.getValue().get(0) : "");
-                    }
-                    responseWrap.result = $.json.toJsonString(resp.getBody());
-                    return responseWrap;
-                } else {
-                    return $.http.request(httpMethod.name(), tryAttachTokenToUrl(url), body, header, null, null, 0);
-                }
-            } catch (Exception e) {
-                logger.error("EB Process error.", e);
-                throw e;
-            }
-        }
-
-        private static String tryAttachTokenToUrl(String url) {
-            if (!Dew.dewConfig.getSecurity().isTokenInHeader()) {
-                String token = Dew.context().getToken();
-                if (url.contains("&")) {
-                    return url + "&" + Dew.dewConfig.getSecurity().getTokenFlag() + "=" + token;
-                } else {
-                    return url + "?" + Dew.dewConfig.getSecurity().getTokenFlag() + "=" + token;
-                }
-            }
-            return url;
-        }
-
-        private static void tryAttachTokenToHeader(HttpHeaders headers) {
-            if (Dew.dewConfig.getSecurity().isTokenInHeader()) {
-                String token = Dew.context().getToken();
-                headers.add(Dew.dewConfig.getSecurity().getTokenFlag(), token);
-            }
-        }
-
     }
 
     /**
@@ -400,11 +270,11 @@ public class Dew {
         }
 
         public static <E extends RuntimeException> void checkNotEmpty(Iterable<?> objects, E ex) {
-            check(() -> !objects.iterator().hasNext(), ex);
+            check(() -> objects == null || !objects.iterator().hasNext(), ex);
         }
 
         public static <E extends RuntimeException> void checkNotEmpty(Map<?, ?> objects, E ex) {
-            check(() -> objects.size() == 0, ex);
+            check(() -> objects == null || objects.size() == 0, ex);
         }
 
         /**

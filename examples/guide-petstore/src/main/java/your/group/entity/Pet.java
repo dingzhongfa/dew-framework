@@ -1,6 +1,6 @@
 package your.group.entity;
 
-import com.tairanchina.csp.dew.core.entity.*;
+import com.tairanchina.csp.dew.jdbc.entity.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -1,8 +1,8 @@
 package com.tairanchina.csp.dew.example.sharding.entity;
 
-import com.tairanchina.csp.dew.core.entity.Column;
-import com.tairanchina.csp.dew.core.entity.Entity;
-import com.tairanchina.csp.dew.core.entity.PkColumn;
+import com.tairanchina.csp.dew.jdbc.entity.Column;
+import com.tairanchina.csp.dew.jdbc.entity.Entity;
+import com.tairanchina.csp.dew.jdbc.entity.PkColumn;
 
 @Entity(tableName = "t_order_item")
 public class TOrderItem {

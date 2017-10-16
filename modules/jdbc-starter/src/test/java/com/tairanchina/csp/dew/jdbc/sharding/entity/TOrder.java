@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc.test.sharding.entity;
+package com.tairanchina.csp.dew.jdbc.sharding.entity;
 
 import com.tairanchina.csp.dew.jdbc.entity.Column;
 import com.tairanchina.csp.dew.jdbc.entity.Entity;

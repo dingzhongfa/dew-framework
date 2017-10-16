@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc.test.sharding;
+package com.tairanchina.csp.dew.jdbc.sharding;
 
 import io.shardingjdbc.core.api.ShardingDataSourceFactory;
 import io.shardingjdbc.core.yaml.masterslave.YamMasterSlaveRuleConfiguration;

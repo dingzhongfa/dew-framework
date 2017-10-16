@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc.test.sharding;
+package com.tairanchina.csp.dew.jdbc.sharding;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -12,14 +12,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-@Configuration
+// @Configuration
 @ConditionalOnClass(ShardingDataSourceFactory.class)
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
 public class ShardingConfiguration implements EnvironmentAware {

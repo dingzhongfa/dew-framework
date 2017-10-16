@@ -13,6 +13,7 @@ import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,7 +57,7 @@ public class Dew {
     private ApplicationContext innerApplicationContext;
 
     @PostConstruct
-    private void init() {
+    private void init() throws IOException, ClassNotFoundException {
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
@@ -85,6 +86,9 @@ public class Dew {
         if (jacksonProperties != null) {
             jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         }
+        // Load Immediately
+        Set<Class<?>> loadOrders= $.clazz.scan(Dew.class.getPackage().getName(),new HashSet<Class<? extends Annotation>>(){{add(DewLoadImmediately.class);}},null);
+        loadOrders.forEach(loadOrder -> Dew.applicationContext.getBean(loadOrder));
     }
 
     public static class Constant {

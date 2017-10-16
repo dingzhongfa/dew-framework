@@ -11,6 +11,7 @@ import com.tairanchina.csp.dew.example.jdbc.entity.Order;
 import com.tairanchina.csp.dew.example.jdbc.entity.Pet;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class JDBCExampleInitiator {
     public void init() {
         // =============== DS 示例 ===============
         // 初始宠物表
-        ((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE pet\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE pet\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "type varchar(50),\n" +
@@ -40,7 +41,7 @@ public class JDBCExampleInitiator {
                 "enabled bool\n" +
                 ")");
         // 初始化订单表
-        ((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE t_order\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE t_order\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "pet_id int,\n" +
@@ -76,7 +77,7 @@ public class JDBCExampleInitiator {
 
         // =============== 多数据源 示例 ===============
         // 初始化客户表，来自另一个数据源
-        ((DewDS)Dew.ds("other")).jdbc().execute("CREATE TABLE customer\n" +
+        ((DewDS) Dew.ds("other")).jdbc().execute("CREATE TABLE customer\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "name varchar(50)\n" +

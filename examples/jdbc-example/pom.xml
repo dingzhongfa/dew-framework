@@ -26,19 +26,10 @@
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>boot-core</artifactId>
         </dependency>
+        <!--引入JDBC依赖-->
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>jdbc-starter</artifactId>
-        </dependency>
-        <!--引入JDBC依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <!--使用druid连接池-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
         <!--示例项目，使用h2数据库-->
         <dependency>

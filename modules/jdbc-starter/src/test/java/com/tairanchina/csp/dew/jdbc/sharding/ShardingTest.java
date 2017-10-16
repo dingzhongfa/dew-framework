@@ -1,9 +1,9 @@
-package com.tairanchina.csp.dew.jdbc.test.sharding;
+package com.tairanchina.csp.dew.jdbc.sharding;
 
 
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewSB;
-import com.tairanchina.csp.dew.jdbc.test.sharding.entity.TOrder;
+import com.tairanchina.csp.dew.jdbc.sharding.entity.TOrder;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
 

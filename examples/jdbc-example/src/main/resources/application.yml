@@ -16,7 +16,6 @@ spring:
       initial-size: 1
       max-active: 1
 
-
 dew:
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.example.jdbc.dao"]

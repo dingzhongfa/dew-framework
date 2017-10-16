@@ -3,8 +3,9 @@ package com.tairanchina.csp.dew.jdbc;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
-import com.tairanchina.csp.dew.jdbc.test.sharding.ShardingConfiguration;
+import com.tairanchina.csp.dew.jdbc.sharding.ShardingConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -25,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@DewLoadImmediately
 public class DewDSManager implements DSManager {
 
     private final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");

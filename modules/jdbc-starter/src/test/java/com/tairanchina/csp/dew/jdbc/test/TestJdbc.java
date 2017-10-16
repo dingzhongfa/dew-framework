@@ -3,7 +3,7 @@ package com.tairanchina.csp.dew.jdbc.test;
 import com.tairanchina.csp.dew.jdbc.test.crud.CRUDSTest;
 import com.tairanchina.csp.dew.jdbc.test.ds.JDBCTest;
 import com.tairanchina.csp.dew.jdbc.test.select.SelectTest;
-import com.tairanchina.csp.dew.jdbc.test.sharding.ShardingTest;
+import com.tairanchina.csp.dew.jdbc.sharding.ShardingTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

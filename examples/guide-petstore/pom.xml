@@ -44,15 +44,10 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-        <!--添加spring jdbc template支持-->
+        <!--添加Dew JDBC支持-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <!--使用druid连接池-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>jdbc-starter</artifactId>
         </dependency>
         <!--测试项目，使用h2数据库-->
         <dependency>
@@ -63,7 +58,6 @@
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>test-starter</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

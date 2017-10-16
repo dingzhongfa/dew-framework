@@ -1,14 +1,14 @@
-package com.tairanchina.csp.dew.core.sharding.algorithm;
+package com.tairanchina.csp.dew.jdbc.sharding.algorithm;
 
 import io.shardingjdbc.core.api.algorithm.sharding.PreciseShardingValue;
 import io.shardingjdbc.core.api.algorithm.sharding.standard.PreciseShardingAlgorithm;
 
 import java.util.Collection;
 
-public final class DewIntegerShardingAlgorithm implements PreciseShardingAlgorithm<Integer> {
-    
+public final class DewLongShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
+
     @Override
-    public String doSharding(final Collection<String> tableNames, final PreciseShardingValue<Integer> shardingValue) {
+    public String doSharding(final Collection<String> tableNames, final PreciseShardingValue<Long> shardingValue) {
         for (String each : tableNames) {
             if (each.endsWith(shardingValue.getValue() % 2 + "")) {
                 return each;

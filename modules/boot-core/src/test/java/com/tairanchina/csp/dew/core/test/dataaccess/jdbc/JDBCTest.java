@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.test.dataaccess.jdbc;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.jdbc.DS;
+import com.tairanchina.csp.dew.jdbc.DS;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.BasicEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.EmptyEntity;
 import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.FullEntity;
@@ -198,7 +198,7 @@ public class JDBCTest {
         Assert.assertEquals(1, fullEntities.getRecordTotal());
         // Sql Builder
         fullEntities = Dew.ds().paging(
-                DS.SB.inst()
+                SB.inst()
                         .eq("fieldA", "测试A2")
                         .like("fieldB", "%B2")
                         .notNull("code")

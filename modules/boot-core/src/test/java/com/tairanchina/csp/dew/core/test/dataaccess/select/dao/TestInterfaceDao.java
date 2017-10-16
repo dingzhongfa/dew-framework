@@ -1,10 +1,10 @@
 package com.tairanchina.csp.dew.core.test.dataaccess.select.dao;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.jdbc.DewDao;
-import com.tairanchina.csp.dew.core.jdbc.annotations.ModelParam;
-import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
-import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
+import com.tairanchina.csp.dew.jdbc.DewDao;
+import com.tairanchina.csp.dew.jdbc.annotations.ModelParam;
+import com.tairanchina.csp.dew.jdbc.annotations.Param;
+import com.tairanchina.csp.dew.jdbc.annotations.Select;
 import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
 
 import java.util.List;

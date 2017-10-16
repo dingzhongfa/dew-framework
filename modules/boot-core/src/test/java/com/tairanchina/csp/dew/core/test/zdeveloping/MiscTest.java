@@ -6,10 +6,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.jdbc.DS;
-import com.tairanchina.csp.dew.core.jdbc.dialect.DialectType;
+import com.tairanchina.csp.dew.jdbc.DS;
+import com.tairanchina.csp.dew.jdbc.dialect.DialectType;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.*;
 import java.util.concurrent.*;

@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.example.sharding.entity;
 
+
 import com.tairanchina.csp.dew.jdbc.entity.Column;
 import com.tairanchina.csp.dew.jdbc.entity.Entity;
 import com.tairanchina.csp.dew.jdbc.entity.PkColumn;

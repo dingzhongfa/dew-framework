@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
 import com.tairanchina.csp.dew.example.mybatisplus.service.UserService;
+import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,14 @@ import java.util.List;
 @Component
 public class MybatisplusExampleInitiator {
 
-    private static final Logger logger= LoggerFactory.getLogger(MybatisplusExampleInitiator.class);
+    private static final Logger logger = LoggerFactory.getLogger(MybatisplusExampleInitiator.class);
 
     @Autowired
     private UserService userService;
 
     @PostConstruct
     public void init() {
-        Dew.ds().jdbc().execute("CREATE TABLE user\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE user\n" +
                 "(\n" +
                 "test_id int primary key,\n" +
                 "name varchar(50),\n" +

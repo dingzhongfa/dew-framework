@@ -26,6 +26,10 @@
 			<groupId>com.tairanchina.csp.dew</groupId>
 			<artifactId>boot-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.tairanchina.csp.dew</groupId>
+			<artifactId>jdbc-starter</artifactId>
+		</dependency>
 		<!--引入JDBC依赖-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

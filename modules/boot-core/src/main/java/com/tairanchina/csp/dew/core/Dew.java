@@ -7,10 +7,8 @@ import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
-import com.tairanchina.csp.dew.core.entity.EntityContainer;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
-import com.tairanchina.csp.dew.core.jdbc.ClassPathScanner;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import org.slf4j.Logger;
@@ -18,10 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -76,15 +72,7 @@ public class Dew {
         if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {
             Dew.applicationContext.getBean(DSManager.class);
         }
-        Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
-        Info.name = applicationName;
-        // JDBC Scan
-        if (!Dew.dewConfig.getJdbc().getBasePackages().isEmpty()) {
-            ClassPathScanner scanner = new ClassPathScanner((BeanDefinitionRegistry) ((GenericApplicationContext) Dew.applicationContext).getBeanFactory());
-            scanner.setResourceLoader(Dew.applicationContext);
-            scanner.registerFilters();
-            scanner.scan(Dew.dewConfig.getJdbc().getBasePackages().toArray(new String[]{}));
-        }
+        Dew.Info.name = applicationName;
         // Select Auth Adapter
         if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")) {
             auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);

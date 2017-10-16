@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.example.jdbc.dao;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.jdbc.DewDao;
-import com.tairanchina.csp.dew.core.jdbc.annotations.Param;
-import com.tairanchina.csp.dew.core.jdbc.annotations.Select;
+import com.tairanchina.csp.dew.jdbc.DewDao;
+import com.tairanchina.csp.dew.jdbc.annotations.Param;
+import com.tairanchina.csp.dew.jdbc.annotations.Select;
 import com.tairanchina.csp.dew.example.jdbc.entity.Order;
 
 public interface OrderDao extends DewDao<Integer, Order> {

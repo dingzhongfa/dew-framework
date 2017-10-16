@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.core.test.crud.entity;
 
-import com.tairanchina.csp.dew.core.entity.CodeColumn;
-import com.tairanchina.csp.dew.core.entity.Column;
-import com.tairanchina.csp.dew.core.entity.Entity;
-import com.tairanchina.csp.dew.core.entity.SafeStatusEntity;
+import com.tairanchina.csp.dew.jdbc.entity.CodeColumn;
+import com.tairanchina.csp.dew.jdbc.entity.Column;
+import com.tairanchina.csp.dew.jdbc.entity.Entity;
+import com.tairanchina.csp.dew.jdbc.entity.SafeStatusEntity;
 
 @Entity(tableName = "test_select_entity")
 public class TestSelectEntity extends SafeStatusEntity<Integer> {

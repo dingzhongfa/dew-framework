@@ -1,12 +1,12 @@
 package com.tairanchina.csp.dew.core.service;
 
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.jdbc.DewDao;
+import com.tairanchina.csp.dew.core.jdbc.Dao;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-public interface CRUDService<T extends DewDao<P, E>, P, E> extends CRUService<T, P, E> {
+public interface CRUDService<T extends Dao<P, E>, P, E> extends CRUService<T, P, E> {
 
     default Resp<Optional<Object>> preDeleteById(P id){
         return Resp.success(Optional.empty());

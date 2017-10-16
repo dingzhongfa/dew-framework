@@ -638,7 +638,7 @@ SB desc(String filed)
 [source,java]
 .SB示例
 ----
-DS.SB.inst()
+SB.inst()
    .eq("fieldA", "测试A2")
    .like("fieldB", "%B2")
    .notNull("code")

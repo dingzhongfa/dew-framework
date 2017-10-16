@@ -1,8 +1,8 @@
 package com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity;
 
-import com.tairanchina.csp.dew.core.entity.Column;
-import com.tairanchina.csp.dew.core.entity.Entity;
-import com.tairanchina.csp.dew.core.entity.PkEntity;
+import com.tairanchina.csp.dew.jdbc.entity.Column;
+import com.tairanchina.csp.dew.jdbc.entity.Entity;
+import com.tairanchina.csp.dew.jdbc.entity.PkEntity;
 
 @Entity
 public class BasicEntity extends PkEntity {

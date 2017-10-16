@@ -20,7 +20,7 @@ class MySQLDialect implements Dialect {
 
     @Override
     public String getDriver() {
-        return "com.mysql.ds.Driver";
+        return "com.mysql.jdbc.Driver";
     }
 
     @Override

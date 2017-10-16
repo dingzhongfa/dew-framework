@@ -1,61 +1,13 @@
 dew:
-  basic:
-    format:
-      use-unity-error: true
-      reuse-http-state: false
-    error-mapping:
-      "[com.tairanchina.csp.dew.core.AuthException]":
-        http-code: 401
-        business-code: x00010
-        message: 认证错误
-  cluster:
-    cache: redis
-    dist: redis
-    mq: rabbit
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.jdbc.select.dao"]
-  security:
-    #auth-adapter: uc
-    token-flag: _token_
-    token-in-header: true
-    token-hash: false
-    uc-auth-adapter:
-      host: http://10.200.4.37:8085
-      app-id: ucbiwkt4s9r5vh34rb
-      app-secret: 30f3496d8fb148828135551b9cd81999
-#  security:
-#   includeServices: ["a-serv"]
 
 spring:
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
-  cache:
-    type: redis
   application:
-    name: core-test
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    database: 0
-    pool:
-      max-active: 10
-      max-wait: -1
-      max-idle: 1
-      min-idle: 0
-    #password: tairan2017@
-  rabbitmq:
-    host: mq.fengdai.org
-    port: 5672
-    username: guest
-    password: guest
-  hazelcast:
-    addresses: ["127.0.0.1"]
-  ignite:
-    addresses: ["127.0.0.1"]
+    name: jdbc-test
   datasource:
     driver-class-name: org.h2.Driver
-    url: ds:h2:mem:test
+    url: jdbc:h2:mem:test
     druid:
       initial-size: 5
       min-idle: 5
@@ -64,12 +16,12 @@ spring:
   multi-datasources:
     test1:
       driver-class-name: com.mysql.ds.Driver
-      url: ds:mysql://mysql.fengdai.org:3306/X?useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://mysql.fengdai.org:3306/X?useUnicode=true&characterEncoding=utf-8
       username: root
       password: tairan2017!
     test2:
       driver-class-name: org.postgresql.Driver
-      url: ds:postgresql://10.200.131.24:5432/postgres
+      url: jdbc:postgresql://10.200.131.24:5432/postgres
       username: postgres
       password: tairan.2017
 

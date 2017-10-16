@@ -3,7 +3,7 @@ spring:
     name: pet-store # 项目名称，对Spring Cloud而言也是service-id
   datasource: # 数据库连接信息
     driver-class-name: org.h2.Driver
-    url: ds:h2:mem:petstore;MODE=MySQL
+    url: jdbc:h2:mem:petstore;MODE=MySQL
   redis: # Redis连接信息
     host: localhost
     port: 6379
@@ -23,4 +23,4 @@ dew:
   cluster:
     cache: redis # 指定集群缓存实现为redis
   jdbc:
-    base-packages: ["your.group.ds"]
+    base-packages: ["your.group.jdbc"]

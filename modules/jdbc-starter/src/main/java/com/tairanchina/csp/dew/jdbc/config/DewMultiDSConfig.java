@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc;
+package com.tairanchina.csp.dew.jdbc.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -7,7 +7,7 @@ import java.util.Map;
 
 @Component
 @ConfigurationProperties(prefix = "spring")
-public class DSConfig {
+public class DewMultiDSConfig {
 
     private Map<String, Map<String, String>> multiDatasources;
 

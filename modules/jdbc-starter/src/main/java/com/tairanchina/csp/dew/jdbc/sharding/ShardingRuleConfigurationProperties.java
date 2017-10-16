@@ -11,6 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author caohao
  */
 @ConditionalOnClass(ShardingDataSourceFactory.class)
-@ConfigurationProperties(prefix = "sharding.ds.config.sharding")
+@ConfigurationProperties(prefix = "sharding.jdbc.config.sharding")
 public class ShardingRuleConfigurationProperties extends YamlShardingRuleConfiguration {
 }

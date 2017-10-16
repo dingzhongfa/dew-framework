@@ -527,9 +527,9 @@ spring:
 * `PkColumn` : 主键标识 支持 `int/String` 类型，`int` 多用于ID自增场景， `String` 可选择是否自动生成 `uuid` 数据（ `uuid=true` ），存在此注解的实体可以使用 `xxxById` 操作
 * `CodeColumn` : 业务主键 在工程中很多对象的主键不依赖于数据库主键而会使用code（如uuid表示）作为业务主键， 保存（insert）时如果存在业务主键，且  `value==null && uuid=true` 则会自动附加上uuid，存在此注解的实体可以使用 `xxxByCode` 操作
 * `CreateUserColumn` : 创建人，保存（insert）时自动附加当前操作人 `code` （需要与获取操作人动作同一线程）
-* `CreateTimeColumn` : 创建时间，保存（insert）时自动附加当前时间
+* `CreateTimeColumn` : 创建时间，保存（insert）时自动附加当前时间，LocalDateTime类型
 * `UpdateUserColumn` ：更新人，保存（insert）更新（updateById/updateByCode）时自动附加当前操作人 `code` （需要与获取操作人动作同一线程）
-* `UpdateTimeColumn` : 更新时间，保存（insert）更新（updateById/updateByCode）时自动附加当前时间
+* `UpdateTimeColumn` : 更新时间，保存（insert）更新（updateById/updateByCode）时自动附加当前时间，LocalDateTime类型
 * `EnabledColumn` : 状态，启用或禁用，支持字段字面含义反转（ `reverse=true` ） 存在此注解的实体可以使用 `enableByXX` `disableByXX` `xxEnabled` `xxDisabled` 操作
 * `Column`: 普通字段
 

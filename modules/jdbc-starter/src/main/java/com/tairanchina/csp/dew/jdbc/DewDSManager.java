@@ -2,6 +2,8 @@ package com.tairanchina.csp.dew.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.core.jdbc.DSManager;
+import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +32,7 @@ public class DewDSManager implements DSManager {
     private final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
 
     @Autowired
-    private DSConfig dsConfig;
+    private DewMultiDSConfig dsConfig;
 
     @Autowired
     private JdbcTemplate primaryJdbcTemplate;

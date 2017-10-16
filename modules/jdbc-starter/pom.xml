@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>boot-core</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -30,24 +29,10 @@
                     <artifactId>tomcat-jdbc</artifactId>
                 </exclusion>
             </exclusions>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -71,7 +56,11 @@
             <artifactId>postgresql</artifactId>
             <version>42.1.4</version>
             <scope>test</scope>
-            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>

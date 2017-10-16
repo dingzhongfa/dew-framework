@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.jdbc;
 
 import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.jdbc.config.DewJDBCConfig;
 import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
 // @Configuration
-@Component
+@Service
 public class DewJDBCAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(DewJDBCAutoConfiguration.class);

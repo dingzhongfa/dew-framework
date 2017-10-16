@@ -150,6 +150,11 @@
             </dependency>
             <!-- DB -->
             <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>jdbc-starter</artifactId>
+                <version>${dew.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>

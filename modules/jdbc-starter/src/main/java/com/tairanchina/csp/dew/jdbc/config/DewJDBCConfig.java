@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc;
+package com.tairanchina.csp.dew.jdbc.config;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

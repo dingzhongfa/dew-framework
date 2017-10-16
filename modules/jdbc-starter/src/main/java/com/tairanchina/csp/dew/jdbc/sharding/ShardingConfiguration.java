@@ -48,7 +48,7 @@ public class ShardingConfiguration implements EnvironmentAware {
     }
 
     private void setDataSourceMap(final Environment environment) {
-        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "sharding.ds.datasource.");
+        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "sharding.jdbc.datasource.");
         String dataSources = propertyResolver.getProperty("names");
         for (String each : dataSources.split(",")) {
             try {
@@ -64,7 +64,7 @@ public class ShardingConfiguration implements EnvironmentAware {
     }
 
     private void setShardingProperties(final Environment environment) {
-        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "sharding.ds.config.sharding.props.");
+        RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(environment, "sharding.jdbc.config.sharding.props.");
         String showSQL = propertyResolver.getProperty(ShardingPropertiesConstant.SQL_SHOW.getKey());
         if (!Strings.isNullOrEmpty(showSQL)) {
             props.setProperty(ShardingPropertiesConstant.SQL_SHOW.getKey(), showSQL);

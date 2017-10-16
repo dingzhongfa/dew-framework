@@ -4,15 +4,15 @@ package com.tairanchina.csp.dew.jdbc.dialect;
 public class DialectFactory {
 
     public static Dialect parseDialect(String url) {
-        if (url.contains("ds:h2:")) {
+        if (url.contains("jdbc:h2:")) {
             return new H2Dialect();
-        } else if (url.contains("ds:mysql:")) {
+        } else if (url.contains("jdbc:mysql:")) {
             return new MySQLDialect();
-        } else if (url.contains("ds:postgresql:")) {
+        } else if (url.contains("jdbc:postgresql:")) {
             return new PostgresDialect();
-        } else if (url.contains("ds:oracle:")) {
+        } else if (url.contains("jdbc:oracle:")) {
             return new OracleDialect();
-        } else if (url.contains("ds:hive2:")) {
+        } else if (url.contains("jdbc:hive2:")) {
             return new HiveDialect();
         }
         return null;

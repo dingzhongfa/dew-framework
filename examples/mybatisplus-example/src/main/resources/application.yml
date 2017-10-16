@@ -3,7 +3,7 @@ spring:
     name: mybatisplus-example
   datasource:
     driver-class-name: org.h2.Driver
-    url: ds:h2:mem:test
+    url: jdbc:h2:mem:test
 
 #mybatis
 mybatis-plus:

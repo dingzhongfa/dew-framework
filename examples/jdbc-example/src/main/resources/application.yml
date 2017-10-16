@@ -1,9 +1,9 @@
 spring:
   application:
-    name: ds-example
+    name: jdbc-example
   datasource:
     driver-class-name: org.h2.Driver
-    url: ds:h2:mem:test
+    url: jdbc:h2:mem:test
     druid:
       initial-size: 5
       min-idle: 5
@@ -12,14 +12,14 @@ spring:
   multi-datasources:
     other:
       driver-class-name: org.h2.Driver
-      url: ds:h2:mem:test_other
+      url: jdbc:h2:mem:test_other
       initial-size: 1
       max-active: 1
 
 
 dew:
   jdbc:
-    base-packages: ["com.tairanchina.csp.dew.example.ds.dao"]
+    base-packages: ["com.tairanchina.csp.dew.example.jdbc.dao"]
 
 logging:
   path: ./logs

@@ -125,9 +125,9 @@
         <dependency>
             <groupId>io.shardingjdbc</groupId>
             <artifactId>sharding-jdbc-core</artifactId>
-            <version>${sharding-jdbc.version}</version>
             <optional>true</optional>
         </dependency>
+
 
         <!--sharding-jdbc-->
         <!--<dependency>

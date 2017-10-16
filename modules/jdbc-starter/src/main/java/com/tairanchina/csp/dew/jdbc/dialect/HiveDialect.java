@@ -21,7 +21,7 @@ class HiveDialect implements Dialect {
 
     @Override
     public String getDriver() {
-        return "org.apache.hive.jdbc.HiveDriver";
+        return "org.apache.hive.ds.HiveDriver";
     }
 
     @Override

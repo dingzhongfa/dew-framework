@@ -298,7 +298,7 @@ public class DewDS implements DS {
 
     @Override
     public boolean exist(String sql, Object[] params) {
-        return jdbcTemplate.queryForRowSet(dialect.exist(sql), params).next();
+        return jdbcTemplate.queryForObject(dialect.count(sql),params, Long.class) != 0;
     }
 
     @Override

@@ -1,7 +1,7 @@
-package com.tairanchina.csp.dew.jdbc.jdbc.util;
+package com.tairanchina.csp.dew.jdbc.ds.util;
 
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.entity.BasicEntity;
+import com.tairanchina.csp.dew.jdbc.ds.entity.BasicEntity;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

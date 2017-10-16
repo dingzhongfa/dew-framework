@@ -1,32 +1,32 @@
 dataSources:
   ds_master_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_0
     username: root
     password: tairan2017!
   ds_master_0_slave_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_0
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_0
     username: root
     password: tairan2017!
   ds_master_0_slave_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_1
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_1
     username: root
     password: tairan2017!
   ds_master_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_1
     username: root
     password: tairan2017!
   ds_master_1_slave_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_0
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_0
     username: root
     password: tairan2017!
   ds_master_1_slave_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_1
+    driverClassName: com.mysql.ds.Driver
+    url: ds:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_1
     username: root
     password: tairan2017!
 tables:

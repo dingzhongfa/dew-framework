@@ -3,7 +3,7 @@ spring:
     name: sharding-example
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_1
+    url: ds:mysql://mysql.fengdai.org:3306/ds_yaml_1
     username: root
     password: tairan2017!
     type: com.alibaba.druid.pool.DruidDataSource

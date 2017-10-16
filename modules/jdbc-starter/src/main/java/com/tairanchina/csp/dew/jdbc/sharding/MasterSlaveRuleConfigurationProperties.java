@@ -11,6 +11,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author caohao
  */
 @ConditionalOnClass(ShardingDataSourceFactory.class)
-@ConfigurationProperties(prefix = "sharding.jdbc.config.masterslave")
+@ConfigurationProperties(prefix = "sharding.ds.config.masterslave")
 public class MasterSlaveRuleConfigurationProperties extends YamMasterSlaveRuleConfiguration {
 }

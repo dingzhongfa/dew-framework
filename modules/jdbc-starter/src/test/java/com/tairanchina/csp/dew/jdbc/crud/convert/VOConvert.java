@@ -1,8 +1,8 @@
-package com.tairanchina.csp.dew.core.test.crud.convert;
+package com.tairanchina.csp.dew.jdbc.crud.convert;
 
 
 import com.tairanchina.csp.dew.core.controller.VOAssembler;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.crud.entity.TestSelectEntity;
 
 public class VOConvert implements VOAssembler<TestSelectEntity,TestSelectEntity> {
     @Override

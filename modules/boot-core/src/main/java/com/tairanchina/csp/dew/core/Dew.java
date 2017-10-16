@@ -1,10 +1,8 @@
-package com.tairanchina.csp.dew;
+package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.StandardCode;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;

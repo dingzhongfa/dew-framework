@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.crud.entity;
+package com.tairanchina.csp.dew.jdbc.crud.entity;
 
 import com.tairanchina.csp.dew.jdbc.entity.CodeColumn;
 import com.tairanchina.csp.dew.jdbc.entity.Column;

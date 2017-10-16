@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.jdbc.jdbc.entity;
+package com.tairanchina.csp.dew.jdbc.ds.entity;
 
 import com.tairanchina.csp.dew.jdbc.entity.Column;
 import com.tairanchina.csp.dew.jdbc.entity.Entity;

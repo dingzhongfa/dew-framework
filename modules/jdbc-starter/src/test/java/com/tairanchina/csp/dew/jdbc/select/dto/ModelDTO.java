@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.dataaccess.select.dto;
+package com.tairanchina.csp.dew.jdbc.select.dto;
 
 
 

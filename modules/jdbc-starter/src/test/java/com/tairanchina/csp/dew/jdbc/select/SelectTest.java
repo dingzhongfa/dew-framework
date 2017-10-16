@@ -1,14 +1,17 @@
-package com.tairanchina.csp.dew.core.test.dataaccess.select;
+package com.tairanchina.csp.dew.jdbc.select;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.SystemConfigDao;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.dto.ModelDTO;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.entity.SystemConfig;
+
+import com.tairanchina.csp.dew.jdbc.DewDS;
+import com.tairanchina.csp.dew.jdbc.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.select.dao.SystemConfigDao;
+import com.tairanchina.csp.dew.jdbc.select.dao.TestInterfaceDao;
+import com.tairanchina.csp.dew.jdbc.select.dto.ModelDTO;
+import com.tairanchina.csp.dew.jdbc.select.entity.SystemConfig;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +25,8 @@ public class SelectTest {
 
     @Autowired
     private SystemConfigDao systemConfigDao;
+    
+    private JdbcTemplate jdbcTemplate = ((DewDS)Dew.ds()).jdbc();
 
     public void testAll() throws Exception {
         initialize();
@@ -30,7 +35,7 @@ public class SelectTest {
     }
 
     private void initialize() throws Exception {
-        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "code varchar(32),\n" +
@@ -42,10 +47,10 @@ public class SelectTest {
                 "update_time datetime,\n" +
                 "enabled bool\n" +
                 ")");
-        Dew.ds().jdbc().execute("insert INTO test_select_entity(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) " +
+        jdbcTemplate.execute("insert INTO test_select_entity(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) " +
                 "values('aa','测试A','测试B','jiaj','2017-07-08','j','2017-07-08',TRUE)");
 
-        Dew.ds().jdbc().execute("CREATE TABLE `system_config` (\n" +
+        jdbcTemplate.execute("CREATE TABLE `system_config` (\n" +
                 "  `id` char(32) NOT NULL,\n" +
                 "  `value` varchar(200) DEFAULT NULL COMMENT '参数数值',\n" +
                 "  `description` varchar(255) DEFAULT NULL COMMENT '参数说明',\n" +
@@ -56,7 +61,7 @@ public class SelectTest {
                 "  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
                 "  PRIMARY KEY (`id`)\n" +
                 ") COMMENT='系统配置';");
-        Dew.ds().jdbc().execute("INSERT INTO system_config (`id`,`value`,`description`,`level`,create_user,create_time,update_user,update_time) " +
+        jdbcTemplate.execute("INSERT INTO system_config (`id`,`value`,`description`,`level`,create_user,create_time,update_user,update_time) " +
                 "VALUES ('id','value','description','level','jiaj','2017-07-08','j','2017-07-08')");
     }
 

@@ -20,7 +20,7 @@ public class OracleDialect implements Dialect {
 
     @Override
     public String getDriver() {
-        return "oracle.jdbc.driver.OracleDriver";
+        return "oracle.ds.driver.OracleDriver";
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.zdeveloping;
+package com.tairanchina.csp.dew.jdbc.zdeveloping;
 
 
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -7,10 +7,11 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
 import org.junit.Assert;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class SqlParserExample {

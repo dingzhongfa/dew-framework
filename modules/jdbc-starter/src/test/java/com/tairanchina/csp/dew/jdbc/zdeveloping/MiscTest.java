@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.zdeveloping;
+package com.tairanchina.csp.dew.jdbc.zdeveloping;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.jdbc.DS;
+import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.dialect.DialectType;
 import org.junit.Assert;
 
@@ -26,7 +26,7 @@ public class MiscTest {
         String sql = "select * from table where" +
                 " id = #{b} and ( name1= #{a} or name2 = #{c} or name3 = #{d} ) " +
                 "and no1 like #{ ee } and no2 like #{f} ";
-        Object[] result = DS.packageSelect(sql, new LinkedHashMap<String, Object>() {{
+        Object[] result = DewDS.packageSelect(sql, new LinkedHashMap<String, Object>() {{
             put("a", "1");
             put("c", "3");
             put("ee", "5");
@@ -39,19 +39,19 @@ public class MiscTest {
         SQLStatementParser parser = new SQLStatementParser(sql);
         SQLSelectStatement statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         SQLExpr sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
-        DS.formatWhere(sqlExpr);
+        DewDS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
         sql = "select * from table where  id = #{sss}";
         parser = new SQLStatementParser(sql);
         statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
-        DS.formatWhere(sqlExpr);
+        DewDS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
         sql = "select * from table where f1 between #{x} and #{y}";
         parser = new SQLStatementParser(sql);
         statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
-        DS.formatWhere(sqlExpr);
+        DewDS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
         sql = "select * from table where" +
                 " id = #{sss} and ( name1= ? or name2 = #{aaa} or name3 = ? ) " +
@@ -60,7 +60,7 @@ public class MiscTest {
         parser = new SQLStatementParser(sql);
         statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
-        DS.formatWhere(sqlExpr);
+        DewDS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
         sql = "select * from t1 left join t2 tt on t1.id=t2.rel_id where" +
                 " t1.id = #{sss} and ( t1.name1= ? or t1.name2 = #{aaa} or t1.name3 = ? ) " +
@@ -69,7 +69,7 @@ public class MiscTest {
         parser = new SQLStatementParser(sql);
         statement = (SQLSelectStatement) parser.parseStatementList().get(0);
         sqlExpr = ((SQLSelectQueryBlock) statement.getSelect().getQuery()).getWhere();
-        DS.formatWhere(sqlExpr);
+        DewDS.formatWhere(sqlExpr);
         System.out.println(statement.toString());
     }
 

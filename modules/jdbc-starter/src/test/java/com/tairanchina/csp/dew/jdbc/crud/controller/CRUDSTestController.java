@@ -1,8 +1,9 @@
-package com.tairanchina.csp.dew.core.test.crud.controller;
+package com.tairanchina.csp.dew.jdbc.crud.controller;
 
-import com.tairanchina.csp.dew.core.test.crud.service.CRUDSTestService;
+
 import com.tairanchina.csp.dew.core.controller.CRUDSController;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.crud.service.CRUDSTestService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

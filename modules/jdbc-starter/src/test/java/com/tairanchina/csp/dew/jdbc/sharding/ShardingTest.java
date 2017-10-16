@@ -1,9 +1,9 @@
-package com.tairanchina.csp.dew.core.test.sharding;
+package com.tairanchina.csp.dew.jdbc.sharding;
 
 
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.jdbc.DS;
-import com.tairanchina.csp.dew.core.test.sharding.entity.TOrder;
+import com.tairanchina.csp.dew.jdbc.DewSB;
+import com.tairanchina.csp.dew.jdbc.sharding.entity.TOrder;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +27,10 @@ public class ShardingTest {
             Dew.ds("sharding").insert(tOrder);
         }
         Assert.assertTrue((Dew.ds("sharding").countAll(TOrder.class) - countStart) == 20);
-        List<TOrder> tOrderList = Dew.ds("sharding").find(SB.inst().eq("status", "test"), TOrder.class);
+        List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
         Assert.assertEquals(20, tOrderList.size());
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 12), TOrder.class);
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 13), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
         System.out.println(Dew.ds("sharding").countAll(TOrder.class));
     }
 

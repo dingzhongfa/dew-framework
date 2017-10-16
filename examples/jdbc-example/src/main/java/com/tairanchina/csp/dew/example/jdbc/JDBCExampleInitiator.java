@@ -9,6 +9,7 @@ import com.tairanchina.csp.dew.example.jdbc.dao.PetDao;
 import com.tairanchina.csp.dew.example.jdbc.entity.Customer;
 import com.tairanchina.csp.dew.example.jdbc.entity.Order;
 import com.tairanchina.csp.dew.example.jdbc.entity.Pet;
+import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,7 @@ public class JDBCExampleInitiator {
     public void init() {
         // =============== DS 示例 ===============
         // 初始宠物表
-        Dew.ds().jdbc().execute("CREATE TABLE pet\n" +
+        ((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE pet\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "type varchar(50),\n" +
@@ -39,7 +40,7 @@ public class JDBCExampleInitiator {
                 "enabled bool\n" +
                 ")");
         // 初始化订单表
-        Dew.ds().jdbc().execute("CREATE TABLE t_order\n" +
+        ((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE t_order\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "pet_id int,\n" +
@@ -58,7 +59,7 @@ public class JDBCExampleInitiator {
         pet = Dew.ds().getById(id, Pet.class);
         assert pet.getType().equals("狗");
 
-        // =============== jdbc 示例 ===============
+        // =============== ds 示例 ===============
         // insert by dao
         pet = new Pet();
         pet.setType("猫");
@@ -75,7 +76,7 @@ public class JDBCExampleInitiator {
 
         // =============== 多数据源 示例 ===============
         // 初始化客户表，来自另一个数据源
-        Dew.ds("other").jdbc().execute("CREATE TABLE customer\n" +
+        ((DewDS)Dew.ds("other")).jdbc().execute("CREATE TABLE customer\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "name varchar(50)\n" +

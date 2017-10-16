@@ -2,11 +2,7 @@ package com.tairanchina.csp.dew.core.test;
 
 import com.tairanchina.csp.dew.core.test.auth.AuthTest;
 import com.tairanchina.csp.dew.core.test.cluster.ClusterTest;
-import com.tairanchina.csp.dew.core.test.crud.CRUDSTest;
-import com.tairanchina.csp.dew.core.test.dataaccess.jdbc.JDBCTest;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.SelectTest;
 import com.tairanchina.csp.dew.core.test.dewutil.DewUtilTest;
-import com.tairanchina.csp.dew.core.test.sharding.ShardingTest;
 import com.tairanchina.csp.dew.core.test.web.WebTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,15 +22,6 @@ public class TestAll {
     private ClusterTest clusterTest;
 
     @Resource
-    private JDBCTest jdbcTest;
-
-    @Resource
-    private CRUDSTest crudsTest;
-
-    @Resource
-    private SelectTest selectTest;
-
-    @Resource
     private WebTest webTest;
 
     @Resource
@@ -43,8 +30,6 @@ public class TestAll {
     @Resource
     private DewUtilTest dewUtilTest;
 
-    @Resource
-    private ShardingTest shardingTest;
 
     /**
      * 缓存，map缓存，分布式锁测试
@@ -54,35 +39,6 @@ public class TestAll {
     @Test
     public void testCluster() throws Exception {
         clusterTest.testAll();
-    }
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testJDBC() throws Exception {
-        jdbcTest.testAll();
-    }
-
-
-    /**
-     * Select注解测试
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSelect() throws Exception {
-        selectTest.testAll();
-    }
-
-    /**
-     * 脚手架测试
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testCRUD() throws Exception {
-        crudsTest.testAll();
     }
 
     /**
@@ -115,8 +71,5 @@ public class TestAll {
         dewUtilTest.testAll();
     }
 
-    @Test
-    public void testShardingJDBC()throws Exception{
-        shardingTest.testSharding();
-    }
+
 }

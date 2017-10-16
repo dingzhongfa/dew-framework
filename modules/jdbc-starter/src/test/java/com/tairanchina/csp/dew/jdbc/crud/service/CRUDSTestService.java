@@ -1,8 +1,9 @@
-package com.tairanchina.csp.dew.core.test.crud.service;
+package com.tairanchina.csp.dew.jdbc.crud.service;
 
-import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
+
 import com.tairanchina.csp.dew.core.service.CRUDSService;
+import com.tairanchina.csp.dew.jdbc.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.select.dao.TestInterfaceDao;
 import org.springframework.stereotype.Service;
 
 @Service

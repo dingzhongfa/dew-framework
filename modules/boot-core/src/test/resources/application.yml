@@ -14,9 +14,6 @@ dew:
     mq: rabbit
   jdbc:
     base-packages: ["com.tairanchina.csp.dew.core.**.dao"]
-  sharding:
-    sharding-flag: false
-    file-name: withAssignedDataSource.yaml
   security:
     #auth-adapter: uc
     token-flag: _token_
@@ -58,7 +55,7 @@ spring:
     addresses: ["127.0.0.1"]
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
+    url: ds:h2:mem:test
     druid:
       initial-size: 5
       min-idle: 5
@@ -66,12 +63,12 @@ spring:
       max-wait: 60000
   multi-datasources:
     test1:
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://mysql.fengdai.org:3306/X?useUnicode=true&characterEncoding=utf-8
+      driver-class-name: com.mysql.ds.Driver
+      url: ds:mysql://mysql.fengdai.org:3306/X?useUnicode=true&characterEncoding=utf-8
       username: root
       password: tairan2017!
     test2:
       driver-class-name: org.postgresql.Driver
-      url: jdbc:postgresql://10.200.131.24:5432/postgres
+      url: ds:postgresql://10.200.131.24:5432/postgres
       username: postgres
       password: tairan.2017

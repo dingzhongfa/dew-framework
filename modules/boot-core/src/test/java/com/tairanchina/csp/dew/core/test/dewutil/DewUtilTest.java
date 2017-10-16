@@ -21,28 +21,9 @@ public class DewUtilTest {
     private final String URL = TestAll.URL+"consumer/";
 
     public void testAll() throws Exception {
-        testDewRest();
         testTimer();
     }
 
-    private void testDewRest() throws Exception {
-        UtilController.Consumer consumer = new UtilController.Consumer();
-        consumer.setId($.field.createUUID());
-        consumer.setName("张三");
-        consumer.setPassword("123456");
-        logger.info("----test----");
-        HttpHelper.ResponseWrap responseWrap = Dew.EB.head(URL + "save");
-        Assert.assertEquals(200,responseWrap.statusCode);
-        HttpHelper.ResponseWrap saveResponseWrap = Dew.EB.post(URL + "save", consumer);
-        Assert.assertEquals(200,saveResponseWrap.statusCode);
-        HttpHelper.ResponseWrap getResponseWrap = Dew.EB.get(URL + "get?id="+consumer.getId());
-        Assert.assertEquals(200,getResponseWrap.statusCode);
-        HttpHelper.ResponseWrap updateResponseWrap = Dew.EB.put(URL + "update", consumer);
-        Assert.assertEquals(200,updateResponseWrap.statusCode);
-        HttpHelper.ResponseWrap deleteResponseWrap = Dew.EB.delete(URL + "delete?id="+consumer.getId());
-        Assert.assertEquals(200,deleteResponseWrap.statusCode);
-        logger.info("----test----");
-    }
 
 
     private void testTimer()throws InterruptedException{

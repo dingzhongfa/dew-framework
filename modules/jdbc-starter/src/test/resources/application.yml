@@ -13,10 +13,7 @@ dew:
     dist: redis
     mq: rabbit
   jdbc:
-    base-packages: ["com.tairanchina.csp.dew.core.**.dao"]
-  sharding:
-    sharding-flag: false
-    file-name: withAssignedDataSource.yaml
+    base-packages: ["com.tairanchina.csp.dew.jdbc.select.dao"]
   security:
     #auth-adapter: uc
     token-flag: _token_
@@ -75,3 +72,51 @@ spring:
       url: ds:postgresql://10.200.131.24:5432/postgres
       username: postgres
       password: tairan.2017
+
+sharding:
+  jdbc:
+    datasource:
+      names: ds_0,ds_1
+      ds_0:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_0
+        username: root
+        password: tairan2017!
+      ds_1:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_1
+        username: root
+        password: tairan2017!
+    config:
+      sharding:
+        tables:
+          t_order:
+            actualDataNodes: ds_${0..1}.t_order_${0..1}
+            #generateKeyColumns:
+              #- columnName: order_id
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
+                algorithmInlineExpression: t_order_${order_id.longValue() % 2}
+          t_order_item:
+            actualDataNodes: ds_${0..1}.t_order_item_${0..1}
+            #绑定表中其余的表的策略与第一张表的策略相同
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
+                algorithmInlineExpression: t_order_item_${order_id.longValue() % 2}
+        bindingTables:
+          - t_order,t_order_item
+        #默认数据库分片策略
+        defaultDatabaseStrategy:
+          inline:
+            shardingColumn: user_id
+            #algorithmClassName: 分表算法全类名，该类需使用默认的构造器或者提供无参数的构造器，与algorithmExpression出现一个即可
+            algorithmInlineExpression: ds_${user_id.longValue() % 2}
+        props:
+          sql.show: true
+#      masterslave:

@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.core.test.dataaccess.select.entity;
+package com.tairanchina.csp.dew.jdbc.select.entity;
 
 
 import com.tairanchina.csp.dew.jdbc.entity.Column;

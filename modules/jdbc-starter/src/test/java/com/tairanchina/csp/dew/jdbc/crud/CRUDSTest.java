@@ -1,17 +1,17 @@
-package com.tairanchina.csp.dew.core.test.crud;
+package com.tairanchina.csp.dew.jdbc.crud;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.core.Dew;
-import com.tairanchina.csp.dew.core.test.TestAll;
-import com.tairanchina.csp.dew.core.test.crud.convert.VOConvert;
-import com.tairanchina.csp.dew.core.test.crud.entity.TestSelectEntity;
-import com.tairanchina.csp.dew.core.test.crud.service.CRUDSTestService;
-import com.tairanchina.csp.dew.core.test.dataaccess.select.dao.TestInterfaceDao;
+
+import com.tairanchina.csp.dew.jdbc.DewDS;
+import com.tairanchina.csp.dew.jdbc.crud.convert.VOConvert;
+import com.tairanchina.csp.dew.jdbc.crud.entity.TestSelectEntity;
+import com.tairanchina.csp.dew.jdbc.crud.service.CRUDSTestService;
+import com.tairanchina.csp.dew.jdbc.select.dao.TestInterfaceDao;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class CRUDSTest {
 
-    private String url = TestAll.URL+"crud";
+    private String url = "http://127.0.0.1:8080/crud";
 
     private long pageNumber = 1;
     private long pageSize = 10;
@@ -243,8 +243,8 @@ public class CRUDSTest {
 
     private void initialize() throws Exception {
         // ddl
-        Dew.ds().jdbc().execute("DROP TABLE if EXISTS test_select_entity");
-        Dew.ds().jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("DROP TABLE if EXISTS test_select_entity");
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE IF NOT EXISTS test_select_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "code varchar(32),\n" +
@@ -256,7 +256,7 @@ public class CRUDSTest {
                 "update_time datetime,\n" +
                 "enabled bool\n" +
                 ")");
-        Dew.ds().jdbc().execute("INSERT  INTO  test_select_entity " +
+        ((DewDS) Dew.ds()).jdbc().execute("INSERT  INTO  test_select_entity " +
                 "(code,field_a,field_c,create_user,create_time,update_user,update_time,enabled) VALUES " +
                 "('A','A-a','A-b','ding',NOW(),'ding',NOW(),TRUE )");
     }

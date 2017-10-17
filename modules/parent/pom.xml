@@ -94,12 +94,12 @@
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
-                <artifactId>boot-core</artifactId>
+                <artifactId>boot-starter</artifactId>
                 <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
-                <artifactId>cloud-core</artifactId>
+                <artifactId>cloud-starter</artifactId>
                 <version>${dew.version}</version>
             </dependency>
             <dependency>

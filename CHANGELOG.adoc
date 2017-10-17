@@ -15,6 +15,8 @@
 
 WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!
 
+TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter
+
 ==== Fixed
 
 * [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决Fegin调用解码错误

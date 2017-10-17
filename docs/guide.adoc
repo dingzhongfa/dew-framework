@@ -42,7 +42,7 @@ https://www.google.ca/search?dcr=0&q=pet+store+sample+application&oq=pet+store+s
         <!--dew的核心包-->
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>boot-core</artifactId>
+            <artifactId>boot-starter</artifactId>
         </dependency>
         <!--引入集群能力-redis实现-->
         <dependency>

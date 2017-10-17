@@ -64,8 +64,8 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 |===
 |模块名 |核心功能
 
-|`boot-core` |基于Spring Boot的扩展，Dew的核心模块
-|`cloud-core` |基于Spring Cloud的扩展，基于`boot-core`
+|`boot-starter` |基于Spring Boot的扩展，Dew的核心模块
+|`cloud-starter` |基于Spring Cloud的扩展，基于`boot-starter`
 |`cluster-common` |集群能力接口
 |`cluster-redis` |集群能力-Redis实现
 |`cluster-hazelcast` |集群能力-Hazelcast实现
@@ -82,7 +82,7 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 
 ==== 启动类
 
-`Dew` 有两个核心启动类 `DewBootApplication` 和 `DewCloudApplication` ，前者引用的依赖是 `boot-core` 用于启动 `Spring boot` 类型的工程，后者依赖的是`cloud-core` 继承自 `DewBootApplication` 用于启动 `Spring cloud` 类型的工程。
+`Dew` 有两个核心启动类 `DewBootApplication` 和 `DewCloudApplication` ，前者引用的依赖是 `boot-starter` 用于启动 `Spring boot` 类型的工程，后者依赖的是`cloud-starter` 继承自 `DewBootApplication` 用于启动 `Spring cloud` 类型的工程。
 
 [TIP]
 .DewBootApplication使用如下注解
@@ -174,7 +174,7 @@ TIP: 完整使用手册见 https://gudaoxuri.github.io/dew-common/
     <!--dew的核心包-->
     <dependency>
         <groupId>com.tairanchina.csp.dew</groupId>
-        <artifactId>boot-core</artifactId>
+        <artifactId>boot-starter</artifactId>
         <version>${dew.version}</version>
     </dependency>
     <!--Spring Boot Web核心依赖-->
@@ -490,7 +490,7 @@ TIP: SQL输出日志需要在 `logback-spring.xml` 中添加 `<logger name="org.
 <dependencies>
     <dependency>
         <groupId>com.tairanchina.csp.dew</groupId>
-        <artifactId>boot-core</artifactId>
+        <artifactId>boot-starter</artifactId>
     </dependency>
     <!--引入JDBC依赖-->
     <dependency>
@@ -840,7 +840,7 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
 ----
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>boot-core</artifactId>
+    <artifactId>boot-starter</artifactId>
 </dependency>
 <!--引入集群依赖，可选redis/hazelcast/rabbit/ignite/eureka-->
 <dependency>
@@ -859,7 +859,7 @@ IMPORTANT: `TransactionManager` Bean名称规则：主数据源= `transactionMan
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-ignite</artifactId>
 </dependency>
-<!--此实现需要引用 cloud-core -->
+<!--此实现需要引用 cloud-starter -->
 <dependency>
     <groupId>com.tairanchina.csp.dew</groupId>
     <artifactId>cluster-spi-eureka</artifactId>

@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>boot-core</artifactId>
+            <artifactId>boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

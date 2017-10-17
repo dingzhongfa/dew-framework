@@ -24,7 +24,7 @@
     <dependencies>
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
-            <artifactId>boot-core</artifactId>
+            <artifactId>boot-starter</artifactId>
         </dependency>
         <!--引入集群依赖，可选redis/hazelcast/rabbit/ignite/eureka-->
         <dependency>

@@ -2,9 +2,9 @@ package com.tairanchina.csp.dew.example.sharding.test;
 
 
 import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.jdbc.DS;
 import com.tairanchina.csp.dew.example.sharding.ShardingApplication;
 import com.tairanchina.csp.dew.example.sharding.entity.TOrder;
+import com.tairanchina.csp.dew.jdbc.DewSB;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +32,10 @@ public class ShardingTest {
             Dew.ds("sharding").insert(tOrder);
         }
         Assert.assertTrue((Dew.ds("sharding").countAll(TOrder.class) - countStart) == 20);
-        List<TOrder> tOrderList = Dew.ds("sharding").find(SB.inst().eq("status", "test"), TOrder.class);
+        List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
         Assert.assertEquals(20, tOrderList.size());
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 12), TOrder.class);
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 13), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
         Assert.assertEquals(20,Dew.ds("sharding").countAll(TOrder.class));
     }
 
@@ -53,10 +53,10 @@ public class ShardingTest {
             Dew.ds("sharding").insert(tOrder);
         }
         Thread.sleep(1000);
-        List<TOrder> tOrderList = Dew.ds("sharding").find(SB.inst().eq("status", "test"), TOrder.class);
+        List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
 //        Assert.assertEquals(20, tOrderList.size());
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 12), TOrder.class);
-        Dew.ds("sharding").delete(SB.inst().eq("userId", 13), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
 
     }
 

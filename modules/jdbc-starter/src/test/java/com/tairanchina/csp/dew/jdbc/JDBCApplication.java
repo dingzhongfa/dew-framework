@@ -1,8 +1,7 @@
-package com.tairanchina.csp.dew.jdbc.test;
+package com.tairanchina.csp.dew.jdbc;
 
 
 import com.tairanchina.csp.dew.core.DewBootApplication;
-import com.tairanchina.csp.dew.jdbc.DewJDBCAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
 

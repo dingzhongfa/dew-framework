@@ -150,6 +150,11 @@
             </dependency>
             <!-- DB -->
             <dependency>
+                <groupId>io.shardingjdbc</groupId>
+                <artifactId>sharding-jdbc-core</artifactId>
+                <version>${sharding-jdbc.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>jdbc-starter</artifactId>
                 <version>${dew.version}</version>

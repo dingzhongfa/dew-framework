@@ -494,15 +494,14 @@ TIP: SQL输出日志需要在 `logback-spring.xml` 中添加 `<logger name="org.
     </dependency>
     <!--引入JDBC依赖-->
     <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-jdbc</artifactId>
-    </dependency>
-    <!--使用druid连接池-->
-    <dependency>
-        <groupId>com.alibaba</groupId>
-        <artifactId>druid-spring-boot-starter</artifactId>
+        <groupId>com.tairanchina.csp.dew</groupId>
+        <artifactId>jdbc-starter</artifactId>
     </dependency>
     <!-- 对应的数据库JDBC驱动 -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+    </dependency>
 </dependencies>
 ----
 
@@ -575,14 +574,14 @@ TIP: 实体对象需要实现 `Serializable` 接口。
 * *是否存在* `Dew.ds().existById(P id, Class<?> entityClazz) / Dew.ds().existByCode(String code, Class<?> entityClazz) / Dew.ds().exist(SB sqlBuilder, Class<E> entityClazz)`
 * *物理删除* `Dew.ds().deleteById(P id, Class<?> entityClazz) / Dew.ds().deleteByCode(String code, Class<?> entityClazz) / Dew.ds().delete(SB sqlBuilder, Class<E> entityClazz)`
 
-TIP: 您可以使用：`Dew.ds().jdbc()` 获取 `JdbcTemplate` 原生API。
+TIP: 您可以使用：`((DewDS)Dew.ds()).jdbc()` 获取 `JdbcTemplate` 原生API。
 
 [source,java]
 .常用数据处理操作示例
 ----
 // =============== DS 示例 ===============
 // 初始宠物表
-Dew.ds().jdbc().execute("CREATE TABLE pet\n" +
+((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE pet\n" +
         "(\n" +
         "id int primary key auto_increment,\n" +
         "type varchar(50),\n" +
@@ -592,7 +591,7 @@ Dew.ds().jdbc().execute("CREATE TABLE pet\n" +
         "enabled bool\n" +
         ")");
 // 初始化订单表
-Dew.ds().jdbc().execute("CREATE TABLE t_order\n" +
+((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE t_order\n" +
         "(\n" +
         "id int primary key auto_increment,\n" +
         "pet_id int,\n" +
@@ -638,7 +637,7 @@ SB desc(String filed)
 [source,java]
 .SB示例
 ----
-SB.inst()
+DewSB.inst()
    .eq("fieldA", "测试A2")
    .like("fieldB", "%B2")
    .notNull("code")
@@ -775,7 +774,7 @@ Dew.ds(<数据源标识，为空时表示使用主数据源>).XX
 // -------- 例如 --------
 
 // 初始化客户表，来自另一个数据源
-Dew.ds("other").jdbc().execute("CREATE TABLE customer\n" +
+((DewDS) Dew.ds("other")).jdbc().execute("CREATE TABLE customer\n" +
         "(\n" +
         "id int primary key auto_increment,\n" +
         "name varchar(50)\n" +

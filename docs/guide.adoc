@@ -63,15 +63,10 @@ https://www.google.ca/search?dcr=0&q=pet+store+sample+application&oq=pet+store+s
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-        <!--添加spring jdbc template支持-->
+        <!--引入JDBC依赖-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-        <!--使用druid连接池-->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
+            <groupId>com.tairanchina.csp.dew</groupId>
+            <artifactId>jdbc-starter</artifactId>
         </dependency>
         <!--测试项目，使用h2数据库-->
         <dependency>
@@ -182,7 +177,7 @@ public class PetstoreInitiator {
     @PostConstruct
     public void init() {
         // 初始宠物表
-        Dew.ds().jdbc().execute("CREATE TABLE pet\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE pet\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "type varchar(50),\n" +
@@ -192,13 +187,13 @@ public class PetstoreInitiator {
                 "enabled bool\n" +
                 ")");
         // 初始化客户表
-        Dew.ds().jdbc().execute("CREATE TABLE customer\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE customer\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "name varchar(50)\n" +
                 ")");
         // 初始化订单表
-        Dew.ds().jdbc().execute("CREATE TABLE t_order\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE t_order\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "pet_id int,\n" +

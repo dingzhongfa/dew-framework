@@ -21,9 +21,4 @@ import com.ecfront.dew.common.HttpHelper;
 @ComponentScan(basePackageClasses = {Dew.class, DewCloudApplication.class})
 public class DewCloudApplicationTest {
 
-    @Test
-    public void test() throws Exception {
-        HttpHelper.ResponseWrap serviceResponseWrap = Dew.EB.get("http://performance-service/performance");
-        Assert.assertEquals(0,serviceResponseWrap.statusCode);
-    }
 }

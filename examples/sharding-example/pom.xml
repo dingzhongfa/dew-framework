@@ -26,18 +26,19 @@
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>boot-core</artifactId>
         </dependency>
+        <!--引入JDBC依赖-->
         <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>jdbc-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
         </dependency>
-        <!--引入JDBC依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
         <!--使用druid连接池-->
         <dependency>

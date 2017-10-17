@@ -1811,79 +1811,77 @@ NOTE: dew里有两个分库分表策略模版(DewIntegerShardingAlgorithm,DewLon
 ----
 
 [source,yml]
-.主配置文件配置
-----
-dew:
-   sharding:
-       sharding-flag: true #默认为false，true-开启shardingJDBC分库分表功能
-       file-name: #yaml配置文件的文件名，需加上文件后缀名(.yaml)，文件必须放在/resources/META-INF/ 下
-----
-[source,yml]
 .``sharding-jdbc``在``/resources/META-INF/``下的配置文件示例，该示例为分库分表+读写分离
 ----
-dataSources:
-  ds_master_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0
-    username: root
-    password: tairan2017!
-  ds_master_0_slave_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_0
-    username: root
-    password: tairan2017!
-  ds_master_0_slave_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_1
-    username: root
-    password: tairan2017!
-  ds_master_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1
-    username: root
-    password: tairan2017!
-  ds_master_1_slave_0: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_0
-    username: root
-    password: tairan2017!
-  ds_master_1_slave_1: !!com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_1
-    username: root
-    password: tairan2017!
-tables:
-  t_order:
-    actualDataNodes: ds_${0..1}.t_order_${0..1}
-    tableStrategy:
-      inline:
-        shardingColumn: order_id
-        algorithmInlineExpression: t_order_${order_id % 2}
-  t_order_item:
-    actualDataNodes: ds_${0..1}.t_order_item_${0..1}
-    #绑定表中其余的表的策略与第一张表的策略相同
-    tableStrategy:
-      inline:
-        shardingColumn: order_id
-        algorithmInlineExpression: t_order_item_${order_id % 2}
-bindingTables:
-  - t_order,t_order_item
-masterSlaveRules:
-  ds_0:
-    masterDataSourceName: ds_master_0
-    slaveDataSourceNames: [ds_master_0_slave_0, ds_master_0_slave_1]
-    loadBalanceAlgorithmType: ROUND_ROBIN
-  ds_1:
-    masterDataSourceName: ds_master_1
-    slaveDataSourceNames: [ds_master_1_slave_0, ds_master_1_slave_1]
-    loadBalanceAlgorithmType: ROUND_ROBIN
-#默认数据库分片策略
-defaultDatabaseStrategy:
-  inline:
-    shardingColumn: user_id
-    algorithmInlineExpression: ds_${user_id.longValue() % 2}
-props:
-  sql.show: false
+sharding:
+  jdbc:
+    dataSource:
+      names: ds_master_0,ds_master_1,ds_master_0_slave_0,ds_master_0_slave_1,ds_master_1_slave_0,ds_master_1_slave_1
+      ds_master_0:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0
+        username: root
+        password: tairan2017!
+      ds_master_0_slave_0:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_0
+        username: root
+        password: tairan2017!
+      ds_master_0_slave_1:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_0_slave_1
+        username: root
+        password: tairan2017!
+      ds_master_1:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1
+        username: root
+        password: tairan2017!
+      ds_master_1_slave_0:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_0
+        username: root
+        password: tairan2017!
+      ds_master_1_slave_1:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/demo_ds_master_1_slave_1
+        username: root
+        password: tairan2017!
+
+    config:
+      sharding:
+        tables:
+          t_order:
+            actualDataNodes: ds_${0..1}.t_order_${0..1}
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                algorithmInlineExpression: t_order_${order_id % 2}
+          t_order_item:
+            actualDataNodes: ds_${0..1}.t_order_item_${0..1}
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                algorithmInlineExpression: t_order_item_${order_id % 2}
+        #默认数据库分片策略
+        defaultDatabaseStrategy:
+          inline:
+            shardingColumn: user_id
+            algorithmInlineExpression: ds_${user_id.longValue() % 2}
+        masterSlaveRules:
+          ds_0:
+            masterDataSourceName: ds_master_0
+            slaveDataSourceNames: [ds_master_0_slave_0, ds_master_0_slave_1]
+          ds_1:
+            masterDataSourceName: ds_master_1
+            slaveDataSourceNames: [ds_master_1_slave_0, ds_master_1_slave_1]
+
 ----
 
 TIP: inline写法在2.0.0.M1之后被废除。

@@ -50,6 +50,52 @@ spring:
     druid: # druid 连接池配置，详见 Spring boot 核心参数
   multi-datasources: # DewJDBC 多数据源支撑
     <other ds name>: # 数据源标识
+
+#sharding-jdbc配置（分库分表样例，详细见使用手册及sharding-example）
+sharding:
+  jdbc:
+    datasource:
+      names: ds_0,ds_1
+      ds_0:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_0
+        username: root
+        password: tairan2017!
+      ds_1:
+        type: org.apache.commons.dbcp.BasicDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_1
+        username: root
+        password: tairan2017!
+    config:
+      sharding:
+        tables:
+          t_order:
+            actualDataNodes: ds_${0..1}.t_order_${0..1}
+            #generateKeyColumns:
+              #- columnName: order_id
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                algorithmInlineExpression: t_order_${order_id.longValue() % 2}
+          t_order_item:
+            actualDataNodes: ds_${0..1}.t_order_item_${0..1}
+            tableStrategy:
+              inline:
+                shardingColumn: order_id
+                algorithmInlineExpression: t_order_item_${order_id.longValue() % 2}
+        #绑定表中其余的表的策略与第一张表的策略相同
+        bindingTables:
+          - t_order,t_order_item
+        #默认数据库分片策略
+        defaultDatabaseStrategy:
+          inline:
+            shardingColumn: user_id
+            algorithmInlineExpression: ds_${user_id.longValue() % 2}
+        props:
+          sql.show: false
+
 ----
 
 === `Spring boot` 核心参数

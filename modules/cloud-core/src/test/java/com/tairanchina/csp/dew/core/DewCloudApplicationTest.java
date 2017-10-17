@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.core;
 
+import com.tairanchina.csp.dew.Dew;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

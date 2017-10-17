@@ -12,13 +12,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-// @Configuration
+@Configuration
 @ConditionalOnClass(ShardingDataSourceFactory.class)
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
 public class ShardingConfiguration implements EnvironmentAware {
@@ -51,7 +52,7 @@ public class ShardingConfiguration implements EnvironmentAware {
         String dataSources = propertyResolver.getProperty("names");
         for (String each : dataSources.split(",")) {
             try {
-                Map<String, Object> dataSourceProps = propertyResolver.getSubProperties(each + "");
+                Map<String, Object> dataSourceProps = propertyResolver.getSubProperties(each + ".");
                 Preconditions.checkState(!dataSourceProps.isEmpty(), "Wrong datasource properties!");
                 DataSource dataSource = DataSourceUtil.getDataSource(dataSourceProps.get("type").toString(), dataSourceProps);
                 dataSourceMap.put(each, dataSource);

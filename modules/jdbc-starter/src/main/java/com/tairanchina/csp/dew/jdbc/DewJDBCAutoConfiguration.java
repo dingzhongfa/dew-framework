@@ -21,11 +21,9 @@ public class DewJDBCAutoConfiguration {
 
     @Autowired
     private DewJDBCConfig dewJDBCConfig;
-    @Autowired
-    private DewDSManager dewDSManager;
 
     @PostConstruct
-    private void init(){
+    private void init() {
         logger.info("Enabled Dew JDBC");
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
         // JDBC Scan

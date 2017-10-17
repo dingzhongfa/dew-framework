@@ -1,8 +1,8 @@
 package com.tairanchina.csp.dew.jdbc.test.select;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.Dew;
 
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.test.crud.entity.TestSelectEntity;
 import com.tairanchina.csp.dew.jdbc.test.select.dao.SystemConfigDao;
@@ -26,7 +26,7 @@ public class SelectTest {
     @Autowired
     private SystemConfigDao systemConfigDao;
     
-    private JdbcTemplate jdbcTemplate = ((DewDS)Dew.ds()).jdbc();
+    private JdbcTemplate jdbcTemplate = ((DewDS) Dew.ds()).jdbc();
 
     public void testAll() throws Exception {
         initialize();

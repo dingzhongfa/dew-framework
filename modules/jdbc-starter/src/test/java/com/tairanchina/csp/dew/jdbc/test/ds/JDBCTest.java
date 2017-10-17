@@ -43,7 +43,7 @@ public class JDBCTest {
         Assert.assertTrue(temp == 1);
     }*/
     private void init() {
-        ((DewDS)Dew.ds()).jdbc().execute("CREATE TABLE basic_entity\n" +
+        ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE basic_entity\n" +
                 "(\n" +
                 "id int primary key auto_increment,\n" +
                 "field_a varchar(255)\n" +

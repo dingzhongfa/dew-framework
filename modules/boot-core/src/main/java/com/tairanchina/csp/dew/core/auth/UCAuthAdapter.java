@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
-import static com.tairanchina.csp.dew.Dew.Info.host;
 
 
 @Component

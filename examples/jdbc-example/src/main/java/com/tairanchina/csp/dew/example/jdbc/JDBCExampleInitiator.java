@@ -11,7 +11,6 @@ import com.tairanchina.csp.dew.example.jdbc.entity.Order;
 import com.tairanchina.csp.dew.example.jdbc.entity.Pet;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

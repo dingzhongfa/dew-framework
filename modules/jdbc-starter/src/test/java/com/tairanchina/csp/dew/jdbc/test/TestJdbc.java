@@ -26,13 +26,6 @@ public class TestJdbc {
     @Resource
     private ShardingTest shardingTest;
 
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void testJDBC() throws Exception {
-        jdbcTest.testAll();
-    }
 
 
     /**
@@ -44,6 +37,15 @@ public class TestJdbc {
     public void testSelect() throws Exception {
         selectTest.testAll();
     }
+
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testJDBC() throws Exception {
+        jdbcTest.testAll();
+    }
+
 
     /**
      * 脚手架测试

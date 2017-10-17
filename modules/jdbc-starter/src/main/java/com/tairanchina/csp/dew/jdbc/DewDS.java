@@ -611,6 +611,21 @@ public class DewDS implements DS {
     public <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         try {
+            if((entityClazz == String.class
+                    || entityClazz == Integer.class
+                    || entityClazz == int.class
+                    || entityClazz == long.class
+                    || entityClazz == Long.class
+                    || entityClazz == float.class
+                    || entityClazz == Float.class
+                    || entityClazz == double.class
+                    || entityClazz == Double.class
+                    || entityClazz == short.class
+                    || entityClazz == Short.class
+                    || entityClazz == char.class
+                    || entityClazz == Character.class) && rs.size() ==1){
+                return (E)rs.values().iterator().next();
+            }
             E entity = entityClazz.newInstance();
             if (entityClassInfo == null) {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {

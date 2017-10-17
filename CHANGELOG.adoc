@@ -15,7 +15,7 @@
 
 WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!
 
-TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter
+TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter,Dew类移至com.tairanchina.csp.dew
 
 ==== Fixed
 

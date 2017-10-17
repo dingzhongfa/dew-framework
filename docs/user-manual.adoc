@@ -1806,10 +1806,6 @@ NOTE: sharding-jdbc官网 https://github.com/shardingjdbc
 
 NOTE: dew里有两个分库分表策略模版(DewIntegerShardingAlgorithm,DewLongShardingAlgorithm)，各团队在使用时可直接使用，或参考模版自行配置
 
-----
-`dew` 集成了sharding-jdbc的yaml配置
-----
-
 [source,yml]
 .``sharding-jdbc``在``/resources/META-INF/``下的配置文件示例，该示例为分库分表+读写分离
 ----

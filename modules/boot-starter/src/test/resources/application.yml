@@ -3,6 +3,8 @@ dew:
     format:
       use-unity-error: true
       reuse-http-state: false
+      code-field-name: description
+      message-field-name: customHttpCode
     error-mapping:
       "[com.tairanchina.csp.dew.core.AuthException]":
         http-code: 401

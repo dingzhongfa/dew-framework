@@ -13,9 +13,11 @@
 * [优化]Dew JDBC性能优化
 * [文档]添加性能调优章节
 
-WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!
+WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!自行搭建baseEntity的项目需要修改时间类型为LocalDateTime
 
-TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter,Dew类移至com.tairanchina.csp.dew
+TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter
+
+TIP: Dew类移至com.tairanchina.csp.dew下，entity模版及注解均移至com.tairanchina.csp.dew.jdbc.entity下，jdbc部分变动具体请看使用手册下数据访问章节
 
 ==== Fixed
 

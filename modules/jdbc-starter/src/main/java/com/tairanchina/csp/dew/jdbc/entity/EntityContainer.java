@@ -2,8 +2,6 @@ package com.tairanchina.csp.dew.jdbc.entity;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.BeanHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

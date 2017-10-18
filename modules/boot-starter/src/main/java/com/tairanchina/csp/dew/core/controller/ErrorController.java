@@ -128,7 +128,10 @@ public class ErrorController extends AbstractErrorController {
             JsonNode jsonNode = $.json.createObjectNode()
                     .set("error", $.json.createObjectNode()
                             .put("code", busCode)
-                            .put("message", message));
+                            .put("message", message)
+                            .put("description",message)
+                            .put("customHttpCode",busCode)
+                    );
             return ResponseEntity.status(httpCode).contentType(MediaType.APPLICATION_JSON_UTF8).body(jsonNode.toString());
         }
     }

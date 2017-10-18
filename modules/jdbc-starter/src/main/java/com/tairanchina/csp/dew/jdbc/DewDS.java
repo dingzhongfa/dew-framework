@@ -31,6 +31,7 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -628,9 +629,13 @@ public class DewDS implements DS {
             }
             E entity = entityClazz.newInstance();
             if (entityClassInfo == null) {
+                Set<String> fields= $.bean.getFields(entityClazz).keySet();
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
-                    Object r = convertRsToObject(entry);
-                    $.bean.setValue(entity, underlineToCamel(entry.getKey().toLowerCase()), r);
+                    String key = underlineToCamel(entry.getKey().toLowerCase());
+                    if(fields.contains(key)){
+                        Object r = convertRsToObject(entry);
+                        $.bean.setValue(entity, key, r);
+                    }
                 }
             } else {
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {

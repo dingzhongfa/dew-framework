@@ -4,22 +4,31 @@
 
 ==== Feature
 
-* [功能]支持局部 `SharingJDBC`
+* [功能]支持局部 `ShardingJDBC`(由于ShardingJDBC 2.0还未RC，测试发现存在较多问题，此功能需要等待官方RC)
 
 ==== Improvement
 
-* [优化]支持Java8时间
-* [优化]Dew JDBC独立成 `jdbc-starter`
-* [优化]Dew JDBC性能优化
+* [优化]支持Java8时间处理
+* [优化]模块Spring化，`boot-core` 更名为 `boot-starter` , `cloud-core` 更名为 `cloud-starter`
+* [优化] `Dew JDBC` 独立成 `jdbc-starter` , 确保核心模块 `boot-starter` 更轻量
+* [优化] `Dew JDBC` 性能优化
 * [文档]添加性能调优章节
-
-WARNING: 添加Java8时间支持后继承自 `SafeEntity` 的实体需要注意类型的变化!
-
-TIP: 模块更名，boot-core变更为boot-starter,cloud-core变更为cloud-starter,Dew类移至com.tairanchina.csp.dew
 
 ==== Fixed
 
-* [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决Fegin调用解码错误
+* [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决 `Fegin` 调用解码错误
+
+==== 从 `1.0.0-RC/betaX` 迁移到 `1.1.0`
+
+`1.1.0` 修正了 `1.0.0` 版本的几个设计缺陷，需要做如下的迁移操作：
+
+* Maven: `Dew` 框架的版本修正成 `1.1.0-X`，目前是 `1.1.0-beta1`
+* Maven: `boot-core` 更名为 `boot-starter` , `cloud-core` 更名为 `cloud-starter`
+* 核心代码: `com.tairanchina.csp.dew.core.Dew` 包路径改成 `com.tairanchina.csp.dew.Dew`
+* `Dew JDBC` 模块（使用MyBatis等其它持久化框架的项目可以忽略）
+**  `SafeEntity` 的创建/更新时间 由 `Date` 换成了 `LocalDateTime`
+**  所有 `entity` 包 迁移到 `com.tairanchina.csp.dew.jdbc.entity`
+**  使用 `JdbcTemplate` 原生方法时 原来是： `Dew.ds().jdbc.xx` ，需要修改成 `((DewDS)Dew.ds).jdbc.xx`
 
 === 1.0.0-RC
 

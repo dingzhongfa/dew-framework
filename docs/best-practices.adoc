@@ -206,7 +206,7 @@ TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置
 
 NOTE: `zuul` 的最大并发数主要调整 `maxSemaphores` 优先级高于 `hystrix` 的最大线程数配置.
 
-*`ribbon` 性能参数说明* 调整 `MaxTotalConnections`和 `MaxConnectionsPerHost` 时建议同比调整 `Pool` 相关的参数
+*`ribbon` 性能参数说明* 调整 `MaxTotalConnections` 和 `MaxConnectionsPerHost` 时建议同比调整 `Pool` 相关的参数
 
   # ribbon 单主机最大连接数,默认50
   ribbon.MaxConnectionsPerHost=500

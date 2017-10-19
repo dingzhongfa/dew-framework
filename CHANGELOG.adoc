@@ -1,5 +1,15 @@
 == 版本说明
 
+=== 1.1.0-RC
+
+==== Feature
+
+==== Improvement
+
+* [优化] `Dew JDBC` 更好地支持没有 `Entity` 注解的对象
+
+==== Fixed
+
 === 1.1.0-beta1
 
 ==== Feature

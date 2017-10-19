@@ -17,21 +17,21 @@ public class EntityContainer {
     private static final Map<String, EntityClassInfo> COLUMN_INFO = new ConcurrentHashMap<>();
 
     private static void loadEntityClassInfo(Class clazz) {
-        Map<String, BeanHelper.FieldInfo> fieldInfo = $.bean.findFieldsInfo(
-                clazz, null, null, null, new HashSet<Class<? extends Annotation>>() {{
-                    add(PkColumn.class);
-                    add(CodeColumn.class);
-                    add(CreateUserColumn.class);
-                    add(CreateTimeColumn.class);
-                    add(UpdateUserColumn.class);
-                    add(UpdateTimeColumn.class);
-                    add(EnabledColumn.class);
-                    add(Column.class);
-                }});
-        if (!fieldInfo.isEmpty()) {
+        Arrays.stream(clazz.getAnnotations()).filter(ann -> ann.annotationType() == Entity.class).findAny().map(entityAnn -> {
+            Entity entity = (Entity) entityAnn;
+            Map<String, BeanHelper.FieldInfo> fieldInfo = $.bean.findFieldsInfo(
+                    clazz, null, null, null, new HashSet<Class<? extends Annotation>>() {{
+                        add(PkColumn.class);
+                        add(CodeColumn.class);
+                        add(CreateUserColumn.class);
+                        add(CreateTimeColumn.class);
+                        add(UpdateUserColumn.class);
+                        add(UpdateTimeColumn.class);
+                        add(EnabledColumn.class);
+                        add(Column.class);
+                    }});
             EntityClassInfo entityClassInfo = new EntityClassInfo();
             // table info
-            Entity entity = (Entity) Arrays.stream(clazz.getAnnotations()).filter(ann -> ann.annotationType() == Entity.class).findAny().get();
             if (entity.tableName().isEmpty()) {
                 entityClassInfo.tableName = camelToUnderline(clazz.getSimpleName()).toLowerCase();
             } else {
@@ -110,7 +110,8 @@ public class EntityContainer {
             });
             entityClassInfo.columns.forEach((k, v) -> entityClassInfo.columnRel.put(v.columnName, k));
             COLUMN_INFO.put(clazz.getName(), entityClassInfo);
-        }
+            return null;
+        });
     }
 
     public static EntityClassInfo getEntityClassByClazz(Class<?> clazz) {

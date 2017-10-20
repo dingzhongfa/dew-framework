@@ -15,9 +15,9 @@
     <name>Dew Zipkin Service3 示例</name>
     <description>Dew Zipkin Service3 示例</description>
     <packaging>jar</packaging>
-    <version>1.0.0-beta4</version>
 
     <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
         <sonar.skip>true</sonar.skip>
     </properties>
 

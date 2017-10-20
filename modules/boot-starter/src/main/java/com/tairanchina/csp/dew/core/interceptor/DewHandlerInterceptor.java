@@ -62,7 +62,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (token != null) {
             token = URLDecoder.decode(token, "UTF-8");
             if (Dew.dewConfig.getSecurity().isTokenHash()) {
-                token = $.encrypt.symmetric.encrypt(token, "MD5");
+                token = $.security.digest.digest(token, "MD5");
             }
         }
         DewContext context = new DewContext();

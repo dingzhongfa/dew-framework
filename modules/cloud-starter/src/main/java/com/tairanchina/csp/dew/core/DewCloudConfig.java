@@ -16,7 +16,8 @@ public class DewCloudConfig {
     public static class Error {
 
         private Set<String> notifyEmails = new HashSet<>();
-        private int eventHoldSec = 3600;
+        private String notifyTitle = "服务异常";
+        private int notifyIntervalSec = 1800;
         private Set<String> notifyEventTypes = new HashSet<>();
         private Set<String> notifyIncludeKeys = new HashSet<>();
         private Set<String> notifyExcludeKeys = new HashSet<>();
@@ -29,12 +30,12 @@ public class DewCloudConfig {
             this.notifyEmails = notifyEmails;
         }
 
-        public int getEventHoldSec() {
-            return eventHoldSec;
+        public String getNotifyTitle() {
+            return notifyTitle;
         }
 
-        public void setEventHoldSec(int eventHoldSec) {
-            this.eventHoldSec = eventHoldSec;
+        public void setNotifyTitle(String notifyTitle) {
+            this.notifyTitle = notifyTitle;
         }
 
         public Set<String> getNotifyEventTypes() {
@@ -43,6 +44,14 @@ public class DewCloudConfig {
 
         public void setNotifyEventTypes(Set<String> notifyEventTypes) {
             this.notifyEventTypes = notifyEventTypes;
+        }
+
+        public int getNotifyIntervalSec() {
+            return notifyIntervalSec;
+        }
+
+        public void setNotifyIntervalSec(int notifyIntervalSec) {
+            this.notifyIntervalSec = notifyIntervalSec;
         }
 
         public Set<String> getNotifyIncludeKeys() {

@@ -16,12 +16,16 @@ public class CloudAutoConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(CloudAutoConfiguration.class);
 
     @Autowired
+    private DewCloudConfig dewCloudConfig;
+    @Autowired
     private FailureEventNotifier failureEventNotifier;
 
     @PostConstruct
     public void init() throws IOException {
-        logger.info("Enabled Failure Event Notifier");
-        HystrixPlugins.getInstance().registerEventNotifier(failureEventNotifier);
+        if (!dewCloudConfig.getError().getNotifyEmails().isEmpty()) {
+            logger.info("Enabled Failure Event Notifier");
+            HystrixPlugins.getInstance().registerEventNotifier(failureEventNotifier);
+        }
     }
 
 

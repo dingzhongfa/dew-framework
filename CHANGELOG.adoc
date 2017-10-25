@@ -4,6 +4,9 @@
 
 ==== Feature
 
+* [功能] 支持服务调用（ `Hystrix` ）异常邮件通知
+* [功能] 适配新版 `用户权限中心` SDK
+
 ==== Improvement
 
 * [优化] `Dew JDBC` 更好地支持没有 `Entity` 注解的对象

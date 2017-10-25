@@ -521,6 +521,10 @@
             <url>http://121.41.17.205:18081/nexus/content/groups/public/</url>
         </repository>
         <repository>
+            <id>tr-central</id>
+            <url>http://121.41.17.205:18081/nexus/content/repositories/central/</url>
+        </repository>
+        <repository>
             <id>central</id>
             <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>

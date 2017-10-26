@@ -5,6 +5,13 @@
 [source,yml]
 ----
 dew: # Dew 参数key前缀
+    cloud:
+        error:
+             notify-interval-mill-sec: #阶段时间
+             notify-emails: #通知的邮箱
+             notify-event-types: #通知的事件类型
+             judge-type: #include或exclude，不配置则为全局监控
+             notify-include-keys: #需监控的方法key值，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
     basic: # 基础信息
         name: # 服务名称，用于API文档显示等
         version: # 服务版本号，用于API文档显示等
@@ -46,10 +53,21 @@ dew: # Dew 参数key前缀
 
 spring:
   datasource: # 主数据源配置
-    ... # 数据源配置，详见 Spring boot 核心参数
-    druid: # druid 连接池配置，详见 Spring boot 核心参数
+        ... # 数据源配置，详见 Spring boot 核心参数
+       druid: # druid 连接池配置，详见 Spring boot 核心参数
   multi-datasources: # DewJDBC 多数据源支撑
-    <other ds name>: # 数据源标识
+       <other ds name>: # 数据源标识
+  mail: #mail配置，需要hystrix降级通知需加以下配置
+       host: smtp.163.com
+       username:
+       password:
+       properties:
+         mail:
+           smtp:
+             auth: true
+             starttls:
+               enable: true
+               required: true
 
 #sharding-jdbc配置（分库分表样例，详细见使用手册及sharding-example）
 sharding:

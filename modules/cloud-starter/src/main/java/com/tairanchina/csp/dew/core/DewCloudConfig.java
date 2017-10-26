@@ -17,10 +17,19 @@ public class DewCloudConfig {
 
         private Set<String> notifyEmails = new HashSet<>();
         private String notifyTitle = "服务异常";
-        private int notifyIntervalSec = 1800;
+        private long notifyIntervalMillSec = 5 * 60 * 1000;
+        private String judgeType ;
+        private String[] notifyIncludeKeys;
+        private String[] notifyExcludeKeys;
         private Set<String> notifyEventTypes = new HashSet<>();
-        private Set<String> notifyIncludeKeys = new HashSet<>();
-        private Set<String> notifyExcludeKeys = new HashSet<>();
+
+        public String getJudgeType() {
+            return judgeType;
+        }
+
+        public void setJudgeType(String judgeType) {
+            this.judgeType = judgeType;
+        }
 
         public Set<String> getNotifyEmails() {
             return notifyEmails;
@@ -46,27 +55,27 @@ public class DewCloudConfig {
             this.notifyEventTypes = notifyEventTypes;
         }
 
-        public int getNotifyIntervalSec() {
-            return notifyIntervalSec;
+        public long getNotifyIntervalMillSec() {
+            return notifyIntervalMillSec;
         }
 
-        public void setNotifyIntervalSec(int notifyIntervalSec) {
-            this.notifyIntervalSec = notifyIntervalSec;
+        public void setNotifyIntervalMillSec(long notifyIntervalMillSec) {
+            this.notifyIntervalMillSec = notifyIntervalMillSec;
         }
 
-        public Set<String> getNotifyIncludeKeys() {
+        public String[] getNotifyIncludeKeys() {
             return notifyIncludeKeys;
         }
 
-        public void setNotifyIncludeKeys(Set<String> notifyIncludeKeys) {
+        public void setNotifyIncludeKeys(String[] notifyIncludeKeys) {
             this.notifyIncludeKeys = notifyIncludeKeys;
         }
 
-        public Set<String> getNotifyExcludeKeys() {
+        public String[] getNotifyExcludeKeys() {
             return notifyExcludeKeys;
         }
 
-        public void setNotifyExcludeKeys(Set<String> notifyExcludeKeys) {
+        public void setNotifyExcludeKeys(String[] notifyExcludeKeys) {
             this.notifyExcludeKeys = notifyExcludeKeys;
         }
     }

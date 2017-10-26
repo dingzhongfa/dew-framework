@@ -2019,3 +2019,44 @@ TBD
 如果是 `IPv4` 则直接调用服务，否则使用Spring Cloud的 `RestTemplate` 调用。
 所以您只需要把服务url做成配置，开发时使用 `ip` ，测试/生产时使用 `service-id` 。
 
+==== hystrix降级增加邮件通知
+
+NOTE: 为能更及时的对服务异常做出处理，dew增加邮件通知功能。
+
+----
+此章节关联 hystrix-feign-example 示例
+----
+
+* yml配置
+
+[source,yml]
+.通知条件配置
+----
+dew:
+  cloud:
+    error:
+      notify-interval-mill-sec: 10000
+      notify-emails: 71964899@qq.com
+      notify-event-types: FAILURE,SHORT_CIRCUITED
+      judge-type: include
+      notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
+----
+
+TIP: password为smtp授权码，非邮箱密码
+
+[source,yml]
+.邮箱配置
+----
+spring:
+  mail:
+    host: smtp.163.com
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+----

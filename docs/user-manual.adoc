@@ -2037,7 +2037,7 @@ dew:
     error:
       notify-interval-mill-sec: 10000
       notify-emails: 71964899@qq.com
-      notify-event-types: FAILURE,SHORT_CIRCUITED
+      notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,EMIT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED
       judge-type: include
       notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
 ----

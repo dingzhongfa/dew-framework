@@ -55,17 +55,18 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     @Override
     public void markEvent(HystrixEventType eventType, HystrixCommandKey key) {
+        if (eventType == HystrixEventType.SUCCESS) {
+            if (failureInfo.containsKey(key.name())) {
+                failureInfo.remove(key.name());
+            }
+            return;
+        }
         if (judgeType != null) {
             if (judgeType.equals("include") && (notifyIncludeKeys.isEmpty() || !notifyIncludeKeys.contains(key.name()))) {
                 return;
             }
             if (judgeType.equals("exclude") && (!notifyExcludeKeys.isEmpty() && notifyExcludeKeys.contains(key.name()))) {
                 return;
-            }
-        }
-        if (eventType == HystrixEventType.SUCCESS) {
-            if (failureInfo.containsKey(key.name())) {
-                failureInfo.remove(key.name());
             }
         }
         if (!dewCloudConfig.getError().getNotifyEventTypes().contains(eventType.name())) {

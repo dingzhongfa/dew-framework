@@ -16,27 +16,14 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Component
 public class FailureEventNotifier extends HystrixEventNotifier {
 
-    Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);
+    private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);
 
-    @PostConstruct
-    public void init() {
-        this.notifiedTime = Instant.now().toEpochMilli() - dewCloudConfig.getError().getNotifyIntervalMillSec();
-        this.judgeType = dewCloudConfig.getError().getJudgeType();
-        if (this.judgeType != null) {
-            if (this.judgeType.equals("include") && dewCloudConfig.getError().getNotifyIncludeKeys() != null) {
-                this.notifyIncludeKeys.addAll(Arrays.asList(dewCloudConfig.getError().getNotifyIncludeKeys()));
-            }
-            if (this.judgeType.equals("exclude") && dewCloudConfig.getError().getNotifyExcludeKeys() != null) {
-                this.notifyExcludeKeys.addAll(Arrays.asList(dewCloudConfig.getError().getNotifyExcludeKeys()));
-            }
-        }
-    }
-
-    private String judgeType;
 
     @Autowired
     private DewCloudConfig dewCloudConfig;
@@ -53,6 +40,15 @@ public class FailureEventNotifier extends HystrixEventNotifier {
     // key.name -> eventType.names
     private Map<String, Set<String>> failureInfo = new WeakHashMap<>();
 
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+    @PostConstruct
+    public void init() {
+        this.notifiedTime = Instant.now().toEpochMilli() - dewCloudConfig.getError().getNotifyIntervalSec() * 1000;
+        this.notifyIncludeKeys.addAll(Arrays.asList(dewCloudConfig.getError().getNotifyIncludeKeys()));
+        this.notifyExcludeKeys.addAll(Arrays.asList(dewCloudConfig.getError().getNotifyExcludeKeys()));
+    }
+
     @Override
     public void markEvent(HystrixEventType eventType, HystrixCommandKey key) {
         if (eventType == HystrixEventType.SUCCESS) {
@@ -61,30 +57,28 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             }
             return;
         }
-        if (judgeType != null) {
-            if (judgeType.equals("include") && (notifyIncludeKeys.isEmpty() || !notifyIncludeKeys.contains(key.name()))) {
-                return;
-            }
-            if (judgeType.equals("exclude") && (!notifyExcludeKeys.isEmpty() && notifyExcludeKeys.contains(key.name()))) {
-                return;
-            }
+        if (!notifyIncludeKeys.isEmpty() && !notifyIncludeKeys.contains(key.name())) {
+            return;
+        }
+        if (!notifyExcludeKeys.isEmpty() && notifyExcludeKeys.contains(key.name())) {
+            return;
         }
         if (!dewCloudConfig.getError().getNotifyEventTypes().contains(eventType.name())) {
             return;
-        } else {
-            failureInfo.putIfAbsent(key.name(), new HashSet<>());
-            failureInfo.get(key.name()).add(eventType.name());
         }
-        if (Instant.now().toEpochMilli() - notifiedTime < dewCloudConfig.getError().getNotifyIntervalMillSec()) {
+        failureInfo.putIfAbsent(key.name(), new HashSet<>());
+        failureInfo.get(key.name()).add(eventType.name());
+
+        if (Instant.now().toEpochMilli() - notifiedTime < dewCloudConfig.getError().getNotifyIntervalSec() * 1000) {
             return;
         }
         notifiedTime = Instant.now().toEpochMilli();
         if (!failureInfo.isEmpty()) {
-            new Thread(() -> sendEmail()).start();
+            executor.execute(this::sendEmail);
         }
     }
 
-    public void sendEmail() {
+    private void sendEmail() {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
@@ -95,7 +89,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             failureInfo.forEach((key, value) -> {
                 stringBuilder.append("\r\n" +
                         "异常方法:").append(key).append("\t类型:\t");
-                value.forEach(type -> stringBuilder.append(type + ",\t"));
+                value.forEach(type -> stringBuilder.append(type).append(",\t"));
             });
             stringBuilder.append("\r\n");
             message.setText(stringBuilder.toString());

@@ -17,19 +17,16 @@ public class DewCloudConfig {
 
         private Set<String> notifyEmails = new HashSet<>();
         private String notifyTitle = "服务异常";
-        private long notifyIntervalMillSec = 5 * 60 * 1000;
-        private String judgeType ;
+        private long notifyIntervalSec = 1800;
         private String[] notifyIncludeKeys;
         private String[] notifyExcludeKeys;
-        private Set<String> notifyEventTypes = new HashSet<>();
-
-        public String getJudgeType() {
-            return judgeType;
-        }
-
-        public void setJudgeType(String judgeType) {
-            this.judgeType = judgeType;
-        }
+        private Set<String> notifyEventTypes = new HashSet<String>(){{
+            add("FAILURE");
+            add("SHORT_CIRCUITED");
+            add("TIMEOUT");
+            add("THREAD_POOL_REJECTED");
+            add("SEMAPHORE_REJECTED");
+        }};
 
         public Set<String> getNotifyEmails() {
             return notifyEmails;
@@ -55,12 +52,12 @@ public class DewCloudConfig {
             this.notifyEventTypes = notifyEventTypes;
         }
 
-        public long getNotifyIntervalMillSec() {
-            return notifyIntervalMillSec;
+        public long getNotifyIntervalSec() {
+            return notifyIntervalSec;
         }
 
-        public void setNotifyIntervalMillSec(long notifyIntervalMillSec) {
-            this.notifyIntervalMillSec = notifyIntervalMillSec;
+        public void setNotifyIntervalSec(long notifyIntervalSec) {
+            this.notifyIntervalSec = notifyIntervalSec;
         }
 
         public String[] getNotifyIncludeKeys() {

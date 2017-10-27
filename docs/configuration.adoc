@@ -5,13 +5,6 @@
 [source,yml]
 ----
 dew: # Dew 参数key前缀
-    cloud:
-        error:
-             notify-interval-mill-sec: #阶段时间
-             notify-emails: #通知的邮箱
-             notify-event-types: #通知的事件类型
-             judge-type: #include或exclude，不配置则为全局监控
-             notify-include-keys: #需监控的方法key值，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
     basic: # 基础信息
         name: # 服务名称，用于API文档显示等
         version: # 服务版本号，用于API文档显示等
@@ -50,6 +43,13 @@ dew: # Dew 参数key前缀
                 host: #用户中心地址
                 app-id: #app-id
                 app-secret: #app-secret 秘钥
+    cloud:
+        error:
+             notify-interval-sec: 1800 # 通知的间隔时间
+             notify-emails:  # 通知的邮箱，逗号分隔
+             notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED # 通知的事件类型
+             notify-include-keys: # 需监控的方法key值，与notify-exclude-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
+             notify-exclude-keys: # 不需要监控的方法key值，与notify-include-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
 
 spring:
   datasource: # 主数据源配置

@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tairanchina.csp.dew.core.DewConfig;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
-import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
-import com.tairanchina.csp.dew.core.auth.UCAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
@@ -78,9 +76,9 @@ public class Dew {
         Dew.Info.name = applicationName;
         // Select Auth Adapter
         if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")) {
-            auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);
+            auth = (AuthAdapter) Dew.applicationContext.getBean("basicAuthAdapter");
         } else if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")) {
-            auth = Dew.applicationContext.getBean(UCAuthAdapter.class);
+            auth = (AuthAdapter) Dew.applicationContext.getBean("ucAuthAdapter");
         }
         // Support java8 Time
         if (jacksonProperties != null) {

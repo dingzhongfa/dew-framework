@@ -33,7 +33,7 @@
 
 ==== Fixed
 
-* [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决 `Fegin` 调用解码错误
+* [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决 `Feign` 调用解码错误
 
 ==== 从 `1.0.0-RC/betaX` 迁移到 `1.1.0`
 

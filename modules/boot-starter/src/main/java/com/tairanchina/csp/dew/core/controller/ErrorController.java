@@ -36,6 +36,7 @@ public class ErrorController extends AbstractErrorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
+    private static final int FALL_BACK_STATUS = 1000;
     private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     private static final String SPECIAL_ERROR_FLAG = "org.springframework.boot.autoconfigure.web.DefaultErrorAttributes.ERROR";
@@ -62,6 +63,10 @@ public class ErrorController extends AbstractErrorController {
     @RequestMapping()
     @ResponseBody
     public Object error(HttpServletRequest request) {
+        Object specialError = request.getAttribute(SPECIAL_ERROR_FLAG);
+        if (specialError instanceof Resp.FallbackException) {
+            return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());
+        }
         Map<String, Object> error = getErrorAttributes(request, false);
         String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
@@ -92,7 +97,6 @@ public class ErrorController extends AbstractErrorController {
                 httpCode = detail.get("customHttpCode").asInt();
             }
         }
-        Object specialError = request.getAttribute(SPECIAL_ERROR_FLAG);
         if (specialError != null) {
             if (specialError instanceof ConstraintViolationException) {
                 ArrayNode errorExt = $.json.createArrayNode();
@@ -108,9 +112,7 @@ public class ErrorController extends AbstractErrorController {
             } else {
                 if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
                     ArrayNode errorExt = $.json.createArrayNode();
-                    Iterator<JsonNode> errorExtIt = $.json.toJson(error.get("errors")).iterator();
-                    while (errorExtIt.hasNext()) {
-                        JsonNode json = errorExtIt.next();
+                    for (JsonNode json : $.json.toJson(error.get("errors"))) {
                         errorExt.add($.json.createObjectNode()
                                 .put("field", json.get("field").asText(""))
                                 .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
@@ -123,7 +125,7 @@ public class ErrorController extends AbstractErrorController {
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
-            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
+            return ResponseEntity.status((httpCode >= 500 && httpCode < 600) ? FALL_BACK_STATUS : 200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
         } else {
             JsonNode jsonNode = $.json.createObjectNode()
                     .set("error", $.json.createObjectNode()

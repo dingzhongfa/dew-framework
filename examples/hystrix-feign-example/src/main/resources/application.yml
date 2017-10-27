@@ -1,10 +1,9 @@
 dew:
   cloud:
     error:
-      notify-interval-mill-sec: 10000
+      notify-interval-sec: 10000
       notify-emails:
       notify-event-types: FAILURE,SHORT_CIRCUITED
-      judge-type: include
       notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
 spring:
   mail:

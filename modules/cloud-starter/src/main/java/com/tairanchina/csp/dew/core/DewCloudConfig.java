@@ -18,9 +18,9 @@ public class DewCloudConfig {
         private Set<String> notifyEmails = new HashSet<>();
         private String notifyTitle = "服务异常";
         private long notifyIntervalSec = 1800;
-        private String[] notifyIncludeKeys;
-        private String[] notifyExcludeKeys;
-        private Set<String> notifyEventTypes = new HashSet<String>(){{
+        private String[] notifyIncludeKeys = new String[]{};
+        private String[] notifyExcludeKeys = new String[]{};
+        private Set<String> notifyEventTypes = new HashSet<String>() {{
             add("FAILURE");
             add("SHORT_CIRCUITED");
             add("TIMEOUT");

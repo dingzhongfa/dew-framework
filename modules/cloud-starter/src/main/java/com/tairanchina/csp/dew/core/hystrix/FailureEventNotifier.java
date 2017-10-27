@@ -29,7 +29,6 @@ public class FailureEventNotifier extends HystrixEventNotifier {
     private DewCloudConfig dewCloudConfig;
 
     private Set<String> notifyIncludeKeys = new HashSet<>();
-
     private Set<String> notifyExcludeKeys = new HashSet<>();
     @Autowired
     private JavaMailSender mailSender;

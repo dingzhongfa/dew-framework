@@ -17,7 +17,6 @@ spring:
     addresses: ["127.0.0.1"]
   mail:
     host: smtp.163.com
-    from:
     username:
     password:
     properties:

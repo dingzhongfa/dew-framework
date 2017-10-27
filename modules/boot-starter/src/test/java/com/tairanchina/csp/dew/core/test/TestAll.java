@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = BootTestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class TestAll {
 
     public static final String URL = "http://127.0.0.1:8080/";

@@ -12,6 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +83,17 @@ public class TestController {
     public String errorMapping() {
         throw new AuthException("400", "auth error");
     }
+
+    @GetMapping(value = "fallback1")
+    public Resp<String> fallbackTest1() {
+        return Resp.serverError("ssss").fallback();
+    }
+
+    @GetMapping(value = "fallback2")
+    public Resp<String> fallbackTest2() {
+        throw new EmptyResultDataAccessException(1);
+    }
+
 
     public static class User {
 

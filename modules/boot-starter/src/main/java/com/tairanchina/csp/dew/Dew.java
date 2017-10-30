@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tairanchina.csp.dew.core.DewConfig;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
+import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
 import com.tairanchina.csp.dew.core.fun.VoidExecutor;
 import com.tairanchina.csp.dew.core.fun.VoidPredicate;
@@ -74,18 +75,16 @@ public class Dew {
             Dew.applicationContext.getBean(DSManager.class);
         }
         Dew.Info.name = applicationName;
-        // Select Auth Adapter
-        if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("basic")) {
-            auth = (AuthAdapter) Dew.applicationContext.getBean("basicAuthAdapter");
-        } else if (Dew.dewConfig.getSecurity().getAuthAdapter().equalsIgnoreCase("uc")) {
-            auth = (AuthAdapter) Dew.applicationContext.getBean("ucAuthAdapter");
-        }
+        // Load Auth Adapter
+        auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);
         // Support java8 Time
         if (jacksonProperties != null) {
             jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         }
         // Load Immediately
-        Set<Class<?>> loadOrders= $.clazz.scan(Dew.class.getPackage().getName(),new HashSet<Class<? extends Annotation>>(){{add(DewLoadImmediately.class);}},null);
+        Set<Class<?>> loadOrders = $.clazz.scan(Dew.class.getPackage().getName(), new HashSet<Class<? extends Annotation>>() {{
+            add(DewLoadImmediately.class);
+        }}, null);
         loadOrders.forEach(loadOrder -> Dew.applicationContext.getBean(loadOrder));
     }
 

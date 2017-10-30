@@ -4,12 +4,9 @@ import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component("basicAuthAdapter")
 public class BasicAuthAdapter implements AuthAdapter {
 
     // token存储key

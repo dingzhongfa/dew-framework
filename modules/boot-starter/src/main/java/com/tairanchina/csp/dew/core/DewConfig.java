@@ -225,41 +225,6 @@ public class DewConfig {
         private List<String> includeServices;
         private List<String> excludeServices;
 
-        private String authAdapter="basic";
-
-        private UCAuth ucAuthAdapter=new UCAuth();
-
-        public static class UCAuth{
-
-            private String appId;
-            private String appSecret;
-            private String host;
-
-            public String getHost() {
-                return host;
-            }
-
-            public void setHost(String host) {
-                this.host = host;
-            }
-
-            public String getAppId() {
-                return appId;
-            }
-
-            public void setAppId(String appId) {
-                this.appId = appId;
-            }
-
-            public String getAppSecret() {
-                return appSecret;
-            }
-
-            public void setAppSecret(String appSecret) {
-                this.appSecret = appSecret;
-            }
-        }
-
         public List<String> getIncludeServices() {
             return includeServices;
         }
@@ -308,21 +273,6 @@ public class DewConfig {
             this.tokenHash = tokenHash;
         }
 
-        public String getAuthAdapter() {
-            return authAdapter;
-        }
-
-        public void setAuthAdapter(String authAdapter) {
-            this.authAdapter = authAdapter;
-        }
-
-        public UCAuth getUcAuthAdapter() {
-            return ucAuthAdapter;
-        }
-
-        public void setUcAuthAdapter(UCAuth ucAuthAdapter) {
-            this.ucAuthAdapter = ucAuthAdapter;
-        }
     }
 
     public static class SecurityCORS {

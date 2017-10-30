@@ -114,4 +114,8 @@ public class DewContext {
     public static void setContext(ThreadLocal<DewContext> context) {
         DewContext.context = context;
     }
+
+    public void setInnerOptInfo(Optional innerOptInfo) {
+        this.innerOptInfo = innerOptInfo;
+    }
 }

@@ -17,10 +17,10 @@ import com.ecfront.dew.common.StandardCode;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.SB;
-import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import com.tairanchina.csp.dew.jdbc.dialect.Dialect;
 import com.tairanchina.csp.dew.jdbc.dialect.DialectFactory;
 import com.tairanchina.csp.dew.jdbc.dialect.DialectType;
+import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import com.tairanchina.csp.dew.jdbc.proxy.MethodConstruction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,6 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -209,7 +208,7 @@ public class DewDS implements DS {
     @Override
     public int delete(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+        Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
         return jdbcTemplate.update(String.format("DELETE FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName, sb[0]),
                 ((List) sb[1]).toArray());
@@ -231,7 +230,7 @@ public class DewDS implements DS {
     @Override
     public int enable(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+        Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         ((List) sb[1]).add(0, !column.reverse);
         return jdbcTemplate.update(String.format("UPDATE %s SET " + leftDecorated + "%s" + rightDecorated + " = ? %s",
@@ -258,7 +257,7 @@ public class DewDS implements DS {
     @Override
     public int disable(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+        Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
         EntityContainer.EntityClassInfo.Column column = entityClassInfo.columns.get(entityClassInfo.enabledFieldNameOpt.get());
         ((List) sb[1]).add(0, column.reverse);
         return jdbcTemplate.update(String.format("UPDATE %s SET " + leftDecorated + "%s" + rightDecorated + " = ? %s",
@@ -290,7 +289,7 @@ public class DewDS implements DS {
     @Override
     public boolean exist(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+        Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
         return exist(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
                 sb[0]),
@@ -299,7 +298,7 @@ public class DewDS implements DS {
 
     @Override
     public boolean exist(String sql, Object[] params) {
-        return jdbcTemplate.queryForObject(dialect.count(sql),params, Long.class) != 0;
+        return jdbcTemplate.queryForObject(dialect.count(sql), params, Long.class) != 0;
     }
 
     @Override
@@ -356,7 +355,7 @@ public class DewDS implements DS {
     @Override
     public long count(SB sqlBuilder, Class<?> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
-        Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+        Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
         return count(String.format("SELECT 1 FROM " + leftDecorated + "%s" + rightDecorated + " %s",
                 entityClassInfo.tableName,
                 sb[0]),
@@ -595,7 +594,7 @@ public class DewDS implements DS {
                 .map(col -> leftDecorated + col.columnName + rightDecorated).collect(Collectors.joining(", ")));
         sql.append(" FROM ").append(leftDecorated + entityClassInfo.tableName + rightDecorated);
         if (sqlBuilder != null) {
-            Object[] sb = ((DewSB)sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
+            Object[] sb = ((DewSB) sqlBuilder).build(entityClassInfo, leftDecorated, rightDecorated);
             sql.append(sb[0]);
             params = ((List) sb[1]).toArray();
         }
@@ -612,7 +611,7 @@ public class DewDS implements DS {
     public <E> E convertRsToObj(Map<String, Object> rs, Class<E> entityClazz) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(entityClazz);
         try {
-            if((entityClazz == String.class
+            if ((entityClazz == String.class
                     || entityClazz == Integer.class
                     || entityClazz == int.class
                     || entityClazz == long.class
@@ -624,15 +623,15 @@ public class DewDS implements DS {
                     || entityClazz == short.class
                     || entityClazz == Short.class
                     || entityClazz == char.class
-                    || entityClazz == Character.class) && rs.size() ==1){
-                return (E)rs.values().iterator().next();
+                    || entityClazz == Character.class) && rs.size() == 1) {
+                return (E) rs.values().iterator().next();
             }
             E entity = entityClazz.newInstance();
             if (entityClassInfo == null) {
-                Set<String> fields= $.bean.getFields(entityClazz).keySet();
+                Set<String> fields = $.bean.getFields(entityClazz).keySet();
                 for (Map.Entry<String, Object> entry : rs.entrySet()) {
                     String key = underlineToCamel(entry.getKey().toLowerCase());
-                    if(fields.contains(key)){
+                    if (fields.contains(key)) {
                         Object r = convertRsToObject(entry);
                         $.bean.setValue(entity, key, r);
                     }
@@ -684,7 +683,7 @@ public class DewDS implements DS {
         return Page.build(method.getPageNumber(), method.getPageSize(), totalRecords, objects);
     }
 
-    public static Object[] packageSelect(String sql, Map<String, Object> params, DialectType dialectType) {
+    public Object[] packageSelect(String sql, Map<String, Object> params, DialectType dialectType) {
         Matcher m = FIELD_PLACE_HOLDER_PATTERN.matcher(sql);
         List<String> matchRegexList = new ArrayList<>();
         //将#{...}抠出来
@@ -744,7 +743,7 @@ public class DewDS implements DS {
     /**
      * 格式化select中的 * 为对应table 字段
      */
-    private static void formatFrom(SQLTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
+    private void formatFrom(SQLTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
         if (sqlTableSource == null) {
             return;
         }
@@ -757,7 +756,7 @@ public class DewDS implements DS {
         }
     }
 
-    private static void doFormat(SQLExprTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
+    private void doFormat(SQLExprTableSource sqlTableSource, List<SQLSelectItem> selectList, List<SQLSelectItem> addList) {
         EntityContainer.EntityClassInfo entityClassInfo = EntityContainer.getEntityClassByClazz(((SQLIdentifierExpr) sqlTableSource.getExpr()).getName());
         if (entityClassInfo == null) {
             return;
@@ -774,16 +773,16 @@ public class DewDS implements DS {
                 }
             } else if (sqlSelectItem.getExpr() instanceof SQLObjectImpl) {
                 iterator.remove();
-                entityClassInfo.columns.forEach((filedName, column) -> addList.add(new SQLSelectItem(new SQLIdentifierExpr(column.columnName))));
+                entityClassInfo.columns.forEach((filedName, column) -> addList.add(new SQLSelectItem(new SQLIdentifierExpr(leftDecorated + column.columnName + rightDecorated))));
             }
         }
     }
 
-    private static void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr expr_owner, EntityContainer.EntityClassInfo.Column column) {
+    private void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr expr_owner, EntityContainer.EntityClassInfo.Column column) {
         if (column.columnName.equals("id") || column.columnName.equals("created_by") || column.columnName.equals("updated_by") || column.columnName.equals("created_time") ||
                 column.columnName.equals("updated_time"))
             return;
-        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(), column.columnName)));
+        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(), leftDecorated + column.columnName + rightDecorated)));
     }
 
 

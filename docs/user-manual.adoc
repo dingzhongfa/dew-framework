@@ -1490,7 +1490,7 @@ Dew 内核不支持鉴权处理（Auth组件），现支持两种模式
 
 . basic模式，它支持`认证缓存`，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。
 
-. uc模式，支持用户中心权限系统
+. csp模式，支持用户中心权限系统
 ____
 ====
 - basic模式
@@ -1591,33 +1591,43 @@ public Resp<Void> logout() {
 ====
 
 ====
-- uc模式
+- csp模式
+
+TIP: 增加csp-starter依赖，则强制权限认证采用csp模式
+
+NOTE: csp模式使用CSPOptInfo对象基类
+
+[source,xml]
+.pom.xml依赖配置
+----
+<dependency>
+          <groupId>com.tairanchina.csp.dew</groupId>
+          <artifactId>csp-starter</artifactId>
+ </dependency>
+----
 
 [source,yml]
-.uc模式配置
+.csp模式配置
 ----
 dew:
     security:
-        token-flag: # token key的名称
-        token-in-header: # token key是否在http header中，为false是会从url query中获取
-        token-hash: # token 值是否做hash（MD5）处理
-        auth-adapter: uc  #开启uc模式
-        uc-auth-adapter:
-             host: #用户中心地址
-             app-id: #app-id
-             app-secret: #app-secret 秘钥
+        auth:
+            csp:
+                party-id: #partyId在header中的key值 默认为'X-User-Id'
+                app-id: #appId在header中的key值 默认为'X-App-Id'
+                roles: #角色在header中的key值 默认为'X-Roles'
 ----
 
 [source,java]
-.uc模式接口
+.csp模式接口
 ----
 // 添加登录信息，optInfo封装自鉴权系统过来的登录信息
-// 一般在登录认证后操作（废弃）
-Dew.auth.setOptInfo(OptInfo optInfo);
-// 获取登录信息，要求在http请求加上token信息
-Dew.context().optInfo();
+// 一般在登录认证后操作
+Dew.auth.setOptInfo(OptInfo optInfo);// 框架自动加载
+// 获取登录信息，要求在http请求加上token，appId,roles
+Dew.context().optInfo();//
 // 删除登录信息
-// 一般在注销登录后操作(废弃)
+// 一般在注销登录后操作（无需手动操作）
 Dew.auth.removeOptInfo();
 
 // 登录信息
@@ -1634,22 +1644,33 @@ TIP: `OptInfo` 为认证缓存信息的基类，使用时可以继承并扩展�
 IMPORTANT: 使用 `OptInfo` 扩展类型时需要在工程启动时指定扩展类： `DewContext.setOptInfoClazz(<扩展类型>)` 。
 
 [source,java]
-.uc模式示例
+.csp模式示例
 ----
-/**
- * 模拟业务操作
- */
-@GetMapping(value = "business/someopt")
-public Resp<Void> someOpt() {
-    // 获取登录用户信息
-    Optional<OptInfoExt> optInfoExtOpt = Dew.auth.getOptInfo();
-    if (!optInfoExtOpt.isPresent()) {
-        return Resp.unAuthorized("用户认证错误");
+
+    /**
+     * 模拟业务操作
+     */
+    @GetMapping(value = "business/someopt")
+    public Resp<Void> someOpt() {
+        // 获取登录用户信息
+        Optional<CSPOptInfo> optInfoExtOpt = Dew.auth.getOptInfo();
+        if (!optInfoExtOpt.isPresent()) {
+            return Resp.unAuthorized("用户认证错误");
+        }
+        // 登录用户的信息
+        optInfoExtOpt.get();
+        return Resp.success(null);
     }
-    // 登录用户的信息
-    optInfoExtOpt.get();
-    return Resp.success(null);
-}
+
+    /**
+     * 模拟用户注销
+     */
+    @DeleteMapping(value = "auth/logout")
+    public Resp<Void> logout() {
+        // 实际注册处理
+        Dew.auth.removeOptInfo();
+        return Resp.success(null);
+    }
 ----
 ====
 ==== 追踪日志

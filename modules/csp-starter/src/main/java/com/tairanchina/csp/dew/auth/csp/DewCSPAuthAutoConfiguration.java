@@ -3,10 +3,8 @@ package com.tairanchina.csp.dew.auth.csp;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
-import com.tairanchina.csp.foundation.sdk.CSPKernelSDK;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;

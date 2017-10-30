@@ -226,7 +226,7 @@ NOTE: `zuul` 和其它使用 `ribbon` 的服务一样,TPS主要调整 `ribbon` �
 
 NOTE: 普通 `service` 使用 `hystrix` 时,最大并发主要调整 `hystrix.threadpool.default.coreSize`
 
-WARNING: `hystrix` 的默认超时时间为5s,在高并发下容易出现超时,建议将默认超时时间适当调长,
+WARNING: `hystrix` 的默认超时时间为1s,在高并发下容易出现超时,建议将默认超时时间适当调长,
 特殊接口需要将时间调短或更长的,使用特定配置,见上面 `feign` 配置特定方法超时时间.
 
 TIP: 详细参见文档 file://./files/Spring%20Cloud框架负载测试报告.pdf[Spring Cloud框架负载测试报告]

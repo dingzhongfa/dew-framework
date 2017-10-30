@@ -29,7 +29,7 @@ NOTE: `Dew` 框架是对 `Spring Boot/Cloud` 的扩展，使用之前务必了�
 <!--引入Dew父依赖，也可以使用import方式-->
 <parent>
     <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>parent-starter</artifactId>
     <!--生产环境请选择合适的版本!!!!!!!!-->
     <version>${dew.version}</version>
 </parent>

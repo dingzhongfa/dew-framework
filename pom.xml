@@ -5,18 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tairanchina.csp.dew</groupId>
-    <artifactId>build</artifactId>
-    <name>Dew Build</name>
+    <artifactId>build-starter</artifactId>
+    <name>Dew Build Starter</name>
     <packaging>pom</packaging>
     <version>1.1.0-SNAPSHOT</version>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
     </properties>
 
     <modules>
-        <module>modules/parent</module>
+        <module>modules/parent-starter</module>
         <module>modules/cluster-common</module>
         <module>modules/cluster-redis</module>
         <module>modules/cluster-hazelcast</module>
@@ -53,6 +52,7 @@
                <module>examples/zipkin-service-example</module>
                <module>examples/zipkin-service2-example</module>
                <module>examples/zipkin-service3-example</module>-->
+        <module>modules/parent</module>
     </modules>
 
 </project>

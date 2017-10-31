@@ -27,10 +27,10 @@ public class CSPAuthController {
      * 模拟业务操作
      */
     @GetMapping(value = "business/someopt")
-    public Resp<? extends Object> someOpt() {
+    public Resp<?> someOpt() {
         // 获取登录用户信息
         Optional<CSPOptInfo> optInfoExtOpt = Dew.auth.getOptInfo();
-        return optInfoExtOpt.<Resp<? extends Object>>map(Resp::success).orElseGet(() -> Resp.unAuthorized("用户认证错误"));
+        return optInfoExtOpt.<Resp<?>>map(Resp::success).orElseGet(() -> Resp.unAuthorized("用户认证错误"));
     }
 
     /**

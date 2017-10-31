@@ -21,7 +21,7 @@ public class TestCSPAuth {
 
     @Test
     public void testCSOAuth() throws IOException {
-        String result = $.http.get("http://localhost:8080/csp-auth/business/someopt",new HashMap(){{
+        String result = $.http.get("http://localhost:8080/csp-auth/business/someopt",new HashMap<String,String>(){{
             put("_token_","token_test");
             put("X-User-Id","user_id_test");
             put("X-App-Id","app_id_test");

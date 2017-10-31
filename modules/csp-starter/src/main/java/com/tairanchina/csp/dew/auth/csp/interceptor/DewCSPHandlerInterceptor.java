@@ -31,20 +31,18 @@ public class DewCSPHandlerInterceptor extends HandlerInterceptorAdapter {
                 token = $.security.digest.digest(token, "MD5");
             }
         }
-        if (!DewContext.exist()) {
-            DewContext context = new DewContext();
-            context.setId($.field.createUUID());
-            context.setSourceIP(Dew.Util.getRealIP(request));
-            context.setRequestUri(request.getRequestURI());
-            context.setToken(token);
-            CSPOptInfo cspOptInfo = new CSPOptInfo();
-            cspOptInfo.setToken(token);
-            cspOptInfo.setAccountCode(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getPartyId()));
-            cspOptInfo.setRoles(Arrays.asList(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getRoles()).split(",")));
-            cspOptInfo.setAppId(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getAppId()));
-            DewContext.setContext(context);
-            Dew.auth.setOptInfo(cspOptInfo);
-        }
+        DewContext context = new DewContext();
+        context.setId($.field.createUUID());
+        context.setSourceIP(Dew.Util.getRealIP(request));
+        context.setRequestUri(request.getRequestURI());
+        context.setToken(token);
+        CSPOptInfo cspOptInfo = new CSPOptInfo();
+        cspOptInfo.setToken(token);
+        cspOptInfo.setAccountCode(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getPartyId()));
+        cspOptInfo.setRoles(Arrays.asList(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getRoles()).split(",")));
+        cspOptInfo.setAppId(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getAppId()));
+        DewContext.setContext(context);
+        Dew.auth.setOptInfo(cspOptInfo);
         return super.preHandle(request, response, handler);
     }
 

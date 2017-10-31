@@ -11,6 +11,7 @@
 
 * [优化] 统一响应——协议无关 类型的http返回码由统一的200改成 `200` 或 `1000` ，前则表示操作成功或不需要降级的错误，后则表示需要做降级（Hystrix fallback）的错误
 * [优化] `Dew JDBC` 更好地支持没有 `Entity` 注解的对象
+* [优化] 对于java8时间，url参数转换支持String转LocalDateTime,LocalDate,LocalTime,long转LocalDateTime
 
 ==== Fixed
 

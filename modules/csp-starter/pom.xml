@@ -29,11 +29,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.tairanchina.csp.foundation</groupId>
             <artifactId>sdk-kernel-starter</artifactId>
             <version>${foundation.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>

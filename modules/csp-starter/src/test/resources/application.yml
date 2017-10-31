@@ -21,3 +21,14 @@ dew:
         party-id: X-User-Id
         app-id: X-App-Id
         roles: X-Roles
+csp:
+  sdk:
+    basic:
+      url: http://localhost:8088 # 统一接口
+      user-url: http://localhost:8080 # (可选)用户服务接口，用于重写统一接口
+      auth-url: http://localhost:8088 # (可选)认证服务接口，用于重写统一接口
+      app-id: uc33vycen9yrp9aot2
+      app-secret: d1027c054ea14c45877f69414b113381
+      token-expire-ms:
+      group-name: auth # 分组名称，目前用网关处理
+      sync-url: http://localhost:8080

@@ -21,6 +21,8 @@ public class CSPAuthController {
     @GetMapping(value = "business/someopt")
     public Resp<Void> someOpt() {
         // 获取登录用户信息
+        System.out.println(Thread.currentThread().getId());
+        System.out.println(Thread.currentThread().getName());
         Optional<CSPOptInfo> optInfoExtOpt = Dew.auth.getOptInfo();
         if (!optInfoExtOpt.isPresent()) {
             return Resp.unAuthorized("用户认证错误");

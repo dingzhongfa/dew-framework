@@ -2,8 +2,8 @@ package com.tairanchina.csp.dew.auth.csp.interceptor;
 
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.auth.csp.CSPAuthAdapter;
 import com.tairanchina.csp.dew.auth.csp.CSPOptInfo;
+import com.tairanchina.csp.dew.auth.csp.DewCSPAuthAutoConfiguration;
 import com.tairanchina.csp.dew.auth.csp.DewCSPConfig;
 import com.tairanchina.csp.dew.core.DewContext;
 import org.slf4j.Logger;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Dew Servlet拦截器
@@ -22,11 +23,6 @@ import java.util.Arrays;
 public class DewCSPHandlerInterceptor extends HandlerInterceptorAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(DewCSPHandlerInterceptor.class);
-
-    @Autowired
-    private CSPAuthAdapter cspAuthAdapter;
-    @Autowired
-    private DewCSPConfig dewCSPConfig;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -47,12 +43,14 @@ public class DewCSPHandlerInterceptor extends HandlerInterceptorAdapter {
         context.setSourceIP(Dew.Util.getRealIP(request));
         context.setRequestUri(request.getRequestURI());
         context.setToken(token);
-        DewContext.setContext(context);
+
         CSPOptInfo cspOptInfo = new CSPOptInfo();
-        cspOptInfo.setAccountCode(request.getHeader(dewCSPConfig.getPartyId()));
-        cspOptInfo.setRoles(Arrays.asList(request.getHeader(dewCSPConfig.getRoles()).split(",")));
-        cspOptInfo.setAppId(request.getHeader(dewCSPConfig.getAppId()));
-        cspAuthAdapter.setOptInfo(cspOptInfo);
+        cspOptInfo.setAccountCode(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getPartyId()));
+        cspOptInfo.setRoles(Arrays.asList(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getRoles()).split(",")));
+        cspOptInfo.setAppId(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getAppId()));
+
+        context.setInnerOptInfo(Optional.of(cspOptInfo));
+        DewContext.setContext(context);
         logger.trace("[{}] {}{} from {}", request.getMethod(), request.getRequestURI(), request.getQueryString() == null ? "" : "?" + request.getQueryString(), context.getSourceIP());
         return super.preHandle(request, response, handler);
     }

@@ -11,7 +11,21 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "dew.cloud")
 public class DewCloudConfig {
 
+    private TraceLog traceLog = new TraceLog();
     private Error error = new Error();
+
+    public static class TraceLog {
+
+        private boolean enabled = true;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+    }
 
     public static class Error {
 
@@ -77,6 +91,13 @@ public class DewCloudConfig {
         }
     }
 
+    public TraceLog getTraceLog() {
+        return traceLog;
+    }
+
+    public void setTraceLog(TraceLog traceLog) {
+        this.traceLog = traceLog;
+    }
 
     public Error getError() {
         return error;

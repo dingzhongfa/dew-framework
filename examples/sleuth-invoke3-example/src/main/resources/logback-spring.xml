@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="logPath" source="logging.path" defaultValue="/tmp"/>
+    <property name="LOG_FILE" value="${logPath}/${springAppName}/%d{yyyy-MM-dd}.log"/>​
+
+    <appender name="dailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_FILE}</FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}] [%thread] %logger{35} - %msg %n</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="async_log" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="dailyRollingFile"/>
+    </appender>
+
+    <appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
+        <url>http://127.0.0.1:9200/_bulk</url>
+        <index>test</index>
+        <type>%date{yyyy-MM-dd}</type>
+        <connectTimeout>30000</connectTimeout> <!-- optional (in ms, default 30000) -->
+        <errorsToStderr>true</errorsToStderr> <!-- optional (default false) -->
+        <maxQueueSize>104857600</maxQueueSize> <!-- optional (default 104857600) -->
+        <maxRetries>3</maxRetries> <!-- optional (default 3) -->
+        <readTimeout>30000</readTimeout> <!-- optional (in ms, default 30000) -->
+        <sleepTime>250</sleepTime> <!-- optional (in ms, default 250) -->
+        <maxMessageSize>100</maxMessageSize> <!-- optional (default -1 -->
+        <!--<authentication class="com.internetitem.logback.elasticsearch.config.BasicAuthentication" /> --><!-- optional -->
+        <properties>
+            <property>
+                <name>severity</name>
+                <value>%level</value>
+            </property>
+            <property>
+                <name>service</name>
+                <value>${springAppName:-}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>trace</name>
+                <value>%X{X-B3-TraceId:-}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>span</name>
+                <value>%X{X-B3-SpanId:-}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>host</name>
+                <value>${HOSTNAME}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>thread</name>
+                <value>%thread</value>
+            </property>
+            <property>
+                <name>logger</name>
+                <value>%logger</value>
+            </property>
+            <property>
+                <name>stacktrace</name>
+                <value>%ex</value>
+            </property>
+        </properties>
+        <headers>
+            <header>
+                <name>Content-Type</name>
+                <value>text/plain</value>
+            </header>
+        </headers>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="dailyRollingFile"/>
+        <appender-ref ref="ELASTIC"/>
+    </root>
+
+</configuration>

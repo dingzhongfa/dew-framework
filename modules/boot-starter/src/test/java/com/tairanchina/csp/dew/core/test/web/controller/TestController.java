@@ -12,7 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.dao.DataAccessException;
+import org.junit.Assert;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestController
 @Api(value = "测试", description = "test")
@@ -75,7 +78,7 @@ public class TestController {
     }
 
     @GetMapping(value = "valid-method/{age}")
-    public String validInMethod(@Min(value = 2,message = "age必须大于2") @PathVariable("age") int age) {
+    public String validInMethod(@Min(value = 2, message = "age必须大于2") @PathVariable("age") int age) {
         return "";
     }
 
@@ -94,6 +97,57 @@ public class TestController {
         throw new EmptyResultDataAccessException(1);
     }
 
+    @GetMapping("time/param")
+    public Resp<String> timeConvertParam(@RequestParam("date-time") LocalDateTime localDateTime, @RequestParam("date") LocalDate localDate, @RequestParam("time") LocalTime localTime) {
+        Assert.assertNotNull(localDate);
+        Assert.assertNotNull(localDateTime);
+        Assert.assertNotNull(localTime);
+        return Resp.success(null);
+    }
+
+    @GetMapping("time/param-long")
+    public Resp<String> timeConvertParamLong(@RequestParam("date-time") LocalDateTime localDateTime) {
+        Assert.assertNotNull(localDateTime);
+        return Resp.success(null);
+    }
+
+    @PostMapping("time/body")
+    public Resp<String> timeConvertBody(@RequestBody TimeDO timeDO) {
+        Assert.assertNotNull(timeDO);
+        return Resp.success(null);
+    }
+
+    public static class TimeDO{
+        private LocalTime localTime;
+
+        private LocalDate localDate;
+
+        private LocalDateTime localDateTime;
+
+        public LocalTime getLocalTime() {
+            return localTime;
+        }
+
+        public void setLocalTime(LocalTime localTime) {
+            this.localTime = localTime;
+        }
+
+        public LocalDate getLocalDate() {
+            return localDate;
+        }
+
+        public void setLocalDate(LocalDate localDate) {
+            this.localDate = localDate;
+        }
+
+        public LocalDateTime getLocalDateTime() {
+            return localDateTime;
+        }
+
+        public void setLocalDateTime(LocalDateTime localDateTime) {
+            this.localDateTime = localDateTime;
+        }
+    }
 
     public static class User {
 

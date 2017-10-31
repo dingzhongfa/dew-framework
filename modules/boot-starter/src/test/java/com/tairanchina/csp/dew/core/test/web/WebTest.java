@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +23,9 @@ public class WebTest {
     private Logger logger = LoggerFactory.getLogger(WebTest.class);
 
     public void testAll() throws Exception {
-        testValidation();
-        testResponseFormat();
+//        testValidation();
+//        testResponseFormat();
+        testTimeConvert();
     }
 
     public void testSwagger() throws IOException {
@@ -60,6 +64,19 @@ public class WebTest {
         logger.info(t3Result);
         String t4Result = $.http.get(URL + "t4?q=TEST");
         logger.info(t4Result);
+    }
+
+    private void testTimeConvert() throws IOException {
+        String paramResult = $.http.get(URL+"time/param?date-time=2013-07-02+17:39:00&date=2013-07-02&time=17:39:12");
+        Assert.assertEquals("200",$.json.toJson(paramResult).get("code").asText());
+        TestController.TimeDO  timeDO= new TestController.TimeDO();
+        timeDO.setLocalDate(LocalDate.now());
+        timeDO.setLocalTime(LocalTime.now());
+        timeDO.setLocalDateTime(LocalDateTime.now());
+        String bodyResult = $.http.post(URL+"time/body",timeDO);
+        Assert.assertEquals("200",$.json.toJson(bodyResult).get("code").asText());
+        String longParamResult = $.http.get(URL+"time/param-long?date-time=1509430693548");
+        Assert.assertEquals("200",$.json.toJson(longParamResult).get("code").asText());
     }
 
 }

@@ -20,7 +20,7 @@ public class DewCSPAuthAutoConfiguration {
 
     @PostConstruct
     private void init() {
-        logger.info("Enabled Dew UC Auth");
+        logger.info("Enabled Dew CSP Auth");
         Dew.auth = Dew.applicationContext.getBean(CSPAuthAdapter.class);
         DewContext.setOptInfoClazz(CSPOptInfo.class);
         dewCSPConfig = Dew.applicationContext.getBean(DewCSPConfig.class);

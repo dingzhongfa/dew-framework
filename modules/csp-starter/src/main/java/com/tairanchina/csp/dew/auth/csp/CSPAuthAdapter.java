@@ -26,5 +26,6 @@ public class CSPAuthAdapter implements AuthAdapter {
 
     @Override
     public <E extends OptInfo> void setOptInfo(E optInfo) {
+        Dew.context().setInnerOptInfo(Optional.of(optInfo));
     }
 }

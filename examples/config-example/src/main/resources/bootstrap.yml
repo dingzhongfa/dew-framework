@@ -3,8 +3,8 @@ spring:
     name: config-example
   cloud:
     config:
+      enabled: true
       discovery:
-        enabled: true
         service-id: config
       username: config
       password: 123456

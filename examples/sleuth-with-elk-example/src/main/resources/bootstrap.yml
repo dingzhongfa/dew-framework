@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: sleuth-with-elk-example
+  cloud:
+    config:
+      discovery:
+        enabled: false
+
+server:
+  port: 8080
+
+logging:
+  path: ./logs
+
+eureka:
+  client:
+    enabled: false

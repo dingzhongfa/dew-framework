@@ -26,7 +26,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
                 if (!v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."), 401);
                 }
             }
         }
@@ -34,7 +34,7 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
                 if (v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."),401);
+                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."), 401);
                 }
             }
         }
@@ -53,25 +53,27 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
 
-        String token;
-        if (Dew.dewConfig.getSecurity().isTokenInHeader()) {
-            token = request.getHeader(Dew.dewConfig.getSecurity().getTokenFlag());
-        } else {
-            token = request.getParameter(Dew.dewConfig.getSecurity().getTokenFlag());
-        }
-        if (token != null) {
-            token = URLDecoder.decode(token, "UTF-8");
-            if (Dew.dewConfig.getSecurity().isTokenHash()) {
-                token = $.security.digest.digest(token, "MD5");
+        if (!DewContext.exist()) {
+            String token;
+            if (Dew.dewConfig.getSecurity().isTokenInHeader()) {
+                token = request.getHeader(Dew.dewConfig.getSecurity().getTokenFlag());
+            } else {
+                token = request.getParameter(Dew.dewConfig.getSecurity().getTokenFlag());
             }
+            if (token != null) {
+                token = URLDecoder.decode(token, "UTF-8");
+                if (Dew.dewConfig.getSecurity().isTokenHash()) {
+                    token = $.security.digest.digest(token, "MD5");
+                }
+            }
+            DewContext context = new DewContext();
+            context.setId($.field.createUUID());
+            context.setSourceIP(Dew.Util.getRealIP(request));
+            context.setRequestUri(request.getRequestURI());
+            context.setToken(token);
+            DewContext.setContext(context);
         }
-        DewContext context = new DewContext();
-        context.setId($.field.createUUID());
-        context.setSourceIP(Dew.Util.getRealIP(request));
-        context.setRequestUri(request.getRequestURI());
-        context.setToken(token);
-        DewContext.setContext(context);
-        logger.trace("[{}] {}{} from {}", request.getMethod(), request.getRequestURI(), request.getQueryString() == null ? "" : "?" + request.getQueryString(), context.getSourceIP());
+        logger.trace("[{}] {}{} from {}", request.getMethod(), request.getRequestURI(), request.getQueryString() == null ? "" : "?" + request.getQueryString(), Dew.context().getSourceIP());
         return super.preHandle(request, response, handler);
     }
 

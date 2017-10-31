@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 public class DewContext {
 
-    private static ThreadLocal<DewContext> context = new ThreadLocal<>();
+    private static final ThreadLocal<DewContext> CONTEXT = new ThreadLocal<>();
 
     private static Class optInfoClazz = OptInfo.class;
 
@@ -60,7 +60,7 @@ public class DewContext {
     }
 
     public static DewContext getContext() {
-        DewContext cxt = context.get();
+        DewContext cxt = CONTEXT.get();
         if (cxt == null) {
             cxt = new DewContext();
             cxt.id = $.field.createUUID();
@@ -72,11 +72,15 @@ public class DewContext {
         return cxt;
     }
 
+    public static boolean exist(){
+        return CONTEXT.get()!=null;
+    }
+
     public static void setContext(DewContext _context) {
         if (_context.token == null) {
             _context.token = "";
         }
-        context.set(_context);
+        CONTEXT.set(_context);
     }
 
     public String getId() {
@@ -109,10 +113,6 @@ public class DewContext {
 
     public void setRequestUri(String requestUri) {
         this.requestUri = requestUri;
-    }
-
-    public static void setContext(ThreadLocal<DewContext> context) {
-        DewContext.context = context;
     }
 
     public void setInnerOptInfo(Optional innerOptInfo) {

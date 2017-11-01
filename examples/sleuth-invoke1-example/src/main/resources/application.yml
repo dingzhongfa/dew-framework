@@ -1,5 +1,2 @@
 logging:
   path: ./logs
-  level:
-    org.springframework.web.client: debug
-    com.csp.dew: debug

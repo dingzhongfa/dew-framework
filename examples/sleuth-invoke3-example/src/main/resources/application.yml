@@ -1,5 +1,2 @@
 logging:
   path: ./logs
-  level:
-    com.tairanchina.csp.dew.core.logger: trace
-    feign: trace

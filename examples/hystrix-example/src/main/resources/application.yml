@@ -12,7 +12,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone:  http://registry:123456@localhost:10000/eureka
+      defaultZone:  http://registry:123456@localhost:9999/eureka
 
 dew:
   cluster:

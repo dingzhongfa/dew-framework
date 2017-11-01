@@ -27,7 +27,6 @@ public class MonitorApplication {
             http.authorizeRequests()
                     .antMatchers("/login.html", "/**/*.css", "/**/*.js", "/img/**", "/third-party/**")
                     .permitAll();
-            http.authorizeRequests().antMatchers("/**").authenticated();
             http.httpBasic();
         }
     }

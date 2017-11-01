@@ -4,14 +4,16 @@
 
 ==== Feature
 
-* [功能] 支持服务调用（ `Hystrix` ）异常邮件通知
-* [功能] 适配新版 `用户权限中心` SDK
+* [功能] #45 支持服务调用（ `Hystrix` ）异常邮件通知
+* [功能] #51 适配新版 `用户权限中心` SDK
+* [功能] #59 #49 #15 统一日志规范，适配 `sleuth` 日志到 `ES`
 
 ==== Improvement
 
-* [优化] 统一响应——协议无关 类型的http返回码由统一的200改成 `200` 或 `1000` ，前则表示操作成功或不需要降级的错误，后则表示需要做降级（Hystrix fallback）的错误
-* [优化] `Dew JDBC` 更好地支持没有 `Entity` 注解的对象
-* [优化] 对于java8时间，url参数转换支持String转LocalDateTime,LocalDate,LocalTime,long转LocalDateTime
+* [优化] #53 统一响应——协议无关 类型的http返回码由统一的200改成 `200` 或 `1000` ，前则表示操作成功或不需要降级的错误，后则表示需要做降级（Hystrix fallback）的错误
+* [优化] #50 `Dew JDBC` 更好地支持没有 `Entity` 注解的对象
+* [优化] #52 对于java8时间，url参数转换支持String转LocalDateTime,LocalDate,LocalTime,long转LocalDateTime
+* [优化] #55 #58 其它一些优化
 
 ==== Fixed
 
@@ -22,19 +24,19 @@
 
 ==== Feature
 
-* [功能]支持局部 `ShardingJDBC`(由于ShardingJDBC 2.0还未RC，测试发现存在较多问题，此功能需要等待官方RC)
+* [功能] #19 支持局部 `ShardingJDBC`(由于ShardingJDBC 2.0还未RC，测试发现存在较多问题，此功能需要等待官方RC)
 
 ==== Improvement
 
-* [优化]支持Java8时间处理
-* [优化]模块Spring化，`boot-core` 更名为 `boot-starter` , `cloud-core` 更名为 `cloud-starter`
-* [优化] `Dew JDBC` 独立成 `jdbc-starter` , 确保核心模块 `boot-starter` 更轻量
+* [优化] 支持Java8时间处理
+* [优化] #34 模块Spring化，`boot-core` 更名为 `boot-starter` , `cloud-core` 更名为 `cloud-starter`
+* [优化] #40 `Dew JDBC` 独立成 `jdbc-starter` , 确保核心模块 `boot-starter` 更轻量
 * [优化] `Dew JDBC` 性能优化
-* [文档]添加性能调优章节
+* [文档] #47 添加性能调优章节
 
 ==== Fixed
 
-* [修正]统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决 `Feign` 调用解码错误
+* [修正] 统一错误拦截返回指定为 `MediaType=APPLICATION_JSON_UTF8` 以解决 `Feign` 调用解码错误
 
 ==== 从 `1.0.0-RC/betaX` 迁移到 `1.1.0`
 

@@ -2,7 +2,6 @@ package com.tairanchina.csp.dew.core;
 
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.eventnotifier.HystrixEventNotifier;
-import com.tairanchina.csp.dew.core.logger.DewLoggerConfigurer;
 import com.tairanchina.csp.dew.core.logger.DewTraceRestTemplateInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +19,10 @@ public class CloudAutoConfiguration {
 
     @Autowired
     private DewCloudConfig dewCloudConfig;
+
     @Autowired
     private RestTemplate restTemplate;
-    @Autowired(required = false)
-    private DewLoggerConfigurer dewLoggerConfigurer;
+
     @Autowired(required = false)
     private HystrixEventNotifier hystrixEventNotifier;
 

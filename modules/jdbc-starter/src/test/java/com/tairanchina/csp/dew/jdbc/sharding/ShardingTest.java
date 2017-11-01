@@ -31,14 +31,5 @@ public class ShardingTest {
         Assert.assertEquals(20, tOrderList.size());
         Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
         Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
-        System.out.println(Dew.ds("sharding").countAll(TOrder.class));
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getUUID());
-    }
-
-    public static String getUUID() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

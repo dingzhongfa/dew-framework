@@ -29,7 +29,6 @@ public class RedisClusterMQ implements ClusterMQ {
 
     @Override
     public void subscribe(String topic, Consumer<String> consumer) {
-
         new Thread(() -> redisTemplate.execute((RedisCallback<Void>) connection -> {
             connection.subscribe((message, pattern) -> {
                 try {

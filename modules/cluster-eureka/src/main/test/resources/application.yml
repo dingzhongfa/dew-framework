@@ -12,7 +12,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://registry:123456@localhost:10000/eureka
+      defaultZone: http://registry:123456@localhost:9999/eureka
   instance:
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30

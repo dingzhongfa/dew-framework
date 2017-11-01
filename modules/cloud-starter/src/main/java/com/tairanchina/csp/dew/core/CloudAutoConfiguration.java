@@ -1,7 +1,10 @@
 package com.tairanchina.csp.dew.core;
 
+import ch.qos.logback.classic.Level;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.eventnotifier.HystrixEventNotifier;
+import com.tairanchina.csp.dew.core.logger.DewLoggerWebMvcConfigurer;
+import com.tairanchina.csp.dew.core.logger.DewTraceLogWrap;
 import com.tairanchina.csp.dew.core.logger.DewTraceRestTemplateInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,9 @@ public class CloudAutoConfiguration {
     private RestTemplate restTemplate;
 
     @Autowired(required = false)
+    private DewLoggerWebMvcConfigurer dewLoggerWebMvcConfigurer;
+
+    @Autowired(required = false)
     private HystrixEventNotifier hystrixEventNotifier;
 
     @PostConstruct
@@ -35,6 +41,8 @@ public class CloudAutoConfiguration {
         if (dewCloudConfig.getTraceLog().isEnabled()) {
             logger.info("Enabled Trace Log");
             restTemplate.getInterceptors().add(new DewTraceRestTemplateInterceptor());
+            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(DewTraceLogWrap.class);
+            root.setLevel(Level.TRACE);
         }
     }
 

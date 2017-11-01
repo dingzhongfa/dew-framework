@@ -7,43 +7,44 @@
 dew: # Dew 参数key前缀
     basic: # 基础信息
         name: # 服务名称，用于API文档显示等
-        version: # 服务版本号，用于API文档显示等
+        version: 1.0 # 服务版本号，用于API文档显示等
         desc: # 服务描述，用于API文档显示等
         webSite: # 官网，用于API文档显示等
         doc:
             base-package: # API文档要扫描的根包，多指定到 Controller 包中
         format:
-        use-unity-error: # 是否启用统一响应，默认true
-        reuse-http-state: # true:重用http状态码，false:使用协议无关格式，默认true
+        use-unity-error: true # 是否启用统一响应
+        reuse-http-state: false # true:重用http状态码，false:使用协议无关格式
         error-mapping: # 自定义错误映射
             "[<异常类名>]":
                 http-code: # http状态码，不存在时使用实例级http状态码
                 business-code: # 业务编码，不存在时使用实例级业务编码
                 message: # 错误描述，不存在时使用实例级错误描述
     cluster: # 集群功能
-        cache: # 缓存实现，默认为 redis
-        dist: # 分布式锁和Map实现，默认为 redis，可选 redis/hazelcast
-        mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
-        election: # 领导者选举实现，默认为 eureka
-    jdbc: # DewJDBC功能
+        cache: redis # 缓存实现
+        dist: redis # 分布式锁和Map实现，可选 redis/hazelcast
+        mq: redis # MQ实现，可选 redis/hazelcast/rabbit
+        election: eureka # 领导者选举实现，可选 eureka
+    jdbc: # DewJDBC 功能
         base-packages:[""] # 要扫描的根包，多指定到 jdbc 包中
     security: # 安全功能
         cors:
-            allow-origin: # 允许的来源，默认为 * ，建议修改
-            allow-methods: # 允许的方法，默认为所有常用方法
-            allow-headers: # 允许的头信息，默认为 x-requested-with,content-type
-        token-flag: # token 标识，默认为  __dew_token__
-        token-in-header: # true：token标识在 header 中，反之在url参数中，默认为true
-        token-hash: # token值是否需要hash，用于解决token值有特殊字符的情况，默认为false
+            allow-origin: * # 允许的来源，建议修改
+            allow-methods: POST,GET,OPTIONS,PUT,DELETE,HEAD # 允许的方法
+            allow-headers: x-requested-with,content-type # 允许的头信息
+        token-flag: __dew_token__ # token 标识
+        token-in-header: true # true：token标识在 header 中，反之在url参数中
+        token-hash: false # token值是否需要hash，用于解决token值有特殊字符的情况
         include-services: [""] # 服务白名单，要求源服务头部带上 Request-From
         exclude-services: [""] # 服务黑名单，要求源服务头部带上 Request-From
-        #csp模式，引用csp-starter后默认使用该模式
-        auth:
-            csp:
-                party-id: #partyId在header中的key值 默认为'X-User-Id'
-                app-id: #appId在header中的key值 默认为'X-App-Id'
-                roles: #角色在header中的key值 默认为'X-Roles'
+        auth: # 特殊的认证功能，基础认证不需要配置
+            csp:  # csp模式，引用csp-starter后默认使用该模式
+                party-id: X-User-Id #partyId在header中的key值
+                app-id: X-App-Id #appId在header中的key值
+                roles: X-Roles #角色在header中的key值，逗号分隔
     cloud:
+        trace-log:
+            enabled: true # 是否启用服务API调用（追踪）日志
         error:
              notify-interval-sec: 1800 # 通知的间隔时间
              notify-emails:  # 通知的邮箱，逗号分隔

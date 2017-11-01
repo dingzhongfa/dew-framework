@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @ConditionalOnWebApplication
 @Order(30000)
-public class DewCSPConfigurer extends WebMvcConfigurerAdapter {
+public class DewCSPWebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

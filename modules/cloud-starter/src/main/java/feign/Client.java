@@ -15,7 +15,7 @@
  */
 package feign;
 
-import com.tairanchina.csp.dew.core.logger.DewTraceFeignClientWrap;
+import com.tairanchina.csp.dew.core.logger.DewTraceLogWrap;
 import feign.Request.Options;
 
 import javax.net.ssl.HostnameVerifier;
@@ -39,6 +39,7 @@ import static java.lang.String.format;
 /**
  * Submits HTTP {@link Request requests}. Implementations are expected to be thread-safe.
  */
+// fixme 使用更优雅的方式
 public interface Client {
 
   /**
@@ -66,10 +67,10 @@ public interface Client {
 
     @Override
     public Response execute(Request request, Options options) throws IOException {
-      DewTraceFeignClientWrap.before(request);
+      DewTraceLogWrap.request("FeignClient",request.method(),request.url());
       HttpURLConnection connection = convertAndSend(request, options);
       Response response = convertResponse(connection).toBuilder().request(request).build();
-      DewTraceFeignClientWrap.after(response);
+      DewTraceLogWrap.response("FeignClient",response.status(),response.request().method(),response.request().url());
       return response;
     }
 

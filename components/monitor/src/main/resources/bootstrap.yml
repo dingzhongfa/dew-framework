@@ -15,13 +15,20 @@ turbine:
   appConfig: monitor-example
   clusterNameExpression: metadata['cluster']
 
+security:
+  basic:
+    enabled: true
+  user:
+    name: monitor
+    password: 123456
+
 server:
   port: 12000
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://registry:123456@localhost:10000/eureka
+      defaultZone: http://registry:123456@localhost:9999/eureka
 
 logging:
   path: ./logs

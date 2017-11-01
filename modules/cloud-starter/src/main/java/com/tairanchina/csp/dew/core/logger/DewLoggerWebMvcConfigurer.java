@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @ConditionalOnWebApplication
-public class DewLoggerConfigurer extends WebMvcConfigurerAdapter {
+public class DewLoggerWebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

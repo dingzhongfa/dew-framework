@@ -26,14 +26,7 @@
         <url>http://127.0.0.1:9200/_bulk</url>
         <index>test</index>
         <type>%date{yyyy-MM-dd}</type>
-        <connectTimeout>30000</connectTimeout> <!-- optional (in ms, default 30000) -->
         <errorsToStderr>true</errorsToStderr> <!-- optional (default false) -->
-        <maxQueueSize>104857600</maxQueueSize> <!-- optional (default 104857600) -->
-        <maxRetries>3</maxRetries> <!-- optional (default 3) -->
-        <readTimeout>30000</readTimeout> <!-- optional (in ms, default 30000) -->
-        <sleepTime>250</sleepTime> <!-- optional (in ms, default 250) -->
-        <maxMessageSize>100</maxMessageSize> <!-- optional (default -1 -->
-        <!--<authentication class="com.internetitem.logback.elasticsearch.config.BasicAuthentication" /> --><!-- optional -->
         <properties>
             <property>
                 <name>severity</name>

@@ -39,6 +39,7 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.version>3.3.0.603</sonar.version>
         <sharding-jdbc.version>2.0.0.M1</sharding-jdbc.version>
+        <logback-elasticsearch-appender.version>1.6</logback-elasticsearch-appender.version>
     </properties>
 
     <developers>
@@ -196,6 +197,12 @@
                 <artifactId>test-starter</artifactId>
                 <version>${dew.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <!--Others-->
+            <dependency>
+                <groupId>com.internetitem</groupId>
+                <artifactId>logback-elasticsearch-appender</artifactId>
+                <version>${logback-elasticsearch-appender.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

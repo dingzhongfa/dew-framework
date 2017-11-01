@@ -66,6 +66,10 @@
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.internetitem</groupId>
+            <artifactId>logback-elasticsearch-appender</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>test-starter</artifactId>
         </dependency>

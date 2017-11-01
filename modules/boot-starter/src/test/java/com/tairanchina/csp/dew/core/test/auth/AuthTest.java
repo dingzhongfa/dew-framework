@@ -38,7 +38,6 @@ public class AuthTest {
         String businRes1 = $.http.get(TestAll.URL + "business/someopt", new HashMap<String, String>() {{
             put("_token_", token1);
         }});
-
         logger.info("businRes1:   " + businRes1);
         Assert.assertEquals("200", $.json.toJson(businRes1).get("code").asText());
         OptInfoExt optInfoExt = (OptInfoExt) Dew.auth.getOptInfo(token2).get();

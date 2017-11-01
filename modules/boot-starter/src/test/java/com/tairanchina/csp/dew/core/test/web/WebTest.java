@@ -23,8 +23,8 @@ public class WebTest {
     private Logger logger = LoggerFactory.getLogger(WebTest.class);
 
     public void testAll() throws Exception {
-//        testValidation();
-//        testResponseFormat();
+        testValidation();
+        testResponseFormat();
         testTimeConvert();
     }
 

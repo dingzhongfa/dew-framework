@@ -16,9 +16,9 @@ spring:
   multi-datasources:
     test1:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://mysql.fengdai.org:3306/X?useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://127.0.0.1:3306/dew?useUnicode=true&characterEncoding=utf-8
       username: root
-      password: tairan2017!
+      password: 123456
     test2:
       driver-class-name: org.postgresql.Driver
       url: jdbc:postgresql://10.200.131.24:5432/postgres
@@ -31,15 +31,15 @@ sharding:
       ds_0:
         type: org.apache.commons.dbcp.BasicDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_0
+        url: jdbc:mysql://localhost:3306/ds_yaml_0
         username: root
-        password: tairan2017!
+        password: 123456
       ds_1:
         type: org.apache.commons.dbcp.BasicDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://mysql.fengdai.org:3306/ds_yaml_1
+        url: jdbc:mysql://localhost:3306/ds_yaml_1
         username: root
-        password: tairan2017!
+        password: 123456
     config:
       sharding:
         tables:

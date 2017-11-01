@@ -40,10 +40,11 @@ spring:
       min-idle: 0
     #password: tairan2017@
   rabbitmq:
-    host: mq.fengdai.org
+    host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: root
+    password: 123456
+    virtual-host: dew
   hazelcast:
     addresses: ["127.0.0.1"]
   ignite:

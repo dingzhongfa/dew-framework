@@ -2055,11 +2055,13 @@ TBD
 
 ==== `hystrix` 降级增加邮件通知
 
-NOTE: 为能更及时的对服务异常做出处理， `dew` 增加邮件通知功能。
+TIP: 此为 `cloud-starter` 特性
 
 ----
 此章节关联 `hystrix-feign-example` 示例
 ----
+
+NOTE: 为能更及时的对服务异常做出处理， `dew` 增加邮件通知功能。
 
 [source,yml]
 ----
@@ -2086,3 +2088,24 @@ spring:
             enable: true
             required: true
 ----
+
+==== `服务API调用` （追踪）日志处理
+
+TIP: 此为 `cloud-starter` 特性
+
+----
+此章节关联 `sleuth-invokeX-example` 示例
+----
+
+用于记录 `服务API调用` （追踪）日志到 `Slf4j`。
+
+[source,yml]
+.开启追踪日志
+----
+dew:
+  cloud:
+    trace-log:
+        enabled: true # 默认为true
+----
+
+之后可选择 `ELK` 方案，或是 `Dew` 推荐的 `EK` 方案（跳过 `Logstash`，直接向 `ES` 提交）

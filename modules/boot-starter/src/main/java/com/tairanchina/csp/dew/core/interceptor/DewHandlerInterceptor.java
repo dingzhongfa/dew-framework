@@ -53,26 +53,25 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
             return super.preHandle(request, response, handler);
         }
 
-        if (!DewContext.exist()) {
-            String token;
-            if (Dew.dewConfig.getSecurity().isTokenInHeader()) {
-                token = request.getHeader(Dew.dewConfig.getSecurity().getTokenFlag());
-            } else {
-                token = request.getParameter(Dew.dewConfig.getSecurity().getTokenFlag());
-            }
-            if (token != null) {
-                token = URLDecoder.decode(token, "UTF-8");
-                if (Dew.dewConfig.getSecurity().isTokenHash()) {
-                    token = $.security.digest.digest(token, "MD5");
-                }
-            }
-            DewContext context = new DewContext();
-            context.setId($.field.createUUID());
-            context.setSourceIP(Dew.Util.getRealIP(request));
-            context.setRequestUri(request.getRequestURI());
-            context.setToken(token);
-            DewContext.setContext(context);
+        String token;
+        if (Dew.dewConfig.getSecurity().isTokenInHeader()) {
+            token = request.getHeader(Dew.dewConfig.getSecurity().getTokenFlag());
+        } else {
+            token = request.getParameter(Dew.dewConfig.getSecurity().getTokenFlag());
         }
+        if (token != null) {
+            token = URLDecoder.decode(token, "UTF-8");
+            if (Dew.dewConfig.getSecurity().isTokenHash()) {
+                token = $.security.digest.digest(token, "MD5");
+            }
+        }
+        DewContext context = new DewContext();
+        context.setId($.field.createUUID());
+        context.setSourceIP(Dew.Util.getRealIP(request));
+        context.setRequestUri(request.getRequestURI());
+        context.setToken(token);
+        DewContext.setContext(context);
+
         logger.trace("[{}] {}{} from {}", request.getMethod(), request.getRequestURI(), request.getQueryString() == null ? "" : "?" + request.getQueryString(), Dew.context().getSourceIP());
         return super.preHandle(request, response, handler);
     }

@@ -25,7 +25,7 @@ eureka:
   client:
     fetch-registry: true #必须加？关闭自我保护模式
     serviceUrl:
-      defaultZone:  http://registry:123456@localhost:10000/eureka
+      defaultZone:  http://registry:123456@localhost:9999/eureka
 ribbon:
   ReadTimeout: 3000
 feign:

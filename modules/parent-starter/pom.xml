@@ -26,6 +26,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
         <maven.deploy.skip>false</maven.deploy.skip>
+        <dew.version>1.1.0-SNAPSHOT</dew.version>
         <dew-common.version>1.4.3</dew-common.version>
         <aspectjrt.version>1.8.10</aspectjrt.version>
         <swagger.version>2.6.1</swagger.version>
@@ -96,17 +97,17 @@
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>boot-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cloud-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>boot-thrift-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.aspectj</groupId>
@@ -122,32 +123,32 @@
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-common</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-redis</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-rabbit</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-hazelcast</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-ignite</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>cluster-spi-eureka</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <!-- DB -->
             <dependency>
@@ -158,7 +159,7 @@
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>jdbc-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -194,7 +195,7 @@
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>test-starter</artifactId>
-                <version>${project.version}</version>
+                <version>${dew.version}</version>
                 <scope>test</scope>
             </dependency>
             <!--Others-->
@@ -231,14 +232,23 @@
         <profile>
             <id>release</id>
             <distributionManagement>
+                <repository>
+                    <id>trc-releases</id>
+                    <url>http://121.41.17.205:18081/nexus/content/repositories/releases/</url>
+                </repository>
                 <snapshotRepository>
+                    <id>trc-snapshots</id>
+                    <url>http://121.41.17.205:18081/nexus/content/repositories/snapshots/</url>
+                    <uniqueVersion>false</uniqueVersion>
+                </snapshotRepository>
+               <!-- <snapshotRepository>
                     <id>oss</id>
                     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
                 </snapshotRepository>
                 <repository>
                     <id>oss</id>
                     <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
+                </repository>-->
             </distributionManagement>
             <build>
                 <plugins>

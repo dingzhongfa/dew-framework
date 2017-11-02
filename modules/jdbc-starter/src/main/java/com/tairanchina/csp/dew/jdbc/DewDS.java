@@ -440,7 +440,7 @@ public class DewDS implements DS {
             } else if (entityClassInfo.pkFieldNameOpt.isPresent() &&
                     values.containsKey(entityClassInfo.pkFieldNameOpt.get())) {
                 Object id = values.get(entityClassInfo.pkFieldNameOpt.get());
-                if (id == null || id instanceof Number && (int) id == 0) {
+                if (id == null || id instanceof Number && ((Number) id).longValue() == 0) {
                     // Remove private key field
                     values.remove(entityClassInfo.pkFieldNameOpt.get());
                 }

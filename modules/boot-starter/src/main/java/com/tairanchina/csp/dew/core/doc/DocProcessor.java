@@ -23,9 +23,11 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.paths.RelativePathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.servlet.ServletContext;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +56,11 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
     @Autowired
     private DewConfig dewConfig;
 
+    @Value("${server.context-pat:}")
+    private String contextPath;
+
     @Bean
-    public Docket restApi() {
+    public Docket restApi(ServletContext servletContext) {
         if (dewConfig.getBasic().getDoc().getBasePackage().isEmpty()) {
             return null;
         }
@@ -65,7 +70,7 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                 .apis(RequestHandlerSelectors.basePackage(dewConfig.getBasic().getDoc().getBasePackage()))
                 .paths(PathSelectors.any())
                 .build()
-                .securitySchemes(new ArrayList<ApiKey>(){{
+                .securitySchemes(new ArrayList<ApiKey>() {{
                     add(new ApiKey("access_token", "accessToken", "develop"));
                 }})
                 .globalOperationParameters(new ArrayList<Parameter>() {{
@@ -77,7 +82,12 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                             .hidden(false)
                             .required(true)
                             .build());
-                }});
+                }}).pathProvider(new RelativePathProvider(servletContext) {
+                    @Override
+                    public String getApplicationBasePath() {
+                        return contextPath + super.getApplicationBasePath();
+                    }
+                });
     }
 
     @Override
@@ -101,13 +111,13 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                     }
                 }
                 // Create swagger.json
-                String swaggerJson = $.http.get((sslKeyStore == null || sslKeyStore.isEmpty() ? "http" : "https") + "://localhost:" + port + "/v2/api-docs");
+                String swaggerJson = $.http.get((sslKeyStore == null || sslKeyStore.isEmpty() ? "http" : "https") + "://localhost:" + port + contextPath + "/v2/api-docs");
                 Files.createDirectories(Paths.get(swaggerDir));
                 try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(swaggerDir, "swagger.json"), StandardCharsets.UTF_8)) {
                     writer.write(swaggerJson);
                 }
             } catch (IOException e) {
-                logger.error("Has error",e);
+                logger.error("Has error", e);
             }
         }
     }

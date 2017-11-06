@@ -40,6 +40,7 @@
         <sonar.version>3.3.0.603</sonar.version>
         <sharding-jdbc.version>2.0.0.M1</sharding-jdbc.version>
         <logback-elasticsearch-appender.version>1.6</logback-elasticsearch-appender.version>
+        <spring.application.name>dew</spring.application.name>
     </properties>
 
     <developers>
@@ -264,7 +265,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
+                    <!--<plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
                         <executions>
@@ -275,7 +276,7 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -400,7 +401,7 @@
                         </dependencies>
                         <configuration>
                             <sourceDirectory>${project.basedir}/api-docs/asciidoc</sourceDirectory>
-                            <sourceDocumentName>index.adoc</sourceDocumentName>
+                            <sourceDocumentName>${spring.application.name}.adoc</sourceDocumentName>
                             <attributes>
                                 <doctype>book</doctype>
                                 <toc>left</toc>

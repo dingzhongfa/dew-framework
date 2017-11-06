@@ -18,6 +18,7 @@
 
     <properties>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
+        <spring.application.name>boot-start</spring.application.name>
     </properties>
 
     <dependencies>

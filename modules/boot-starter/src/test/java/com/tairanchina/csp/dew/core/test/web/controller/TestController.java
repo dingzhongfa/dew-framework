@@ -2,6 +2,8 @@ package com.tairanchina.csp.dew.core.test.web.controller;
 
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.test.web.AuthException;
 import com.tairanchina.csp.dew.core.validation.CreateGroup;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -98,10 +101,11 @@ public class TestController {
     }
 
     @GetMapping("time/param")
-    public Resp<String> timeConvertParam(@RequestParam("date-time") LocalDateTime localDateTime, @RequestParam("date") LocalDate localDate, @RequestParam("time") LocalTime localTime) {
+    public Resp<String> timeConvertParam(@RequestParam("date-time") LocalDateTime localDateTime, @RequestParam("date") LocalDate localDate, @RequestParam("time") LocalTime localTime,@RequestParam("instant") Instant instant) {
         Assert.assertNotNull(localDate);
         Assert.assertNotNull(localDateTime);
         Assert.assertNotNull(localTime);
+        Assert.assertNotNull(instant);
         return Resp.success(null);
     }
 
@@ -122,7 +126,10 @@ public class TestController {
 
         private LocalDate localDate;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime localDateTime;
+
+        private Instant instant;
 
         public LocalTime getLocalTime() {
             return localTime;
@@ -147,6 +154,14 @@ public class TestController {
         public void setLocalDateTime(LocalDateTime localDateTime) {
             this.localDateTime = localDateTime;
         }
+
+        public Instant getInstant() {
+            return instant;
+        }
+
+        public void setInstant(Instant instant) {
+            this.instant = instant;
+        }
     }
 
     public static class User {
@@ -160,6 +175,7 @@ public class TestController {
 
         @Phone(message = "手机号错误", groups = {CreateGroup.class, UpdateGroup.class})
         private String phone;
+
 
         public String getIdCard() {
             return idCard;

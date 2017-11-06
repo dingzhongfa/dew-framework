@@ -67,7 +67,7 @@ public class WebTest {
     }
 
     private void testTimeConvert() throws IOException {
-        String paramResult = $.http.get(URL+"time/param?date-time=2013-07-02+17:39:00&date=2013-07-02&time=17:39:12");
+        String paramResult = $.http.get(URL+"time/param?date-time=2013-07-02+17:39:00&date=2013-07-02&time=17:39:12&instant=1509430693548");
         Assert.assertEquals("200",$.json.toJson(paramResult).get("code").asText());
         TestController.TimeDO  timeDO= new TestController.TimeDO();
         timeDO.setLocalDate(LocalDate.now());

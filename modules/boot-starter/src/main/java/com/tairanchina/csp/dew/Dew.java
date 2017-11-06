@@ -78,9 +78,9 @@ public class Dew {
         // Load Auth Adapter
         auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);
         // Support java8 Time
-        if (jacksonProperties != null) {
+        /*if (jacksonProperties != null) {
             jacksonProperties.getSerialization().put(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        }
+        }*/
         // Load Immediately
         Set<Class<?>> loadOrders = $.clazz.scan(Dew.class.getPackage().getName(), new HashSet<Class<? extends Annotation>>() {{
             add(DewLoadImmediately.class);

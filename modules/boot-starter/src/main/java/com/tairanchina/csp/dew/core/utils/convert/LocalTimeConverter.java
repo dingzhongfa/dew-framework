@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  * Created by ding on 2017/10/31.
  */
 @Component
-public class StringToLocalTimeConverter implements Converter<String,LocalTime> {
+public class LocalTimeConverter implements Converter<String,LocalTime> {
 
     @Override
     public LocalTime convert(String str) {

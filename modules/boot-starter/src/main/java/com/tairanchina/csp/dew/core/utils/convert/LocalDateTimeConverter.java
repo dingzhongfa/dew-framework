@@ -13,11 +13,11 @@ import java.time.format.DateTimeFormatter;
  * Created by ding on 2017/10/31.
  */
 @Component
-public class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
+public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
     @Override
     public LocalDateTime convert(String str) {
         if (str.matches("[1-9][0-9]+")){
-            return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(str)), ZoneId.of("Asia/Shanghai"));
+            return LocalDateTime.ofInstant(Instant.ofEpochMilli(Long.valueOf(str)), ZoneId.systemDefault());
         }
         return LocalDateTime.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }

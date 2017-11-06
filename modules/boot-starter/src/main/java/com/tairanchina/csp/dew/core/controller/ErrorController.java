@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -124,6 +123,10 @@ public class ErrorController extends AbstractErrorController {
         }
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
+            if (specialError instanceof ConstraintViolationException) {
+                httpCode = 400;
+                busCode = "400";
+            }
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
             return ResponseEntity.status((httpCode >= 500 && httpCode < 600) ? FALL_BACK_STATUS : 200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
         } else {

@@ -282,6 +282,8 @@ RedisCacheManager cacheManager() {
 . 对于基本数据类型和String类型，要使校验的注解生效，需在该类上方加``@Validated``注解
 . 对于抽象数据类型，需在形式参数前加``@Validated``注解
 
+TIP: spring对抽象数据类型校验抛出异常为``MethodArgumentNotValidException``，http状态码为400，对基本数据类型校验抛出异常为``ConstraintViolationException``，http状态码为500，dew对这两种异常做了统一处理，http状态码均返回200，code为400
+
 === jackson对于java8时间转换（springmvc以jackson接收json数据）
 . 对于LocalDateTime类型，需在参数上加``@JsonFormat``注解，如下：`@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")`
 . LocalDate,LocalTime,Instant等，无需配置可自行转换

@@ -3,7 +3,6 @@ package com.tairanchina.csp.dew.core.test.web.controller;
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.test.web.AuthException;
 import com.tairanchina.csp.dew.core.validation.CreateGroup;
@@ -72,17 +71,22 @@ public class TestController {
 
     @PostMapping(value = "valid-create")
     public String validCreate(@Validated(CreateGroup.class) @RequestBody User user) {
-        return "";
+        return user.toString();
     }
 
     @PutMapping(value = "valid-update")
-    public String validUpdate(@Validated(UpdateGroup.class) User user) {
-        return "";
+    public String validUpdate(@Validated(UpdateGroup.class)@RequestBody User user) {
+        return user.toString();
     }
 
-    @GetMapping(value = "valid-method/{age}")
+    @GetMapping(value = "valid-method-spring/{age}")
     public String validInMethod(@Min(value = 2, message = "age必须大于2") @PathVariable("age") int age) {
-        return "";
+        return String.valueOf(age);
+    }
+
+    @GetMapping(value = "valid-method-own/{phone}")
+    public String validInMethod(@Phone @PathVariable("phone") String phone) {
+        return phone;
     }
 
     @GetMapping(value = "error-mapping")
@@ -101,7 +105,7 @@ public class TestController {
     }
 
     @GetMapping("time/param")
-    public Resp<String> timeConvertParam(@RequestParam("date-time") LocalDateTime localDateTime, @RequestParam("date") LocalDate localDate, @RequestParam("time") LocalTime localTime,@RequestParam("instant") Instant instant) {
+    public Resp<String> timeConvertParam(@RequestParam("date-time") LocalDateTime localDateTime, @RequestParam("date") LocalDate localDate, @RequestParam("time") LocalTime localTime, @RequestParam("instant") Instant instant) {
         Assert.assertNotNull(localDate);
         Assert.assertNotNull(localDateTime);
         Assert.assertNotNull(localTime);
@@ -121,7 +125,7 @@ public class TestController {
         return Resp.success(null);
     }
 
-    public static class TimeDO{
+    public static class TimeDO {
         private LocalTime localTime;
 
         private LocalDate localDate;
@@ -199,6 +203,15 @@ public class TestController {
 
         public void setPhone(String phone) {
             this.phone = phone;
+        }
+
+        @Override
+        public String toString() {
+            return "User{" +
+                    "idCard='" + idCard + '\'' +
+                    ", age=" + age +
+                    ", phone='" + phone + '\'' +
+                    '}';
         }
     }
 

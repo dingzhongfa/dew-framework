@@ -49,8 +49,8 @@ public class WebTest {
         map.put("phone", "1597199704");
         String updateResult = $.http.put(URL + "valid-update", map);
         Assert.assertEquals("400", $.json.toJson(updateResult).get("code").asText());
-        String pathResult = $.http.get(URL + "valid-method/1");
-        Assert.assertEquals("500", $.json.toJson(pathResult).get("code").asText());
+        String pathResult = $.http.get(URL + "valid-method-spring/1");
+        Assert.assertEquals("400", $.json.toJson(pathResult).get("code").asText());
         String authResult = $.http.get(URL + "error-mapping");
         logger.info(authResult);
     }

@@ -1,15 +1,28 @@
+#spring:
+#  application:
+#    name: config
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          searchLocations: file:/C:/Users/i/OneDrive/projects/tairan/projects/dew-framework/env
+##        git:
+##          uri: https://code.aliyun.com/wangzi/ws.sp.config_file.git
+##          username: root
+##          password: 123456
+
 spring:
   application:
     name: config
+  profiles:
+    active: native
   cloud:
     config:
       server:
-        native:
-          searchLocations: file:/C:/Users/i/OneDrive/projects/tairan/projects/dew-framework/env
         git:
-          uri: https://code.aliyun.com/wangzi/ws.sp.config_file.git
-          username: root
-          password: 123456
+          uri: https://rep.360taihe.com/env/fake.git
           repos:
             crm:
               pattern: crm*
@@ -17,6 +30,12 @@ spring:
             springcloudtest:
               pattern: springcloudtest*
               uri: https://rep.360taihe.com/env/springcloudtest.git
+            fd:
+              pattern: fd*
+              uri: https://rep.360taihe.com/env/fd.git
+          username: cdman
+          password: cdman123
+
 server:
   port: 9000
 

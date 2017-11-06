@@ -27,9 +27,7 @@
 
 所以为适应这一场景需求，Dew基于Spring JDBC Template做了扩展以支持上述功能。
 
-=== 'spring cloud'篇
-
-==== 服务调用开发期使用
+=== 服务调用开发期使用
 
 在Spring Cloud体系下，服务调用需要启动 `Eureka` 服务（对于Dew中的 `Regstry` 组件），这对开发阶段并不友好：
 
@@ -44,7 +42,7 @@
     # 如
     performance-service.ribbon.listOfServers: 127.0.0.1:8812
 
-==== 断路保护
+=== 断路保护
 
 [source,properties]
 .Hystrix配置
@@ -117,7 +115,7 @@ public class HystrixExampleService {
 }
 ----
 
-==== 配置中心
+=== 配置中心
 
 使用 `Spring Config`  配置中心 `refresh` 时,在 `@RefreshScope` 注解的类中,` @Scheduled` 注解的自动任务会失效。
 建议使用实现 `SchedulingConfigurer` 接口的方式添加自动任务。
@@ -146,7 +144,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 }
 ----
 
-==== 'ribbon'负载均衡
+=== `ribbon` 负载均衡
 
 NOTE: 本条实践为``netflix``的``1.3.4.RELEASE``版本
 
@@ -169,7 +167,7 @@ eureka:
     region: #region名称
 ----
 
-==== `feign` 配置特定方法超时时间
+=== `feign` 配置特定方法超时时间
 
 *`hystrix` 超时时间配置*
 
@@ -193,7 +191,7 @@ eureka:
 
 TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置；在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置。
 
-==== 主要性能影响参数
+=== 主要性能影响参数
 
 *内置 `tomcat` 参数* tomcat参数调整效果并不大,如果需要调整,建议适当调大 `max-treads` 和 `accept-count`
 
@@ -255,7 +253,7 @@ RedisCacheManager cacheManager() {
 }
 ----
 
-==== 日志处理
+=== 日志处理
 对微服务而言 `服务API调用` 日志可选择 `Sleuth` + `Zipkin` 的方案， `Dew` 没有选择 `Zipkin` 理由如下：
 
 . `Zipkin` 需要再部署一套 `Zipkin` 服务，多了一个依赖

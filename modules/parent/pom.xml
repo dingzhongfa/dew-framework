@@ -54,9 +54,14 @@
     </scm>
 
     <dependencyManagement>
-
+        <dependencies>
+            <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>csp-starter</artifactId>
+                <version>${dew.version}</version>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
-
 
     <profiles>
         <profile>

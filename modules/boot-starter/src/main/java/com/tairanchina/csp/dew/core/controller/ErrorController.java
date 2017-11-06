@@ -35,7 +35,7 @@ public class ErrorController extends AbstractErrorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
-    private static final int FALL_BACK_STATUS = 1000;
+    private static final int FALL_BACK_STATUS = 555;
     private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     private static final String SPECIAL_ERROR_FLAG = "org.springframework.boot.autoconfigure.web.DefaultErrorAttributes.ERROR";

@@ -1,5 +1,19 @@
 == 版本说明
 
+=== 1.2.0-RC
+
+==== Feature
+
+==== Improvement
+
+* [优化] #53 统一响应——协议无关 降级由 `1000` 改成 `555` 以提升兼容性
+
+==== Fixed
+
+==== 从 `1.1.0-RC` 迁移到 `1.2.0-RC`
+. 使用 `统一响应——协议无关` 类型时，UI端由原来只需要获取200状态下的数据改成需要获取 200 和 555 状态下的数据，两者对UI端没有区别。( @See https://rep.360taihe.com/csp/dew-framework/issues/53 )
+
+
 === 1.1.0-RC
 
 ==== Feature
@@ -10,7 +24,7 @@
 
 ==== Improvement
 
-* [优化] #53 统一响应——协议无关 类型的http返回码由统一的200改成 `200` 或 `1000` ，前则表示操作成功或不需要降级的错误，后则表示需要做降级（Hystrix fallback）的错误
+* [优化] #53 统一响应——协议无关 类型的http返回码由统一的200改成 `200` 或 `1000` ，前者表示操作成功或不需要降级的错误，后者表示需要做降级（Hystrix fallback）的错误
 * [优化] #50 `Dew JDBC` 更好地支持没有 `Entity` 注解的对象
 * [优化] #52 对于java8时间，url参数转换支持String转LocalDateTime,LocalDate、LocalTime,long转LocalDateTime(但json数据不支持)，long转Instant
 * [优化] #55 #58 其它一些优化

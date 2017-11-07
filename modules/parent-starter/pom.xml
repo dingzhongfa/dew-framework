@@ -40,7 +40,7 @@
         <sonar.version>3.3.0.603</sonar.version>
         <sharding-jdbc.version>2.0.0.M1</sharding-jdbc.version>
         <logback-elasticsearch-appender.version>1.6</logback-elasticsearch-appender.version>
-        <spring.application.name>dew</spring.application.name>
+        <api.file.name>index</api.file.name>
     </properties>
 
     <developers>
@@ -397,7 +397,7 @@
                         </dependencies>
                         <configuration>
                             <sourceDirectory>${project.basedir}/api-docs/asciidoc</sourceDirectory>
-                            <sourceDocumentName>${spring.application.name}.adoc</sourceDocumentName>
+                            <sourceDocumentName>${api.file.name}.adoc</sourceDocumentName>
                             <attributes>
                                 <doctype>book</doctype>
                                 <toc>left</toc>

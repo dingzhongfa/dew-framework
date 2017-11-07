@@ -19,7 +19,6 @@
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <sonar.skip>true</sonar.skip>
-        <spring.application.name>web-example</spring.application.name>
     </properties>
 
     <dependencies>

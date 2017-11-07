@@ -59,8 +59,8 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
     @Value("${server.context-path:}")
     private String contextPath;
 
-    @Value("${spring.application.name}")
-    private String applicationName;
+    @Value("${api.file.name:index}")
+    private String apiFileName;
 
     @Bean
     public Docket restApi(ServletContext servletContext) {
@@ -106,7 +106,10 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                 if (!new File(outputDir + File.separator + "asciidoc").exists()) {
                     // Create index.adoc
                     Files.createDirectories(Paths.get(outputDir + File.separator + "asciidoc"));
-                    try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputDir + File.separator + "asciidoc", applicationName+".adoc"), StandardCharsets.UTF_8)) {
+                    try (BufferedWriter writer =
+                                 Files.newBufferedWriter(
+                                         Paths.get(outputDir + File.separator + "asciidoc", apiFileName+".adoc"),
+                                         StandardCharsets.UTF_8)) {
                         writer.write("include::{generated}/overview.adoc[]\n" +
                                 "include::{generated}/paths.adoc[]\n" +
                                 "include::{generated}/security.adoc[]\n" +

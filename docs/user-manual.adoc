@@ -461,10 +461,13 @@ public class DocTest {
 ----
 
 [source,shell]
-.执行如下命令
+.执行如下命令(加上 `-Dapi.file.name=??` 可指定文件名)
 ----
 mvn -Dtest=DocTest clean test -P doc
+
+mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc
 ----
+
 
 * 查看工程目录，多了一个 `api-docs` 的目录，包含了 `index.html` 和 `index.pdf` 两个离线文档
 

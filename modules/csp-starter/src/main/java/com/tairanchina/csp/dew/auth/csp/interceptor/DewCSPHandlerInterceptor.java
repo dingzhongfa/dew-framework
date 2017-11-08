@@ -3,7 +3,6 @@ package com.tairanchina.csp.dew.auth.csp.interceptor;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.auth.csp.CSPOptInfo;
 import com.tairanchina.csp.dew.auth.csp.DewCSPAuthAutoConfiguration;
-import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,10 @@ public class DewCSPHandlerInterceptor extends HandlerInterceptorAdapter {
         CSPOptInfo cspOptInfo = new CSPOptInfo();
         cspOptInfo.setToken(Dew.context().getToken());
         cspOptInfo.setAccountCode(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getPartyId()));
-        cspOptInfo.setRoles(Arrays.asList(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getRoles()).split(",")));
+        String roles = request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getRoles());
+        if (roles != null) {
+            cspOptInfo.setRoles(Arrays.asList(roles.split(",")));
+        }
         cspOptInfo.setAppId(request.getHeader(DewCSPAuthAutoConfiguration.dewCSPConfig.getAppId()));
         Dew.auth.setOptInfo(cspOptInfo);
         return super.preHandle(request, response, handler);

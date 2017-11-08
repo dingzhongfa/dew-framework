@@ -12,12 +12,9 @@
 ##          uri: https://code.aliyun.com/wangzi/ws.sp.config_file.git
 ##          username: root
 ##          password: 123456
-
 spring:
   application:
     name: config
-  profiles:
-    active: native
   cloud:
     config:
       server:
@@ -35,7 +32,11 @@ spring:
               uri: https://rep.360taihe.com/env/fd.git
           username: cdman
           password: cdman123
-
+endpoints:
+  restart:
+    enabled: true
+  refresh:
+    enabled: true
 server:
   port: 9000
 
@@ -51,8 +52,9 @@ security:
 
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
     serviceUrl:
       defaultZone: http://registry:123456@localhost:9999/eureka
-
 logging:
   path: ./logs

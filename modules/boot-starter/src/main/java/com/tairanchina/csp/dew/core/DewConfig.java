@@ -80,14 +80,14 @@ public class DewConfig {
             // 兼容原系统设置
             private String messageFieldName = "message";
 
-            private String codeFiledName = "code";
+            private String codeFieldName = "code";
 
-            public String getCodeFiledName() {
-                return codeFiledName;
+            public String getCodeFieldName() {
+                return codeFieldName;
             }
 
-            public void setCodeFiledName(String codeFiledName) {
-                this.codeFiledName = codeFiledName;
+            public void setCodeFieldName(String codeFieldName) {
+                this.codeFieldName = codeFieldName;
             }
 
             public boolean isUseUnityError() {

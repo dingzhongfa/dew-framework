@@ -132,7 +132,7 @@ public class ErrorController extends AbstractErrorController {
         } else {
             JsonNode jsonNode = $.json.createObjectNode()
                     .set("error", $.json.createObjectNode()
-                            .put(Dew.dewConfig.getBasic().getFormat().getCodeFiledName(), busCode)
+                            .put(Dew.dewConfig.getBasic().getFormat().getCodeFieldName(), busCode)
                             .put(Dew.dewConfig.getBasic().getFormat().getMessageFieldName(), message)
                     );
             return ResponseEntity.status(httpCode).contentType(MediaType.APPLICATION_JSON_UTF8).body(jsonNode.toString());

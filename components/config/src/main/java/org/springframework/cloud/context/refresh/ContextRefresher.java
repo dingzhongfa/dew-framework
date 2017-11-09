@@ -67,9 +67,7 @@ public class ContextRefresher {
             }
         }
         if (propertiesMap.size() != 0) {
-            for (Map.Entry<String, Object> entry : propertiesMap.entrySet()) {
-                newPropertiesValue.put(entry.getKey(), entry.getValue());
-            }
+            propertiesMap.forEach(newPropertiesValue::put);
         }
         Set<String> keys = changes(before, newPropertiesValue).keySet();
         this.context.publishEvent(new EnvironmentChangeEvent(keys));
@@ -105,7 +103,7 @@ public class ContextRefresher {
             if (entry.getValue() instanceof LinkedHashMap) {
                 toPropertiesMap((prefix == null ? "" : prefix + ".") + entry.getKey(), (HashMap) entry.getValue(), result);
             } else {
-                result.put(prefix == null ? "" : prefix + "." + entry.getKey(), entry.getValue());
+                result.put((prefix == null ? "" : prefix + ".") + entry.getKey(), entry.getValue());
             }
         }
     }

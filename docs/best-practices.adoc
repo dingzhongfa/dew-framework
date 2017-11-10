@@ -291,3 +291,11 @@ TIP: ``jackson``对于``LocalDateTime``类型的支持与其他三种类型不�
 === swagger文档
 
 * 以启动参数``api.file.name``指定导出文件名
+
+[source,shell]
+.执行如下命令(加上 `-Dapi.file.name= [name]` 可指定文件名)
+----
+mvn -Dtest=DocTest clean test -P doc
+
+mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc
+----

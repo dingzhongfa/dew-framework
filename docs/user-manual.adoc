@@ -461,7 +461,7 @@ public class DocTest {
 ----
 
 [source,shell]
-.执行如下命令(加上 `-Dapi.file.name=??` 可指定文件名)
+.执行如下命令(加上 `-Dapi.file.name= [name]` 可指定文件名)
 ----
 mvn -Dtest=DocTest clean test -P doc
 

@@ -108,11 +108,28 @@ public class Dew {
         static {
             try {
                 ip = InetAddress.getLocalHost().getHostAddress();
-                host = InetAddress.getLocalHost().getHostName();
+                host = getHostName(ip);
                 instance = $.field.createUUID();
             } catch (UnknownHostException e) {
                 logger.error("Dew info fetch error.", e);
             }
+        }
+
+        public static String getHostName(String address) {
+
+            try {
+                int i = address.indexOf(':');
+                if (i > -1) {
+                    address = address.substring(0, i);
+                }
+                InetAddress inetAddress = InetAddress.getByName(address);
+                if (inetAddress != null) {
+                    return inetAddress.getHostName();
+                }
+            } catch (Throwable e) {
+                logger.info("Dew info fetch error.", e);
+            }
+            return address;
         }
 
     }

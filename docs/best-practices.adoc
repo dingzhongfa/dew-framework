@@ -288,7 +288,7 @@ TIP: spring对抽象数据类型校验抛出异常为``MethodArgumentNotValidExc
 
 TIP: ``jackson``对于``LocalDateTime``类型的支持与其他三种类型不具有一致性，这是jackson需要优化的一个点
 
-=== swagger文档
+=== swagger离线文档
 
 * 以启动参数``api.file.name``指定导出文件名
 

@@ -108,6 +108,7 @@ public class Dew {
         static {
             try {
                 ip = InetAddress.getLocalHost().getHostAddress();
+                // 保证可访问
                 host = getHostName(ip);
                 instance = $.field.createUUID();
             } catch (UnknownHostException e) {

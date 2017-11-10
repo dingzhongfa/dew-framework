@@ -13,6 +13,7 @@ import com.tairanchina.csp.dew.core.fun.VoidPredicate;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
+import com.tairanchina.csp.dew.core.utils.NetUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,29 +109,11 @@ public class Dew {
         static {
             try {
                 ip = InetAddress.getLocalHost().getHostAddress();
-                // 保证可访问
-                host = getHostName(ip);
+                host = NetUtils.getLocalAddress().getHostName();
                 instance = $.field.createUUID();
             } catch (UnknownHostException e) {
                 logger.error("Dew info fetch error.", e);
             }
-        }
-
-        public static String getHostName(String address) {
-
-            try {
-                int i = address.indexOf(':');
-                if (i > -1) {
-                    address = address.substring(0, i);
-                }
-                InetAddress inetAddress = InetAddress.getByName(address);
-                if (inetAddress != null) {
-                    return inetAddress.getHostName();
-                }
-            } catch (Throwable e) {
-                logger.info("Dew info fetch error.", e);
-            }
-            return address;
         }
 
     }

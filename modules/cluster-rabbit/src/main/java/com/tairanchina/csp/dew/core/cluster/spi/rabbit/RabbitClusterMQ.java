@@ -90,7 +90,7 @@ public class RabbitClusterMQ implements ClusterMQ {
         return request(address, message, false);
     }
 
-    public boolean request(String address, String message, boolean confirm) {
+    public boolean  request(String address, String message, boolean confirm) {
         logger.trace("[MQ] request {}:{}", address, message);
         Connection connection = rabbitAdapter.getConnection();
         Channel channel = connection.createChannel(false);

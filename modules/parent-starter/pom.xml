@@ -147,6 +147,11 @@
                 <artifactId>cluster-spi-eureka</artifactId>
                 <version>${dew.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>cluster-spi-kafka</artifactId>
+                <version>${dew.version}</version>
+            </dependency>
             <!-- DB -->
             <dependency>
                 <groupId>io.shardingjdbc</groupId>

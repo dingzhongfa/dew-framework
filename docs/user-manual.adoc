@@ -2114,3 +2114,23 @@ dew:
 之后可选择 `ELK` 方案，或是 `Dew` 推荐的 `EK` 方案（跳过 `Logstash`，直接向 `ES` 提交）
 
 一次调用日志的查看，以 `ES` 为例，过滤条件是: logger:com.tairanchina.csp.dew.core.logger.DewTraceLogWrap & trace:<对应的traceID>
+
+==== TPS查询接口
+
+基于``Spring Boot Actuator``提供的metrics接口，dew增加了三个TPS指标，最大响应时间，平均响应时间，90%的响应时间。
+
+[source,yml]
+.需要配置如下
+----
+#启用metrics接口
+endpoints:
+  metrics:
+    enabled: true
+
+#spring默认该接口需要security拦截，否则会提示``Unauthorized``，加以下配置即可
+management:
+  security:
+    enabled: false
+----
+
+开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`，`dew.response.average`，`dew.response.max` 三个指标

@@ -299,3 +299,23 @@ mvn -Dtest=DocTest clean test -P doc
 
 mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc
 ----
+
+=== TPS查询接口
+
+基于``Spring Boot Actuator``提供的metrics接口，dew增加了三个TPS指标，最大响应时间，平均响应时间，90%的响应时间。
+
+[source,yml]
+.需要配置如下
+----
+#启用metrics接口
+endpoints:
+  metrics:
+    enabled: true
+
+#spring默认该接口需要security拦截，否则会提示``Unauthorized``，加以下配置即可
+management:
+  security:
+    enabled: false
+----
+
+开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`，`dew.response.average`，`dew.response.max` 三个指标

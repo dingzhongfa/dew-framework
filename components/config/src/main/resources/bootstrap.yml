@@ -34,11 +34,11 @@ spring:
               uri: https://rep.360taihe.com/env/fd.git
           username: cdman
           password: cdman123
-endpoints:
-  restart:
-    enabled: true
-  refresh:
-    enabled: true
+#endpoints:
+#  restart:
+#    enabled: true
+#  refresh:
+#    enabled: true
 server:
   port: 9000
 

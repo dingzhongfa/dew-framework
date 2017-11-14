@@ -107,13 +107,10 @@ public class Dew {
         public static String instance;
 
         static {
-            try {
-                ip = InetAddress.getLocalHost().getHostAddress();
-                host = NetUtils.getLocalAddress().getHostName();
-                instance = $.field.createUUID();
-            } catch (UnknownHostException e) {
-                logger.error("Dew info fetch error.", e);
-            }
+            InetAddress inetAddress = NetUtils.getLocalAddress();
+            ip = inetAddress.getHostAddress();
+            host = inetAddress.getHostName();
+            instance = $.field.createUUID();
         }
 
     }

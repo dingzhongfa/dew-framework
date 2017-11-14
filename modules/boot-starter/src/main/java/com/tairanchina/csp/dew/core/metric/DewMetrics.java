@@ -20,25 +20,18 @@ import java.util.List;
 @Component
 public class DewMetrics implements PublicMetrics {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @Override
     public Collection<Metric<?>> metrics() {
-        List<Metric<?>> metrics = new ArrayList<Metric<?>>();
-        metrics.add(new Metric<Long>("spring.startup-date", applicationContext.getStartupDate()));
-        metrics.add(new Metric<Integer>("spring.bean.definitions", applicationContext.getBeanDefinitionCount()));
-        metrics.add(new Metric<Integer>("spring.beans", applicationContext.getBeanNamesForType(Object.class).length));
-        metrics.add(new Metric<Integer>("spring.controllers", applicationContext.getBeanNamesForAnnotation(Controller.class).length));
+        List<Metric<?>> metrics = new ArrayList<>();
         Object[] timeArr = DewFilter.timeList.toArray();
         Arrays.sort(timeArr);
-        metrics.add(new Metric<Integer>("dew.response.nityPercent", (Integer) timeArr[(int) (DewFilter.timeList.size() * 0.9)]));
+        metrics.add(new Metric<>("dew.response.90Per", (Integer) timeArr[(int) (DewFilter.timeList.size() * 0.9)]));
         long sum = 0;
         for (int unit : DewFilter.timeList) {
             sum += unit;
         }
-        metrics.add(new Metric<Integer>("dew.response.average", (int) (sum / DewFilter.timeList.size())));
-        metrics.add(new Metric<Integer>("dew.response.max", (Integer) timeArr[DewFilter.timeList.size() - 1]));
+        metrics.add(new Metric<>("dew.response.average", (int) (sum / DewFilter.timeList.size())));
+        metrics.add(new Metric<>("dew.response.max", (Integer) timeArr[DewFilter.timeList.size() - 1]));
         return metrics;
     }
 

@@ -1,7 +1,0 @@
-spring:
-  kafka:
-    consumer:
-      bootstrap-servers:
-
-    producer:
-      bootstrap-servers:

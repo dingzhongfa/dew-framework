@@ -40,9 +40,9 @@ public class DewMetrics implements PublicMetrics {
             int nityPec = (int) urlTimeArr[(int) (validList.size() * 0.9)];
             int max = (int) urlTimeArr[(validList.size() - 1)];
             int average = (int) (urlSum / validList.size());
+            metricList.add(new Metric<>("dew.response.average." + key, average));
             metricList.add(new Metric<>("dew.response.90percent." + key, nityPec));
             metricList.add(new Metric<>("dew.response.max." + key, max));
-            metricList.add(new Metric<>("dew.response.average." + key, average));
             averageList.add(average);
         });
         if (averageList.size() != 0) {
@@ -55,8 +55,8 @@ public class DewMetrics implements PublicMetrics {
         if (totalList.size() != 0) {
             Object[] totalArr = totalList.toArray();
             Arrays.sort(totalArr);
-            metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
             metricList.add(new Metric<>("dew.response.90perent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
+            metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
         }
         return metricList;
     }

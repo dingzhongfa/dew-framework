@@ -2,8 +2,9 @@ package com.tairanchina.csp.dew.core.cluster.spi.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,41 +17,40 @@ import java.util.Properties;
  */
 @Component
 @ConditionalOnExpression("#{'${dew.cluster.mq}'=='kafka'}")
+@ConditionalOnBean(KafkaProperties.class)
 public class KafkaAdapter {
 
-    private Properties producerProperties;
+    private KafkaProducer<String, String> kafkaProducer;
 
     private Properties consumerProperties;
+
+    @Autowired
+    private KafkaProperties kafkaProperties;
 
     @PostConstruct
     public void init() throws IllegalAccessException {
         // 生产者（发布）
-        setProducerProperties(getProperties(new KafkaProperties.Producer()));
+        this.kafkaProducer = new KafkaProducer<>(getProperties(kafkaProperties.getProducer(), KafkaProperties.Producer.class));
         // 消费者（订阅）
-        setConsumerProperties(getProperties(new KafkaProperties.Consumer()));
+        this.consumerProperties = getProperties(kafkaProperties.getConsumer(), KafkaProperties.Consumer.class);
     }
 
     KafkaProducer<String, String> getKafkaProducer() {
-        return new KafkaProducer<String, String>(producerProperties);
+        return kafkaProducer;
     }
 
     KafkaConsumer<String, String> getKafkaConsumer() {
-        return new KafkaConsumer<String, String>(consumerProperties);
+        return new KafkaConsumer<>(consumerProperties);
     }
 
-    private void setProducerProperties(Properties producerProperties) {
-        this.producerProperties = producerProperties;
-    }
-
-    private void setConsumerProperties(Properties consumerProperties) {
-        this.consumerProperties = consumerProperties;
-    }
-
-    private Properties getProperties(Object obj) throws IllegalAccessException {
+    private Properties getProperties(Object obj, Class classType) throws IllegalAccessException {
         Properties properties = new Properties();
-        Field[] fields = obj.getClass().getFields();
+        Field[] fields = classType.getDeclaredFields();
+        Field.setAccessible(fields, true);
         for (Field f : fields) {
-            properties.put(fileNameToKey(f.getName()), f.get(obj));
+            if (f.get(obj) != null) {
+                properties.put(fileNameToKey(f.getName()), f.get(obj));
+            }
         }
         return properties;
     }

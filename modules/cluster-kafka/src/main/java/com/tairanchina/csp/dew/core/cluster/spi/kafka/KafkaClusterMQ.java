@@ -28,8 +28,7 @@ public class KafkaClusterMQ implements ClusterMQ {
     @Autowired
     private KafkaAdapter kafkaAdapter;
 
-
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Override
     public boolean publish(String topic, String message) {
@@ -114,5 +113,10 @@ public class KafkaClusterMQ implements ClusterMQ {
         public void onCompletion(RecordMetadata metadata, Exception exception) {
            logger.warn("[MQ] Kafka send failed ",metadata,exception);
         }
+    }
+
+    public KafkaClusterMQ setKafkaAdapter(KafkaAdapter kafkaAdapter) {
+        this.kafkaAdapter = kafkaAdapter;
+        return this;
     }
 }

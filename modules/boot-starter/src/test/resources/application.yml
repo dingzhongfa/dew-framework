@@ -27,7 +27,7 @@ spring:
     producer:
       bootstrap-servers: localhost:9092
       acks: 1
-      #batch-size: 1
+      batch-size: 1
       retries: 1
     consumer:
       bootstrap-servers: localhost:9092

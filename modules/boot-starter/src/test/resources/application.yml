@@ -1,3 +1,4 @@
+
 dew:
   basic:
     format:
@@ -13,7 +14,7 @@ dew:
   cluster:
     cache: redis
     dist: redis
-    mq: rabbit
+    mq: kafka
   security:
     token-flag: _token_
     token-in-header: true
@@ -24,11 +25,13 @@ dew:
 spring:
   kafka:
     producer:
-      bootstrap-servers: "localhost:9092"
+      bootstrap-servers: localhost:9092
+      acks: 1
+      #batch-size: 1
+      retries: 1
     consumer:
-      auto-commit-interval:
-      bootstrap-servers: "localhost:9092"
-
+      bootstrap-servers: localhost:9092
+      group-id: boot-starter
   jackson:
     serialization:
       write_dates_as_timestamps: false
@@ -56,3 +59,9 @@ spring:
     addresses: ["127.0.0.1"]
   ignite:
     addresses: ["127.0.0.1"]
+endpoints:
+  metrics:
+    enabled: true
+management:
+  security:
+    enabled: false

@@ -1,17 +1,13 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.core.filter.DewFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * desription:
@@ -20,20 +16,51 @@ import java.util.List;
 @Component
 public class DewMetrics implements PublicMetrics {
 
+    @Value("${metric.timeout:600}")
+    private long DIVIDING_LINE;
+
     @Override
     public Collection<Metric<?>> metrics() {
-        List<Metric<?>> metrics = new ArrayList<>();
-        Object[] timeArr = DewFilter.timeList.toArray();
-        Arrays.sort(timeArr);
-        metrics.add(new Metric<>("dew.response.90Per", (Integer) timeArr[(int) (DewFilter.timeList.size() * 0.9)]));
-        long sum = 0;
-        for (int unit : DewFilter.timeList) {
-            sum += unit;
+        long divid = Instant.now().minusSeconds(DIVIDING_LINE).toEpochMilli();
+        List<Metric<?>> metricList = new ArrayList<>();
+        List<Integer> totalList = new ArrayList<>();
+        List<Integer> averageList = new ArrayList<>();
+        DewFilter.responseMap.forEach((key, value) -> {
+            long urlSum = 0;
+            List<Integer> validList = new ArrayList<>();
+            for (Map.Entry<Long, Integer> entry : value.entrySet()) {
+                if (entry.getKey() > divid) {
+                    urlSum += entry.getValue();
+                    validList.add(entry.getValue());
+                }
+            }
+            totalList.addAll(validList);
+            Object[] urlTimeArr = validList.toArray();
+            Arrays.sort(urlTimeArr);
+            int nityPec = (int) urlTimeArr[(int) (validList.size() * 0.9)];
+            int max = (int) urlTimeArr[(validList.size() - 1)];
+            int average = (int) (urlSum / validList.size());
+            metricList.add(new Metric<>("dew.response.90percent." + key, nityPec));
+            metricList.add(new Metric<>("dew.response.max." + key, max));
+            metricList.add(new Metric<>("dew.response.average." + key, average));
+            averageList.add(average);
+        });
+        if (averageList.size() != 0) {
+            int totalSum = 0;
+            for (int ave : averageList) {
+                totalSum += ave;
+            }
+            metricList.add(new Metric<>("dew.response.average", totalSum / averageList.size()));
         }
-        metrics.add(new Metric<>("dew.response.average", (int) (sum / DewFilter.timeList.size())));
-        metrics.add(new Metric<>("dew.response.max", (Integer) timeArr[DewFilter.timeList.size() - 1]));
-        return metrics;
+        if (totalList.size() != 0) {
+            Object[] totalArr = totalList.toArray();
+            Arrays.sort(totalArr);
+            metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
+            metricList.add(new Metric<>("dew.response.90perent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
+        }
+        return metricList;
     }
+
 
 }
 

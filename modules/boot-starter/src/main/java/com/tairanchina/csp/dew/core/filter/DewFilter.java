@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * desription:
@@ -18,7 +18,8 @@ public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
-    public static List<Integer> timeList = new ArrayList<>();
+    // url->(timestamp,resTime)
+    public static final Map<String,LinkedHashMap<Long,Integer>> responseMap = new WeakHashMap<>();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -27,10 +28,18 @@ public class DewFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         long start = Instant.now().toEpochMilli();
         filterChain.doFilter(servletRequest, servletResponse);
         int resTime = (int) (Instant.now().toEpochMilli() - start);
-        timeList.add(resTime);
+        String url = httpServletRequest.getRequestURI();
+        if (responseMap.containsKey(url)){
+            responseMap.get(url).put(start,resTime);
+        }{
+            responseMap.put(url,new LinkedHashMap<Long,Integer>(){{
+                    put(start,resTime);
+                }});
+        }
     }
 
     @Override

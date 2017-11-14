@@ -2134,3 +2134,4 @@ management:
 ----
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`，`dew.response.average`，`dew.response.max` 三个指标
+及针对接口的对应指标

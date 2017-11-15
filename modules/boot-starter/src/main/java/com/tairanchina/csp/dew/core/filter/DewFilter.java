@@ -24,7 +24,9 @@ public class DewFilter implements Filter {
     // url->(timestamp,resTime)
     public static final Map<String, LinkedHashMap<Long, Integer>> responseMap = new WeakHashMap<>();
 
-    public static String key;
+    public static long start;
+
+    private final String matchingPatternKey = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -33,11 +35,14 @@ public class DewFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        long start = Instant.now().toEpochMilli();
+        start = Instant.now().toEpochMilli();
         filterChain.doFilter(servletRequest, servletResponse);
         int resTime = (int) (Instant.now().toEpochMilli() - start);
-        // url 获取
-        if (key != null) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        String method = httpServletRequest.getMethod();
+        String matchingPattern = (String) httpServletRequest.getAttribute(matchingPatternKey);
+        if (matchingPattern != null && !matchingPattern.endsWith("/favicon.ico")) {
+            String key = "{[" + method + "]:" + matchingPattern + "]";
             if (responseMap.containsKey(key)) {
                 responseMap.get(key).put(start, resTime);
             } else {
@@ -45,7 +50,6 @@ public class DewFilter implements Filter {
                     put(start, resTime);
                 }});
             }
-            key = null;
         }
     }
 

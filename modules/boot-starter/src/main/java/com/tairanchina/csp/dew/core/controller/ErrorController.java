@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.filter.DewFilter;
 import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import static com.tairanchina.csp.dew.core.filter.DewFilter.responseMap;
+import static com.tairanchina.csp.dew.core.filter.DewFilter.start;
 
 @RestController
 @RequestMapping("${error.path:/error}")
@@ -63,7 +67,15 @@ public class ErrorController extends AbstractErrorController {
     @RequestMapping()
     @ResponseBody
     public Object error(HttpServletRequest request) {
-        DewFilter.key = null;
+        String key = "{[" + request.getMethod() + "]:/error]";
+        int resTime = (int) (Instant.now().toEpochMilli() - start);
+        if (responseMap.containsKey(key)) {
+            responseMap.get(key).put(start, resTime);
+        } else {
+            responseMap.put(key, new LinkedHashMap<Long, Integer>() {{
+                put(start, resTime);
+            }});
+        }
         Object specialError = request.getAttribute(SPECIAL_ERROR_FLAG);
         if (specialError instanceof Resp.FallbackException) {
             return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());

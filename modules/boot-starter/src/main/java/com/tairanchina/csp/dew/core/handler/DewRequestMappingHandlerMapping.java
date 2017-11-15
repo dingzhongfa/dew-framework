@@ -138,16 +138,13 @@ public class DewRequestMappingHandlerMapping extends RequestMappingHandlerMappin
         final Class<?> userType = ClassUtils.getUserClass(handlerType);
 
         Map<Method, RequestMappingInfo> methods = MethodIntrospector.selectMethods(userType,
-                new MethodIntrospector.MetadataLookup<RequestMappingInfo>() {
-                    @Override
-                    public RequestMappingInfo inspect(Method method) {
-                        try {
-                            return getMappingForMethod(method, userType);
-                        }
-                        catch (Throwable ex) {
-                            throw new IllegalStateException("Invalid mapping on handler class [" +
-                                    userType.getName() + "]: " + method, ex);
-                        }
+                (MethodIntrospector.MetadataLookup<RequestMappingInfo>) method -> {
+                    try {
+                        return getMappingForMethod(method, userType);
+                    }
+                    catch (Throwable ex) {
+                        throw new IllegalStateException("Invalid mapping on handler class [" +
+                                userType.getName() + "]: " + method, ex);
                     }
                 });
 

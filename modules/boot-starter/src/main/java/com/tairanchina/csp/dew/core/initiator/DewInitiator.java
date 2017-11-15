@@ -17,12 +17,12 @@ import java.util.Map;
 @Component
 public class DewInitiator {
 
-    @Value("${metric.timeout:600}")
-    private long DIVIDING_LINE;
+    @Value("${dew.metric.timeout:600}")
+    private long TIMEOUT;
 
     @PostConstruct
     public void init() {
-        long divid = Instant.now().minusSeconds(DIVIDING_LINE).toEpochMilli();
+        long divid = Instant.now().minusSeconds(TIMEOUT).toEpochMilli();
         Dew.Timer.periodic(60, () -> {
             for (Map<Long, Integer> map : DewFilter.responseMap.values()) {
                 Iterator<Map.Entry<Long, Integer>> iterator = map.entrySet().iterator();

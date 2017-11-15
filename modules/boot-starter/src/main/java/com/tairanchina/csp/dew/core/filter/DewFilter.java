@@ -18,10 +18,13 @@ import java.util.WeakHashMap;
 
 public class DewFilter implements Filter {
 
+
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
     // url->(timestamp,resTime)
     public static final Map<String, LinkedHashMap<Long, Integer>> responseMap = new WeakHashMap<>();
+
+    public static String key;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -30,17 +33,19 @@ public class DewFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         long start = Instant.now().toEpochMilli();
         filterChain.doFilter(servletRequest, servletResponse);
         int resTime = (int) (Instant.now().toEpochMilli() - start);
-        String url = httpServletRequest.getRequestURI();
-        if (responseMap.containsKey(url)) {
-            responseMap.get(url).put(start, resTime);
-        } else {
-            responseMap.put(url, new LinkedHashMap<Long, Integer>() {{
-                put(start, resTime);
-            }});
+        // url 获取
+        if (key != null) {
+            if (responseMap.containsKey(key)) {
+                responseMap.get(key).put(start, resTime);
+            } else {
+                responseMap.put(key, new LinkedHashMap<Long, Integer>() {{
+                    put(start, resTime);
+                }});
+            }
+            key = null;
         }
     }
 

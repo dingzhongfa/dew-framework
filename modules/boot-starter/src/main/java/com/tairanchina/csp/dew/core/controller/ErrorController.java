@@ -30,8 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.tairanchina.csp.dew.core.filter.DewFilter.responseMap;
-import static com.tairanchina.csp.dew.core.filter.DewFilter.start;
+import static com.tairanchina.csp.dew.core.filter.DewFilter.RECORD_MAP;
 
 @RestController
 @RequestMapping("${error.path:/error}")
@@ -67,17 +66,9 @@ public class ErrorController extends AbstractErrorController {
     @RequestMapping()
     @ResponseBody
     public Object error(HttpServletRequest request) {
-        String key = "{[" + request.getMethod() + "]:/error]";
-        int resTime = (int) (Instant.now().toEpochMilli() - start);
-        if (responseMap.containsKey(key)) {
-            responseMap.get(key).put(start, resTime);
-        } else {
-            responseMap.put(key, new LinkedHashMap<Long, Integer>() {{
-                put(start, resTime);
-            }});
-        }
         Object specialError = request.getAttribute(SPECIAL_ERROR_FLAG);
         if (specialError instanceof Resp.FallbackException) {
+            addRequestRecord(request);
             return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());
         }
         Map<String, Object> error = getErrorAttributes(request, false);
@@ -142,6 +133,7 @@ public class ErrorController extends AbstractErrorController {
                 busCode = "400";
             }
             Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
+            addRequestRecord(request);
             return ResponseEntity.status((httpCode >= 500 && httpCode < 600) ? FALL_BACK_STATUS : 200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
         } else {
             JsonNode jsonNode = $.json.createObjectNode()
@@ -149,7 +141,26 @@ public class ErrorController extends AbstractErrorController {
                             .put(Dew.dewConfig.getBasic().getFormat().getCodeFieldName(), busCode)
                             .put(Dew.dewConfig.getBasic().getFormat().getMessageFieldName(), message)
                     );
+            addRequestRecord(request);
             return ResponseEntity.status(httpCode).contentType(MediaType.APPLICATION_JSON_UTF8).body(jsonNode.toString());
+        }
+
+
+    }
+
+    /**
+     * @param request
+     */
+    public void addRequestRecord(HttpServletRequest request) {
+        long start = (long) request.getAttribute("dew.metric.start");
+        String key = "{[" + request.getMethod() + "]:/error}";
+        int resTime = (int) (Instant.now().toEpochMilli() - start);
+        if (RECORD_MAP.containsKey(key)) {
+            RECORD_MAP.get(key).put(start, resTime);
+        } else {
+            RECORD_MAP.put(key, new LinkedHashMap<Long, Integer>() {{
+                put(start, resTime);
+            }});
         }
     }
 

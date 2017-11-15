@@ -22,11 +22,9 @@ public class DewFilter implements Filter {
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
     // url->(timestamp,resTime)
-    public static final Map<String, LinkedHashMap<Long, Integer>> responseMap = new WeakHashMap<>();
+    public static final Map<String, LinkedHashMap<Long, Integer>> RECORD_MAP = new WeakHashMap<>();
 
-    public static long start;
-
-    private final String matchingPatternKey = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
+    private final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -35,18 +33,19 @@ public class DewFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        start = Instant.now().toEpochMilli();
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        long start = Instant.now().toEpochMilli();
+        servletRequest.setAttribute("dew.metric.start",start);
         filterChain.doFilter(servletRequest, servletResponse);
         int resTime = (int) (Instant.now().toEpochMilli() - start);
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String method = httpServletRequest.getMethod();
-        String matchingPattern = (String) httpServletRequest.getAttribute(matchingPatternKey);
+        String matchingPattern = (String) httpServletRequest.getAttribute(MATCHING_PATTERN_KEY);
         if (matchingPattern != null && !matchingPattern.endsWith("/favicon.ico")) {
-            String key = "{[" + method + "]:" + matchingPattern + "]";
-            if (responseMap.containsKey(key)) {
-                responseMap.get(key).put(start, resTime);
+            String key = "{[" + method + "]:" + matchingPattern + "}";
+            if (RECORD_MAP.containsKey(key)) {
+                RECORD_MAP.get(key).put(start, resTime);
             } else {
-                responseMap.put(key, new LinkedHashMap<Long, Integer>() {{
+                RECORD_MAP.put(key, new LinkedHashMap<Long, Integer>() {{
                     put(start, resTime);
                 }});
             }

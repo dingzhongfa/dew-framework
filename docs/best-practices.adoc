@@ -320,7 +320,7 @@ management:
 #指定统计多少秒内的指标统计
 dew:
   metric:
-    timeout: #默认10分钟，（单位秒）
+    interval-sec: #默认10分钟，（单位秒）
 ----
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标

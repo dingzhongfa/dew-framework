@@ -28,7 +28,6 @@ public abstract class DewBootApplication {
 
     @Bean
     public FilterRegistrationBean testFilterRegistration() {
-
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new DewFilter());
         registration.addUrlPatterns("/*");

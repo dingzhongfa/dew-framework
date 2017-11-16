@@ -16,6 +16,19 @@ public class DewConfig {
     private Basic basic = new Basic();
     private Cluster cluster = new Cluster();
     private Security security = new Security();
+    private Metric metric = new Metric();
+
+    public static class Metric{
+        private long intervalSec=600;
+
+        public long getIntervalSec() {
+            return intervalSec;
+        }
+
+        public void setIntervalSec(long intervalSec) {
+            this.intervalSec = intervalSec;
+        }
+    }
 
     public static class Basic {
 
@@ -331,4 +344,11 @@ public class DewConfig {
         this.security = security;
     }
 
+    public Metric getMetric() {
+        return metric;
+    }
+
+    public void setMetric(Metric metric) {
+        this.metric = metric;
+    }
 }

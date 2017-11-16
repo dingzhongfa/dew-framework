@@ -1,8 +1,9 @@
 package com.tairanchina.csp.dew.core.initiator;
 
 import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.DewConfig;
 import com.tairanchina.csp.dew.core.filter.DewFilter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +18,12 @@ import java.util.Map;
 @Component
 public class DewInitiator {
 
-    @Value("${dew.metric.interval-sec:600}")
-    private long INTERVAL_SEC;
+    @Autowired
+    private DewConfig dewConfig;
 
     @PostConstruct
     public void init() {
-        long divid = Instant.now().minusSeconds(INTERVAL_SEC).toEpochMilli();
+        long divid = Instant.now().minusSeconds(dewConfig.getMetric().getIntervalSec()).toEpochMilli();
         Dew.Timer.periodic(60, () -> {
             for (Map<Long, Integer> map : DewFilter.RECORD_MAP.values()) {
                 Iterator<Map.Entry<Long, Integer>> iterator = map.entrySet().iterator();

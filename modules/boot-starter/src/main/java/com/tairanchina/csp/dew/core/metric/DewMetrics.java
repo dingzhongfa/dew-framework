@@ -55,7 +55,7 @@ public class DewMetrics implements PublicMetrics {
         Object[] totalArr = totalList.toArray();
         Arrays.sort(totalArr);
         metricList.add(new Metric<>("dew.response.average", BigDecimal.valueOf(totalAverage).setScale(2, BigDecimal.ROUND_HALF_UP)));
-        metricList.add(new Metric<>("dew.response.90perent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
+        metricList.add(new Metric<>("dew.response.90percent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
         metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
         metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size()*1.0/INTERVAL_SEC).setScale(2, BigDecimal.ROUND_HALF_UP)));
         return metricList;

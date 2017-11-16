@@ -42,25 +42,25 @@ public class DewMetrics implements PublicMetrics {
             Arrays.sort(urlTimeArr);
             int nityPec = (int) urlTimeArr[(int) (validList.size() * 0.9)];
             int max = (int) urlTimeArr[(validList.size() - 1)];
-            double average = (double)urlSum / validList.size();
-            metricList.add(new Metric<>("dew.response.average." + key, BigDecimal.valueOf(average).setScale(2,BigDecimal.ROUND_HALF_UP)));
+            double average = (double) urlSum / validList.size();
+            metricList.add(new Metric<>("dew.response.average." + key, BigDecimal.valueOf(average).setScale(2, BigDecimal.ROUND_HALF_UP)));
             metricList.add(new Metric<>("dew.response.90percent." + key, nityPec));
             metricList.add(new Metric<>("dew.response.max." + key, max));
             BigDecimal times = new BigDecimal(validList.size());
-            metricList.add(new Metric<>("dew.response.tps." + key, times.divide(intervalSec,2,BigDecimal.ROUND_HALF_UP)));
+            metricList.add(new Metric<>("dew.response.tps." + key, times.divide(intervalSec, 2, BigDecimal.ROUND_HALF_UP)));
             averageMap.put(average, validList.size());
         });
         double totalAverage = 0;
-        for (Map.Entry<Double,Integer> entry: averageMap.entrySet()){
-            totalAverage+= entry.getKey()*((double)entry.getValue()/totalList.size());
+        for (Map.Entry<Double, Integer> entry : averageMap.entrySet()) {
+            totalAverage += entry.getKey() * ((double) entry.getValue() / totalList.size());
         }
         Object[] totalArr = totalList.toArray();
         Arrays.sort(totalArr);
-        metricList.add(new Metric<>("dew.response.average",BigDecimal.valueOf(totalAverage).setScale(2,BigDecimal.ROUND_HALF_UP)));
+        metricList.add(new Metric<>("dew.response.average", BigDecimal.valueOf(totalAverage).setScale(2, BigDecimal.ROUND_HALF_UP)));
         metricList.add(new Metric<>("dew.response.90perent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
         metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
         BigDecimal totalTimes = new BigDecimal(totalList.size());
-        metricList.add(new Metric<>("dew.response.tps", totalTimes.divide(intervalSec,2,BigDecimal.ROUND_HALF_UP)));
+        metricList.add(new Metric<>("dew.response.tps", totalTimes.divide(intervalSec, 2, BigDecimal.ROUND_HALF_UP)));
         return metricList;
     }
 

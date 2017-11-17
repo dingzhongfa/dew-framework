@@ -37,7 +37,6 @@ public class DewMetrics implements PublicMetrics {
                     validList.add(entry.getValue());
                 }
             }
-            totalList.addAll(validList);
             Object[] urlTimeArr = validList.toArray();
             Arrays.sort(urlTimeArr);
             int ninetyPec = (int) urlTimeArr[(int) (validList.size() * 0.9)];
@@ -47,6 +46,7 @@ public class DewMetrics implements PublicMetrics {
             metricList.add(new Metric<>("dew.response.90percent." + key, ninetyPec));
             metricList.add(new Metric<>("dew.response.max." + key, max));
             metricList.add(new Metric<>("dew.response.tps." + key, BigDecimal.valueOf(validList.size() * 1.0 / dewConfig.getMetric().getIntervalSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
+            totalList.addAll(validList);
             averageMap.put(average, validList.size());
         });
         double totalAverage = 0;

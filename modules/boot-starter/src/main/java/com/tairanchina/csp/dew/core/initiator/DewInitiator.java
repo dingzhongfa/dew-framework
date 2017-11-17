@@ -23,13 +23,13 @@ public class DewInitiator {
 
     @PostConstruct
     public void init() {
-        long divid = Instant.now().minusSeconds(dewConfig.getMetric().getIntervalSec()).toEpochMilli();
+        long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getIntervalSec()).toEpochMilli();
         Dew.Timer.periodic(60, () -> {
             for (Map<Long, Integer> map : DewFilter.RECORD_MAP.values()) {
                 Iterator<Map.Entry<Long, Integer>> iterator = map.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<Long, Integer> entry = iterator.next();
-                    if (entry.getKey() < divid) {
+                    if (entry.getKey() < standardTime) {
                         iterator.remove();
                     } else {
                         break;

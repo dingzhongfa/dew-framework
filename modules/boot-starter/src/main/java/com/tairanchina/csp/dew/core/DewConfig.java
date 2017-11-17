@@ -4,7 +4,6 @@ package com.tairanchina.csp.dew.core;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,8 @@ public class DewConfig {
     private Security security = new Security();
     private Metric metric = new Metric();
 
-    public static class Metric{
-        private long intervalSec=600;
+    public static class Metric {
+        private long intervalSec = 600;
 
         public long getIntervalSec() {
             return intervalSec;

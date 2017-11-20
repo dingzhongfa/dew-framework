@@ -28,14 +28,14 @@ public class HystrixExampleController {
 //            nullClient.getExe();
             Thread.sleep(100);
         }*/
-        exampleClient.deleteExe(1,"post");
+        exampleClient.postExe(1,"post");
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("get-exe")
     public ResponseEntity getExe(@RequestParam("i") int i,@RequestParam("str") String str) throws InterruptedException {
         logger.info("get-exe   " + "i=" + i + "str=" + str);
-        for (int m =0;m<80000;m++){
+         for (int m =0;m<80000;m++){
             exampleClient.deleteExe(m,"delete");
             Thread.sleep(100);
         }

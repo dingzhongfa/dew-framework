@@ -13,6 +13,6 @@ public class HystrixExample2Application extends DewCloudApplication {
 
     public static void main(String[] args) {
         System.out.println("started");
-        new SpringApplicationBuilder(HystrixExample2Application.class).build(args);
+        new SpringApplicationBuilder(HystrixExample2Application.class).run(args);
     }
 }

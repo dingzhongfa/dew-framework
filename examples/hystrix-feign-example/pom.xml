@@ -26,11 +26,6 @@
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>cloud-starter</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-boot-starter-feign</artifactId>
-            &lt;!&ndash;<version>1.3.4.RELEASE</version>&ndash;&gt;
-        </dependency>-->
     </dependencies>
 
 </project>

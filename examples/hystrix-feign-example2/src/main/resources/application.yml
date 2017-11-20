@@ -2,14 +2,14 @@ dew:
   cloud:
     error:
       notify-interval-sec: 5
-      notify-emails: 71964899@qq.com
+      notify-emails:
       notify-event-types: FAILURE,SHORT_CIRCUITED
       #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
 spring:
   mail:
     host: smtp.163.com
-    username: ding_1995_7@163.com
-    password: ding71964899
+    username:
+    password:
     properties:
       mail:
         smtp:

@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 public class DewSB implements SB {
 
-    private List<SQLCondition> conditions = new ArrayList();
+    private List<SQLCondition> conditions = new ArrayList<>();
     private Map<String, Boolean> order = new LinkedHashMap<>();
+    private final String and = " AND ";
 
     private DewSB() {
     }
@@ -32,53 +33,53 @@ public class DewSB implements SB {
             String f = leftDecorated + classInfo.columns.get(cond.field).columnName + rightDecorated;
             switch (cond.op) {
                 case EQUAL:
-                    sb.append(" AND " + f + " = ?");
+                    sb.append(and + f + " = ?");
                     parameters.add(cond.value1);
                     break;
                 case NOT_EQUAL:
-                    sb.append(" AND " + f + " != ?");
+                    sb.append(and + f + " != ?");
                     parameters.add(cond.value1);
                     break;
                 case GT:
-                    sb.append(" AND " + f + " > ?");
+                    sb.append(and + f + " > ?");
                     parameters.add(cond.value1);
                     break;
                 case GE:
-                    sb.append(" AND " + f + " >= ?");
+                    sb.append(and + f + " >= ?");
                     parameters.add(cond.value1);
                     break;
                 case LT:
-                    sb.append(" AND " + f + " < ?");
+                    sb.append(and + f + " < ?");
                     parameters.add(cond.value1);
                     break;
                 case LE:
-                    sb.append(" AND " + f + " <= ?");
+                    sb.append(and+ f + " <= ?");
                     parameters.add(cond.value1);
                     break;
                 case LIKE:
-                    sb.append(" AND " + f + " LIKE ?");
+                    sb.append(and + f + " LIKE ?");
                     parameters.add(cond.value1);
                     break;
                 case IN:
-                    sb.append(" AND " + f + " IN " + ((List) cond.value1).stream()
+                    sb.append(and + f + " IN " + ((List) cond.value1).stream()
                             .map(o -> "?")
                             .collect(Collectors.joining(",", "(", ")")));
                     parameters.add(cond.value1);
                     break;
                 case NOT_IN:
-                    sb.append(" AND " + f + " NOT IN " + ((List) cond.value1).stream()
+                    sb.append(and + f + " NOT IN " + ((List) cond.value1).stream()
                             .map(o -> "?")
                             .collect(Collectors.joining(",", "(", ")")));
                     parameters.add(cond.value1);
                     break;
                 case IS_NULL:
-                    sb.append(" AND " + f + " IS NULL");
+                    sb.append(and + f + " IS NULL");
                     break;
                 case NOT_NULL:
-                    sb.append(" AND " + f + " IS NOT NULL");
+                    sb.append(and + f + " IS NOT NULL");
                     break;
                 case BETWEEN:
-                    sb.append(" AND " + f + " BETWEEN ? AND ?");
+                    sb.append(and + f + " BETWEEN ? AND ?");
                     parameters.add(cond.value1);
                     parameters.add(cond.value2);
                     break;

@@ -10,7 +10,7 @@ spring:
     database: 0
 
 server: # http端口号
-  port: 8080
+  port: 8081
 
 dew:
   basic:

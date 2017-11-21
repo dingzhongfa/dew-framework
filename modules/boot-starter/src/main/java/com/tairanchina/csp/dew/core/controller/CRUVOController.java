@@ -12,10 +12,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
-public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOController<T, P, V, E> {
+public interface CRUVOController<T extends CRUService, P, V, E> extends DewVOController<T, V, E> {
 
     @Override
     default boolean convertAble() {

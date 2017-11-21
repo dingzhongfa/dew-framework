@@ -74,7 +74,7 @@ public class ErrorController extends AbstractErrorController {
         Map<String, Object> error = getErrorAttributes(request, false);
         String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
-        String busCode = (int) error.getOrDefault("status", -1) + "";
+        String busCode = error.getOrDefault("status", -1) + "";
         int httpCode = (int) error.getOrDefault("status", -1);
         String err = (String) error.getOrDefault("error", "");
         String message = error.getOrDefault("message", "").toString();

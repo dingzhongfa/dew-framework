@@ -2,9 +2,9 @@ package com.tairanchina.csp.dew.jdbc.proxy;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import com.tairanchina.csp.dew.jdbc.annotations.ModelParam;
 import com.tairanchina.csp.dew.jdbc.annotations.Param;
+import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -42,16 +42,19 @@ public class MethodConstruction {
         paramsMap = new HashMap<>();
         int i = 0;
         for (Object v : paramValues) {
-            if (v != null) {
-                if (containAnnotation(paramAnnotations[i])) {
-                    transformToMap(v, paramsMap);
-                } else {
-                    Annotation paramAnn = getParamOfName(paramNames[i].getAnnotations());
-                    if (paramAnn != null) {
-                        paramsMap.put(((Param) paramAnn).value(), v);
-                    }
+            if (v == null) {
+                i++;
+                continue;
+            }
+            if (containAnnotation(paramAnnotations[i])) {
+                transformToMap(v, paramsMap);
+            } else {
+                Annotation paramAnn = getParamOfName(paramNames[i].getAnnotations());
+                if (paramAnn != null) {
+                    paramsMap.put(((Param) paramAnn).value(), v);
                 }
             }
+
             i++;
         }
     }

@@ -49,7 +49,7 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
 
     private static final Logger logger = LoggerFactory.getLogger(DocProcessor.class);
 
-    // FIXME 此设置可能无效
+    // 此设置可能无效
     @Value("${server.ssl.key-store:}")
     private String sslKeyStore;
 

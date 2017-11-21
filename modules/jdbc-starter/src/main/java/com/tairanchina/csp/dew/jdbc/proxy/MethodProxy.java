@@ -84,14 +84,12 @@ public class MethodProxy implements InvocationHandler {
             if (annotation instanceof Select) {
                 if (method.flagOfPaging()) {
                     return ((DewDS) Dew.ds(dsName)).selectForPaging(((Select) annotation).entityClass(), method, ((Select) annotation).value());
-                } else {
-                    List list =((DewDS)Dew.ds(dsName)).selectForList(((Select) annotation).entityClass(), method.getParamsMap(), ((Select) annotation).value());
-                    if (!method.getReturnType().isAssignableFrom(List.class)) {
-                        return !list.isEmpty() ? list.get(0) : null;
-                    } else {
-                        return list;
-                    }
                 }
+                List list = ((DewDS) Dew.ds(dsName)).selectForList(((Select) annotation).entityClass(), method.getParamsMap(), ((Select) annotation).value());
+                if (!method.getReturnType().isAssignableFrom(List.class)) {
+                    return !list.isEmpty() ? list.get(0) : null;
+                }
+                return list;
             }
         }
         return null;

@@ -11,9 +11,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "dew")
 public class DewJDBCConfig {
 
-    private jdbc jdbc = new jdbc();
+    private Jdbc jdbc = new Jdbc();
 
-    public static class jdbc {
+    public static class Jdbc {
 
         private List<String> basePackages = new ArrayList<>();
 
@@ -26,12 +26,11 @@ public class DewJDBCConfig {
         }
     }
 
-    public jdbc getJdbc() {
+    public Jdbc getJdbc() {
         return jdbc;
     }
 
-    public void setJdbc(jdbc jdbc) {
+    public void setJdbc(Jdbc jdbc) {
         this.jdbc = jdbc;
     }
-
 }

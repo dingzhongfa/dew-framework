@@ -49,7 +49,7 @@ public class DewDSManager implements DSManager {
     private DefaultListableBeanFactory beanFactory;
 
     @PostConstruct
-    private void init() throws IOException, SQLException {
+    private void init() throws SQLException {
         // Register TransactionManager
         beanFactory = (DefaultListableBeanFactory) ((ConfigurableApplicationContext) Dew.applicationContext).getBeanFactory();
         AbstractBeanDefinition transactionManager = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class)
@@ -83,9 +83,6 @@ public class DewDSManager implements DSManager {
                             break;
                         case "minIdle":
                             ds.setMinIdle(Integer.valueOf(v));
-                            break;
-                        case "maxIdle":
-                            ds.setMaxIdle(Integer.valueOf(v));
                             break;
                         case "maxWait":
                             ds.setMaxWait(Integer.valueOf(v));

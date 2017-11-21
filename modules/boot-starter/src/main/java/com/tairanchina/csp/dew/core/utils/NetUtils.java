@@ -22,7 +22,7 @@ public class NetUtils {
             if (isValidAddress(localAddress)) {
                 return localAddress;
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
         }
         try {
@@ -38,16 +38,16 @@ public class NetUtils {
                                 if (isValidAddress(address)) {
                                     return address;
                                 }
-                            } catch (Throwable e) {
+                            } catch (Exception e) {
                                 logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
                             }
                         }
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
                     }
                 }
             }
-        } catch (Throwable e) {
+        } catch (Exception e) {
             logger.warn("Failed to retrieving ip address, " + e.getMessage(), e);
         }
         logger.error("Could not get local host ip address, will use 127.0.0.1 instead.");

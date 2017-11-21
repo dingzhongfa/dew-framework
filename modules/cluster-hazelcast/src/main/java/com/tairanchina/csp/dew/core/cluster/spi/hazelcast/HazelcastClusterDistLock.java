@@ -84,7 +84,7 @@ public class HazelcastClusterDistLock implements ClusterDistLock {
     public boolean unLock() {
         try {
             lock.unlock();
-        } catch (Throwable e) {
+        } catch (Exception e) {
             return false;
         }
         return true;

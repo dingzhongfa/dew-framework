@@ -39,12 +39,10 @@ public class DewMetrics implements PublicMetrics {
             }
             Object[] urlTimeArr = validList.toArray();
             Arrays.sort(urlTimeArr);
-            int ninetyPec = (int) urlTimeArr[(int) (validList.size() * 0.9)];
-            int max = (int) urlTimeArr[(validList.size() - 1)];
             double average = (double) urlSum / validList.size();
             metricList.add(new Metric<>("dew.response.average." + key, BigDecimal.valueOf(average).setScale(2, BigDecimal.ROUND_HALF_UP)));
-            metricList.add(new Metric<>("dew.response.90percent." + key, ninetyPec));
-            metricList.add(new Metric<>("dew.response.max." + key, max));
+            metricList.add(new Metric<>("dew.response.90percent." + key, (int) urlTimeArr[(int) (validList.size() * 0.9)]));
+            metricList.add(new Metric<>("dew.response.max." + key, (int) urlTimeArr[(validList.size() - 1)]));
             metricList.add(new Metric<>("dew.response.tps." + key, BigDecimal.valueOf(validList.size() * 1.0 / dewConfig.getMetric().getIntervalSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
             totalList.addAll(validList);
             averageMap.put(average, validList.size());
@@ -56,8 +54,8 @@ public class DewMetrics implements PublicMetrics {
         Object[] totalArr = totalList.toArray();
         Arrays.sort(totalArr);
         metricList.add(new Metric<>("dew.response.average", BigDecimal.valueOf(totalAverage).setScale(2, BigDecimal.ROUND_HALF_UP)));
-        metricList.add(new Metric<>("dew.response.90percent", (Integer) totalArr[(int) (totalList.size() * 0.9)]));
-        metricList.add(new Metric<>("dew.response.max", (Integer) totalArr[totalList.size() - 1]));
+        metricList.add(new Metric<>("dew.response.90percent", (int) totalArr[(int) (totalList.size() * 0.9)]));
+        metricList.add(new Metric<>("dew.response.max", (int) totalArr[totalList.size() - 1]));
         metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size() * 1.0 / dewConfig.getMetric().getIntervalSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
         return metricList;
     }

@@ -33,7 +33,7 @@ public class CloudAutoConfiguration {
     private HystrixEventNotifier hystrixEventNotifier;
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() {
         if (!dewCloudConfig.getError().getNotifyEmails().isEmpty() && hystrixEventNotifier != null) {
             logger.info("Enabled Failure Event Notifier");
             HystrixPlugins.getInstance().registerEventNotifier(hystrixEventNotifier);

@@ -15,22 +15,24 @@ public class IgniteClusterDistLock implements ClusterDistLock {
 
     private long lockedThread;
 
-    public long getLockedThread() {
-        return lockedThread;
-    }
-
-    public void setLockedThread(long lockedThread) {
-        this.lockedThread = lockedThread;
-    }
-
     private Lock lock;
+
     private Ignite ignite;
+
     private String key;
 
     IgniteClusterDistLock(String key, Ignite ignite) {
         this.ignite = ignite;
         this.key = "dew:dist:lock:" + key;
         lock = ignite.getOrCreateCache("dew:dist:lock:" + key).lock(key);
+    }
+
+    public long getLockedThread() {
+        return lockedThread;
+    }
+
+    public void setLockedThread(long lockedThread) {
+        this.lockedThread = lockedThread;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class IgniteClusterDistLock implements ClusterDistLock {
 
     @Override
     public boolean tryLock() {
-        if (lock.tryLock()){
+        if (lock.tryLock()) {
             setLockedThread(getCurrentId());
             return true;
         }
@@ -91,7 +93,7 @@ public class IgniteClusterDistLock implements ClusterDistLock {
         if (waitMillSec == 0) {
             return tryLock();
         } else {
-            if (lock.tryLock(waitMillSec, TimeUnit.MILLISECONDS)){
+            if (lock.tryLock(waitMillSec, TimeUnit.MILLISECONDS)) {
                 setLockedThread(getCurrentId());
                 return true;
             }
@@ -105,14 +107,14 @@ public class IgniteClusterDistLock implements ClusterDistLock {
             return tryLock();
         } else if (waitMillSec == 0) {
             if (tryLock()) {
-                new LeaseTask(getCurrentId(),leaseMillSec).start();
+                new LeaseTask(getCurrentId(), leaseMillSec).start();
                 return true;
             }
         } else if (leaseMillSec == 0) {
             return tryLock(waitMillSec);
         } else {
             if (tryLock(waitMillSec)) {
-                new LeaseTask(getCurrentId(),leaseMillSec).start();
+                new LeaseTask(getCurrentId(), leaseMillSec).start();
                 return true;
             }
         }
@@ -164,11 +166,12 @@ public class IgniteClusterDistLock implements ClusterDistLock {
             try {
                 //判断锁住的线程id
                 Thread.sleep(leaseMillSec - 1);
-                if (getLockedThread()==getLockedThreadId()){
+                if (getLockedThread() == getLockedThreadId()) {
                     delete();
                 }
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());
+                Thread.currentThread().interrupt();
             }
         }
 

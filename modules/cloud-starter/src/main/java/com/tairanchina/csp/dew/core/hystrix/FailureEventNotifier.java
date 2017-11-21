@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -97,7 +96,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             mailSender.send(message);
             logger.info("邮件通知成功\t\t\tdetail:\t" + stringBuilder.toString());
         } catch (Exception e) {
-            logger.error("邮件通知失败\t\t\tdetail：" + e.getMessage());
+            logger.error("邮件通知失败\t\t\tdetail：" + e.getMessage(),e);
         }
     }
 }

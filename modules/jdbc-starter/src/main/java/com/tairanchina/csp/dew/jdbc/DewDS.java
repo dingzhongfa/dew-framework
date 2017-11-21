@@ -44,8 +44,7 @@ public class DewDS implements DS {
 
     private static final Logger logger = LoggerFactory.getLogger(DewDS.class);
 
-    private static final String FIELD_PLACE_HOLDER_REGEX = "\\#\\{\\s*\\w+\\s*\\}"; // 正则匹配 #{key}
-    private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile(FIELD_PLACE_HOLDER_REGEX);
+    private static final Pattern FIELD_PLACE_HOLDER_PATTERN = Pattern.compile("\\#\\{\\s*\\w+\\s*\\}"); // 正则匹配 #{key}
 
     private static final char UNDERLINE = '_';
     private static final String STAR = "*";
@@ -85,7 +84,7 @@ public class DewDS implements DS {
                 leftDecorated = "[";
                 rightDecorated = "]";
                 break;
-            case PHOENIX: // TODO
+            case PHOENIX:
                 leftDecorated = "[";
                 rightDecorated = "]";
                 break;
@@ -179,7 +178,7 @@ public class DewDS implements DS {
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql, (Object[]) params);
         if (result.size() == 1) {
             return convertRsToObj(result.get(0), entityClazz);
-        } else if (result.size() == 0) {
+        } else if (result.isEmpty()) {
             return null;
         } else {
             throw new IncorrectResultSizeDataAccessException(1);
@@ -766,10 +765,10 @@ public class DewDS implements DS {
             SQLSelectItem sqlSelectItem = iterator.next();
             if (sqlSelectItem.getExpr() instanceof SQLPropertyExpr) {
                 SQLPropertyExpr expr = (SQLPropertyExpr) sqlSelectItem.getExpr();
-                SQLIdentifierExpr expr_owner = (SQLIdentifierExpr) expr.getOwner();
-                if ((expr_owner.getName() + POINT + expr.getName()).equals(sqlTableSource.getAlias() + POINT + STAR)) {
+                SQLIdentifierExpr exprOwner = (SQLIdentifierExpr) expr.getOwner();
+                if ((exprOwner.getName() + POINT + expr.getName()).equals(sqlTableSource.getAlias() + POINT + STAR)) {
                     iterator.remove();
-                    entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList, expr_owner, column));
+                    entityClassInfo.columns.forEach((filedName, column) -> addWhenAlias(addList, exprOwner, column));
                 }
             } else if (sqlSelectItem.getExpr() instanceof SQLObjectImpl) {
                 iterator.remove();
@@ -778,11 +777,11 @@ public class DewDS implements DS {
         }
     }
 
-    private void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr expr_owner, EntityContainer.EntityClassInfo.Column column) {
+    private void addWhenAlias(List<SQLSelectItem> addList, SQLIdentifierExpr exprOwner, EntityContainer.EntityClassInfo.Column column) {
         if (column.columnName.equals("id") || column.columnName.equals("created_by") || column.columnName.equals("updated_by") || column.columnName.equals("created_time") ||
                 column.columnName.equals("updated_time"))
             return;
-        addList.add(new SQLSelectItem(new SQLPropertyExpr(expr_owner.getName(), leftDecorated + column.columnName + rightDecorated)));
+        addList.add(new SQLSelectItem(new SQLPropertyExpr(exprOwner.getName(), leftDecorated + column.columnName + rightDecorated)));
     }
 
 

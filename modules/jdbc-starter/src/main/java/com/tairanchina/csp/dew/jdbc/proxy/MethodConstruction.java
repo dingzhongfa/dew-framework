@@ -54,7 +54,6 @@ public class MethodConstruction {
                     paramsMap.put(((Param) paramAnn).value(), v);
                 }
             }
-
             i++;
         }
     }

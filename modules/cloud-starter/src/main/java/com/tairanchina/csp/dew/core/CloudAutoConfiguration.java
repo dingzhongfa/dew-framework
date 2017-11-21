@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 
 @Configuration
 public class CloudAutoConfiguration {

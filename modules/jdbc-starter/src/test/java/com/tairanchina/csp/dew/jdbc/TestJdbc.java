@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.jdbc;
 
-import com.tairanchina.csp.dew.jdbc.JDBCApplication;
 import com.tairanchina.csp.dew.jdbc.test.crud.CRUDSTest;
 import com.tairanchina.csp.dew.jdbc.test.ds.JDBCTest;
 import com.tairanchina.csp.dew.jdbc.test.select.SelectTest;

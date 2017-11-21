@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -29,7 +28,7 @@ import java.util.regex.Pattern;
 @DewLoadImmediately
 public class DewDSManager implements DSManager {
 
-    private final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
+    private static final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
 
     @Autowired
     private DewMultiDSConfig dsConfig;
@@ -86,6 +85,8 @@ public class DewDSManager implements DSManager {
                             break;
                         case "maxWait":
                             ds.setMaxWait(Integer.valueOf(v));
+                            break;
+                        default:
                             break;
                     }
                     properties.put("druid." + k, v);

@@ -24,7 +24,7 @@ public class DewFilter implements Filter {
     // url->(timestamp,resTime)
     public static final Map<String, LinkedHashMap<Long, Integer>> RECORD_MAP = new WeakHashMap<>();
 
-    private final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
+    private static final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

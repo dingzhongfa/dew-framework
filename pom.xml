@@ -39,6 +39,7 @@
         <module>examples/sharding-example</module>
         <module>examples/cache-example</module>
         <module>examples/hystrix-feign-example</module>
+        <module>examples/hystrix-feign-example2</module>
         <module>examples/cluster-example</module>
         <module>examples/mybatisplus-example</module>
         <module>examples/auth-example</module>

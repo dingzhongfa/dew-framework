@@ -2039,10 +2039,6 @@ eureka:
 management.security.enabled: false # 需要关闭安全管理，可通过IP来限制
 ----
 
-==== `Zipkin` 集成
-
-TBD
-
 ==== 服务调用开发期优化
 
 在Spring Cloud体系下，服务调用需要启动`Eureka`服务（对于Dew中的`Regstry`组件），这对开发阶段并不友好：

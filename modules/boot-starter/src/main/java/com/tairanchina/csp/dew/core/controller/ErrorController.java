@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,7 +87,16 @@ public class ErrorController extends AbstractErrorController {
         return ResponseEntity.status((int) result[0]).contentType(MediaType.APPLICATION_JSON_UTF8).body(result[1]);
     }
 
-    public static Object[] error(HttpServletRequest request, String path, int statusCode, String message, String exClass, String exMsg, List exDetail, Throwable specialError) {
+    public static void error(HttpServletRequest request,HttpServletResponse response, int statusCode, String message, String exClass) throws IOException {
+        Object[] confirmedError = error(request, request.getRequestURI(), statusCode, message, exClass, "", null, null);
+        response.setStatus((Integer) confirmedError[0]);
+        response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+        response.getWriter().write((String) confirmedError[1]);
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    private static Object[] error(HttpServletRequest request, String path, int statusCode, String message, String exClass, String exMsg, List exDetail, Throwable specialError) {
         String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         int httpCode = statusCode;
         String busCode = statusCode + "";
@@ -160,6 +171,7 @@ public class ErrorController extends AbstractErrorController {
         addRequestRecord(request);
         return new Object[]{httpCode, body};
     }
+
 
     private static void addRequestRecord(HttpServletRequest request) {
         long start = (long) request.getAttribute("dew.metric.start");

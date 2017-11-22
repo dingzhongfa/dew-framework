@@ -3,6 +3,7 @@ package com.tairanchina.csp.dew.core.interceptor;
 import com.ecfront.dew.common.$;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
+import com.tairanchina.csp.dew.core.controller.ErrorController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -26,7 +27,8 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (Dew.dewConfig.getSecurity().getIncludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getIncludeServices()) {
                 if (!v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."), 401);
+                    ErrorController.error(request, response, 401, "The [" + requestFrom + "] does NOT allow access to this service.", AuthException.class.getName());
+                    return false;
                 }
             }
         }
@@ -34,7 +36,8 @@ public class DewHandlerInterceptor extends HandlerInterceptorAdapter {
         if (Dew.dewConfig.getSecurity().getIncludeServices() == null && Dew.dewConfig.getSecurity().getExcludeServices() != null) {
             for (String v : Dew.dewConfig.getSecurity().getExcludeServices()) {
                 if (v.equalsIgnoreCase(requestFrom)) {
-                    throw Dew.E.e("401", new AuthException("The [" + requestFrom + "] does NOT allow access to this service."), 401);
+                    ErrorController.error(request, response, 401, "The [" + requestFrom + "] does NOT allow access to this service.", AuthException.class.getName());
+                    return false;
                 }
             }
         }

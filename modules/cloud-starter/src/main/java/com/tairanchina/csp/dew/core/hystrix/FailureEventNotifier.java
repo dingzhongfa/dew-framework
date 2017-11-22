@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
@@ -39,7 +40,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     private long notifiedTime;
     // key.name -> eventType.names
-    private Map<String, Set<String>> failureInfo = new WeakHashMap<>();
+    private Map<String, Set<String>> failureInfo =  new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private Executor executor = Executors.newSingleThreadExecutor();
 

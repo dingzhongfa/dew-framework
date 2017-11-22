@@ -31,8 +31,7 @@ public class ItemProcessor implements DewIdempotentProcessor {
     }
 
     private boolean confirm(String key) {
-        Dew.cluster.cache.set(CACHE_KEY + key, StatusEnum.CONFIRMED.toString());
-        // todo 补偿
+        Dew.cluster.cache.getSet(CACHE_KEY + key, StatusEnum.CONFIRMED.toString());
         return true;
     }
 }

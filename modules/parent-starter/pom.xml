@@ -104,7 +104,7 @@
             </dependency>
             <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
-                <artifactId>boot-thrift-starter</artifactId>
+                <artifactId>idempotent-starter</artifactId>
                 <version>${dew.version}</version>
             </dependency>
             <dependency>

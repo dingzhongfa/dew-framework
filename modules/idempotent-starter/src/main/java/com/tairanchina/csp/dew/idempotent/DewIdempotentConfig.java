@@ -24,7 +24,7 @@ public class DewIdempotentConfig {
     // 指定操作级的是否需要手工确认标识，可以位于HTTP Header或请求参数中
     private String optNeedConfirmFlag = "__IDEMPOTENT_CONFIRM__";
     // 指定是否强制忽略幂等检查标识，可以位于HTTP Header或请求参数中
-    private String forceIgnoreCheckFlag = "__IDEMPOTENT_IGNORE__";
+    private String optForceIgnoreCheckFlag = "__IDEMPOTENT_IGNORE__";
 
     public long getDefaultExpireMs() {
         return defaultExpireMs;
@@ -90,11 +90,11 @@ public class DewIdempotentConfig {
         this.optNeedConfirmFlag = optNeedConfirmFlag;
     }
 
-    public String getForceIgnoreCheckFlag() {
-        return forceIgnoreCheckFlag;
+    public String getOptForceIgnoreCheckFlag() {
+        return optForceIgnoreCheckFlag;
     }
 
-    public void setForceIgnoreCheckFlag(String forceIgnoreCheckFlag) {
-        this.forceIgnoreCheckFlag = forceIgnoreCheckFlag;
+    public void setOptForceIgnoreCheckFlag(String optForceIgnoreCheckFlag) {
+        this.optForceIgnoreCheckFlag = optForceIgnoreCheckFlag;
     }
 }

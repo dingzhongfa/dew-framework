@@ -35,9 +35,9 @@ public class DewIdempotentHandlerInterceptor extends HandlerInterceptorAdapter {
             // 不需要处理
             return super.preHandle(request, response, handler);
         }
-        String forceIgnoreCheck = request.getHeader(dewIdempotentConfig.getForceIgnoreCheckFlag());
+        String forceIgnoreCheck = request.getHeader(dewIdempotentConfig.getOptForceIgnoreCheckFlag());
         if (StringUtils.isEmpty(forceIgnoreCheck)) {
-            forceIgnoreCheck = request.getParameter(dewIdempotentConfig.getForceIgnoreCheckFlag());
+            forceIgnoreCheck = request.getParameter(dewIdempotentConfig.getOptForceIgnoreCheckFlag());
         }
         if (!StringUtils.isEmpty(forceIgnoreCheck) && Boolean.valueOf(forceIgnoreCheck)) {
             // 不需要处理

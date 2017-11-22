@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class JDBCTest {
+public class TestJDBC {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

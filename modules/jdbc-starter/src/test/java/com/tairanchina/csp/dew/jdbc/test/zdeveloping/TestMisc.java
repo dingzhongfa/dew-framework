@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * 开发时测试，暂时保留
  */
-public class MiscTest {
+public class TestMisc {
 
     public void testReplaceAll() {
         String str = "select * from t_test_crud_s_entity where 1 =1 and  field_a= #{ fieldA } and field_c = #{fc} order by code desc";

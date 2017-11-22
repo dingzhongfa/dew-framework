@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.core.test;
 
-import com.tairanchina.csp.dew.core.test.auth.AuthTest;
-import com.tairanchina.csp.dew.core.test.cluster.ClusterTest;
-import com.tairanchina.csp.dew.core.test.dewutil.DewUtilTest;
-import com.tairanchina.csp.dew.core.test.web.WebTest;
+import com.tairanchina.csp.dew.core.test.auth.TestAuth;
+import com.tairanchina.csp.dew.core.test.cluster.TestCluster;
+import com.tairanchina.csp.dew.core.test.dewutil.TestDewUtil;
+import com.tairanchina.csp.dew.core.test.web.TestWeb;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,21 +14,21 @@ import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BootTestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class TestAll {
+public class AllTest {
 
     public static final String URL = "http://127.0.0.1:8080/";
 
     @Resource
-    private ClusterTest clusterTest;
+    private TestCluster testCluster;
 
     @Resource
-    private WebTest webTest;
+    private TestWeb testWeb;
 
     @Resource
-    private AuthTest authTest;
+    private TestAuth testAuth;
 
     @Resource
-    private DewUtilTest dewUtilTest;
+    private TestDewUtil testDewUtil;
 
 
     /**
@@ -38,7 +38,7 @@ public class TestAll {
      */
     @Test
     public void testCluster() throws Exception {
-        clusterTest.testAll();
+        testCluster.testAll();
     }
 
     /**
@@ -48,7 +48,7 @@ public class TestAll {
      */
     @Test
     public void testWeb() throws Exception {
-        webTest.testAll();
+        testWeb.testAll();
     }
 
     /**
@@ -58,7 +58,7 @@ public class TestAll {
      */
     @Test
     public void testAuth() throws Exception {
-        authTest.testAuth();
+        testAuth.testAuth();
     }
 
     /**
@@ -68,7 +68,7 @@ public class TestAll {
      */
     @Test
     public void testDewUtil() throws Exception {
-        dewUtilTest.testAll();
+        testDewUtil.testAll();
     }
 
 

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Component
-@ConditionalOnBean(JavaMailSender.class)
+@ConditionalOnExpression("#{'${spring.mail.host}'!=''}")
 public class FailureEventNotifier extends HystrixEventNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);
@@ -31,6 +31,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     private Set<String> notifyIncludeKeys = new HashSet<>();
     private Set<String> notifyExcludeKeys = new HashSet<>();
+
     @Autowired
     private JavaMailSender mailSender;
     @Value("${spring.mail.username}")
@@ -96,7 +97,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             mailSender.send(message);
             logger.info("邮件通知成功\t\t\tdetail:\t" + stringBuilder.toString());
         } catch (Exception e) {
-            logger.error("邮件通知失败\t\t\tdetail：" + e.getMessage(),e);
+            logger.error("邮件通知失败\t\t\tdetail：" + e.getMessage());
         }
     }
 }

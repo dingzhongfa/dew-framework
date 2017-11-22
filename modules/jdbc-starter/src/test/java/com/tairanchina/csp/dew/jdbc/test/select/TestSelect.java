@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class SelectTest {
+public class TestSelect {
 
     @Autowired
     private TestInterfaceDao dao;

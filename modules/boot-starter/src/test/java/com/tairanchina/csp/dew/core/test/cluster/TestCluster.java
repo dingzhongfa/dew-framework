@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 @Component
-public class ClusterTest {
+public class TestCluster {
 
-    private Logger logger = LoggerFactory.getLogger(ClusterTest.class);
+    private Logger logger = LoggerFactory.getLogger(TestCluster.class);
 
     public void testAll() throws Exception {
         // Cache Test

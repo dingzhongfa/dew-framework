@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CRUDSTest {
+public class TestCRUDS {
 
     private String url = "http://127.0.0.1:8080/crud";
 

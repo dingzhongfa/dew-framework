@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * desription:
@@ -18,11 +18,10 @@ import java.util.WeakHashMap;
 
 public class DewFilter implements Filter {
 
-
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
     // url->(timestamp,resTime)
-    public static final Map<String, LinkedHashMap<Long, Integer>> RECORD_MAP = new WeakHashMap<>();
+    public static final Map<String, LinkedHashMap<Long, Integer>> RECORD_MAP = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private static final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
@@ -35,7 +34,7 @@ public class DewFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         long start = Instant.now().toEpochMilli();
-        servletRequest.setAttribute("dew.metric.start",start);
+        servletRequest.setAttribute("dew.metric.start", start);
         filterChain.doFilter(servletRequest, servletResponse);
         int resTime = (int) (Instant.now().toEpochMilli() - start);
         String method = httpServletRequest.getMethod();

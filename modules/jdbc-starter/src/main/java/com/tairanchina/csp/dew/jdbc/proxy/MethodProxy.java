@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class MethodProxy implements InvocationHandler {
 
-    private static final Map<Method, MethodHandle> METHOD_HANDLE_CACHE = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+    private static final Map<Method, MethodHandle> METHOD_HANDLE_CACHE = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
-    private static final Map<Class, String> REL_DAO_DS = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+    private static final Map<Class, String> REL_DAO_DS = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

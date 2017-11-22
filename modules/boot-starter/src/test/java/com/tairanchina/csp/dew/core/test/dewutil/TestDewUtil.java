@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class DewUtilTest {
+public class TestDewUtil {
 
-    private Logger logger = LoggerFactory.getLogger(DewUtilTest.class);
+    private Logger logger = LoggerFactory.getLogger(TestDewUtil.class);
 
 
     public void testAll() throws Exception {

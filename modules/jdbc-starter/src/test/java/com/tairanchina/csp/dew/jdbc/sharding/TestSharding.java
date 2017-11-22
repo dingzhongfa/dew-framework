@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class ShardingTest {
+public class TestSharding {
 
     public void testSharding() {
         long countStart = Dew.ds("sharding").countAll(TOrder.class);

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core.test.web;
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.core.test.TestAll;
+import com.tairanchina.csp.dew.core.test.AllTest;
 import com.tairanchina.csp.dew.core.test.web.controller.TestController;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class WebTest {
+public class TestWeb {
 
-    private String URL = TestAll.URL + "test/";
+    private String URL = AllTest.URL + "test/";
 
-    private Logger logger = LoggerFactory.getLogger(WebTest.class);
+    private Logger logger = LoggerFactory.getLogger(TestWeb.class);
 
     public void testAll() throws Exception {
         testValidation();

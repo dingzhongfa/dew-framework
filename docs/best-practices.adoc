@@ -1,4 +1,4 @@
-``== 最佳实践
+````== 最佳实践
 
 === JDBC框架的选择
 
@@ -320,8 +320,13 @@ management:
 #指定统计多少秒内的指标统计
 dew:
   metric:
-    interval-sec: #默认10分钟，（单位秒）
+    interval-sec: #默认600s(10分钟),（单位秒）
 ----
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标
 及针对接口的对应指标
+
+
+=== `feign` 接口添加http请求头信息
+
+TIP: 在FeignClient类中的接口方法里添加新的形参，并加上@Requ即刻estHeader注解指定key值

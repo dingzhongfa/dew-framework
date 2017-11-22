@@ -1,9 +1,9 @@
 package com.tairanchina.csp.dew.jdbc;
 
-import com.tairanchina.csp.dew.jdbc.test.crud.CRUDSTest;
-import com.tairanchina.csp.dew.jdbc.test.ds.JDBCTest;
-import com.tairanchina.csp.dew.jdbc.test.select.SelectTest;
-import com.tairanchina.csp.dew.jdbc.sharding.ShardingTest;
+import com.tairanchina.csp.dew.jdbc.test.crud.TestCRUDS;
+import com.tairanchina.csp.dew.jdbc.test.ds.TestJDBC;
+import com.tairanchina.csp.dew.jdbc.test.select.TestSelect;
+import com.tairanchina.csp.dew.jdbc.sharding.TestSharding;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,18 +13,18 @@ import javax.annotation.Resource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = JDBCApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class TestJdbc {
+public class JdbcTest {
     @Resource
-    private JDBCTest jdbcTest;
+    private TestJDBC testJDBC;
 
     @Resource
-    private CRUDSTest crudsTest;
+    private TestCRUDS testCRUDS;
 
     @Resource
-    private SelectTest selectTest;
+    private TestSelect testSelect;
 
     @Resource
-    private ShardingTest shardingTest;
+    private TestSharding testSharding;
 
 
 
@@ -35,7 +35,7 @@ public class TestJdbc {
      */
     @Test
     public void testSelect() throws Exception {
-        selectTest.testAll();
+        testSelect.testAll();
     }
 
     /**
@@ -43,7 +43,7 @@ public class TestJdbc {
      */
     @Test
     public void testJDBC() throws Exception {
-        jdbcTest.testAll();
+        testJDBC.testAll();
     }
 
 
@@ -54,11 +54,11 @@ public class TestJdbc {
      */
     @Test
     public void testCRUD() throws Exception {
-        crudsTest.testAll();
+        testCRUDS.testAll();
     }
 
     @Test
     public void testShardingJDBC()throws Exception{
-        shardingTest.testSharding();
+        testSharding.testSharding();
     }
 }

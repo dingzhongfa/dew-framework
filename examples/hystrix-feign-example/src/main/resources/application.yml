@@ -2,7 +2,7 @@ dew:
   cloud:
     error:
       notify-interval-sec: 10000
-      notify-emails:
+      notify-emails: 71964899@qq.com
       notify-event-types: FAILURE,SHORT_CIRCUITED
       notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
 spring:

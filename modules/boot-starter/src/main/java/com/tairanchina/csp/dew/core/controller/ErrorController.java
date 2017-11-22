@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,16 +74,35 @@ public class ErrorController extends AbstractErrorController {
             return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());
         }
         Map<String, Object> error = getErrorAttributes(request, false);
-        String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
-        String busCode = error.getOrDefault("status", -1) + "";
-        int httpCode = (int) error.getOrDefault("status", -1);
-        String err = (String) error.getOrDefault("error", "");
+        int statusCode = (int) error.getOrDefault("status", -1);
         String message = error.getOrDefault("message", "").toString();
-        String exception = (String) error.getOrDefault("exception", "");
-        if (!StringUtils.isEmpty(exception) && Dew.dewConfig.getBasic().getErrorMapping().containsKey(exception)) {
+        String exClass = (String) error.getOrDefault("exception", "");
+        String exMsg = (String) error.getOrDefault("error", "");
+        List exDetail = null;
+        if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
+            exDetail = (List) error.get("errors");
+        }
+        Object[] result = error(request, path, statusCode, message, exClass, exMsg, exDetail, (Throwable) specialError);
+        return ResponseEntity.status((int) result[0]).contentType(MediaType.APPLICATION_JSON_UTF8).body(result[1]);
+    }
+
+    public static void error(HttpServletRequest request,HttpServletResponse response, int statusCode, String message, String exClass) throws IOException {
+        Object[] confirmedError = error(request, request.getRequestURI(), statusCode, message, exClass, "", null, null);
+        response.setStatus((Integer) confirmedError[0]);
+        response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+        response.getWriter().write((String) confirmedError[1]);
+        response.getWriter().flush();
+        response.getWriter().close();
+    }
+
+    private static Object[] error(HttpServletRequest request, String path, int statusCode, String message, String exClass, String exMsg, List exDetail, Throwable specialError) {
+        String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
+        int httpCode = statusCode;
+        String busCode = statusCode + "";
+        if (!StringUtils.isEmpty(exClass) && Dew.dewConfig.getBasic().getErrorMapping().containsKey(exClass)) {
             // Found Error Mapping
-            DewConfig.Basic.ErrorMapping errorMapping = Dew.dewConfig.getBasic().getErrorMapping().get(exception);
+            DewConfig.Basic.ErrorMapping errorMapping = Dew.dewConfig.getBasic().getErrorMapping().get(exClass);
             if (!StringUtils.isEmpty(errorMapping.getHttpCode())) {
                 httpCode = errorMapping.getHttpCode();
             }
@@ -114,9 +135,9 @@ public class ErrorController extends AbstractErrorController {
                         );
                 message += DETAIL_FLAG + $.json.toJsonString(errorExt);
             } else {
-                if (error.containsKey("errors") && !((List) error.get("errors")).isEmpty()) {
+                if (exDetail != null && !exDetail.isEmpty()) {
                     ArrayNode errorExt = $.json.createArrayNode();
-                    for (JsonNode json : $.json.toJson(error.get("errors"))) {
+                    for (JsonNode json : $.json.toJson(exDetail)) {
                         errorExt.add($.json.createObjectNode()
                                 .put("field", json.get("field").asText(""))
                                 .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
@@ -127,31 +148,32 @@ public class ErrorController extends AbstractErrorController {
             }
         }
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
+        String body = "";
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             if (specialError instanceof ConstraintViolationException) {
-                httpCode = 400;
                 busCode = "400";
             }
-            Resp resp = Resp.customFail(busCode + "", "[" + err + "]" + message);
-            addRequestRecord(request);
-            return ResponseEntity.status((httpCode >= 500 && httpCode < 600) ? FALL_BACK_STATUS : 200).contentType(MediaType.APPLICATION_JSON_UTF8).body($.json.toJsonString(resp));
+            if (httpCode >= 500 && httpCode < 600) {
+                httpCode = FALL_BACK_STATUS;
+            } else {
+                httpCode = 200;
+            }
+            Resp resp = Resp.customFail(busCode + "", "[" + exMsg + "]" + message);
+            body = $.json.toJsonString(resp);
         } else {
             JsonNode jsonNode = $.json.createObjectNode()
                     .set("error", $.json.createObjectNode()
                             .put(Dew.dewConfig.getBasic().getFormat().getCodeFieldName(), busCode)
                             .put(Dew.dewConfig.getBasic().getFormat().getMessageFieldName(), message)
                     );
-            addRequestRecord(request);
-            return ResponseEntity.status(httpCode).contentType(MediaType.APPLICATION_JSON_UTF8).body(jsonNode.toString());
+            body = jsonNode.toString();
         }
-
-
+        addRequestRecord(request);
+        return new Object[]{httpCode, body};
     }
 
-    /**
-     * @param request
-     */
-    public void addRequestRecord(HttpServletRequest request) {
+
+    private static void addRequestRecord(HttpServletRequest request) {
         long start = (long) request.getAttribute("dew.metric.start");
         String key = "{[" + request.getMethod() + "]:/error}";
         int resTime = (int) (Instant.now().toEpochMilli() - start);

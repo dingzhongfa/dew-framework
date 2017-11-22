@@ -1,6 +1,8 @@
 package com.tairanchina.csp.dew.idempotent;
 
 import com.ecfront.dew.common.$;
+import com.ecfront.dew.common.Resp;
+import com.ecfront.dew.common.StandardCode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,55 +23,64 @@ public class IdempotentTest {
     private String urlPre = "http://localhost:8080/idempotent/";
 
     @Test
-    public void testUnconfirm() throws IOException {
+    public void testManualConfirm() throws IOException, InterruptedException {
         HashMap<String, String> hashMap = new HashMap<String, String>() {{
-            put("__IDEMPOTENT_OPT_TYPE__", "dew-type");
-            put("__IDEMPOTENT_OPT_ID__", "dew-id");
+            put("__IDEMPOTENT_OPT_TYPE__", "manualConfirm");
+            put("__IDEMPOTENT_OPT_ID__", "0001");
             put("__IDEMPOTENT_EXPIRE_MS__", "5000");
         }};
-        String result1 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        String result2 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        hashMap.put("__IDEMPOTENT_FORCE__", "true");
-        String result3 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        Assert.assertEquals("dew-test", result1);
-        Assert.assertEquals("dew-test", result3);
-        logger.info("result1:  " + result1);
-        logger.info("result2:  " + result2);
-        logger.info("result3:  " + result3);
+        // 第一次请求，正常
+        Resp<String> result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
+        // 上一次请求还在进行中
+        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertEquals(StandardCode.CONFLICT.toString(), result.getCode());
+        Thread.sleep(1000);
+        // 上一次请求已确认，不能重复请求
+        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
+        Thread.sleep(4000);
+        // 幂等过期，可以再次提交
+        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
     }
 
     @Test
-    public void testConfirmed() throws IOException, InterruptedException {
+    public void testAutoConfirmed() throws IOException, InterruptedException {
         HashMap<String, String> hashMap = new HashMap<String, String>() {{
-            put("__IDEMPOTENT_OPT_TYPE__", "dew-type");
-            put("__IDEMPOTENT_OPT_ID__", "dew-id");
+            put("__IDEMPOTENT_OPT_TYPE__", "autoConfirm");
+            put("__IDEMPOTENT_OPT_ID__", "0001");
             put("__IDEMPOTENT_EXPIRE_MS__", "5000");
             put("__IDEMPOTENT_CONFIRM__", "false");
         }};
-        String result1 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        Thread.sleep(2000);
-        String result2 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        Thread.sleep(4000);
-        String result3 = $.http.get(urlPre + "test1?str=dew-test", hashMap);
-        Assert.assertEquals("dew-test", result1);
-        Assert.assertEquals("dew-test", result3);
-        logger.info("result1:  " + result1);
-        logger.info("result2:  " + result2);
-        logger.info("result3:  " + result3);
+        // 第一次请求，正常
+        Resp<String> result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
+        // 上一次请求已确认，不能重复请求
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
+        Thread.sleep(5000);
+        // 幂等过期，可以再次提交
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
     }
 
     @Test
-    public void testNeedConfirm() throws IOException, InterruptedException {
+    public void testIgnore() throws IOException, InterruptedException {
         HashMap<String, String> hashMap = new HashMap<String, String>() {{
-            put("__IDEMPOTENT_OPT_TYPE__", "dew-type");
-            put("__IDEMPOTENT_OPT_ID__", "dew-id");
-            put("__IDEMPOTENT_EXPIRE_MS__", "5000");
+            put("__IDEMPOTENT_OPT_TYPE__", "ignore");
+            put("__IDEMPOTENT_OPT_ID__", "0001");
         }};
-        String result1 = $.http.get(urlPre + "test2?str=dew-test", hashMap);
-        String result2 = $.http.get(urlPre + "test2?str=dew-test", hashMap);
-        Assert.assertEquals("dew-test", result1);
-        logger.info("result1:  " + result1);
-        logger.info("result2:  " + result2);
+        // 第一次请求，正常
+        Resp<String> result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
+        // 上一次请求已确认，不能重复请求
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
+        // 忽略幂等检查
+        hashMap.put("__IDEMPOTENT_IGNORE__", "true");
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", hashMap), String.class);
+        Assert.assertTrue(result.ok());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.idempotent;
 
+import com.ecfront.dew.common.Resp;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.idempotent.strategy.BloomFilterProcessor;
 import com.tairanchina.csp.dew.idempotent.strategy.DewIdempotentProcessor;
@@ -39,18 +40,18 @@ public class DewIdempotent {
         bloomFilterProcessor = innerBloomFilterProcessor;
     }
 
-    public static DewIdempotentProcessor initProcessor(String storageStrategy, String optType, String optId) {
+    public static Resp<DewIdempotentProcessor> initProcessor(String storageStrategy, String optType, String optId) {
         DewIdempotentProcessor processor;
         if (storageStrategy.equalsIgnoreCase("item")) {
             processor = itemProcessor;
         } else if (storageStrategy.equalsIgnoreCase("bloom")) {
             processor = bloomFilterProcessor;
         } else {
-            throw Dew.E.e("400", new ValidationException("Idempotent storage strategy NOT exist."), 400);
+            return Resp.badRequest("Idempotent storage strategy NOT exist.");
         }
         CONTENT.putIfAbsent(optType, processor);
         CONTEXT.set(new String[]{optType, optId});
-        return processor;
+        return Resp.success(processor);
     }
 
     public static boolean confirm(String optType, String optId) {

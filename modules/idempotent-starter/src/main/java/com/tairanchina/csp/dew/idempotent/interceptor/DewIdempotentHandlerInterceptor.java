@@ -1,17 +1,20 @@
 package com.tairanchina.csp.dew.idempotent.interceptor;
 
-import com.tairanchina.csp.dew.Dew;
+import com.ecfront.dew.common.Resp;
+import com.tairanchina.csp.dew.core.controller.ErrorController;
 import com.tairanchina.csp.dew.idempotent.DewIdempotent;
 import com.tairanchina.csp.dew.idempotent.DewIdempotentConfig;
 import com.tairanchina.csp.dew.idempotent.strategy.DewIdempotentProcessor;
 import com.tairanchina.csp.dew.idempotent.strategy.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 
 @Component
 public class DewIdempotentHandlerInterceptor extends HandlerInterceptorAdapter {
@@ -58,17 +61,38 @@ public class DewIdempotentHandlerInterceptor extends HandlerInterceptorAdapter {
         }
         String storageStrategy = StringUtils.isEmpty(storageStrategyTmp) ? dewIdempotentConfig.getDefaultStorageStrategy() : storageStrategyTmp;
         // 处理
-        DewIdempotentProcessor processor = DewIdempotent.initProcessor(storageStrategy, optType, optId);
-        switch (processor.getStatus(optType, optId)) {
+        Resp<DewIdempotentProcessor> processor = DewIdempotent.initProcessor(storageStrategy, optType, optId);
+        if (!processor.ok()) {
+           Object[] result = ErrorController.error(request,request.getRequestURI(),400,processor.getMessage(), ValidationException.class.getName(),"",null,null);
+            response.setStatus((Integer) result[0]);
+            response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+            response.getWriter().write((String)result[1]);
+            response.getWriter().flush();
+            response.getWriter().close();
+            return false;
+        }
+        switch (processor.getBody().getStatus(optType, optId)) {
             case NOT_EXIST:
-                processor.storage(optType, optId, needConfirm ? StatusEnum.UN_CONFIRM : StatusEnum.CONFIRMED, expireMs);
+                processor.getBody().storage(optType, optId, needConfirm ? StatusEnum.UN_CONFIRM : StatusEnum.CONFIRMED, expireMs);
                 return super.preHandle(request, response, handler);
             case UN_CONFIRM:
-                throw Dew.E.e("409", new DewIdempotentException("The last operation was still going on, please wait."), 409);
+                Object[] unConfirmError = ErrorController.error(request,request.getRequestURI(),409,"The last operation was still going on, please wait.", DewIdempotentException.class.getName(),"",null,null);
+                response.setStatus((Integer) unConfirmError[0]);
+                response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+                response.getWriter().write((String)unConfirmError[1]);
+                response.getWriter().flush();
+                response.getWriter().close();
+                return false;
             case CONFIRMED:
-                throw Dew.E.e("423", new DewIdempotentException("Resources have been processed, can't repeat the request."), 423);
+                Object[] confirmedError = ErrorController.error(request,request.getRequestURI(),423,"Resources have been processed, can't repeat the request.", DewIdempotentException.class.getName(),"",null,null);
+                response.setStatus((Integer) confirmedError[0]);
+                response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+                response.getWriter().write((String)confirmedError[1]);
+                response.getWriter().flush();
+                response.getWriter().close();
+                return false;
             default:
-                return super.preHandle(request, response, handler);
+                return false;
         }
     }
 

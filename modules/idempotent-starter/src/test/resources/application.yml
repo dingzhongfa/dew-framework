@@ -1,7 +1,6 @@
 dew:
   cluster:
     cache: redis
-
 spring:
   application:
     name: Idempotent-test

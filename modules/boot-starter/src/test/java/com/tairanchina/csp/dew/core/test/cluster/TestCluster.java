@@ -60,17 +60,17 @@ public class TestCluster {
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
         Dew.cluster.cache.del(valueTest);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
-        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);
+        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 2L);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
         Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get(valueTest)).get("name").asText());
+        Thread.sleep(1000);
         long timeLeft = Dew.cluster.cache.ttl(valueTest);
-        System.out.println(timeLeft);
-        Assert.assertTrue(timeLeft==1); // 返回设置时间
+        Assert.assertTrue(timeLeft == 1); // 返回设置时间
         Thread.sleep(1000);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
         Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
-        Assert.assertTrue(!Dew.cluster.cache.setnx(valueTest,"存入失败",1L));
+        Assert.assertTrue(!Dew.cluster.cache.setnx(valueTest, "存入失败", 1L));
         String val = Dew.cluster.cache.getSet(valueTest, "{\"name\":\"dzf\"}");
         Assert.assertEquals("jzy", $.json.toJson(val).get("name").asText());
         Thread.sleep(1000);

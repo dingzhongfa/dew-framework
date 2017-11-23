@@ -22,7 +22,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Component
-@ConditionalOnExpression("#{'${spring.mail.host}'!=''}")
+@ConditionalOnExpression("'${spring.mail.host}'.isEmpty()")
 public class FailureEventNotifier extends HystrixEventNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);

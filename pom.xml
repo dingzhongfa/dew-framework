@@ -48,6 +48,7 @@
         <module>examples/dubbo-example</module>
         <module>examples/monitor-example</module>
         <module>examples/hystrix-example</module>
+        <module>examples/idempotent-example</module>
         <module>examples/sleuth-invoke1-example</module>
         <module>examples/sleuth-invoke2-example</module>
         <module>examples/sleuth-invoke3-example</module>

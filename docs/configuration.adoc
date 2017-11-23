@@ -51,7 +51,16 @@ dew: # Dew 参数key前缀
              notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED # 通知的事件类型
              notify-include-keys: # 需监控的方法key值，与notify-exclude-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
              notify-exclude-keys: # 不需要监控的方法key值，与notify-include-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
-
+    idempotent:
+      default-expire-ms: 3600000 # 设置默认过期时间，1小时
+      default-need-confirm: true # 设置默认幂等记录是否需要手工确认（防止收到请求后但内部处理错误导致无法重试），需要确认
+      default-storage-strategy: item # 设置默认存储策略，支持 bloom(Bloom Filter)和item(逐条记录)
+      opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
+      opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
+      opt-expire-ms-flag: __IDEMPOTENT_EXPIRE_MS__ # 指定操作级的过期时间标识，可以位于HTTP Header或请求参数中
+      opt-storage-strategy-flag: __IDEMPOTENT_SS__ # 指定操作级的存储策略标识，可以位于HTTP Header或请求参数中
+      opt-need-confirm-flag: __IDEMPOTENT_CONFIRM__ # 指定操作级的是否需要手工确认标识，可以位于HTTP Header或请求参数中
+      opt-force-ignore-check-flag: __IDEMPOTENT_IGNORE__ # 指定是否强制忽略幂等检查标识，可以位于HTTP Header或请求参数中
 spring:
   datasource: # 主数据源配置
         ... # 数据源配置，详见 Spring boot 核心参数

@@ -1944,6 +1944,52 @@ tables: #分库分表配置，可配置多个logic_table_name
         tableStrategy: #分表策略，同分库策略
 ----
 
+==== 幂等支持
+
+----
+此章节关联示例:idempotent-example
+----
+
+[source,xml]
+.引入依赖
+----
+<!--引入幂等支持-->
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>idempotent-starter</artifactId>
+</dependency>
+<!--使用幂等的Redis实现-->
+<dependency>
+    <groupId>com.tairanchina.csp.dew</groupId>
+    <artifactId>cluster-spi-redis</artifactId>
+</dependency>
+----
+
+* 配置
+
+[source,yml]
+----
+dew:
+  cluster:
+    cache: redis # 启用Redis支持
+  idempotent:
+    default-expire-ms: 3600000 # 设置默认过期时间，1小时
+    default-need-confirm: true # 设置默认幂等记录是否需要手工确认（防止收到请求后但内部处理错误导致无法重试），需要确认
+    default-storage-strategy: item # 设置默认存储策略，支持 bloom(Bloom Filter)和item(逐条记录)
+    opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
+    opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
+    opt-expire-ms-flag: __IDEMPOTENT_EXPIRE_MS__ # 指定操作级的过期时间标识，可以位于HTTP Header或请求参数中
+    opt-storage-strategy-flag: __IDEMPOTENT_SS__ # 指定操作级的存储策略标识，可以位于HTTP Header或请求参数中
+    opt-need-confirm-flag: __IDEMPOTENT_CONFIRM__ # 指定操作级的是否需要手工确认标识，可以位于HTTP Header或请求参数中
+    opt-force-ignore-check-flag: __IDEMPOTENT_IGNORE__ # 指定是否强制忽略幂等检查标识，可以位于HTTP Header或请求参数中
+----
+
+* 使用
+
+在需要使用的幂等处理的请求头或参数中加上配置中指定的两个key(``操作类型标识``及``幂等操作ID标识``，两者构成唯一)，同时还可以指定一些额外的配置（见上文配置）。
+
+当``是否需要确认``为true时，需要进行显式确认操作: ``DewIdempotent.confirm() 或 DewIdempotent.confirm(String optType, String optId)`` 前者要求与请求入口在同一线程中。
+
 === 工程化
 
 ==== 代码质量检查

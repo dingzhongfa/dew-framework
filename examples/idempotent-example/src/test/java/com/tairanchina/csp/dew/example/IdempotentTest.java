@@ -1,13 +1,13 @@
-package com.tairanchina.csp.dew.idempotent;
+package com.tairanchina.csp.dew.example;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
 import com.ecfront.dew.common.StandardCode;
+import com.tairanchina.csp.dew.example.idempotent.IdempotentExampleApplication;
+import com.tairanchina.csp.dew.idempotent.DewIdempotentConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,10 +16,8 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = IdempotentApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = IdempotentExampleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class IdempotentTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(IdempotentTest.class);
 
     private String urlPre = "http://localhost:8080/idempotent/";
 
@@ -36,7 +34,7 @@ public class IdempotentTest {
         // 第一次请求，正常
         Resp<String> result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);
         Assert.assertTrue(result.ok());
-       Thread thread = new Thread(() -> {
+        Thread thread = new Thread(() -> {
             // 上一次请求还在进行中
             try {
                 Resp<String> result2 = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test", hashMap), String.class);

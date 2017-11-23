@@ -1,4 +1,4 @@
-package com.tairanchina.csp.dew.gateway.auth;
+package com.tairanchina.csp.dew.gateway.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: cache-example
+    name: hystrix-example
   redis:
     host: localhost
     port: 6379

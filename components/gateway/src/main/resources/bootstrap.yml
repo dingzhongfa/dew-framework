@@ -5,10 +5,11 @@ spring:
 server:
   port: 8000
 
+
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://registry:123456@10.200.131.73:9999/eureka
+      defaultZone: http://registry:123456@127.0.0.1:9999/eureka
 
 management.security.enabled: false
 
@@ -25,4 +26,7 @@ ribbon:
   ConnectTimeout: 3000
   # 请按实际情况配置
   ReadTimeout: 10000
+
+#zuul:
+#  ignored-patterns: /hystrix**
 

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.gateway;
 
 import com.tairanchina.csp.dew.core.DewCloudApplication;
-import com.tairanchina.csp.dew.gateway.auth.LoggingFilter;
+import com.tairanchina.csp.dew.gateway.filter.LoggingFilter;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.discovery.PatternServiceRouteMapper;
@@ -17,11 +17,6 @@ public class GatewayApplication extends DewCloudApplication {
     @Bean
     public LoggingFilter loggingFilter() {
         return new LoggingFilter();
-    }
-
-    @Bean
-    public PatternServiceRouteMapper serviceRouteMapper() {
-        return new PatternServiceRouteMapper("(?<name>^.+)", "${name}");
     }
 
 }

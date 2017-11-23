@@ -56,22 +56,26 @@ public class TestCluster {
     private void testCache() throws InterruptedException {
         Assert.assertTrue(true);
         Dew.cluster.cache.flushdb();
-        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1);
+        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
         Dew.cluster.cache.del(valueTest);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
-        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1);
+        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
         Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get(valueTest)).get("name").asText());
+        long timeLeft = Dew.cluster.cache.ttl(valueTest);
+        System.out.println(timeLeft);
+        Assert.assertTrue(timeLeft==1); // 返回设置时间
         Thread.sleep(1000);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
-        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1);
+        Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
+        Assert.assertTrue(!Dew.cluster.cache.setnx(valueTest,"存入失败",1L));
         String val = Dew.cluster.cache.getSet(valueTest, "{\"name\":\"dzf\"}");
         Assert.assertEquals("jzy", $.json.toJson(val).get("name").asText());
         Thread.sleep(1000);
         Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
-        Dew.cluster.cache.expire(valueTest, 1);
+        Dew.cluster.cache.expire(valueTest, 1L);
         Thread.sleep(1000);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
         Dew.cluster.cache.del(hashTest);

@@ -330,3 +330,14 @@ dew:
 === `feign` 接口添加http请求头信息
 
 TIP: 在FeignClient类中的接口方法里添加新的形参，并加上@RequestHeader注解指定key值
+
+=== `zuul` 保护(隐藏)内部服务的http接口
+
+配置ignoreParttern,在yml配置文件里配置(`ignored-patterns`,`ignored-services`)这两项中的一项即可
+[source,yml]
+.配置示例
+----
+zuul: #配置一项即可!
+  ignored-patterns: /dew-example/**   #排除此路径
+  ignored-services: dew-example       #排除此服务
+----

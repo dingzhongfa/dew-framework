@@ -1974,21 +1974,83 @@ dew:
     cache: redis # 启用Redis支持
   idempotent:
     default-expire-ms: 3600000 # 设置默认过期时间，1小时
-    default-need-confirm: true # 设置默认幂等记录是否需要手工确认（防止收到请求后但内部处理错误导致无法重试），需要确认
-    default-storage-strategy: item # 设置默认存储策略，支持 bloom(Bloom Filter)和item(逐条记录)
+    default-strategy: item # 设置默认策略，支持 bloom(Bloom Filter)和item(逐条记录)
     opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
     opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
-    opt-expire-ms-flag: __IDEMPOTENT_EXPIRE_MS__ # 指定操作级的过期时间标识，可以位于HTTP Header或请求参数中
-    opt-storage-strategy-flag: __IDEMPOTENT_SS__ # 指定操作级的存储策略标识，可以位于HTTP Header或请求参数中
-    opt-need-confirm-flag: __IDEMPOTENT_CONFIRM__ # 指定操作级的是否需要手工确认标识，可以位于HTTP Header或请求参数中
-    opt-force-ignore-check-flag: __IDEMPOTENT_IGNORE__ # 指定是否强制忽略幂等检查标识，可以位于HTTP Header或请求参数中
 ----
 
 * 使用
 
-在需要使用的幂等处理的请求头或参数中加上配置中指定的两个key(``操作类型标识``及``幂等操作ID标识``，两者构成唯一)，同时还可以指定一些额外的配置（见上文配置）。
+支持HTTP和非HTTP幂等操作，对于HTTP操作，要求请求方在请求头或URL参数中加上操作类型和操作ID标识，非HTTP操作由可自由指定操作类型和操作ID标识的来源。
 
-当``是否需要确认``为true时，需要进行显式确认操作: ``DewIdempotent.confirm() 或 DewIdempotent.confirm(String optType, String optId)`` 前者要求与请求入口在同一线程中。
+.HTTP操作
+
+[source,yml]
+----
+@GetMapping(xxx)
+// 启用幂等支持
+// 请求头部或参数加上 __IDEMPOTENT_OPT_TYPE__ = xx , __IDEMPOTENT_OPT_ID__ = yy
+@Idempotent(expireMs = 5000)
+public void test(xxx) {
+    // 业务操作
+    // ...
+    // 手工确认
+    DewIdempotent.confirm();
+}
+----
+
+``Idempotent``注解说明：
+
+* optTypeFlag：指定幂等操作类型标识，可以位于HTTP Header或请求参数中，要求全局唯一
+* optIdFlag：指定幂等操作ID标识，可以位于HTTP Header或请求参数中
+* expireMs：设置过期时间，单位毫秒
+* strategy：设置默认策略
+* needConfirm：设置是否需要显式确认，true时，需要进行显式确认操作: ``DewIdempotent.confirm() 或 DewIdempotent.confirm(String optType, String optId)`` 前者要求与请求入口在同一线程中
+
+.非HTTP操作
+
+[source,yml]
+----
+public void init() {
+    // 初始化用到的操作类型
+    // * DewIdempotent.initOptTypeInfo 参数：
+    // * @param optType     操作类型
+    // * @param needConfirm 是否需要显式确认
+    // * @param expireMs    过期时间
+    // * @param strategy    策略类型
+    DewIdempotent.initOptTypeInfo("transfer_a", true, 1000, StrategyEnum.ITEM);
+}
+
+public void send() {
+    // 调用
+    transferAReceive("xxxx");
+}
+
+public void transferAReceive(String id) {
+    // 收到请求后先调用process
+    // * DewIdempotent.process 参数：
+    // * @param optType 操作类型
+    // * @param optId   操作ID
+    switch (DewIdempotent.process("transfer_a", id)) {
+        case NOT_EXIST:
+            // 业务操作
+            // ...
+            // 手工确认
+            // * DewIdempotent.confirm 参数：
+            // * @param optType 操作类型
+            // * @param optId   操作ID
+            DewIdempotent.confirm();
+        case UN_CONFIRM:
+            // 已收到但操作还未确认
+            // 对应的处理，一般返回请求等待，稍后重试
+        case CONFIRMED:
+            // 已确认操作
+            // 对应的处理，一般直接返回失败
+        default:
+    }
+
+}
+----
 
 === 工程化
 

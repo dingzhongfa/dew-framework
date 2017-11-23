@@ -16,6 +16,8 @@ public class DewIdempotentAutoConfiguration {
 
     @Autowired
     private DewIdempotentConfig dewIdempotentConfig;
+    @Autowired
+    private DewIdempotent dewIdempotent;
 
     @PostConstruct
     private void init() {

@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.idempotent;
 
+import com.tairanchina.csp.dew.idempotent.strategy.StrategyEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -7,24 +8,19 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "dew.idempotent")
 public class DewIdempotentConfig {
 
+    public static final int DEFAULT_EXPIRE_MS = 3600000;
+    public static final StrategyEnum DEFAULT_STRATEGY = StrategyEnum.ITEM;
+    public static final String DEFAULT_OPT_TYPE_FLAG = "__IDEMPOTENT_OPT_TYPE__";
+    public static final String DEFAULT_OPT_ID_FLAG = "__IDEMPOTENT_OPT_ID__";
+
     // 设置默认过期时间，1小时
-    private long defaultExpireMs = 3600000;
-    // 设置默认幂等记录是否需要手工确认（防止收到请求后但内部处理错误导致无法重试），需要确认
-    private boolean defaultNeedConfirm = true;
-    // 设置默认存储策略，支持 bloom(Bloom Filter)和item(逐条记录)
-    private String defaultStorageStrategy = "item";
+    private long defaultExpireMs = DEFAULT_EXPIRE_MS;
+    // 设置默认策略，支持 bloom(Bloom Filter)和item(逐条记录)
+    private StrategyEnum defaultStrategy = DEFAULT_STRATEGY;
     // 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
-    private String optTypeFlag = "__IDEMPOTENT_OPT_TYPE__";
+    private String defaultOptTypeFlag = DEFAULT_OPT_TYPE_FLAG;
     // 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
-    private String optIdFlag = "__IDEMPOTENT_OPT_ID__";
-    // 指定操作级的过期时间标识，可以位于HTTP Header或请求参数中
-    private String optExpireMsFlag = "__IDEMPOTENT_EXPIRE_MS__";
-    // 指定操作级的存储策略标识，可以位于HTTP Header或请求参数中
-    private String optStorageStrategyFlag = "__IDEMPOTENT_SS__";
-    // 指定操作级的是否需要手工确认标识，可以位于HTTP Header或请求参数中
-    private String optNeedConfirmFlag = "__IDEMPOTENT_CONFIRM__";
-    // 指定是否强制忽略幂等检查标识，可以位于HTTP Header或请求参数中
-    private String optForceIgnoreCheckFlag = "__IDEMPOTENT_IGNORE__";
+    private String defaultOptIdFlag = DEFAULT_OPT_ID_FLAG;
 
     public long getDefaultExpireMs() {
         return defaultExpireMs;
@@ -34,67 +30,27 @@ public class DewIdempotentConfig {
         this.defaultExpireMs = defaultExpireMs;
     }
 
-    public boolean isDefaultNeedConfirm() {
-        return defaultNeedConfirm;
+    public StrategyEnum getDefaultStrategy() {
+        return defaultStrategy;
     }
 
-    public void setDefaultNeedConfirm(boolean defaultNeedConfirm) {
-        this.defaultNeedConfirm = defaultNeedConfirm;
+    public void setDefaultStrategy(StrategyEnum defaultStrategy) {
+        this.defaultStrategy = defaultStrategy;
     }
 
-    public String getDefaultStorageStrategy() {
-        return defaultStorageStrategy;
+    public String getDefaultOptTypeFlag() {
+        return defaultOptTypeFlag;
     }
 
-    public void setDefaultStorageStrategy(String defaultStorageStrategy) {
-        this.defaultStorageStrategy = defaultStorageStrategy;
+    public void setDefaultOptTypeFlag(String defaultOptTypeFlag) {
+        this.defaultOptTypeFlag = defaultOptTypeFlag;
     }
 
-    public String getOptTypeFlag() {
-        return optTypeFlag;
+    public String getDefaultOptIdFlag() {
+        return defaultOptIdFlag;
     }
 
-    public void setOptTypeFlag(String optTypeFlag) {
-        this.optTypeFlag = optTypeFlag;
-    }
-
-    public String getOptIdFlag() {
-        return optIdFlag;
-    }
-
-    public void setOptIdFlag(String optIdFlag) {
-        this.optIdFlag = optIdFlag;
-    }
-
-    public String getOptExpireMsFlag() {
-        return optExpireMsFlag;
-    }
-
-    public void setOptExpireMsFlag(String optExpireMsFlag) {
-        this.optExpireMsFlag = optExpireMsFlag;
-    }
-
-    public String getOptStorageStrategyFlag() {
-        return optStorageStrategyFlag;
-    }
-
-    public void setOptStorageStrategyFlag(String optStorageStrategyFlag) {
-        this.optStorageStrategyFlag = optStorageStrategyFlag;
-    }
-
-    public String getOptNeedConfirmFlag() {
-        return optNeedConfirmFlag;
-    }
-
-    public void setOptNeedConfirmFlag(String optNeedConfirmFlag) {
-        this.optNeedConfirmFlag = optNeedConfirmFlag;
-    }
-
-    public String getOptForceIgnoreCheckFlag() {
-        return optForceIgnoreCheckFlag;
-    }
-
-    public void setOptForceIgnoreCheckFlag(String optForceIgnoreCheckFlag) {
-        this.optForceIgnoreCheckFlag = optForceIgnoreCheckFlag;
+    public void setDefaultOptIdFlag(String defaultOptIdFlag) {
+        this.defaultOptIdFlag = defaultOptIdFlag;
     }
 }

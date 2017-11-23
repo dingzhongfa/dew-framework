@@ -28,19 +28,43 @@ public interface ClusterCache {
     /**
      * 设置字符串值
      *
-     * @param key       key
-     * @param value     value
-     * @param expireSec 过期时间(seconds)，0表示永不过期
-     */
-    void set(String key, String value, int expireSec);
-
-    /**
-     * 设置字符串值
-     *
      * @param key   key
      * @param value value
      */
     void set(String key, String value);
+
+    /**
+     * 设置字符串值，带过期时间
+     * <p>
+     * 此方法弃用，参见
+     *
+     * @param key       key
+     * @param value     value
+     * @param expireSec 过期时间(seconds)，0表示永不过期
+     * @see #setex
+     */
+    @Deprecated
+    void set(String key, String value, long expireSec);
+
+    /**
+     * 设置字符串值，带过期时间
+     *
+     * @param key       key
+     * @param value     value
+     * @param expireSec 过期时间(seconds)，0表示永不过期
+     */
+    void setex(String key, String value, long expireSec);
+
+    /**
+     * 字符串不存在时设置值，带过期时间
+     *
+     * @param key       key
+     * @param value     value
+     * @param expireSec 过期时间(seconds)，0表示永不过期
+     * @return true 设置成功 , false 设置失败（key已存在）
+     */
+    boolean setnx(String key, String value, long expireSec);
+
 
     /**
      * 设置字符串值，并返回其旧值
@@ -72,7 +96,7 @@ public interface ClusterCache {
      * @param values    values
      * @param expireSec 过期时间(seconds)，0表示永不过期
      */
-    void lmset(String key, List<String> values, int expireSec);
+    void lmset(String key, List<String> values, long expireSec);
 
     /**
      * 添加列表
@@ -122,7 +146,7 @@ public interface ClusterCache {
      * @param values    values
      * @param expireSec 过期时间(seconds)，0表示永不过期
      */
-    void smset(String key, List<String> values, int expireSec);
+    void smset(String key, List<String> values, long expireSec);
 
     /**
      * 设置Set集合
@@ -164,7 +188,7 @@ public interface ClusterCache {
      * @param items     items
      * @param expireSec 过期时间(seconds)，0表示永不过期
      */
-    void hmset(String key, Map<String, String> items, int expireSec);
+    void hmset(String key, Map<String, String> items, long expireSec);
 
     /**
      * 设置Hash集合
@@ -266,7 +290,15 @@ public interface ClusterCache {
      * @param key       key
      * @param expireSec 过期时间(seconds)，0表示永不过期
      */
-    void expire(String key, int expireSec);
+    void expire(String key, long expireSec);
+
+    /**
+     * 获取过期时间（秒）
+     *
+     * @param key key
+     * @return -2 key不存在，-1 对应的key永不过期，正数 过期时间(seconds)
+     */
+    long ttl(String key);
 
     /**
      * 删除当前数据库中的所有Key

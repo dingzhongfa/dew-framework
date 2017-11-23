@@ -244,14 +244,14 @@
                     <url>http://121.41.17.205:18081/nexus/content/repositories/snapshots/</url>
                     <uniqueVersion>false</uniqueVersion>
                 </snapshotRepository>
-               <!-- <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>-->
+                <!-- <snapshotRepository>
+                     <id>oss</id>
+                     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                 </snapshotRepository>
+                 <repository>
+                     <id>oss</id>
+                     <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                 </repository>-->
             </distributionManagement>
             <build>
                 <plugins>
@@ -568,6 +568,8 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </repository>
     </repositories>

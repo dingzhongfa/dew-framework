@@ -84,6 +84,14 @@
         <repository>
             <id>tr</id>
             <url>http://121.41.17.205:18081/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
         </repository>
         <repository>
             <id>tr-central</id>
@@ -104,6 +112,8 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </repository>
     </repositories>

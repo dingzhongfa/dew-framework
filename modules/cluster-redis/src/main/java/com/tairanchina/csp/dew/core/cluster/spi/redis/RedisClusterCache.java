@@ -32,14 +32,29 @@ public class RedisClusterCache implements ClusterCache {
 
     @Override
     public void set(String key, String value) {
-        set(key, value, 0);
+        redisTemplate.opsForValue().set(key, value);
     }
 
     @Override
-    public void set(String key, String value, int expireSec) {
-        redisTemplate.opsForValue().set(key, value);
-        if (expireSec != 0) {
-            expire(key, expireSec);
+    @Deprecated
+    public void set(String key, String value, long expireSec) {
+        redisTemplate.opsForValue().set(key, value, expireSec, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void setex(String key, String value, long expireSec) {
+        redisTemplate.opsForValue().set(key, value, expireSec, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public boolean setnx(String key, String value, long expireSec) {
+        if (redisTemplate.opsForValue().setIfAbsent(key, value)) {
+            if (expireSec != 0) {
+                expire(key, expireSec);
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -60,7 +75,7 @@ public class RedisClusterCache implements ClusterCache {
     }
 
     @Override
-    public void lmset(String key, List<String> values, int expireSec) {
+    public void lmset(String key, List<String> values, long expireSec) {
         redisTemplate.opsForList().leftPushAll(key, values);
         if (expireSec != 0) {
             expire(key, expireSec);
@@ -93,7 +108,7 @@ public class RedisClusterCache implements ClusterCache {
     }
 
     @Override
-    public void smset(String key, List<String> values, int expireSec) {
+    public void smset(String key, List<String> values, long expireSec) {
         redisTemplate.opsForSet().add(key, values.toArray(new String[]{}));
         if (expireSec != 0) {
             expire(key, expireSec);
@@ -126,7 +141,7 @@ public class RedisClusterCache implements ClusterCache {
     }
 
     @Override
-    public void hmset(String key, Map<String, String> items, int expireSec) {
+    public void hmset(String key, Map<String, String> items, long expireSec) {
         redisTemplate.opsForHash().putAll(key, items);
         if (expireSec != 0) {
             expire(key, expireSec);
@@ -189,9 +204,15 @@ public class RedisClusterCache implements ClusterCache {
     }
 
     @Override
-    public void expire(String key, int expire) {
-        redisTemplate.expire(key, expire, TimeUnit.SECONDS);
+    public void expire(String key, long expireSec) {
+        redisTemplate.expire(key, expireSec, TimeUnit.SECONDS);
     }
+
+    @Override
+    public long ttl(String key) {
+        return redisTemplate.getExpire(key);
+    }
+
 
     @Override
     public void flushdb() {

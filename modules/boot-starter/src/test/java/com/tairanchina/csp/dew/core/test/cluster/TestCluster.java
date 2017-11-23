@@ -49,11 +49,11 @@ public class TestCluster {
     private void testCache() throws InterruptedException {
         Assert.assertTrue(true);
         Dew.cluster.cache.flushdb();
-        Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
+        Dew.cluster.cache.setex("n_test", "{\"name\":\"jzy\"}", 1);
         Assert.assertTrue(Dew.cluster.cache.exists("n_test"));
         Dew.cluster.cache.del("n_test");
         Assert.assertTrue(!Dew.cluster.cache.exists("n_test"));
-        Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
+        Dew.cluster.cache.setex("n_test", "{\"name\":\"jzy\"}", 1);
         Assert.assertTrue(Dew.cluster.cache.exists("n_test"));
         Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get("n_test")).get("name").asText());
         Thread.sleep(1000);

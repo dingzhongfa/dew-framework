@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
@@ -24,6 +21,16 @@ import java.util.concurrent.CountDownLatch;
 public class TestCluster {
 
     private Logger logger = LoggerFactory.getLogger(TestCluster.class);
+
+    private String valueTest = "value_test";
+
+    private String hashTest = "hash_test";
+
+    private String listTest = "list_test";
+
+    private String intTest = "int_test";
+
+    private String setTest = "set_test";
 
     public void testAll() throws Exception {
         // Cache Test
@@ -49,66 +56,98 @@ public class TestCluster {
     private void testCache() throws InterruptedException {
         Assert.assertTrue(true);
         Dew.cluster.cache.flushdb();
-        Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
-        Assert.assertTrue(Dew.cluster.cache.exists("n_test"));
-        Dew.cluster.cache.del("n_test");
-        Assert.assertTrue(!Dew.cluster.cache.exists("n_test"));
-        Dew.cluster.cache.set("n_test", "{\"name\":\"jzy\"}", 1);
-        Assert.assertTrue(Dew.cluster.cache.exists("n_test"));
-        Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get("n_test")).get("name").asText());
+        Dew.cluster.cache.set(valueTest, "{\"name\":\"jzy\"}", 1);
+        Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
+        Dew.cluster.cache.del(valueTest);
+        Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
+        Dew.cluster.cache.set(valueTest, "{\"name\":\"jzy\"}", 1);
+        Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
+        Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get(valueTest)).get("name").asText());
         Thread.sleep(1000);
-        Assert.assertTrue(!Dew.cluster.cache.exists("n_test"));
-        Assert.assertEquals(null, Dew.cluster.cache.get("n_test"));
-
-        Dew.cluster.cache.del("hash_test");
-        Dew.cluster.cache.hmset("hash_test", new HashMap<String, String>() {{
+        Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
+        Dew.cluster.cache.set(valueTest, "{\"name\":\"jzy\"}", 1);
+        Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
+        String val = Dew.cluster.cache.getSet(valueTest, "{\"name\":\"dzf\"}");
+        Assert.assertEquals("jzy", $.json.toJson(val).get("name").asText());
+        Thread.sleep(1000);
+        Assert.assertTrue(Dew.cluster.cache.exists(valueTest));
+        Dew.cluster.cache.expire(valueTest, 1);
+        Thread.sleep(1000);
+        Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
+        Dew.cluster.cache.del(hashTest);
+        Dew.cluster.cache.hmset(hashTest, new HashMap<String, String>() {{
             put("f1", "v1");
             put("f2", "v2");
         }});
-        Dew.cluster.cache.hset("hash_test", "f3", "v3");
-        Assert.assertEquals("v3", Dew.cluster.cache.hget("hash_test", "f3"));
-        Assert.assertEquals("v2", Dew.cluster.cache.hget("hash_test", "f2"));
-        Assert.assertEquals(null, Dew.cluster.cache.hget("hash_test", "notexist"));
-        Assert.assertTrue(Dew.cluster.cache.hexists("hash_test", "f3"));
-        Map<String, String> hashVals = Dew.cluster.cache.hgetAll("hash_test");
+        Set<String> set = Dew.cluster.cache.hkeys(hashTest);
+        Assert.assertEquals(2, set.size());
+        Assert.assertTrue(set.containsAll(new ArrayList<String>() {{
+            add("f1");
+            add("f2");
+        }}));
+        Assert.assertTrue(Dew.cluster.cache.hvalues(hashTest).contains("v1"));
+        Dew.cluster.cache.hset(hashTest, "f3", "v3");
+        Assert.assertEquals("v3", Dew.cluster.cache.hget(hashTest, "f3"));
+        Assert.assertEquals("v2", Dew.cluster.cache.hget(hashTest, "f2"));
+        Assert.assertEquals(null, Dew.cluster.cache.hget(hashTest, "notexist"));
+        Assert.assertTrue(Dew.cluster.cache.hexists(hashTest, "f3"));
+        Assert.assertEquals(3, Dew.cluster.cache.hlen(hashTest));
+        Map<String, String> hashVals = Dew.cluster.cache.hgetAll(hashTest);
         Assert.assertTrue(hashVals.size() == 3
                 && hashVals.get("f1").equals("v1")
                 && hashVals.get("f2").equals("v2")
                 && hashVals.get("f3").equals("v3"));
-        Dew.cluster.cache.hdel("hash_test", "f3");
-        Assert.assertTrue(!Dew.cluster.cache.hexists("hash_test", "f3"));
-        Dew.cluster.cache.del("hash_test");
-        Assert.assertTrue(!Dew.cluster.cache.exists("hash_test"));
+        Dew.cluster.cache.hdel(hashTest, "f3");
+        Assert.assertTrue(!Dew.cluster.cache.hexists(hashTest, "f3"));
+        Dew.cluster.cache.del(hashTest);
+        Assert.assertTrue(!Dew.cluster.cache.exists(hashTest));
 
-        Dew.cluster.cache.del("list_test");
-        Dew.cluster.cache.lmset("list_test", new ArrayList<String>() {{
+        Dew.cluster.cache.del(listTest);
+        Dew.cluster.cache.lmset(listTest, new ArrayList<String>() {{
             add("v1");
             add("v2");
         }});
-        Dew.cluster.cache.lpush("list_test", "v0");
-        Assert.assertEquals(3, Dew.cluster.cache.llen("list_test"));
-        Assert.assertEquals("v0", Dew.cluster.cache.lpop("list_test"));
-        Assert.assertEquals(2, Dew.cluster.cache.llen("list_test"));
-        List<String> listVals = Dew.cluster.cache.lget("list_test");
+        Dew.cluster.cache.lpush(listTest, "v0");
+        Assert.assertEquals(3, Dew.cluster.cache.llen(listTest));
+        Assert.assertEquals("v0", Dew.cluster.cache.lpop(listTest));
+        Assert.assertEquals(2, Dew.cluster.cache.llen(listTest));
+        List<String> listVals = Dew.cluster.cache.lget(listTest);
         Assert.assertTrue(listVals.size() == 2 && listVals.stream().findAny().get().equals("v2"));
 
-        Dew.cluster.cache.del("int_test");
-        Assert.assertEquals(0, Dew.cluster.cache.incrBy("int_test", 0));
-        Dew.cluster.cache.set("int_test", "10");
-        Assert.assertEquals("10", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.incrBy("int_test", 10);
-        Assert.assertEquals("20", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.incrBy("int_test", 0);
-        Assert.assertEquals("20", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.incrBy("int_test", 10);
-        Assert.assertEquals("30", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.decrBy("int_test", 4);
-        Dew.cluster.cache.decrBy("int_test", 2);
-        Assert.assertEquals("24", Dew.cluster.cache.get("int_test"));
-        Dew.cluster.cache.expire("int_test", 1);
-        Assert.assertEquals("24", Dew.cluster.cache.get("int_test"));
-        Thread.sleep(1100);
-        Assert.assertEquals(null, Dew.cluster.cache.get("int_test"));
+        Dew.cluster.cache.del(intTest);
+        Assert.assertEquals(0, Dew.cluster.cache.incrBy(intTest, 0));
+        Dew.cluster.cache.set(intTest, "10");
+        Assert.assertEquals("10", Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.incrBy(intTest, 10);
+        Assert.assertEquals("20", Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.incrBy(intTest, 0);
+        Assert.assertEquals("20", Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.incrBy(intTest, 10);
+        Assert.assertEquals("30", Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.decrBy(intTest, 4);
+        Dew.cluster.cache.decrBy(intTest, 2);
+        Assert.assertEquals("24", Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.expire(intTest, 1);
+        Assert.assertEquals("24", Dew.cluster.cache.get(intTest));
+        Thread.sleep(1000);
+        Assert.assertEquals(null, Dew.cluster.cache.get(intTest));
+        Dew.cluster.cache.del(setTest);
+        Dew.cluster.cache.smset(setTest, new ArrayList<String>() {{
+            add("v1");
+            add("v2");
+        }});
+        Dew.cluster.cache.sset(setTest, "v3");
+        Assert.assertEquals(3, Dew.cluster.cache.slen(setTest));
+        String popValue = Dew.cluster.cache.spop(setTest);
+        Set<String> values = Dew.cluster.cache.sget(setTest);
+        Assert.assertEquals(2, values.size());
+        Assert.assertTrue(!values.contains(popValue));
+        List<String> list = new ArrayList<String>() {{
+            addAll(values);
+        }};
+        Assert.assertEquals(2, Dew.cluster.cache.sdel(setTest, list.get(0), list.get(1)));
+        Assert.assertTrue(!Dew.cluster.cache.exists(setTest));
+
     }
 
 

@@ -121,6 +121,11 @@ public class RedisClusterCache implements ClusterCache {
     }
 
     @Override
+    public Set<String> sget(String key) {
+        return redisTemplate.opsForSet().members(key);
+    }
+
+    @Override
     public void hmset(String key, Map<String, String> items) {
         hmset(key, items, 0);
     }

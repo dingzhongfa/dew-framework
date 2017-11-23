@@ -158,6 +158,14 @@ public interface ClusterCache {
     long sdel(String key, String... values);
 
     /**
+     * 返回set集合
+     *
+     * @param key key
+     * @return  值集合
+     */
+    Set<String> sget(String key);
+
+    /**
      * 设置Hash集合
      *
      * @param key       key

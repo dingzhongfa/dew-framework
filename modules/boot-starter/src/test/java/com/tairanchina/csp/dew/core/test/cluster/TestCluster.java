@@ -65,7 +65,7 @@ public class TestCluster {
         Assert.assertEquals("jzy", $.json.toJson(Dew.cluster.cache.get(valueTest)).get("name").asText());
         Thread.sleep(1000);
         long timeLeft = Dew.cluster.cache.ttl(valueTest);
-        Assert.assertTrue(timeLeft == 1); // 返回设置时间
+        Assert.assertTrue(timeLeft == 1); // 返回剩余时间
         Thread.sleep(1000);
         Assert.assertTrue(!Dew.cluster.cache.exists(valueTest));
         Dew.cluster.cache.setex(valueTest, "{\"name\":\"jzy\"}", 1L);

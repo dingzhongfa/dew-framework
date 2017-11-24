@@ -333,7 +333,7 @@ TIP: 在FeignClient类中的接口方法里添加新的形参，并加上@Reques
 
 === `zuul` 保护(隐藏)内部服务的http接口
 
-配置ignoreParttern,在yml配置文件里配置(`ignored-patterns`,`ignored-services`)这两项中的一项即可
+在yml配置文件里配置(`ignored-patterns`,`ignored-services`)这两项中的一项即可
 [source,yml]
 .配置示例
 ----

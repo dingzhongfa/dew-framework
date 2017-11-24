@@ -73,7 +73,7 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                 .apis(RequestHandlerSelectors.basePackage(dewConfig.getBasic().getDoc().getBasePackage()))
                 .paths(PathSelectors.any())
                 .build()
-                .securitySchemes(new ArrayList<ApiKey>() {{
+                /*.securitySchemes(new ArrayList<ApiKey>() {{
                     add(new ApiKey("access_token", "accessToken", "develop"));
                 }})
                 .globalOperationParameters(new ArrayList<Parameter>() {{
@@ -85,7 +85,8 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                             .hidden(false)
                             .required(true)
                             .build());
-                }}).pathProvider(new RelativePathProvider(servletContext) {
+                }})*/
+                .pathProvider(new RelativePathProvider(servletContext) {
                     @Override
                     public String getApplicationBasePath() {
                         return contextPath + super.getApplicationBasePath();

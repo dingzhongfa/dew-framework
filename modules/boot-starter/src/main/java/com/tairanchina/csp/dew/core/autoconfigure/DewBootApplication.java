@@ -21,6 +21,7 @@ import java.lang.annotation.*;
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
 @ComponentScan(basePackageClasses = Dew.class)
+@DependsOn("dew")
 public @interface DewBootApplication {
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "exclude")

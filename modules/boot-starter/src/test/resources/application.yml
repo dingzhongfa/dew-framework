@@ -5,6 +5,9 @@ dew:
       reuse-http-state: false
       code-field-name: description
       message-field-name: customHttpCode
+    doc:
+      enabled: false
+      base-package: com.tairanchina.csp.dew.core.test.web
     error-mapping:
       "[com.tairanchina.csp.dew.core.AuthException]":
         http-code: 401

@@ -11,6 +11,7 @@ dew: # Dew 参数key前缀
         desc: # 服务描述，用于API文档显示等
         webSite: # 官网，用于API文档显示等
         doc:
+            enabled: true # 是否启用默认文档配置，关闭后可自定义文档管理
             base-package: # API文档要扫描的根包，多指定到 Controller 包中
         format:
         use-unity-error: true # 是否启用统一响应

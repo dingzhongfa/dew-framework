@@ -74,7 +74,17 @@ public class DewConfig {
 
         public static class Doc {
 
+            private boolean enabled = true;
+
             private String basePackage = "";
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public void setEnabled(boolean enabled) {
+                this.enabled = enabled;
+            }
 
             public String getBasePackage() {
                 return basePackage;

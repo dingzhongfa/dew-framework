@@ -2,26 +2,21 @@ package com.tairanchina.csp.dew.core.doc;
 
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerInitializedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.paths.RelativePathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -34,7 +29,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 /**
  * Swagger配置
@@ -42,8 +36,8 @@ import java.util.ArrayList;
  * @link https://springfox.github.io/springfox/docs/snapshot/#customizing-the-swagger-endpoints
  */
 @Configuration
+@ConditionalOnProperty(prefix = "dew.basic.doc", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableSwagger2
-@ConditionalOnClass(EnableSwagger2.class)
 @Profile({"default", "test", "dev"})
 public class DocProcessor implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
 
@@ -109,7 +103,7 @@ public class DocProcessor implements ApplicationListener<EmbeddedServletContaine
                     Files.createDirectories(Paths.get(outputDir + File.separator + "asciidoc"));
                     try (BufferedWriter writer =
                                  Files.newBufferedWriter(
-                                         Paths.get(outputDir + File.separator + "asciidoc", apiFileName+".adoc"),
+                                         Paths.get(outputDir + File.separator + "asciidoc", apiFileName + ".adoc"),
                                          StandardCharsets.UTF_8)) {
                         writer.write("include::{generated}/overview.adoc[]\n" +
                                 "include::{generated}/paths.adoc[]\n" +

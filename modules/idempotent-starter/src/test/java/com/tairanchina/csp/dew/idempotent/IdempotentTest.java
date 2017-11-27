@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = IdempotentApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -26,17 +27,7 @@ public class IdempotentTest {
             put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "manualConfirm");
             put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
         }};
-        Thread thread = new Thread(() -> {
-            // 第一次请求，正常
-            Resp<String> result = null;
-            try {
-                result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", hashMap), String.class);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Assert.assertTrue(result.ok());
-        });
-        thread.start();
+        new Thread(new NeedTask(hashMap)).start();
         Thread.sleep(1000);
         // 上一次请求还在进行中
         Resp<String> result2 = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test2", hashMap), String.class);
@@ -70,6 +61,51 @@ public class IdempotentTest {
     }
 
     @Test
+    public void testCancel() throws InterruptedException, IOException {
+        // needconfirm
+        HashMap<String, String> needMap = new HashMap<String, String>() {{
+            put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "manualConfirm");
+            put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
+        }};
+        new Thread(new NeedTask(needMap)).start();
+        Thread.sleep(2000);
+        Resp<String> result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap),String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(),result.getCode());
+        // 删除缓存
+        DewIdempotent.cancel("manualConfirm","0001");
+        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap),String.class);
+        Assert.assertTrue(result.ok());
+
+
+        // autoconfirm
+        HashMap<String, String> autoMap = new HashMap<String, String>() {{
+            put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "autoConfirm");
+            put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
+        }};
+        // 第一次请求，正常
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap), String.class);
+        Assert.assertTrue(result.ok());
+        // 上一次请求已确认，不能重复请求
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap), String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
+        // 删除缓存
+        DewIdempotent.cancel("autoConfirm","0001");
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap),String.class);
+        Assert.assertTrue(result.ok());
+
+
+        // cancel
+        HashMap<String, String> cancelMap = new HashMap<String, String>() {{
+            put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "cancleConfirm");
+            put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
+        }};
+        result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);
+        Assert.assertTrue(!result.ok());
+        result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);
+        Assert.assertTrue(result.ok());
+    }
+
+    @Test
     public void testWithoutHttp() throws IOException, InterruptedException {
         DewIdempotent.initOptTypeInfo("transfer_a", true, 1000, StrategyEnum.ITEM);
         Assert.assertEquals(StatusEnum.NOT_EXIST, DewIdempotent.process("transfer_a", "xxxxxxx"));
@@ -85,5 +121,25 @@ public class IdempotentTest {
     public void testNormal() throws IOException, InterruptedException {
         Resp<String> result = Resp.generic($.http.get(urlPre + "normal?str=dew-test"), String.class);
         Assert.assertTrue(result.ok());
+    }
+
+    private class NeedTask implements Runnable {
+
+        private Map<String, String> map;
+
+        public NeedTask(Map<String, String> map) {
+            this.map = map;
+        }
+
+        @Override
+        public void run() {
+            Resp<String> result = null;
+            try {
+                result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", map), String.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Assert.assertTrue(result.ok());
+        }
     }
 }

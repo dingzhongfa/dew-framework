@@ -1989,7 +1989,7 @@ dew:
 
 .HTTP操作
 
-[source,yml]
+[source,java]
 ----
 @GetMapping(xxx)
 // 启用幂等支持
@@ -1998,6 +1998,8 @@ dew:
 public void test(xxx) {
     // 业务操作
     // ...
+    // 业务失败，在保证业务操作的原子性的情况下，在catch中取消幂等，并抛出异常
+    DewIdempotent.cancel();
     // 手工确认
     DewIdempotent.confirm();
 }
@@ -2013,7 +2015,8 @@ public void test(xxx) {
 
 .非HTTP操作
 
-[source,yml]
+[source,java]
+.取消幂等与http操作时的使用方式相同
 ----
 public void init() {
     // 初始化用到的操作类型

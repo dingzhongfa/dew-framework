@@ -18,15 +18,27 @@ public class DewConfig {
     private Metric metric = new Metric();
 
     public static class Metric {
-        private long intervalSec = 600;
 
-        public long getIntervalSec() {
-            return intervalSec;
+        private boolean enabled = true;
+
+        private long periodSec = 600;
+
+        public boolean isEnabled() {
+            return enabled;
         }
 
-        public void setIntervalSec(long intervalSec) {
-            this.intervalSec = intervalSec;
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
+
+        public long getPeriodSec() {
+            return periodSec;
+        }
+
+        public void setPeriodSec(long periodSec) {
+            this.periodSec = periodSec;
+        }
+
     }
 
     public static class Basic {

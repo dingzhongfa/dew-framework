@@ -57,6 +57,9 @@ dew: # Dew 参数key前缀
         default-strategy: item # 设置默认策略，支持 bloom(Bloom Filter)和item(逐条记录)
         opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
         opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
+    metric:
+        enabled: true # 是否启用Dew的指标统计
+        period-sec: 默认600 # 指定统计周期（多少秒内的指标统计）
 spring:
   datasource: # 主数据源配置
         ... # 数据源配置，详见 Spring boot 核心参数

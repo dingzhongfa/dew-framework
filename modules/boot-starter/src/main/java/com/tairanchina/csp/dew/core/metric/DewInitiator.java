@@ -1,9 +1,12 @@
-package com.tairanchina.csp.dew.core.initiator;
+package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.filter.DewFilter;
+import com.tairanchina.csp.dew.core.metric.DewFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -11,19 +14,29 @@ import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * desription:
- * Created by ding on 2017/11/14.
- */
 @Component
+@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DewInitiator {
 
     @Autowired
     private DewConfig dewConfig;
 
+    @Autowired
+    private DewFilter dewFilter;
+
+    @Bean
+    public FilterRegistrationBean testFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(dewFilter);
+        registration.addUrlPatterns("/*");
+        registration.setName("dewFilter");
+        registration.setOrder(1);
+        return registration;
+    }
+
     @PostConstruct
     public void init() {
-        long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getIntervalSec()).toEpochMilli();
+        long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getPeriodSec()).toEpochMilli();
         Dew.Timer.periodic(60, () -> {
             for (Map<Long, Integer> map : DewFilter.RECORD_MAP.values()) {
                 Iterator<Map.Entry<Long, Integer>> iterator = map.entrySet().iterator();

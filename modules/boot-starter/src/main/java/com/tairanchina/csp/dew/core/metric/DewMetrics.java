@@ -1,21 +1,18 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.filter.DewFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 
-/**
- * desription:
- * Created by ding on 2017/11/13.
- */
 @Component
+@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DewMetrics implements PublicMetrics {
 
     @Autowired
@@ -23,7 +20,7 @@ public class DewMetrics implements PublicMetrics {
 
     @Override
     public Collection<Metric<?>> metrics() {
-        long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getIntervalSec()).toEpochMilli();
+        long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getPeriodSec()).toEpochMilli();
         List<Metric<?>> metricList = new ArrayList<>();
         List<Integer> totalList = new ArrayList<>();
         // url级平均响应时间->url级个数
@@ -43,7 +40,7 @@ public class DewMetrics implements PublicMetrics {
             metricList.add(new Metric<>("dew.response.average." + key, BigDecimal.valueOf(average).setScale(2, BigDecimal.ROUND_HALF_UP)));
             metricList.add(new Metric<>("dew.response.90percent." + key, (int) urlTimeArr[(int) (validList.size() * 0.9)]));
             metricList.add(new Metric<>("dew.response.max." + key, (int) urlTimeArr[(validList.size() - 1)]));
-            metricList.add(new Metric<>("dew.response.tps." + key, BigDecimal.valueOf(validList.size() * 1.0 / dewConfig.getMetric().getIntervalSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
+            metricList.add(new Metric<>("dew.response.tps." + key, BigDecimal.valueOf(validList.size() * 1.0 / dewConfig.getMetric().getPeriodSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
             totalList.addAll(validList);
             averageMap.put(average, validList.size());
         });
@@ -56,7 +53,7 @@ public class DewMetrics implements PublicMetrics {
         metricList.add(new Metric<>("dew.response.average", BigDecimal.valueOf(totalAverage).setScale(2, BigDecimal.ROUND_HALF_UP)));
         metricList.add(new Metric<>("dew.response.90percent", (int) totalArr[(int) (totalList.size() * 0.9)]));
         metricList.add(new Metric<>("dew.response.max", (int) totalArr[totalList.size() - 1]));
-        metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size() * 1.0 / dewConfig.getMetric().getIntervalSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
+        metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size() * 1.0 / dewConfig.getMetric().getPeriodSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
         return metricList;
     }
 

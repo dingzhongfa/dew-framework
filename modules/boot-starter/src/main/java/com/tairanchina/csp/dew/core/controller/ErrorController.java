@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static com.tairanchina.csp.dew.core.filter.DewFilter.RECORD_MAP;
+import static com.tairanchina.csp.dew.core.metric.DewFilter.RECORD_MAP;
 
 @RestController
 @RequestMapping("${error.path:/error}")

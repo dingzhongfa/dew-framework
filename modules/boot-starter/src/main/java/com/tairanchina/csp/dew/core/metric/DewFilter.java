@@ -1,7 +1,9 @@
-package com.tairanchina.csp.dew.core.filter;
+package com.tairanchina.csp.dew.core.metric;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.servlet.*;
@@ -11,11 +13,8 @@ import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * desription:
- * Created by ding on 2017/11/13.
- */
-
+@Component
+@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);

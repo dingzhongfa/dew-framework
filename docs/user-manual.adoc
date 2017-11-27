@@ -66,6 +66,10 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 
 |`boot-starter` |基于Spring Boot的扩展，Dew的核心模块
 |`cloud-starter` |基于Spring Cloud的扩展，基于`boot-starter`
+|`cloud-starter` |基于Spring Cloud的扩展，基于`boot-starter`
+|`idempotent-starter` |幂性处理模块
+|`jdbc-starter` |Dew JDBC模块
+|`csp-starter` |用户权限中心扩展模块
 |`cluster-common` |集群能力接口
 |`cluster-redis` |集群能力-Redis实现
 |`cluster-hazelcast` |集群能力-Hazelcast实现
@@ -2226,20 +2230,20 @@ dew:
 [source,yml]
 .需要配置如下
 ----
-#启用metrics接口
+# 启用metrics接口
 endpoints:
   metrics:
     enabled: true
 
-#spring默认该接口需要security拦截，否则会提示``Unauthorized``，加以下配置即可
+# spring默认该接口需要security拦截，否则会提示``Unauthorized``，加以下配置即可
 management:
   security:
     enabled: false
 
-#指定统计多少秒内的指标统计
+# 指定统计周期（多少秒内的指标统计）
 dew:
   metric:
-    interval-sec: #默认600s(10分钟),（单位秒）
+    period-sec: # 默认600s(10分钟),（单位秒）
 ----
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标

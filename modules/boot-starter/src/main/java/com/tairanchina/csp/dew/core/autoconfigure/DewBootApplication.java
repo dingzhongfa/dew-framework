@@ -16,10 +16,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootApplication(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class}, scanBasePackageClasses = {Dew.class})
+@SpringBootApplication(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
+@ComponentScan(basePackageClasses = Dew.class)
 public @interface DewBootApplication {
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "exclude")

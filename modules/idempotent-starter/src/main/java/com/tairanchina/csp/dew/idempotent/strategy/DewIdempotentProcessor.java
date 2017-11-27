@@ -6,4 +6,6 @@ public interface DewIdempotentProcessor {
 
     boolean confirm(String optType, String optId);
 
+    boolean cancel(String optType, String optId);
+
 }

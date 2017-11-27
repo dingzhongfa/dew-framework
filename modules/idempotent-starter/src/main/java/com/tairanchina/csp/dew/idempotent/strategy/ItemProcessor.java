@@ -30,4 +30,10 @@ public class ItemProcessor implements DewIdempotentProcessor {
         return true;
     }
 
+    @Override
+    public boolean cancel(String optType, String optId) {
+        Dew.cluster.cache.del(CACHE_KEY + optType + "." + optId);
+        return true;
+    }
+
 }

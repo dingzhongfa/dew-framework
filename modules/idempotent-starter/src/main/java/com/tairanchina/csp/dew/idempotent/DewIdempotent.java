@@ -109,6 +109,24 @@ public class DewIdempotent {
         CONTENT.get(c[0]).processor.confirm(c[0], c[1]);
     }
 
+    /**
+     * 操作取消
+     *
+     * @param optType 操作类型
+     * @param optId   操作ID
+     */
+    public static void cancel(String optType, String optId) {
+        CONTENT.get(optType).processor.cancel(optType, optId);
+    }
+
+    /**
+     * 操作取消，要求与请求入口在同一线程中
+     */
+    public static void cancel() {
+        String[] c = CONTEXT.get();
+        CONTENT.get(c[0]).processor.cancel(c[0], c[1]);
+    }
+
     private static class OptTypeInfo {
 
         public DewIdempotentProcessor processor;

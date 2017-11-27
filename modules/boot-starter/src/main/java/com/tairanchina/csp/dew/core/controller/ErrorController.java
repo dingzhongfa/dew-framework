@@ -174,7 +174,10 @@ public class ErrorController extends AbstractErrorController {
 
 
     private static void addRequestRecord(HttpServletRequest request) {
-        long start = (long) request.getAttribute("dew.metric.start");
+        Long start = (Long) request.getAttribute("dew.metric.start");
+        if (start==null){
+            return;
+        }
         String key = "{[" + request.getMethod() + "]:/error}";
         int resTime = (int) (Instant.now().toEpochMilli() - start);
         if (RECORD_MAP.containsKey(key)) {

@@ -10,9 +10,6 @@ import org.springframework.web.client.RestTemplate;
 @SpringCloudApplication
 public abstract class DewCloudApplication extends DewBootApplication {
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Bean
     @LoadBalanced
     protected RestTemplate restTemplate() {

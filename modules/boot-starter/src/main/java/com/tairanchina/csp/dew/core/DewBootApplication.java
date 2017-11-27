@@ -20,7 +20,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching(proxyTargetClass = true)
 public abstract class DewBootApplication {
 
-    @Autowired
-    private Dew dew;
-
 }

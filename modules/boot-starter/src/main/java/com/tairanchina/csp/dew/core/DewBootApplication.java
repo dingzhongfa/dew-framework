@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.core;
 
 import com.tairanchina.csp.dew.Dew;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
@@ -14,5 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
 public abstract class DewBootApplication {
+
+    // 显示注入，确保最高优先级
+    @Autowired
+    private Dew dew;
 
 }

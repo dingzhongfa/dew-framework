@@ -4,7 +4,7 @@ import com.tairanchina.csp.dew.core.DewConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -12,8 +12,8 @@ import java.time.Instant;
 import java.util.*;
 
 @Component
-@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class  DewMetrics implements PublicMetrics {
+@ConditionalOnBean(DewFilter.class)
+public class DewMetrics implements PublicMetrics {
 
     @Autowired
     private DewConfig dewConfig;

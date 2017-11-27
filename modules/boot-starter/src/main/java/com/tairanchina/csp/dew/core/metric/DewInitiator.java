@@ -2,9 +2,8 @@ package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.metric.DewFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Component
-@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBean(DewFilter.class)
 public class DewInitiator {
 
     @Autowired

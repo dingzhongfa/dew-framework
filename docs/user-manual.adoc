@@ -2254,7 +2254,7 @@ dew:
 
 ==== Dew 启动类配置多样性
 
-NOTE: ``dew``启动类支持注解式配置和继承式配置
+NOTE: ``dew``启动类支持注解式配置和继承式配置，注解为``@DewBootApplication``和``@DewCloudApplication``,抽象类为``DewBootApplication``和``DewCloudApplication``
 
 * 注解式配置
 

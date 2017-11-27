@@ -20,7 +20,6 @@ import java.lang.annotation.*;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
-@ComponentScan(basePackageClasses = Dew.class)
 @DependsOn("dew")
 public @interface DewBootApplication {
 
@@ -30,4 +29,6 @@ public @interface DewBootApplication {
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackages")
     String[] scanBasePackages() default {};
 
+    @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackageClasses")
+    Class<?>[] scanBasePackageClasses() default {};
 }

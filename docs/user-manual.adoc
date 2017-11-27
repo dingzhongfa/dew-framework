@@ -2251,3 +2251,39 @@ dew:
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标
 及针对接口的对应指标
+
+==== Dew 启动类配置多样性
+
+NOTE: ``dew``启动类支持注解式配置和继承式配置
+
+* 注解式配置
+
+TIP: 注解式配置必须详细配置扫描基类
+
+[source,java]
+.在启动类上加@DewBootApplication注解
+----
+@DewBootApplication(scanBasePackageClasses = {Dew.class, ExampleApplication.class})
+public class ExampleApplication {
+
+    public static void main(String[] args) throws InterruptedException {
+        new SpringApplicationBuilder(ExampleApplication.class).run(args);
+    }
+}
+----
+
+* 继承式配置
+
+TIP: 继承式配置注解继承自父类
+
+[source,java]
+.启动类继承DewBootApplication类
+----
+
+public class ExampleApplication extends DewBootApplication类 {
+
+    public static void main(String[] args) throws InterruptedException {
+        new SpringApplicationBuilder(ExampleApplication.class).run(args);
+    }
+}
+----

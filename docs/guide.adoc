@@ -130,7 +130,7 @@ dew:
  * 工程启动类
  * 重写父类的ComponentScan，先扫描Dew下的包，再是项目的根包
  */
-@DewBootApplication
+@DewBootApplication(scanBasePackageClasses = {Dew.class,PetStoreApplication.class})
 public class PetStoreApplication {
 
     public static void main(String[] args) {

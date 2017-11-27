@@ -34,16 +34,16 @@ public class IdempotentController {
 
     @GetMapping(value = "cancel")
     @Idempotent(needConfirm = false, expireMs = 5000)
-    public Resp<String> testCancle(@RequestParam("str") String str){
-        try{
-            if (!flag){
-                int i = 1/0;  // 业务操作必须具有原子性
-            }else {
+    public Resp<String> testCancle(@RequestParam("str") String str) {
+        try {
+            if (!flag) {
+                int i = 1 / 0;  // 业务操作必须具有原子性
+            } else {
                 // 业务成功
             }
-        }catch (ArithmeticException e){
+        } catch (ArithmeticException e) {
             DewIdempotent.cancel();
-            flag=true;
+            flag = true;
             throw e;
         }
         return Resp.success(str);

@@ -1,11 +1,11 @@
 package com.tairanchina.csp.dew.idempotent;
 
 
-import com.tairanchina.csp.dew.core.DewBootApplication;
+import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ComponentScan;
 
-public class IdempotentApplication extends DewBootApplication {
+@DewBootApplication
+public class IdempotentApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(IdempotentApplication.class).run(args);

@@ -1,14 +1,14 @@
 package com.tairanchina.csp.dew.auth.csp;
 
-import com.tairanchina.csp.dew.core.DewBootApplication;
+import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * desription:
  * Created by ding on 2017/10/30.
  */
-public class CSPApplication extends DewBootApplication {
+@DewBootApplication
+public class CSPApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(CSPApplication.class).run(args);

@@ -23,6 +23,8 @@ dew:
     token-hash: false
 #  security:
 #   includeServices: ["a-serv"]
+  metric:
+    enabled: true
 
 spring:
   kafka:

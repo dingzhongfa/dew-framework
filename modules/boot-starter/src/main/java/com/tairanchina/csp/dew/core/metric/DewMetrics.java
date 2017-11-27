@@ -13,7 +13,7 @@ import java.util.*;
 
 @Component
 @ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
-public class DewMetrics implements PublicMetrics {
+public class  DewMetrics implements PublicMetrics {
 
     @Autowired
     private DewConfig dewConfig;

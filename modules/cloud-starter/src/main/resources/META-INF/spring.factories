@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.tairanchina.csp.dew.core.CloudAutoConfiguration
+com.tairanchina.csp.dew.core.autoconfigure.CloudAutoConfiguration

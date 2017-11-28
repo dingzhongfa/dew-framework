@@ -3,6 +3,9 @@ spring:
     name: monitor
   boot:
     admin:
+      discovery:
+        converter:
+          management-context-path: /dew-example # The endpoints URL prefix
       routes:
         endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
       turbine:
@@ -32,4 +35,3 @@ eureka:
 
 logging:
   path: ./logs
-

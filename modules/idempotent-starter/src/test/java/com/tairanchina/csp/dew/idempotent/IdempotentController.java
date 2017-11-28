@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.idempotent;
 
 import com.ecfront.dew.common.Resp;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.idempotent.annotations.Idempotent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,7 +45,7 @@ public class IdempotentController {
         } catch (ArithmeticException e) {
             DewIdempotent.cancel();
             flag = true;
-            throw e;
+            throw Dew.E.e("A001", e);
         }
         return Resp.success(str);
     }

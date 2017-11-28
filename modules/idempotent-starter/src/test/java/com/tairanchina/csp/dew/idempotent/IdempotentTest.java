@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -69,11 +70,11 @@ public class IdempotentTest {
         }};
         new Thread(new NeedTask(needMap)).start();
         Thread.sleep(2000);
-        Resp<String> result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap),String.class);
-        Assert.assertEquals(StandardCode.LOCKED.toString(),result.getCode());
+        Resp<String> result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap), String.class);
+        Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
         // 删除缓存
-        DewIdempotent.cancel("manualConfirm","0001");
-        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap),String.class);
+        DewIdempotent.cancel("manualConfirm", "0001");
+        result = Resp.generic($.http.get(urlPre + "manual-confirm?str=dew-test1", needMap), String.class);
         Assert.assertTrue(result.ok());
 
 
@@ -89,8 +90,8 @@ public class IdempotentTest {
         result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap), String.class);
         Assert.assertEquals(StandardCode.LOCKED.toString(), result.getCode());
         // 删除缓存
-        DewIdempotent.cancel("autoConfirm","0001");
-        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap),String.class);
+        DewIdempotent.cancel("autoConfirm", "0001");
+        result = Resp.generic($.http.get(urlPre + "auto-confirm?str=dew-test", autoMap), String.class);
         Assert.assertTrue(result.ok());
 
 
@@ -99,6 +100,7 @@ public class IdempotentTest {
             put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "cancleConfirm");
             put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
         }};
+        String s = $.http.get(urlPre + "cancel?str=dew-cancel", cancelMap);
         result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);
         Assert.assertTrue(!result.ok());
         result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);
@@ -123,11 +125,15 @@ public class IdempotentTest {
         Assert.assertTrue(result.ok());
     }
 
+    public void testJedis() {
+        Jedis jedis = new Jedis();
+    }
+
     private class NeedTask implements Runnable {
 
         private Map<String, String> map;
 
-        public NeedTask(Map<String, String> map) {
+        NeedTask(Map<String, String> map) {
             this.map = map;
         }
 
@@ -142,4 +148,5 @@ public class IdempotentTest {
             Assert.assertTrue(result.ok());
         }
     }
+
 }

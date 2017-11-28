@@ -6,7 +6,8 @@ import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfigura
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -16,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@SpringBootApplication(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class})
+@SpringBootApplication
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableCaching(proxyTargetClass = true)
@@ -24,11 +25,12 @@ import java.lang.annotation.*;
 public @interface DewBootApplication {
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "exclude")
-    Class<?>[] exclude() default {};
+    Class<?>[] exclude() default {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class};
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackages")
     String[] scanBasePackages() default {};
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackageClasses")
-    Class<?>[] scanBasePackageClasses() default {};
+    Class<?>[] scanBasePackageClasses() default {Dew.class,};
+
 }

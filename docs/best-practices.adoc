@@ -314,3 +314,65 @@ zuul: #配置一项即可!
   ignored-patterns: /dew-example/**   #排除此路径
   ignored-services: dew-example       #排除此服务
 ----
+
+=== Spring Boot Admin监控实践
+在`Spring Boot Actuator`中提供很多像`health`、`metrics`等实时监控接口，可以方便我们随时跟踪服务的性能指标。
+`Spring Boot`默认是开放这些接口提供调用的，那么就问题来了，如果这些接口公开在外网中，很容易被不法分子所利用，这肯定不是我们想要的结果。
+在这里我们提供一种比较好的解决方案
+
+* 被监控的服务配置
+
+[source,yaml]
+.为被保护的http请求添加请求前缀
+----
+management:
+  context-path: /dew-example //<1>
+eureka:
+  instance:
+    status-page-url-path: ${management.context-path}/info //<2>
+    health-check-url-path: ${management.context-path}/health
+----
+<1> 添加请求前缀
+
+<2> `Spring Boot Admin`在启动的时候会去`eureka`拉去服务信息，其中`health`与`info`需要特殊处理，这两者的地址是根据`status-page-url-path`和`health-check-url-path`的值
+
+--
+
+* `zuul`网关配置
+
+[source,yaml]
+.`zuul`保护内部服务http接口
+----
+zuul:
+  ignoredPatterns: /*/dew-example/** //<1>
+----
+<1> 这里之所以不是`/dew-example/**`，由于网关存在项目前缀，需要往前一级，大家可以具体场景具体配置
+
+--
+
+* `Spring Boot Admin`配置
+
+[source,yaml]
+.配置监控的指标参数
+----
+spring:
+  application:
+    name: monitor
+  boot:
+    admin:
+      discovery:
+        converter:
+          management-context-path: /dew-example # The endpoints URL prefix //<1>
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
+      turbine:
+        clusters: default
+        location: monitor
+
+turbine:
+  aggregator:
+    clusterConfig: default
+  appConfig: monitor-example //<1>
+  clusterNameExpression: metadata['cluster']
+----
+<1> 添加需要被监控的应用Service-Id，以逗号分隔 

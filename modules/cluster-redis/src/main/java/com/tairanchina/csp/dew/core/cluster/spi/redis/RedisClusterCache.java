@@ -218,12 +218,21 @@ public class RedisClusterCache implements ClusterCache {
         return redisTemplate.getExpire(key);
     }
 
-
     @Override
     public void flushdb() {
         redisTemplate.execute((RedisCallback<Object>) connection -> {
             connection.flushDb();
             return null;
         });
+    }
+
+    @Override
+    public boolean setBit(String key, long offset, boolean value) {
+        return redisTemplate.opsForValue().setBit(key,offset,value);
+    }
+
+    @Override
+    public boolean getBit(String key, long offset) {
+        return redisTemplate.opsForValue().getBit(key,offset);
     }
 }

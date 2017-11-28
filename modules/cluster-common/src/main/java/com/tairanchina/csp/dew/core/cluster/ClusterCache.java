@@ -185,7 +185,7 @@ public interface ClusterCache {
      * 返回set集合
      *
      * @param key key
-     * @return  值集合
+     * @return 值集合
      */
     Set<String> sget(String key);
 
@@ -312,5 +312,9 @@ public interface ClusterCache {
      * 删除当前数据库中的所有Key
      */
     void flushdb();
+
+    boolean setBit(String key, long offset, boolean value);
+
+    boolean getBit(String key, long offset);
 
 }

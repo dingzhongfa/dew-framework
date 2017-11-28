@@ -152,6 +152,13 @@ public class TestCluster {
         Assert.assertEquals(2, Dew.cluster.cache.sdel(setTest, list.get(0), list.get(1)));
         Assert.assertTrue(!Dew.cluster.cache.exists(setTest));
 
+        //test bit
+        boolean b = Dew.cluster.cache.getBit("ss", 100);
+        Assert.assertTrue(!b);
+        b = Dew.cluster.cache.setBit("ss", 100, true);
+        Assert.assertTrue(!b);
+        b = Dew.cluster.cache.setBit("ss", 100, false);
+        Assert.assertTrue(b);
     }
 
 

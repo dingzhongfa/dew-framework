@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import com.netflix.hystrix.strategy.HystrixPlugins;
 import com.netflix.hystrix.strategy.eventnotifier.HystrixEventNotifier;
 import com.tairanchina.csp.dew.core.DewCloudConfig;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.core.logger.DewLoggerWebMvcConfigurer;
 import com.tairanchina.csp.dew.core.logger.DewTraceLogWrap;
 import com.tairanchina.csp.dew.core.logger.DewTraceRestTemplateInterceptor;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 
 @Configuration
+@DewLoadImmediately
 public class CloudAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(CloudAutoConfiguration.class);

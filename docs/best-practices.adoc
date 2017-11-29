@@ -1,4 +1,4 @@
-````== 最佳实践
+== 最佳实践
 
 === JDBC框架的选择
 
@@ -239,6 +239,7 @@ WARNING: `hystrix` 的默认超时时间为1s,在高并发下容易出现超时,
 TIP: 详细参见文档 file://./files/Spring%20Cloud框架负载测试报告.pdf[Spring Cloud框架负载测试报告]
 
 === 缓存处理
+
 `Spring Cache` 提供了很好的注解式缓存，但默认没有超时，需要根据使用的缓存容器特殊配置，e.g.
 
 [source,java]
@@ -271,7 +272,7 @@ RedisCacheManager cacheManager() {
 当然这一方案会损失一定的可读性，即没有可视化的接口调用展现。
 
 [source,xml]
-.logback模板
+.logback-spring.xml模板
 ----
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>

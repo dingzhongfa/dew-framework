@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5.dev">
-<meta name="author" content="v1.1.0-beta1,2017-10-18">
+<meta name="author" content="v1.2.0-RC,2017-11-29">
 <title>Dew-Framework（轻量服务框架）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Dew-Framework（轻量服务框架）</h1>
 <div class="details">
-<span id="author" class="author">v1.1.0-beta1,2017-10-18</span><br>
+<span id="author" class="author">v1.2.0-RC,2017-11-29</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -476,113 +476,142 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#true--31">3.3.3. 追踪日志</a></li>
 <li><a href="#truedubbo">3.3.4. Dubbo兼容</a></li>
 <li><a href="#truesharding-jdbc">3.3.5. sharding-jdbc集成</a></li>
+<li><a href="#true--32">3.3.6. 幂等支持</a></li>
 </ul>
 </li>
-<li><a href="#true--32">3.4. 工程化</a>
+<li><a href="#true--33">3.4. 工程化</a>
 <ul class="sectlevel3">
-<li><a href="#true--33">3.4.1. 代码质量检查</a></li>
-<li><a href="#true--34">3.4.2. 测试支持</a></li>
+<li><a href="#true--34">3.4.1. 代码质量检查</a></li>
+<li><a href="#true--35">3.4.2. 测试支持</a></li>
 <li><a href="#true-code-spring-admin-code">3.4.3. <code>Spring Admin</code> 集成</a></li>
-<li><a href="#true-code-zipkin-code">3.4.4. <code>Zipkin</code> 集成</a></li>
-<li><a href="#true--35">3.4.5. 服务调用开发期优化</a></li>
+<li><a href="#true--36">3.4.4. 服务调用开发期优化</a></li>
+<li><a href="#true-code-hystrix-code">3.4.5. <code>hystrix</code> 降级增加邮件通知</a></li>
+<li><a href="#true-code-api-code">3.4.6. <code>服务API调用</code> （追踪）日志处理</a></li>
+<li><a href="#truetps">3.4.7. TPS查询接口</a></li>
+<li><a href="#truedew-2">3.4.8. Dew 启动类配置多样性</a></li>
 </ul>
 </li>
+<li><a href="#truejdbc">3.5. JDBC框架的选择</a></li>
+<li><a href="#true--37">3.6. 服务调用开发期使用</a></li>
+<li><a href="#true--38">3.7. 断路保护</a></li>
+<li><a href="#true--39">3.8. 配置中心</a></li>
+<li><a href="#true-code-ribbon-code">3.9. <code>ribbon</code> 负载均衡</a></li>
+<li><a href="#true-code-feign-code">3.10. <code>feign</code> 配置特定方法超时时间</a></li>
+<li><a href="#true--40">3.11. 主要性能影响参数</a></li>
+<li><a href="#true--41">3.12. 缓存处理</a></li>
+<li><a href="#true--42">3.13. 日志处理</a></li>
+<li><a href="#trueservo">3.14. servo 内存泄漏问题</a></li>
+<li><a href="#true-validated">3.15. '@Validated'注解</a></li>
+<li><a href="#truejackson-java8-springmvc-jackson-json">3.16. jackson对于java8时间转换（springmvc以jackson接收json数据）</a></li>
+<li><a href="#trueswagger">3.17. swagger离线文档</a></li>
+<li><a href="#true-code-feign-code-http">3.18. <code>feign</code> 接口添加http请求头信息</a></li>
+<li><a href="#true-code-zuul-code-http">3.19. <code>zuul</code> 保护(隐藏)内部服务的http接口</a></li>
+<li><a href="#truespring-boot-admin">3.20. Spring Boot Admin 监控实践</a></li>
 </ul>
 </li>
-<li><a href="#true--36">4. 最佳实践</a>
+<li><a href="#true--43">4. 技术指标</a>
 <ul class="sectlevel2">
-<li><a href="#truejdbc">4.1. JDBC框架的选择</a></li>
-<li><a href="#true--37">4.2. 缓存处理</a></li>
-<li><a href="#true--38">4.3. 断路保护</a></li>
-<li><a href="#true--39">4.4. 配置中心</a></li>
-<li><a href="#true-code-feign-code">4.5. <code>feign</code> 配置特定方法超时时间</a></li>
-<li><a href="#true--40">4.6. 服务调用开发期使用</a></li>
-<li><a href="#true--41">4.7. 主要性能影响参数</a></li>
+<li><a href="#true--44">4.1. 性能</a></li>
 </ul>
 </li>
-<li><a href="#true--42">5. 技术指标</a>
+<li><a href="#true--45">5. 开发指南</a>
 <ul class="sectlevel2">
-<li><a href="#true--43">5.1. 可靠性</a></li>
-<li><a href="#true--44">5.2. 性能</a></li>
+<li><a href="#truescm">5.1. SCM</a></li>
+<li><a href="#true--46">5.2. 环境要求</a></li>
 </ul>
 </li>
-<li><a href="#truescm">6. SCM</a></li>
-<li><a href="#true--45">7. 编译部署</a>
+<li><a href="#true--47">6. 编译部署</a>
 <ul class="sectlevel2">
-<li><a href="#true--46">7.1. 开发期热部署</a></li>
-<li><a href="#true--47">7.2. 打包</a></li>
-<li><a href="#true--48">7.3. 部署</a>
+<li><a href="#true--48">6.1. 开发期热部署</a></li>
+<li><a href="#true--49">6.2. 打包</a></li>
+<li><a href="#true--50">6.3. 部署</a>
 <ul class="sectlevel3">
-<li><a href="#true--49">7.3.1. 准备</a></li>
-<li><a href="#true--50">7.3.2. 手工发布</a></li>
-<li><a href="#trueci">7.3.3. CI</a></li>
+<li><a href="#true--51">6.3.1. 准备</a></li>
+<li><a href="#true--52">6.3.2. 手工发布</a></li>
+<li><a href="#trueci">6.3.3. CI</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#true--51">8. 配置速查</a>
+<li><a href="#true--53">7. 配置速查</a>
 <ul class="sectlevel2">
-<li><a href="#true-code-dew-code">8.1. <code>Dew</code> 参数</a></li>
-<li><a href="#true-code-spring-boot-code">8.2. <code>Spring boot</code> 核心参数</a></li>
-<li><a href="#true-code-druid-code">8.3. <code>Druid</code> 连接池参数</a></li>
-<li><a href="#true-code-spring-cloud-code">8.4. <code>Spring cloud</code> 核心参数</a></li>
+<li><a href="#true-code-dew-code">7.1. <code>Dew</code> 参数</a></li>
+<li><a href="#true-code-spring-boot-code">7.2. <code>Spring boot</code> 核心参数</a></li>
+<li><a href="#true-code-druid-code">7.3. <code>Druid</code> 连接池参数</a></li>
+<li><a href="#true-code-spring-cloud-code">7.4. <code>Spring cloud</code> 核心参数</a></li>
 </ul>
 </li>
-<li><a href="#true--52">9. 版本说明</a>
+<li><a href="#true--54">8. 版本说明</a>
 <ul class="sectlevel2">
-<li><a href="#true1-1-0-beta1">9.1. 1.1.0-beta1</a>
+<li><a href="#true1-2-0-rc">8.1. 1.2.0-RC</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature">9.1.1. Feature</a></li>
-<li><a href="#trueimprovement">9.1.2. Improvement</a></li>
-<li><a href="#truefixed">9.1.3. Fixed</a></li>
-<li><a href="#true-code-1-0-0-rc-betax-code-code-1-1-0-code">9.1.4. 从 <code>1.0.0-RC/betaX</code> 迁移到 <code>1.1.0</code></a></li>
+<li><a href="#truefeature">8.1.1. Feature</a></li>
+<li><a href="#trueimprovement">8.1.2. Improvement</a></li>
+<li><a href="#truefixed">8.1.3. Fixed</a></li>
+<li><a href="#true-code-1-1-0-rc-code-code-1-2-0-rc-code">8.1.4. 从 <code>1.1.0-RC</code> 迁移到 <code>1.2.0-RC</code></a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-rc">9.2. 1.0.0-RC</a>
+<li><a href="#true1-1-0-rc">8.2. 1.1.0-RC</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-2">9.2.1. Feature</a></li>
-<li><a href="#trueimprovement-2">9.2.2. Improvement</a></li>
-<li><a href="#truefixed-2">9.2.3. Fixed</a></li>
+<li><a href="#truefeature-2">8.2.1. Feature</a></li>
+<li><a href="#trueimprovement-2">8.2.2. Improvement</a></li>
+<li><a href="#truefixed-2">8.2.3. Fixed</a></li>
+<li><a href="#true-code-1-1-0-beta1-code-code-1-1-0-rc-code">8.2.4. 从 <code>1.1.0-beta1</code> 迁移到 <code>1.1.0-RC</code></a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta5">9.3. 1.0.0-beta5</a>
+<li><a href="#true1-1-0-beta1">8.3. 1.1.0-beta1</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-3">9.3.1. Feature</a></li>
-<li><a href="#trueimprovement-3">9.3.2. Improvement</a></li>
-<li><a href="#truefixed-3">9.3.3. Fixed</a></li>
+<li><a href="#truefeature-3">8.3.1. Feature</a></li>
+<li><a href="#trueimprovement-3">8.3.2. Improvement</a></li>
+<li><a href="#truefixed-3">8.3.3. Fixed</a></li>
+<li><a href="#true-code-1-0-0-rc-betax-code-code-1-1-0-code">8.3.4. 从 <code>1.0.0-RC/betaX</code> 迁移到 <code>1.1.0</code></a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta4">9.4. 1.0.0-beta4</a>
+<li><a href="#true1-0-0-rc">8.4. 1.0.0-RC</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-4">9.4.1. Feature</a></li>
-<li><a href="#trueimprovement-4">9.4.2. Improvement</a></li>
-<li><a href="#truefixed-4">9.4.3. Fixed</a></li>
+<li><a href="#truefeature-4">8.4.1. Feature</a></li>
+<li><a href="#trueimprovement-4">8.4.2. Improvement</a></li>
+<li><a href="#truefixed-4">8.4.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta3">9.5. 1.0.0-beta3</a>
+<li><a href="#true1-0-0-beta5">8.5. 1.0.0-beta5</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-5">9.5.1. Feature</a></li>
-<li><a href="#trueimprovement-5">9.5.2. Improvement</a></li>
-<li><a href="#truefixed-5">9.5.3. Fixed</a></li>
+<li><a href="#truefeature-5">8.5.1. Feature</a></li>
+<li><a href="#trueimprovement-5">8.5.2. Improvement</a></li>
+<li><a href="#truefixed-5">8.5.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta2">9.6. 1.0.0-Beta2</a>
+<li><a href="#true1-0-0-beta4">8.6. 1.0.0-beta4</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-6">9.6.1. Feature</a></li>
-<li><a href="#trueimprovement-6">9.6.2. Improvement</a></li>
-<li><a href="#truefixed-6">9.6.3. Fixed</a></li>
+<li><a href="#truefeature-6">8.6.1. Feature</a></li>
+<li><a href="#trueimprovement-6">8.6.2. Improvement</a></li>
+<li><a href="#truefixed-6">8.6.3. Fixed</a></li>
 </ul>
 </li>
-<li><a href="#true1-0-0-beta1">9.7. 1.0.0-beta1</a>
+<li><a href="#true1-0-0-beta3">8.7. 1.0.0-beta3</a>
 <ul class="sectlevel3">
-<li><a href="#truefeature-7">9.7.1. Feature</a></li>
-<li><a href="#trueimprovement-7">9.7.2. Improvement</a></li>
-<li><a href="#truefixed-7">9.7.3. Fixed</a></li>
+<li><a href="#truefeature-7">8.7.1. Feature</a></li>
+<li><a href="#trueimprovement-7">8.7.2. Improvement</a></li>
+<li><a href="#truefixed-7">8.7.3. Fixed</a></li>
+</ul>
+</li>
+<li><a href="#true1-0-0-beta2">8.8. 1.0.0-Beta2</a>
+<ul class="sectlevel3">
+<li><a href="#truefeature-8">8.8.1. Feature</a></li>
+<li><a href="#trueimprovement-8">8.8.2. Improvement</a></li>
+<li><a href="#truefixed-8">8.8.3. Fixed</a></li>
+</ul>
+</li>
+<li><a href="#true1-0-0-beta1">8.9. 1.0.0-beta1</a>
+<ul class="sectlevel3">
+<li><a href="#truefeature-9">8.9.1. Feature</a></li>
+<li><a href="#trueimprovement-9">8.9.2. Improvement</a></li>
+<li><a href="#truefixed-9">8.9.3. Fixed</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#true--53">10. 路线图</a></li>
+<li><a href="#true--55">9. 路线图</a></li>
 </ul>
 </div>
 </div>
@@ -703,7 +732,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
         &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
         &lt;artifactId&gt;parent&lt;/artifactId&gt;
         &lt;!--生产环境切不可以使用快照版本!!!!!!!!--&gt;
-        &lt;version&gt;1.1.0-beta1&lt;/version&gt;
+        &lt;version&gt;1.2.0-RC&lt;/version&gt;
     &lt;/parent&gt;
 
     &lt;groupId&gt;yourgroup&lt;/groupId&gt;
@@ -833,8 +862,8 @@ dew:
  * 工程启动类
  * 重写父类的ComponentScan，先扫描Dew下的包，再是项目的根包
  */
-@ComponentScan(basePackageClasses = {Dew.class,PetStoreApplication.class})
-public class PetStoreApplication extends DewBootApplication {
+@DewBootApplication(scanBasePackageClasses = {Dew.class,PetStoreApplication.class})
+public class PetStoreApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(PetStoreApplication.class).run(args);
@@ -1527,6 +1556,22 @@ public class DocTest {
 <td class="tableblock halign-left valign-top"><p class="tableblock">基于Spring Cloud的扩展，基于<code>boot-starter</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloud-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">基于Spring Cloud的扩展，基于<code>boot-starter</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>idempotent-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">幂性处理模块</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jdbc-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dew JDBC模块</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>csp-starter</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">用户权限中心扩展模块</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>cluster-common</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">集群能力接口</p></td>
 </tr>
@@ -1969,7 +2014,7 @@ public class WebExampleController {
 <div class="ulist">
 <ul>
 <li>
-<p>协议无关：<code>Resp&lt;E&gt;</code> 响应，对于 <code>HTTP</code> 统一返回 <code>200</code> HTTP状态码，使用 <code>code</code> 表示业务状态码，<code>Resp</code> 对象包含:</p>
+<p>协议无关：<code>Resp&lt;E&gt;</code> 响应，对于 <code>HTTP</code> 统一返回 <code>200</code> (业务操作不需要降级) 或 <code>1000</code> (业务操作需要降级) HTTP状态码，使用 <code>code</code> 表示业务状态码，<code>Resp</code> 对象包含:</p>
 <div class="literalblock">
 <div class="content">
 <pre>code 响应编码，与http状态码类似，200表示成功
@@ -1988,6 +2033,29 @@ body 响应正文</pre>
 </td>
 <td class="content">
 <code>Resp</code>类提供了常用操作：详见 <a href="https://gudaoxuri.github.io/dew-common/#true-resp">https://gudaoxuri.github.io/dew-common/#true-resp</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="title">1000 Http状态码说明</div>
+<div class="paragraph">
+<p><code>1000</code> 状态码仅用于告诉 <code>Hystrix</code> 这次请求是需要降级的错误，对于 <code>Resp</code> 中的 <code>code</code> 没有影响。</p>
+</div>
+<div class="paragraph">
+<p><code>dew</code> 框架会把所有 <code>5xx</code>（服务端错误，需要降级） 的异常统一转换成 <code>1000</code> 的Http状态码返回给调用方。</p>
+</div>
+<div class="paragraph">
+<p><code>Resp.xxx.fallback()</code> 用于显示声明当前返回需要降级，
+比如 <code>Resp.serverError("some message")</code> 不会降级，返回http状态码为200，body为 <code>{"code":"500","message":"some message","body":null}</code>，
+但 <code>Resp.serverError("some message").fallback()</code> 会降级，返回http状态码为1000，body为 同上。</p>
+</div>
 </td>
 </tr>
 </table>
@@ -2022,7 +2090,7 @@ body 响应正文</pre>
     basic:
         format:
             use-unity-error: true # 是否启用统一响应，默认true
-            reuse-http-state: false # true:重用http状态码，false:使用协议无关格式，默认true</code></pre>
+            reuse-http-state: false # true:重用http状态码，false:使用协议无关格式，默认false</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -2153,9 +2221,11 @@ public class DocTest {
 </div>
 </div>
 <div class="listingblock">
-<div class="title">执行如下命令</div>
+<div class="title">执行如下命令(加上 <code>-Dapi.file.name= [name]</code> 可指定文件名)</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-shell" data-lang="shell">mvn -Dtest=DocTest clean test -P doc</code></pre>
+<pre class="highlightjs highlight"><code class="language-shell" data-lang="shell">mvn -Dtest=DocTest clean test -P doc
+
+mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -3563,7 +3633,7 @@ boolean isLeader();</code></pre>
 <p>basic模式，它支持<code>认证缓存</code>，即支持将鉴权系统生成的登录信息缓存到业务系统中方便即时调用。</p>
 </li>
 <li>
-<p>uc模式，支持用户中心权限系统</p>
+<p>csp模式，支持用户中心权限系统</p>
 </li>
 </ol>
 </div>
@@ -3709,35 +3779,65 @@ public Resp&lt;Void&gt; logout() {
 <div class="ulist">
 <ul>
 <li>
-<p>uc模式</p>
+<p>csp模式</p>
 </li>
 </ul>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+增加csp-starter依赖，则强制权限认证采用csp模式
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+csp模式使用CSPOptInfo对象基类
+</td>
+</tr>
+</table>
+</div>
 <div class="listingblock">
-<div class="title">uc模式配置</div>
+<div class="title">pom.xml依赖配置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+          &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
+          &lt;artifactId&gt;csp-starter&lt;/artifactId&gt;
+ &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">csp模式配置</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew:
     security:
-        token-flag: # token key的名称
-        token-in-header: # token key是否在http header中，为false是会从url query中获取
-        token-hash: # token 值是否做hash（MD5）处理
-        auth-adapter: uc  #开启uc模式
-        uc-auth-adapter:
-             host: #用户中心地址
-             app-id: #app-id
-             app-secret: #app-secret 秘钥</code></pre>
+        auth:
+            csp:
+                party-id: #partyId在header中的key值 默认为'X-User-Id'
+                app-id: #appId在header中的key值 默认为'X-App-Id'
+                roles: #角色在header中的key值 默认为'X-Roles'</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">uc模式接口</div>
+<div class="title">csp模式接口</div>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java" data-lang="java">// 添加登录信息，optInfo封装自鉴权系统过来的登录信息
-// 一般在登录认证后操作（废弃）
-Dew.auth.setOptInfo(OptInfo optInfo);
-// 获取登录信息，要求在http请求加上token信息
-Dew.context().optInfo();
+// 一般在登录认证后操作
+Dew.auth.setOptInfo(OptInfo optInfo);// 框架自动加载
+// 获取登录信息，要求在http请求加上token，appId,roles
+Dew.context().optInfo();//
 // 删除登录信息
-// 一般在注销登录后操作(废弃)
+// 一般在注销登录后操作（无需手动操作）
 Dew.auth.removeOptInfo();
 
 // 登录信息
@@ -3774,22 +3874,32 @@ public class OptInfo&lt;E&gt; {
 </table>
 </div>
 <div class="listingblock">
-<div class="title">uc模式示例</div>
+<div class="title">csp模式示例</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">/**
- * 模拟业务操作
- */
-@GetMapping(value = "business/someopt")
-public Resp&lt;Void&gt; someOpt() {
-    // 获取登录用户信息
-    Optional&lt;OptInfoExt&gt; optInfoExtOpt = Dew.auth.getOptInfo();
-    if (!optInfoExtOpt.isPresent()) {
-        return Resp.unAuthorized("用户认证错误");
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">    /**
+     * 模拟业务操作
+     */
+    @GetMapping(value = "business/someopt")
+    public Resp&lt;Void&gt; someOpt() {
+        // 获取登录用户信息
+        Optional&lt;CSPOptInfo&gt; optInfoExtOpt = Dew.auth.getOptInfo();
+        if (!optInfoExtOpt.isPresent()) {
+            return Resp.unAuthorized("用户认证错误");
+        }
+        // 登录用户的信息
+        optInfoExtOpt.get();
+        return Resp.success(null);
     }
-    // 登录用户的信息
-    optInfoExtOpt.get();
-    return Resp.success(null);
-}</code></pre>
+
+    /**
+     * 模拟用户注销
+     */
+    @DeleteMapping(value = "auth/logout")
+    public Resp&lt;Void&gt; logout() {
+        // 实际注册处理
+        Dew.auth.removeOptInfo();
+        return Resp.success(null);
+    }</code></pre>
 </div>
 </div>
 </div>
@@ -4123,11 +4233,146 @@ inline写法在2.0.0.M1之后被废除。
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="true--32"><a class="anchor" href="#true--32"></a>3.3.6. 幂等支持</h4>
+<div class="listingblock">
+<div class="content">
+<pre>此章节关联示例:idempotent-example</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">引入依赖</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml" data-lang="xml">&lt;!--引入幂等支持--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
+    &lt;artifactId&gt;idempotent-starter&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!--使用幂等的Redis实现--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.tairanchina.csp.dew&lt;/groupId&gt;
+    &lt;artifactId&gt;cluster-spi-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>配置</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew:
+  cluster:
+    cache: redis # 启用Redis支持
+  idempotent:
+    default-expire-ms: 3600000 # 设置默认过期时间，1小时
+    default-strategy: item # 设置默认策略，支持 bloom(Bloom Filter)和item(逐条记录)
+    opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
+    opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>使用</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>支持HTTP和非HTTP幂等操作，对于HTTP操作，要求请求方在请求头或URL参数中加上操作类型和操作ID标识，非HTTP操作由可自由指定操作类型和操作ID标识的来源。</p>
+</div>
+<div class="listingblock">
+<div class="title">HTTP操作</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@GetMapping(xxx)
+// 启用幂等支持
+// 请求头部或参数加上 __IDEMPOTENT_OPT_TYPE__ = xx , __IDEMPOTENT_OPT_ID__ = yy
+@Idempotent(expireMs = 5000)
+public void test(xxx) {
+    // 业务操作
+    // ...
+    // 业务失败，在保证业务操作的原子性的情况下，在catch中取消幂等，并抛出异常
+    DewIdempotent.cancel();
+    // 手工确认
+    DewIdempotent.confirm();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Idempotent</code>注解说明：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>optTypeFlag：指定幂等操作类型标识，可以位于HTTP Header或请求参数中，要求全局唯一</p>
+</li>
+<li>
+<p>optIdFlag：指定幂等操作ID标识，可以位于HTTP Header或请求参数中</p>
+</li>
+<li>
+<p>expireMs：设置过期时间，单位毫秒</p>
+</li>
+<li>
+<p>strategy：设置默认策略</p>
+</li>
+<li>
+<p>needConfirm：设置是否需要显式确认，true时，需要进行显式确认操作: <code>DewIdempotent.confirm() 或 DewIdempotent.confirm(String optType, String optId)</code> 前者要求与请求入口在同一线程中</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">取消幂等与http操作时的使用方式相同</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public void init() {
+    // 初始化用到的操作类型
+    // * DewIdempotent.initOptTypeInfo 参数：
+    // * @param optType     操作类型
+    // * @param needConfirm 是否需要显式确认
+    // * @param expireMs    过期时间
+    // * @param strategy    策略类型
+    DewIdempotent.initOptTypeInfo("transfer_a", true, 1000, StrategyEnum.ITEM);
+}
+
+public void send() {
+    // 调用
+    transferAReceive("xxxx");
+}
+
+public void transferAReceive(String id) {
+    // 收到请求后先调用process
+    // * DewIdempotent.process 参数：
+    // * @param optType 操作类型
+    // * @param optId   操作ID
+    switch (DewIdempotent.process("transfer_a", id)) {
+        case NOT_EXIST:
+            // 业务操作
+            // ...
+            // 手工确认
+            // * DewIdempotent.confirm 参数：
+            // * @param optType 操作类型
+            // * @param optId   操作ID
+            DewIdempotent.confirm();
+        case UN_CONFIRM:
+            // 已收到但操作还未确认
+            // 对应的处理，一般返回请求等待，稍后重试
+        case CONFIRMED:
+            // 已确认操作
+            // 对应的处理，一般直接返回失败
+        default:
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="true--32"><a class="anchor" href="#true--32"></a>3.4. 工程化</h3>
+<h3 id="true--33"><a class="anchor" href="#true--33"></a>3.4. 工程化</h3>
 <div class="sect3">
-<h4 id="true--33"><a class="anchor" href="#true--33"></a>3.4.1. 代码质量检查</h4>
+<h4 id="true--34"><a class="anchor" href="#true--34"></a>3.4.1. 代码质量检查</h4>
 <div class="paragraph">
 <p>Dew 已集成 <code>Sonar</code> 插件，只需要在maven中配置 <code>sonar.host.url</code> 为目标地址，然后执行 <code>mvn clean verify sonar:sonar -P qa</code> 即可。</p>
 </div>
@@ -4157,7 +4402,7 @@ inline写法在2.0.0.M1之后被废除。
 </div>
 </div>
 <div class="sect3">
-<h4 id="true--34"><a class="anchor" href="#true--34"></a>3.4.2. 测试支持</h4>
+<h4 id="true--35"><a class="anchor" href="#true--35"></a>3.4.2. 测试支持</h4>
 <div class="paragraph">
 <p>良好的单元测试可以保证代码的高质量，单测的重要原则是内聚、无依赖，好的单测应该是"函数化"的——结果的变化只与传入参数有关。
 但实际上我们会的代码往往会与数据库、缓存、MQ等外部工具交互，这会使单测的结果不可控，通常的解决方案是使用Mock，但这无行中引入了单测撰写的成本，
@@ -4247,13 +4492,7 @@ management.security.enabled: false # 需要关闭安全管理，可通过IP来�
 </div>
 </div>
 <div class="sect3">
-<h4 id="true-code-zipkin-code"><a class="anchor" href="#true-code-zipkin-code"></a>3.4.4. <code>Zipkin</code> 集成</h4>
-<div class="paragraph">
-<p>TBD</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="true--35"><a class="anchor" href="#true--35"></a>3.4.5. 服务调用开发期优化</h4>
+<h4 id="true--36"><a class="anchor" href="#true--36"></a>3.4.4. 服务调用开发期优化</h4>
 <div class="paragraph">
 <p>在Spring Cloud体系下，服务调用需要启动<code>Eureka</code>服务（对于Dew中的<code>Regstry</code>组件），这对开发阶段并不友好：</p>
 </div>
@@ -4277,14 +4516,213 @@ management.security.enabled: false # 需要关闭安全管理，可通过IP来�
 所以您只需要把服务url做成配置，开发时使用 <code>ip</code> ，测试/生产时使用 <code>service-id</code> 。</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="true-code-hystrix-code"><a class="anchor" href="#true-code-hystrix-code"></a>3.4.5. <code>hystrix</code> 降级增加邮件通知</h4>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+此为 <code>cloud-starter</code> 特性
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>此章节关联 `hystrix-feign-example` 示例</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+为能更及时的对服务异常做出处理， <code>dew</code> 增加邮件通知功能。
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml"># 通知条件配置示例
+dew:
+  cloud:
+    error:
+      notify-interval-sec: 1800
+      notify-emails: 71964899@qq.com
+      notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED
+      notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
+
+# 邮箱配置示例
+spring:
+  mail:
+    host: smtp.163.com
+    username: &lt;邮件地址&gt;
+    password: &lt;password为smtp授权码，非邮箱密码&gt;
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true</code></pre>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="true--36"><a class="anchor" href="#true--36"></a>4. 最佳实践</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="true-code-api-code"><a class="anchor" href="#true-code-api-code"></a>3.4.6. <code>服务API调用</code> （追踪）日志处理</h4>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+此为 <code>cloud-starter</code> 特性
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>此章节关联 `sleuth-invokeX-example` 示例</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>用于记录 <code>服务API调用</code> （追踪）日志到 <code>Slf4j</code>。</p>
+</div>
+<div class="listingblock">
+<div class="title">开启追踪日志</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew:
+  cloud:
+    trace-log:
+        enabled: true # 默认为true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>之后可选择 <code>ELK</code> 方案，或是 <code>Dew</code> 推荐的 <code>EK</code> 方案（跳过 <code>Logstash</code>，直接向 <code>ES</code> 提交）</p>
+</div>
+<div class="paragraph">
+<p>一次调用日志的查看，以 <code>ES</code> 为例，过滤条件是: logger:com.tairanchina.csp.dew.core.logger.DewTraceLogWrap &amp; trace:&lt;对应的traceID&gt;</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truetps"><a class="anchor" href="#truetps"></a>3.4.7. TPS查询接口</h4>
+<div class="paragraph">
+<p>基于<code>Spring Boot Actuator</code>提供的metrics接口，dew增加了三个TPS指标，最大响应时间，平均响应时间，90%的响应时间。</p>
+</div>
+<div class="listingblock">
+<div class="title">需要配置如下</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml"># 启用metrics接口
+endpoints:
+  metrics:
+    enabled: true
+
+# spring默认该接口需要security拦截，否则会提示``Unauthorized``，加以下配置即可
+management:
+  security:
+    enabled: false
+
+# 指定统计周期（多少秒内的指标统计）
+dew:
+  metric:
+    period-sec: # 默认600s(10分钟),（单位秒）</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 <code>dew.response.nityPercent</code>,<code>dew.response.average</code>,<code>dew.response.max</code>,<code>dew.response.tps</code> 四个指标
+及针对接口的对应指标</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truedew-2"><a class="anchor" href="#truedew-2"></a>3.4.8. Dew 启动类配置多样性</h4>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>dew</code>启动类支持注解式配置和继承式配置，注解为<code>@DewBootApplication</code>和<code>@DewCloudApplication</code>,抽象类为<code>DewBootApplication</code>和<code>DewCloudApplication</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>注解式配置</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+注解式配置必须详细配置扫描基类
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">在启动类上加@DewBootApplication注解</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@DewBootApplication(scanBasePackageClasses = {Dew.class, ExampleApplication.class})
+public class ExampleApplication {
+
+    public static void main(String[] args) throws InterruptedException {
+        new SpringApplicationBuilder(ExampleApplication.class).run(args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>继承式配置</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+继承式配置注解继承自父类
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">启动类继承DewBootApplication类</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">public class ExampleApplication extends DewBootApplication类 {
+
+    public static void main(String[] args) throws InterruptedException {
+        new SpringApplicationBuilder(ExampleApplication.class).run(args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>``</code>== 最佳实践</p>
+</div>
+</div>
+</div>
 <div class="sect2">
-<h3 id="truejdbc"><a class="anchor" href="#truejdbc"></a>4.1. JDBC框架的选择</h3>
+<h3 id="truejdbc"><a class="anchor" href="#truejdbc"></a>3.5. JDBC框架的选择</h3>
 <div class="paragraph">
 <p>主流JDBC框架有Hibernate、MyBatis、Spring JDBC Template、Ebean、DBUtils等，Dew基于Spring Boot，所以对于这些框架都提供了很好的兼容。那么如何选择呢？</p>
 </div>
@@ -4354,25 +4792,37 @@ management.security.enabled: false # 需要关闭安全管理，可通过IP来�
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--37"><a class="anchor" href="#true--37"></a>4.2. 缓存处理</h3>
+<h3 id="true--37"><a class="anchor" href="#true--37"></a>3.6. 服务调用开发期使用</h3>
 <div class="paragraph">
-<p><code>Spring Cache</code> 提供了很好的注解式缓存，但默认没有超时，需要根据使用的缓存容器特殊配置，e.g.</p>
+<p>在Spring Cloud体系下，服务调用需要启动 <code>Eureka</code> 服务（对于Dew中的 <code>Regstry</code> 组件），这对开发阶段并不友好：</p>
 </div>
-<div class="listingblock">
-<div class="title">Redis缓存过期时间设置</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>开发期间会不断启停服务，<code>Eureka</code> 保护机制会影响服务注册（当然这是可以关闭的）</p>
+</li>
+<li>
+<p>多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）</p>
+</li>
+<li>
+<p>需要启动 <code>Eureka</code> 服务，多了一个依赖</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>为解决上述问题,在使用` Spring Cloud` 的 <code>RestTemplate</code> 时,增加 <code>Ribbon</code> 的服务配置.</p>
+</div>
+<div class="literalblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
-RedisCacheManager cacheManager() {
-    final RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
-    redisCacheManager.setUsePrefix(true);
-    redisCacheManager.setDefaultExpiration(&lt;过期秒数&gt;);
-    return redisCacheManager;
-}</code></pre>
+<pre># &lt;client&gt;为service-id
+&lt;client&gt;.ribbon.listOfServers: &lt;直接访问的IPs&gt;
+# 如
+performance-service.ribbon.listOfServers: 127.0.0.1:8812</pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--38"><a class="anchor" href="#true--38"></a>4.3. 断路保护</h3>
+<h3 id="true--38"><a class="anchor" href="#true--38"></a>3.7. 断路保护</h3>
 <div class="listingblock">
 <div class="title">Hystrix配置</div>
 <div class="content">
@@ -4461,7 +4911,7 @@ hystrix.threadpool.default.coreSize=10</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--39"><a class="anchor" href="#true--39"></a>4.4. 配置中心</h3>
+<h3 id="true--39"><a class="anchor" href="#true--39"></a>3.8. 配置中心</h3>
 <div class="paragraph">
 <p>使用 <code>Spring Config</code>  配置中心 <code>refresh</code> 时,在 <code>@RefreshScope</code> 注解的类中,` @Scheduled` 注解的自动任务会失效。
 建议使用实现 <code>SchedulingConfigurer</code> 接口的方式添加自动任务。</p>
@@ -4492,7 +4942,56 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
 </div>
 </div>
 <div class="sect2">
-<h3 id="true-code-feign-code"><a class="anchor" href="#true-code-feign-code"></a>4.5. <code>feign</code> 配置特定方法超时时间</h3>
+<h3 id="true-code-ribbon-code"><a class="anchor" href="#true-code-ribbon-code"></a>3.9. <code>ribbon</code> 负载均衡</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+本条实践为<code>netflix</code>的<code>1.3.4.RELEASE</code>版本
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>example: service-dew.ribbon.NFLoadBalancerRuleClassName=com.netflix.loadbalancer.RandomRule</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>service-dew</code>为服务名，配置时自行选取规则，类均在<code>com.netflix.loadbalancer</code>包下
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">若指定zone，默认会优先调用相同zone的服务,此优先级高于策略配置，配置如下</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">#指定属于哪个zone
+eureka:
+  instance:
+    metadata-map:
+      zone: #zone 名称
+
+#指定region（此处region为项目在不同区域的部署，为项目规范，不同region间能互相调用）
+eureka:
+  client:
+    region: #region名称</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-code-feign-code"><a class="anchor" href="#true-code-feign-code"></a>3.10. <code>feign</code> 配置特定方法超时时间</h3>
 <div class="paragraph">
 <p><strong><code>hystrix</code> 超时时间配置</strong></p>
 </div>
@@ -4536,37 +5035,7 @@ pressure-service.ribbon.ReadTimeout=5000</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--40"><a class="anchor" href="#true--40"></a>4.6. 服务调用开发期使用</h3>
-<div class="paragraph">
-<p>在Spring Cloud体系下，服务调用需要启动 <code>Eureka</code> 服务（对于Dew中的 <code>Regstry</code> 组件），这对开发阶段并不友好：</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>开发期间会不断启停服务，<code>Eureka</code> 保护机制会影响服务注册（当然这是可以关闭的）</p>
-</li>
-<li>
-<p>多人协作时可能会出现调用到他人服务的情况（同一服务多个实例）</p>
-</li>
-<li>
-<p>需要启动 <code>Eureka</code> 服务，多了一个依赖</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>为解决上述问题,在使用` Spring Cloud` 的 <code>RestTemplate</code> 时,增加 <code>Ribbon</code> 的服务配置.</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre># &lt;client&gt;为service-id
-&lt;client&gt;.ribbon.listOfServers: &lt;直接访问的IPs&gt;
-# 如
-performance-service.ribbon.listOfServers: 127.0.0.1:8812</pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="true--41"><a class="anchor" href="#true--41"></a>4.7. 主要性能影响参数</h3>
+<h3 id="true--40"><a class="anchor" href="#true--40"></a>3.11. 主要性能影响参数</h3>
 <div class="paragraph">
 <p><strong>内置 <code>tomcat</code> 参数</strong> tomcat参数调整效果并不大,如果需要调整,建议适当调大 <code>max-treads</code> 和 <code>accept-count</code></p>
 </div>
@@ -4660,7 +5129,7 @@ hystrix.threadpool.default.coreSize=100</pre>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-<code>hystrix</code> 的默认超时时间为5s,在高并发下容易出现超时,建议将默认超时时间适当调长,
+<code>hystrix</code> 的默认超时时间为1s,在高并发下容易出现超时,建议将默认超时时间适当调长,
 特殊接口需要将时间调短或更长的,使用特定配置,见上面 <code>feign</code> 配置特定方法超时时间.
 </td>
 </tr>
@@ -4679,22 +5148,287 @@ hystrix.threadpool.default.coreSize=100</pre>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="true--41"><a class="anchor" href="#true--41"></a>3.12. 缓存处理</h3>
+<div class="paragraph">
+<p><code>Spring Cache</code> 提供了很好的注解式缓存，但默认没有超时，需要根据使用的缓存容器特殊配置，e.g.</p>
+</div>
+<div class="listingblock">
+<div class="title">Redis缓存过期时间设置</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java" data-lang="java">@Bean
+RedisCacheManager cacheManager() {
+    final RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
+    redisCacheManager.setUsePrefix(true);
+    redisCacheManager.setDefaultExpiration(&lt;过期秒数&gt;);
+    return redisCacheManager;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true--42"><a class="anchor" href="#true--42"></a>3.13. 日志处理</h3>
+<div class="paragraph">
+<p>对微服务而言 <code>服务API调用</code> 日志可选择 <code>Sleuth</code> + <code>Zipkin</code> 的方案， <code>Dew</code> 没有选择 <code>Zipkin</code> 理由如下：</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>Zipkin</code> 需要再部署一套 <code>Zipkin</code> 服务，多了一个依赖</p>
+</li>
+<li>
+<p><code>Zipkin</code> 日志走 <code>HTTP</code> 协议对性能有比较大的影响，走 <code>MQ</code> 方案又会让使用方多了一个技术依赖，且 <code>Rabbit</code> 的性能也是个瓶颈，<code>Kafka</code> 才比较适合</p>
+</li>
+<li>
+<p><code>Zipkin</code> 日志存储方案中 <code>MySQL</code> 有明显的问题， <code>Cassandra</code> 不错，但选型比较偏， <code>ES</code> 最为合适</p>
+</li>
+<li>
+<p><code>Zipkin</code> 方案导致 <code>服务API调用</code> 日志 与 <code>应用程序</code> 日志不统一，后则多选择 <code>ELK</code> 方案</p>
+<div class="literalblock">
+<div class="content">
+<pre>`Dew` 框架采用的是 `Sleuth` + `Slf4j` + `ES`（可选）的方案，因为：</pre>
+</div>
+</div>
+</li>
+<li>
+<p>简单，使用方没有额外的技术依赖，只要像普通日志一样处理即可</p>
+</li>
+<li>
+<p>统一，所有类型的日志都可统一使用类似 <code>Logback</code> 的日志框架记录，方便统一维护</p>
+</li>
+<li>
+<p>高效，可异步批量提交到 <code>ES</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>当然这一方案会损失一定的可读性，即没有可视化的接口调用展现。</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueservo"><a class="anchor" href="#trueservo"></a>3.14. servo 内存泄漏问题</h3>
+<div class="paragraph">
+<p>已知在某此情况下 <code>servo</code> 统计会导致内存泄漏，如无特殊需要建议关闭 <code>spring.metrics.servo.enabled: false</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-validated"><a class="anchor" href="#true-validated"></a>3.15. '@Validated'注解</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>在Spring controller类里，<code>@Validated</code>注解初使用会比较不易上手，在此做下总结</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>对于基本数据类型和String类型，要使校验的注解生效，需在该类上方加<code>@Validated</code>注解</p>
+</li>
+<li>
+<p>对于抽象数据类型，需在形式参数前加<code>@Validated</code>注解</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+spring对抽象数据类型校验抛出异常为<code>MethodArgumentNotValidException</code>，http状态码为400，对基本数据类型校验抛出异常为<code>ConstraintViolationException</code>，http状态码为500，dew对这两种异常做了统一处理，http状态码均返回200，code为400
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truejackson-java8-springmvc-jackson-json"><a class="anchor" href="#truejackson-java8-springmvc-jackson-json"></a>3.16. jackson对于java8时间转换（springmvc以jackson接收json数据）</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>对于LocalDateTime类型，需在参数上加<code>@JsonFormat</code>注解，如下：<code>@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")</code></p>
+</li>
+<li>
+<p>LocalDate,LocalTime,Instant等，无需配置可自行转换</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<code>jackson</code>对于<code>LocalDateTime</code>类型的支持与其他三种类型不具有一致性，这是jackson需要优化的一个点
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="trueswagger"><a class="anchor" href="#trueswagger"></a>3.17. swagger离线文档</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>以启动参数<code>api.file.name</code>指定导出文件名</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">执行如下命令(加上 <code>-Dapi.file.name= [name]</code> 可指定文件名)</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell" data-lang="shell">mvn -Dtest=DocTest clean test -P doc
+
+mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-code-feign-code-http"><a class="anchor" href="#true-code-feign-code-http"></a>3.18. <code>feign</code> 接口添加http请求头信息</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+在FeignClient类中的接口方法里添加新的形参，并加上@RequestHeader注解指定key值
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true-code-zuul-code-http"><a class="anchor" href="#true-code-zuul-code-http"></a>3.19. <code>zuul</code> 保护(隐藏)内部服务的http接口</h3>
+<div class="paragraph">
+<p>在yml配置文件里配置(<code>ignored-patterns</code>,<code>ignored-services</code>)这两项中的一项即可</p>
+</div>
+<div class="listingblock">
+<div class="title">配置示例</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">zuul: #配置一项即可!
+  ignored-patterns: /dew-example/**   #排除此路径
+  ignored-services: dew-example       #排除此服务</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="truespring-boot-admin"><a class="anchor" href="#truespring-boot-admin"></a>3.20. Spring Boot Admin 监控实践</h3>
+<div class="paragraph">
+<p>在<code>Spring Boot Actuator</code>中提供很多像<code>health</code>、<code>metrics</code>等实时监控接口，可以方便我们随时跟踪服务的性能指标。
+<code>Spring Boot</code>默认是开放这些接口提供调用的，那么就问题来了，如果这些接口公开在外网中，很容易被不法分子所利用，这肯定不是我们想要的结果。
+在这里我们提供一种比较好的解决方案</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>被监控的服务配置</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">为被保护的http请求添加请求前缀</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">management:
+  context-path: /dew-example <i class="conum" data-value="1"></i><b>(1)</b>
+eureka:
+  instance:
+    status-page-url-path: ${management.context-path}/info <i class="conum" data-value="2"></i><b>(2)</b>
+    health-check-url-path: ${management.context-path}/health</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>添加请求前缀</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>Spring Boot Admin</code>在启动的时候会去<code>eureka</code>拉去服务信息，其中<code>health</code>与<code>info</code>需要特殊处理，这两者的地址是根据<code>status-page-url-path</code>和<code>health-check-url-path</code>的值</td>
+</tr>
+</table>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><code>zuul</code>网关配置</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title"><code>zuul</code>保护内部服务http接口</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">zuul:
+  ignoredPatterns: /*/dew-example/** <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>这里之所以不是<code>/dew-example/**</code>，由于网关存在项目前缀，需要往前一级，大家可以具体场景具体配置</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Spring Boot Admin</code>配置</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">配置监控的指标参数</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml" data-lang="yaml">spring:
+  application:
+    name: monitor
+  boot:
+    admin:
+      discovery:
+        converter:
+          management-context-path: /dew-example # The endpoints URL prefix <i class="conum" data-value="1"></i><b>(1)</b>
+      routes:
+        endpoints: env,metrics,dump,jolokia,info,configprops,trace,logfile,refresh,flyway,liquibase,heapdump,loggers,auditevents,hystrix.stream
+      turbine:
+        clusters: default
+        location: monitor
+
+turbine:
+  aggregator:
+    clusterConfig: default
+  appConfig: monitor-example <i class="conum" data-value="2"></i><b>(2)</b>
+  clusterNameExpression: metadata['cluster']</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>与应用配置的management.context-path相同</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>添加需要被监控的应用Service-Id，以逗号分隔</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--42"><a class="anchor" href="#true--42"></a>5. 技术指标</h2>
+<h2 id="true--43"><a class="anchor" href="#true--43"></a>4. 技术指标</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--43"><a class="anchor" href="#true--43"></a>5.1. 可靠性</h3>
-<div class="paragraph">
-<p>TBD</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="true--44"><a class="anchor" href="#true--44"></a>5.2. 性能</h3>
-<div class="paragraph">
-<p>TBD</p>
-</div>
+<h3 id="true--44"><a class="anchor" href="#true--44"></a>4.1. 性能</h3>
 <div class="paragraph">
 <p>服务器基本情况介绍
     172.30.250.153
@@ -4929,18 +5663,50 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="truescm"><a class="anchor" href="#truescm"></a>6. SCM</h2>
+<h2 id="true--45"><a class="anchor" href="#true--45"></a>5. 开发指南</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="truescm"><a class="anchor" href="#truescm"></a>5.1. SCM</h3>
 <div class="paragraph">
 <p><a href="https://rep.360taihe.com/csp/dew-framework/">https://rep.360taihe.com/csp/dew-framework/</a></p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="true--46"><a class="anchor" href="#true--46"></a>5.2. 环境要求</h3>
+<div class="paragraph">
+<p>基础环境： <code>&gt;=java8</code></p>
+</div>
+<div class="paragraph">
+<p>调试环境： 推荐使用Docker环境准备各个容器</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell" data-lang="shell"># MySQL环境
+docker run -d --name dew-mysql -p 3306:3306 -e MYSQL_DATABASE=dew -e MYSQL_ROOT_PASSWORD=123456 mysql
+# Redis环境
+docker run -d --name dew-redis -p 6379:6379 redis
+# Rabbit环境
+docker run -d --name dew-rabbit --hostname dew-rabbit -p 15671:15671 -p 15672:15672 -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 25672:25672 -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=123456 -e RABBITMQ_DEFAULT_VHOST=dew rabbitmq:3-management-alpine
+# Hazelcast环境
+docker run -d --name dew-hazelcast -p 5701:5701 hazelcast/hazelcast
+# Ignite环境
+docker run -d --name dew-ignite -p 11211:11211 -p 47100:47100 -p 47500:47500 -p 49112:49112 apacheignite/ignite
+# Zookeeper环境
+docker run -d --name dew-zookeeper -p 2181 -t wurstmeister/zookeeper
+# Kafka环境
+docker run --name dew-kafka -e HOST_IP=localhost -e KAFKA_ADVERTISED_PORT=9092 -e KAFKA_BROKER_ID=1 -e ZK=zk -p 9092:9092 --link dew-zookeeper:zk -t wurstmeister/kafka
+# ELK环境
+docker run -d --name dew-elk -p 5601:5601 -p 9200:9200 -p 5044:5044 -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" sebp/elk</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="true--45"><a class="anchor" href="#true--45"></a>7. 编译部署</h2>
+<h2 id="true--47"><a class="anchor" href="#true--47"></a>6. 编译部署</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true--46"><a class="anchor" href="#true--46"></a>7.1. 开发期热部署</h3>
+<h3 id="true--48"><a class="anchor" href="#true--48"></a>6.1. 开发期热部署</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -4982,13 +5748,13 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--47"><a class="anchor" href="#true--47"></a>7.2. 打包</h3>
+<h3 id="true--49"><a class="anchor" href="#true--49"></a>6.2. 打包</h3>
 <div class="paragraph">
 <p><code>mvn clean package -P fatjar</code> 即可打出一个包含所有依赖的包，后把 <code>target</code> 目录下生成的jar放到 <code>release/apps</code> 下。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true--48"><a class="anchor" href="#true--48"></a>7.3. 部署</h3>
+<h3 id="true--50"><a class="anchor" href="#true--50"></a>6.3. 部署</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -5005,7 +5771,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </table>
 </div>
 <div class="sect3">
-<h4 id="true--49"><a class="anchor" href="#true--49"></a>7.3.1. 准备</h4>
+<h4 id="true--51"><a class="anchor" href="#true--51"></a>6.3.1. 准备</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5027,7 +5793,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="true--50"><a class="anchor" href="#true--50"></a>7.3.2. 手工发布</h4>
+<h4 id="true--52"><a class="anchor" href="#true--52"></a>6.3.2. 手工发布</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5043,7 +5809,7 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueci"><a class="anchor" href="#trueci"></a>7.3.3. CI</h4>
+<h4 id="trueci"><a class="anchor" href="#trueci"></a>6.3.3. CI</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5059,58 +5825,85 @@ MaxTotalConnections两个参数，改问题就能解决，这里还是建议将P
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--51"><a class="anchor" href="#true--51"></a>8. 配置速查</h2>
+<h2 id="true--53"><a class="anchor" href="#true--53"></a>7. 配置速查</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true-code-dew-code"><a class="anchor" href="#true-code-dew-code"></a>8.1. <code>Dew</code> 参数</h3>
+<h3 id="true-code-dew-code"><a class="anchor" href="#true-code-dew-code"></a>7.1. <code>Dew</code> 参数</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yml" data-lang="yml">dew: # Dew 参数key前缀
     basic: # 基础信息
         name: # 服务名称，用于API文档显示等
-        version: # 服务版本号，用于API文档显示等
+        version: 1.0 # 服务版本号，用于API文档显示等
         desc: # 服务描述，用于API文档显示等
         webSite: # 官网，用于API文档显示等
         doc:
+            enabled: true # 是否启用默认文档配置，关闭后可自定义文档管理
             base-package: # API文档要扫描的根包，多指定到 Controller 包中
         format:
-        use-unity-error: # 是否启用统一响应，默认true
-        reuse-http-state: # true:重用http状态码，false:使用协议无关格式，默认true
+        use-unity-error: true # 是否启用统一响应
+        reuse-http-state: false # true:重用http状态码，false:使用协议无关格式
         error-mapping: # 自定义错误映射
             "[&lt;异常类名&gt;]":
                 http-code: # http状态码，不存在时使用实例级http状态码
                 business-code: # 业务编码，不存在时使用实例级业务编码
                 message: # 错误描述，不存在时使用实例级错误描述
     cluster: # 集群功能
-        cache: # 缓存实现，默认为 redis
-        dist: # 分布式锁和Map实现，默认为 redis，可选 redis/hazelcast
-        mq: # MQ实现，默认为 redis，可选 redis/hazelcast/rabbit
-        election: # 领导者选举实现，默认为 eureka
-    jdbc: # DewJDBC功能
+        cache: redis # 缓存实现
+        dist: redis # 分布式锁和Map实现，可选 redis/hazelcast
+        mq: redis # MQ实现，可选 redis/hazelcast/rabbit
+        election: eureka # 领导者选举实现，可选 eureka
+    jdbc: # DewJDBC 功能
         base-packages:[""] # 要扫描的根包，多指定到 jdbc 包中
     security: # 安全功能
         cors:
-            allow-origin: # 允许的来源，默认为 * ，建议修改
-            allow-methods: # 允许的方法，默认为所有常用方法
-            allow-headers: # 允许的头信息，默认为 x-requested-with,content-type
-        token-flag: # token 标识，默认为  __dew_token__
-        token-in-header: # true：token标识在 header 中，反之在url参数中，默认为true
-        token-hash: # token值是否需要hash，用于解决token值有特殊字符的情况，默认为false
+            allow-origin: * # 允许的来源，建议修改
+            allow-methods: POST,GET,OPTIONS,PUT,DELETE,HEAD # 允许的方法
+            allow-headers: x-requested-with,content-type # 允许的头信息
+        token-flag: __dew_token__ # token 标识
+        token-in-header: true # true：token标识在 header 中，反之在url参数中
+        token-hash: false # token值是否需要hash，用于解决token值有特殊字符的情况
         include-services: [""] # 服务白名单，要求源服务头部带上 Request-From
         exclude-services: [""] # 服务黑名单，要求源服务头部带上 Request-From
-        auth-adapter: uc  #uc或basic,默认为basic
-            #开启uc模式后的app配置
-            uc-auth-adapter:
-                host: #用户中心地址
-                app-id: #app-id
-                app-secret: #app-secret 秘钥
-
+        auth: # 特殊的认证功能，基础认证不需要配置
+            csp:  # csp模式，引用csp-starter后默认使用该模式
+                party-id: X-User-Id #partyId在header中的key值
+                app-id: X-App-Id #appId在header中的key值
+                roles: X-Roles #角色在header中的key值，逗号分隔
+    cloud:
+        trace-log:
+            enabled: true # 是否启用服务API调用（追踪）日志
+        error:
+             notify-interval-sec: 1800 # 通知的间隔时间
+             notify-emails:  # 通知的邮箱，逗号分隔
+             notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED # 通知的事件类型
+             notify-include-keys: # 需监控的方法key值，与notify-exclude-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
+             notify-exclude-keys: # 不需要监控的方法key值，与notify-include-keys互斥，client类名+#+方法名，for example:  ExampleClient#deleteExe(int,String)
+    idempotent:
+        default-expire-ms: 3600000 # 设置默认过期时间，1小时
+        default-strategy: item # 设置默认策略，支持 bloom(Bloom Filter)和item(逐条记录)
+        opt-type-flag: __IDEMPOTENT_OPT_TYPE__ # 指定幂等操作类型标识，可以位于HTTP Header或请求参数中
+        opt-id-flag: __IDEMPOTENT_OPT_ID__ # 指定幂等操作ID标识，可以位于HTTP Header或请求参数中
+    metric:
+        enabled: true # 是否启用Dew的指标统计
+        period-sec: 默认600 # 指定统计周期（多少秒内的指标统计）
 spring:
   datasource: # 主数据源配置
-    ... # 数据源配置，详见 Spring boot 核心参数
-    druid: # druid 连接池配置，详见 Spring boot 核心参数
+        ... # 数据源配置，详见 Spring boot 核心参数
+       druid: # druid 连接池配置，详见 Spring boot 核心参数
   multi-datasources: # DewJDBC 多数据源支撑
-    &lt;other ds name&gt;: # 数据源标识
+       &lt;other ds name&gt;: # 数据源标识
+  mail: #mail配置，需要hystrix降级通知需加以下配置
+       host: smtp.163.com
+       username:
+       password:
+       properties:
+         mail:
+           smtp:
+             auth: true
+             starttls:
+               enable: true
+               required: true
 
 #sharding-jdbc配置（分库分表样例，详细见使用手册及sharding-example）
 sharding:
@@ -5160,7 +5953,7 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true-code-spring-boot-code"><a class="anchor" href="#true-code-spring-boot-code"></a>8.2. <code>Spring boot</code> 核心参数</h3>
+<h3 id="true-code-spring-boot-code"><a class="anchor" href="#true-code-spring-boot-code"></a>7.2. <code>Spring boot</code> 核心参数</h3>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -5175,7 +5968,7 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true-code-druid-code"><a class="anchor" href="#true-code-druid-code"></a>8.3. <code>Druid</code> 连接池参数</h3>
+<h3 id="true-code-druid-code"><a class="anchor" href="#true-code-druid-code"></a>7.3. <code>Druid</code> 连接池参数</h3>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -5190,7 +5983,7 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true-code-spring-cloud-code"><a class="anchor" href="#true-code-spring-cloud-code"></a>8.4. <code>Spring cloud</code> 核心参数</h3>
+<h3 id="true-code-spring-cloud-code"><a class="anchor" href="#true-code-spring-cloud-code"></a>7.4. <code>Spring cloud</code> 核心参数</h3>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -5207,54 +6000,170 @@ sharding:
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--52"><a class="anchor" href="#true--52"></a>9. 版本说明</h2>
+<h2 id="true--54"><a class="anchor" href="#true--54"></a>8. 版本说明</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="true1-1-0-beta1"><a class="anchor" href="#true1-1-0-beta1"></a>9.1. 1.1.0-beta1</h3>
+<h3 id="true1-2-0-rc"><a class="anchor" href="#true1-2-0-rc"></a>8.1. 1.2.0-RC</h3>
 <div class="sect3">
-<h4 id="truefeature"><a class="anchor" href="#truefeature"></a>9.1.1. Feature</h4>
+<h4 id="truefeature"><a class="anchor" href="#truefeature"></a>8.1.1. Feature</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>[功能]支持局部 <code>ShardingJDBC</code>(由于ShardingJDBC 2.0还未RC，测试发现存在较多问题，此功能需要等待官方RC)</p>
+<p>#75 添加幂等处理功能， #77 可选策略类型Bloom Filter尚在开发中</p>
+</li>
+<li>
+<p>#72 实现针对服务整体及每个接口的TPS、最大/平均/90%响应时间Metrics统计</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>9.1.2. Improvement</h4>
+<h4 id="trueimprovement"><a class="anchor" href="#trueimprovement"></a>8.1.2. Improvement</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>[优化]支持Java8时间处理</p>
+<p>#68 支持自定义离线文档文件名</p>
 </li>
 <li>
-<p>[优化]模块Spring化，<code>boot-core</code> 更名为 <code>boot-starter</code> , <code>cloud-core</code> 更名为 <code>cloud-starter</code></p>
+<p>#70 更友好地获取本机Host</p>
 </li>
 <li>
-<p>[优化] <code>Dew JDBC</code> 独立成 <code>jdbc-starter</code> , 确保核心模块 <code>boot-starter</code> 更轻量</p>
+<p>#76 cluster.cache 支持更多类型的操作</p>
+</li>
+<li>
+<p>#53 统一响应——协议无关 降级由 <code>1000</code> 改成 <code>555</code> 以提升兼容性</p>
+</li>
+<li>
+<p>#79 增加是否启用默认文档配置</p>
+</li>
+<li>
+<p>#80 增加注解启用Dew功能</p>
+</li>
+<li>
+<p>Swagger文档去除全局token参数</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>8.1.3. Fixed</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>#43 swagger2markup-maven-plugin 在使用 spring.content-path 无效</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true-code-1-1-0-rc-code-code-1-2-0-rc-code"><a class="anchor" href="#true-code-1-1-0-rc-code-code-1-2-0-rc-code"></a>8.1.4. 从 <code>1.1.0-RC</code> 迁移到 <code>1.2.0-RC</code></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>使用 <code>统一响应——协议无关</code> 类型时，UI端由原来只需要获取200状态下的数据改成需要获取 200 和 555 状态下的数据，两者对UI端没有区别。( @See <a href="https://rep.360taihe.com/csp/dew-framework/issues/53" class="bare">https://rep.360taihe.com/csp/dew-framework/issues/53</a> )</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true1-1-0-rc"><a class="anchor" href="#true1-1-0-rc"></a>8.2. 1.1.0-RC</h3>
+<div class="sect3">
+<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>8.2.1. Feature</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>[功能] #45 支持服务调用（ <code>Hystrix</code> ）异常邮件通知</p>
+</li>
+<li>
+<p>[功能] #51 适配新版 <code>用户权限中心</code> SDK</p>
+</li>
+<li>
+<p>[功能] #59 #49 #15 统一日志规范，适配 <code>sleuth</code> 日志到 <code>ES</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>8.2.2. Improvement</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>[优化] #53 统一响应——协议无关 类型的http返回码由统一的200改成 <code>200</code> 或 <code>1000</code> ，前者表示操作成功或不需要降级的错误，后者表示需要做降级（Hystrix fallback）的错误</p>
+</li>
+<li>
+<p>[优化] #50 <code>Dew JDBC</code> 更好地支持没有 <code>Entity</code> 注解的对象</p>
+</li>
+<li>
+<p>[优化] #52 对于java8时间，url参数转换支持String转LocalDateTime,LocalDate、LocalTime,long转LocalDateTime(但json数据不支持)，long转Instant</p>
+</li>
+<li>
+<p>[优化] #55 #58 其它一些优化</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>8.2.3. Fixed</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true-code-1-1-0-beta1-code-code-1-1-0-rc-code"><a class="anchor" href="#true-code-1-1-0-beta1-code-code-1-1-0-rc-code"></a>8.2.4. 从 <code>1.1.0-beta1</code> 迁移到 <code>1.1.0-RC</code></h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>使用 <code>统一响应——协议无关</code> 类型时，UI端由原来只需要获取200状态下的数据改成需要获取 200 和 1000 状态下的数据，两者对UI端没有区别。( @See <a href="https://rep.360taihe.com/csp/dew-framework/issues/53" class="bare">https://rep.360taihe.com/csp/dew-framework/issues/53</a> )</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true1-1-0-beta1"><a class="anchor" href="#true1-1-0-beta1"></a>8.3. 1.1.0-beta1</h3>
+<div class="sect3">
+<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>8.3.1. Feature</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>[功能] #19 支持局部 <code>ShardingJDBC</code>(由于ShardingJDBC 2.0还未RC，测试发现存在较多问题，此功能需要等待官方RC)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>8.3.2. Improvement</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>[优化] 支持Java8时间处理</p>
+</li>
+<li>
+<p>[优化] #34 模块Spring化，<code>boot-core</code> 更名为 <code>boot-starter</code> , <code>cloud-core</code> 更名为 <code>cloud-starter</code></p>
+</li>
+<li>
+<p>[优化] #40 <code>Dew JDBC</code> 独立成 <code>jdbc-starter</code> , 确保核心模块 <code>boot-starter</code> 更轻量</p>
 </li>
 <li>
 <p>[优化] <code>Dew JDBC</code> 性能优化</p>
 </li>
 <li>
-<p>[文档]添加性能调优章节</p>
+<p>[文档] #47 添加性能调优章节</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed"><a class="anchor" href="#truefixed"></a>9.1.3. Fixed</h4>
+<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>8.3.3. Fixed</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>[修正]统一错误拦截返回指定为 <code>MediaType=APPLICATION_JSON_UTF8</code> 以解决 <code>Fegin</code> 调用解码错误</p>
+<p>[修正] 统一错误拦截返回指定为 <code>MediaType=APPLICATION_JSON_UTF8</code> 以解决 <code>Feign</code> 调用解码错误</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="true-code-1-0-0-rc-betax-code-code-1-1-0-code"><a class="anchor" href="#true-code-1-0-0-rc-betax-code-code-1-1-0-code"></a>9.1.4. 从 <code>1.0.0-RC/betaX</code> 迁移到 <code>1.1.0</code></h4>
+<h4 id="true-code-1-0-0-rc-betax-code-code-1-1-0-code"><a class="anchor" href="#true-code-1-0-0-rc-betax-code-code-1-1-0-code"></a>8.3.4. 从 <code>1.0.0-RC/betaX</code> 迁移到 <code>1.1.0</code></h4>
 <div class="paragraph">
 <p><code>1.1.0</code> 修正了 <code>1.0.0</code> 版本的几个设计缺陷，需要做如下的迁移操作：</p>
 </div>
@@ -5290,9 +6199,9 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-rc"><a class="anchor" href="#true1-0-0-rc"></a>9.2. 1.0.0-RC</h3>
+<h3 id="true1-0-0-rc"><a class="anchor" href="#true1-0-0-rc"></a>8.4. 1.0.0-RC</h3>
 <div class="sect3">
-<h4 id="truefeature-2"><a class="anchor" href="#truefeature-2"></a>9.2.1. Feature</h4>
+<h4 id="truefeature-4"><a class="anchor" href="#truefeature-4"></a>8.4.1. Feature</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5308,7 +6217,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-2"><a class="anchor" href="#trueimprovement-2"></a>9.2.2. Improvement</h4>
+<h4 id="trueimprovement-4"><a class="anchor" href="#trueimprovement-4"></a>8.4.2. Improvement</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5342,7 +6251,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-2"><a class="anchor" href="#truefixed-2"></a>9.2.3. Fixed</h4>
+<h4 id="truefixed-4"><a class="anchor" href="#truefixed-4"></a>8.4.3. Fixed</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5356,9 +6265,9 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta5"><a class="anchor" href="#true1-0-0-beta5"></a>9.3. 1.0.0-beta5</h3>
+<h3 id="true1-0-0-beta5"><a class="anchor" href="#true1-0-0-beta5"></a>8.5. 1.0.0-beta5</h3>
 <div class="sect3">
-<h4 id="truefeature-3"><a class="anchor" href="#truefeature-3"></a>9.3.1. Feature</h4>
+<h4 id="truefeature-5"><a class="anchor" href="#truefeature-5"></a>8.5.1. Feature</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5384,7 +6293,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-3"><a class="anchor" href="#trueimprovement-3"></a>9.3.2. Improvement</h4>
+<h4 id="trueimprovement-5"><a class="anchor" href="#trueimprovement-5"></a>8.5.2. Improvement</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5418,7 +6327,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-3"><a class="anchor" href="#truefixed-3"></a>9.3.3. Fixed</h4>
+<h4 id="truefixed-5"><a class="anchor" href="#truefixed-5"></a>8.5.3. Fixed</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5429,9 +6338,9 @@ sharding:
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta4"><a class="anchor" href="#true1-0-0-beta4"></a>9.4. 1.0.0-beta4</h3>
+<h3 id="true1-0-0-beta4"><a class="anchor" href="#true1-0-0-beta4"></a>8.6. 1.0.0-beta4</h3>
 <div class="sect3">
-<h4 id="truefeature-4"><a class="anchor" href="#truefeature-4"></a>9.4.1. Feature</h4>
+<h4 id="truefeature-6"><a class="anchor" href="#truefeature-6"></a>8.6.1. Feature</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5453,7 +6362,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-4"><a class="anchor" href="#trueimprovement-4"></a>9.4.2. Improvement</h4>
+<h4 id="trueimprovement-6"><a class="anchor" href="#trueimprovement-6"></a>8.6.2. Improvement</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -5481,14 +6390,14 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-4"><a class="anchor" href="#truefixed-4"></a>9.4.3. Fixed</h4>
+<h4 id="truefixed-6"><a class="anchor" href="#truefixed-6"></a>8.6.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta3"><a class="anchor" href="#true1-0-0-beta3"></a>9.5. 1.0.0-beta3</h3>
+<h3 id="true1-0-0-beta3"><a class="anchor" href="#true1-0-0-beta3"></a>8.7. 1.0.0-beta3</h3>
 <div class="sect3">
-<h4 id="truefeature-5"><a class="anchor" href="#truefeature-5"></a>9.5.1. Feature</h4>
+<h4 id="truefeature-7"><a class="anchor" href="#truefeature-7"></a>8.7.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5498,7 +6407,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-5"><a class="anchor" href="#trueimprovement-5"></a>9.5.2. Improvement</h4>
+<h4 id="trueimprovement-7"><a class="anchor" href="#trueimprovement-7"></a>8.7.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5514,14 +6423,14 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-5"><a class="anchor" href="#truefixed-5"></a>9.5.3. Fixed</h4>
+<h4 id="truefixed-7"><a class="anchor" href="#truefixed-7"></a>8.7.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>9.6. 1.0.0-Beta2</h3>
+<h3 id="true1-0-0-beta2"><a class="anchor" href="#true1-0-0-beta2"></a>8.8. 1.0.0-Beta2</h3>
 <div class="sect3">
-<h4 id="truefeature-6"><a class="anchor" href="#truefeature-6"></a>9.6.1. Feature</h4>
+<h4 id="truefeature-8"><a class="anchor" href="#truefeature-8"></a>8.8.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5531,7 +6440,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-6"><a class="anchor" href="#trueimprovement-6"></a>9.6.2. Improvement</h4>
+<h4 id="trueimprovement-8"><a class="anchor" href="#trueimprovement-8"></a>8.8.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5556,14 +6465,14 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-6"><a class="anchor" href="#truefixed-6"></a>9.6.3. Fixed</h4>
+<h4 id="truefixed-8"><a class="anchor" href="#truefixed-8"></a>8.8.3. Fixed</h4>
 
 </div>
 </div>
 <div class="sect2">
-<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>9.7. 1.0.0-beta1</h3>
+<h3 id="true1-0-0-beta1"><a class="anchor" href="#true1-0-0-beta1"></a>8.9. 1.0.0-beta1</h3>
 <div class="sect3">
-<h4 id="truefeature-7"><a class="anchor" href="#truefeature-7"></a>9.7.1. Feature</h4>
+<h4 id="truefeature-9"><a class="anchor" href="#truefeature-9"></a>8.9.1. Feature</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5585,7 +6494,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="trueimprovement-7"><a class="anchor" href="#trueimprovement-7"></a>9.7.2. Improvement</h4>
+<h4 id="trueimprovement-9"><a class="anchor" href="#trueimprovement-9"></a>8.9.2. Improvement</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5604,7 +6513,7 @@ sharding:
 </div>
 </div>
 <div class="sect3">
-<h4 id="truefixed-7"><a class="anchor" href="#truefixed-7"></a>9.7.3. Fixed</h4>
+<h4 id="truefixed-9"><a class="anchor" href="#truefixed-9"></a>8.9.3. Fixed</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -5617,7 +6526,7 @@ sharding:
 </div>
 </div>
 <div class="sect1">
-<h2 id="true--53"><a class="anchor" href="#true--53"></a>10. 路线图</h2>
+<h2 id="true--55"><a class="anchor" href="#true--55"></a>9. 路线图</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>见 <a href="https://rep.360taihe.com/csp/dew-framework/milestones" class="bare">https://rep.360taihe.com/csp/dew-framework/milestones</a></p>
@@ -5627,7 +6536,7 @@ sharding:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-18 11:50:15 CST
+Last updated 2017-11-29 09:38:02 CST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

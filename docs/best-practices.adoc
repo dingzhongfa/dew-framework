@@ -375,5 +375,5 @@ turbine:
   appConfig: monitor-example //<2>
   clusterNameExpression: metadata['cluster']
 ----
-<1> 与应用配置的management.context-path相同
-<1> 添加需要被监控的应用Service-Id，以逗号分隔
+<1> 与应用配置的`management.context-path`相同
+<2> 添加需要被监控的应用`Service-Id`，以逗号分隔

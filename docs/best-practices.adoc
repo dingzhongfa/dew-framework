@@ -191,6 +191,112 @@ eureka:
 
 TIP:  如果要针对某个服务做超时设置,建议使用 `ribbon` 的配置；在同时使用 `ribbon` 和 `hystrix` 时,请特别注意超时时间的配置。
 
+=== `feign` 接口添加http请求头信息
+
+TIP: 在`@FeignClient`修饰类中的接口方法里添加新的形参，并加上@RequestHeader注解指定key值
+
+[source,java]
+.示例
+----
+@PostMapping(value = "ca/all", consumes = MediaType.APPLICATION_JSON_VALUE)
+Resp<CustomerInfoVO> applyCA(@RequestBody CAIdentificationDTO params,
+     @RequestHeader Map<String, Object> headers);
+----
+
+=== `feign` 支持文件上传
+* 在SDK工程处，添加包依赖
+
+[source,xml]
+.pom
+----
+        <dependency>
+            <groupId>io.github.openfeign.form</groupId>
+            <artifactId>feign-form</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign.form</groupId>
+            <artifactId>feign-form-spring</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+----
+
+* 在SDK工程处，创建一个Configuration
+
+[source,java]
+.MultipartSupportConfig
+----
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
+import org.springframework.cloud.netflix.feign.support.SpringEncoder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MultipartSupportConfig {
+
+    @Autowired
+    private ObjectFactory<HttpMessageConverters> messageConverters;
+
+    @Bean
+    public Encoder feignFormEncoder() {
+        return new SpringFormEncoder(new SpringEncoder(messageConverters));
+    }
+
+}
+----
+
+* 修改接口
+
+[source,java]
+.FeginExample
+----
+@FeignClient(name = "demo")
+public interface FeginExample {    
+@PostMapping(value = "images", consumes = MULTIPART_FORM_DATA_VALUE)
+ Resp<String> uploadImage(
+            @RequestParam MultipartFile image,
+            @RequestParam("id") String id);
+}
+----
+`@RequestPart` 与 `@RequestParam`效果是一样的，大家就不用花时间在这上面了。
+
+* 修改服务器接口
+
+[source,java]
+.FeginServiceExample
+----
+@RestController
+public class FeginServiceExample {
+  @PostMapping(value = "images", consumes = MULTIPART_FORM_DATA_VALUE)
+    public Resp<String> uploadImage(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("id") String id,
+            HttpServletRequest request) {
+              return Resp.success(null);
+            }
+}
+----
+
+常见问题：
+
+- `HTTP Status 400 - Required request part 'file' is not present`
+
+[listing]
+....
+请求文件参数的名称与实际接口接受名称不一致
+....
+
+- `feign.codec.EncodeException: Could not write request: no suitable HttpMessageConverter found for request type [org.springframework.mock.web.MockMultipartFile] and content type [multipart/form-data]`
+
+[listing]
+....
+转换器没有生效，检查一下MultipartSupportConfig
+....
+
 === 主要性能影响参数
 
 *内置 `tomcat` 参数* tomcat参数调整效果并不大,如果需要调整,建议适当调大 `max-treads` 和 `accept-count`
@@ -416,10 +522,6 @@ mvn -Dtest=DocTest clean test -P doc
 
 mvn -Dtest=DocTest -Dapi.file.name=dew-example clean test -P doc
 ----
-
-=== `feign` 接口添加http请求头信息
-
-TIP: 在FeignClient类中的接口方法里添加新的形参，并加上@RequestHeader注解指定key值
 
 === `zuul` 保护(隐藏)内部服务的http接口
 

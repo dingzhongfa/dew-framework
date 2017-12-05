@@ -7,6 +7,7 @@ import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
@@ -54,6 +55,21 @@ public class DewMetrics implements PublicMetrics {
         metricList.add(new Metric<>("dew.response.90percent", (int) totalArr[(int) (totalList.size() * 0.9)]));
         metricList.add(new Metric<>("dew.response.max", (int) totalArr[totalList.size() - 1]));
         metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size() * 1.0 / dewConfig.getMetric().getPeriodSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
+        try {
+            MonitorInfo monitorInfo = MonitorService.getMonitorInfoBean();
+            Field[] fileds = MonitorInfo.class.getDeclaredFields();
+            Field.setAccessible(fileds, true);
+            for (Field field : fileds) {
+                if (field.getGenericType().toString().equals("long")) {
+                    metricList.add(new Metric<>("dew.monitor." + field.getName(), field.getLong(monitorInfo)));
+                }
+                if (field.getGenericType().toString().equals("int")) {
+                    metricList.add(new Metric<>("dew.monitor." + field.getName(), field.getInt(monitorInfo)));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("获取bean失败");
+        }
         return metricList;
     }
 

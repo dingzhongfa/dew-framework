@@ -595,14 +595,14 @@ turbine:
   appConfig: monitor-example //<2>
   clusterNameExpression: metadata['cluster']
 ----
-<1> 与应用配置的`management.context-path`相同
-<2> 添加需要被监控的应用`Service-Id`，以逗号分隔
+<1> 与应用配置的 `management.context-path` 相同
+<2> 添加需要被监控的应用 `Service-Id` ，以逗号分隔
 
-=== springboot（springcloud） jar包扫描配置文件顺序
+=== `SpringBoot（SpringCloud）jar` 包扫描配置文件顺序
 
-* bootstrap.yml(jar包外)>bootstrap.yml(jar包内)>application.yml(jar包外)>application.yml(jar包内)
+* bootstrap.yml(jar包外) > bootstrap.yml(jar包内) > application.yml(jar包外) > application.yml(jar包内)
 
-* 当启用spring cloud config 配置后，git仓库中的application.yml>[application-name].yml>[application-name]-[profile].yml
+* 当启用Spring Cloud Config 配置后，Git仓库中的application.yml > [application-name].yml > [application-name]-[profile].yml
 
 TIP: 配置的覆盖不是以文件为单位，而是以配置中的参数为单位。
 

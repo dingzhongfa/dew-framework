@@ -38,9 +38,9 @@ public class KafkaClusterMQ implements ClusterMQ {
     public boolean publish(String topic, String message,boolean confirm){
         try {
             if (confirm){
-                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<String, String>(topic, message),new KafkaCallBack());
+                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<>(topic, message),new KafkaCallBack());
             }else {
-                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<String, String>(topic, message));
+                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<>(topic, message));
             }
         } catch (Exception e) {
             logger.error("[MQ] Kafka response error.", e);
@@ -56,12 +56,7 @@ public class KafkaClusterMQ implements ClusterMQ {
             kafkaConsumer.subscribe(Collections.singletonList(topic));
             while (true) {
                 ConsumerRecords<String, String> records = kafkaConsumer.poll(1000);
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        records.forEach(record -> consumer.accept(record.value()));
-                    }
-                });
+                executorService.execute(() -> records.forEach(record -> consumer.accept(record.value())));
             }
         }).start();
     }
@@ -74,9 +69,9 @@ public class KafkaClusterMQ implements ClusterMQ {
     public boolean request(String partition, String message,boolean confirm){
         try {
             if (confirm){
-                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<String, String>(DEFAULT_TOPIC, Integer.valueOf(partition), null, message),new KafkaCallBack());
+                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<>(DEFAULT_TOPIC, Integer.valueOf(partition), null, message),new KafkaCallBack());
             }else {
-                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<String, String>(DEFAULT_TOPIC, Integer.valueOf(partition), null, message));
+                kafkaAdapter.getKafkaProducer().send(new ProducerRecord<>(DEFAULT_TOPIC, Integer.valueOf(partition), null, message));
             }
 
         } catch (Exception e) {
@@ -108,7 +103,6 @@ public class KafkaClusterMQ implements ClusterMQ {
     }
 
     class KafkaCallBack implements Callback {
-
         @Override
         public void onCompletion(RecordMetadata metadata, Exception exception) {
            logger.warn("[MQ] Kafka send failed ",metadata,exception);

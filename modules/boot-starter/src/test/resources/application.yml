@@ -16,7 +16,7 @@ dew:
   cluster:
     cache: redis
     dist: redis
-    mq: redis
+    mq: kafka
   security:
     token-flag: _token_
     token-in-header: true
@@ -63,9 +63,6 @@ spring:
     addresses: ["127.0.0.1"]
   ignite:
     addresses: ["127.0.0.1"]
-endpoints:
-  metrics:
-    enabled: true
 management:
   security:
     enabled: false

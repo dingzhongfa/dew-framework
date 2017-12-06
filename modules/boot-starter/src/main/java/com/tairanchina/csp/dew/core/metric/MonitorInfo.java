@@ -1,7 +1,24 @@
 package com.tairanchina.csp.dew.core.metric;
 
 
+import java.util.Map;
+
 public class MonitorInfo {
+
+    /**
+     * 当前jvm的cpu占用比
+     */
+    private double cpuUsage;
+
+    /**
+     * 当前jvm的内存占用比
+     */
+    private double memUsage;
+
+    /**
+     * 当前jvm的磁盘占用比
+     */
+    private double diskUsage;
 
     /**
      * jvm可使用内存.
@@ -53,6 +70,99 @@ public class MonitorInfo {
      */
     private int committedVirtualMemorySize;
 
+    /**
+     * 当前线程总数
+     */
+    private int threadCount;
+
+    /**
+     * 自从 Java 虚拟机启动或峰值重置以来峰值活动线程计数
+     */
+    private int peakThreadCount;
+
+    /**
+     * 启动过的线程总数
+     */
+    private long totalStartedThreadCount;
+
+    /**
+     * 当前的守护线程数目
+     */
+    private int daemonThreadCount;
+
+    /**
+     * 线程占用cpu时间集合
+     */
+    private Map<String, Double> threadTimes;
+
+
+
+    public double getCpuUsage() {
+        return cpuUsage;
+    }
+
+    public void setCpuUsage(double cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
+
+    public double getMemUsage() {
+        return memUsage;
+    }
+
+    public void setMemUsage(double memUsage) {
+        this.memUsage = memUsage;
+    }
+
+    public double getDiskUsage() {
+        return diskUsage;
+    }
+
+    public void setDiskUsage(double diskUsage) {
+        this.diskUsage = diskUsage;
+    }
+
+
+
+    public int getThreadCount() {
+        return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+    public int getPeakThreadCount() {
+        return peakThreadCount;
+    }
+
+    public void setPeakThreadCount(int peakThreadCount) {
+        this.peakThreadCount = peakThreadCount;
+    }
+
+    public long getTotalStartedThreadCount() {
+        return totalStartedThreadCount;
+    }
+
+    public void setTotalStartedThreadCount(long totalStartedThreadCount) {
+        this.totalStartedThreadCount = totalStartedThreadCount;
+    }
+
+    public int getDaemonThreadCount() {
+        return daemonThreadCount;
+    }
+
+    public void setDaemonThreadCount(int daemonThreadCount) {
+        this.daemonThreadCount = daemonThreadCount;
+    }
+
+    public Map<String, Double> getThreadTimes() {
+        return threadTimes;
+    }
+
+    public void setThreadTimes(Map<String, Double> threadTimes) {
+        this.threadTimes = threadTimes;
+    }
+
     public int getFreeSwapSpaceSize() {
         return freeSwapSpaceSize;
     }
@@ -100,7 +210,6 @@ public class MonitorInfo {
     public void setMaxMemory(long maxMemory) {
         this.maxMemory = maxMemory;
     }
-
 
 
     public long getTotalMemorySize() {

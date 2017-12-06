@@ -1,6 +1,8 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.core.DewConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.PublicMetrics;
 import org.springframework.boot.actuate.metrics.Metric;
@@ -15,6 +17,8 @@ import java.util.*;
 @Component
 @ConditionalOnBean(DewFilter.class)
 public class DewMetrics implements PublicMetrics {
+
+    private static final Logger logger = LoggerFactory.getLogger(DewMetrics.class);
 
     @Autowired
     private DewConfig dewConfig;
@@ -55,20 +59,31 @@ public class DewMetrics implements PublicMetrics {
         metricList.add(new Metric<>("dew.response.90percent", (int) totalArr[(int) (totalList.size() * 0.9)]));
         metricList.add(new Metric<>("dew.response.max", (int) totalArr[totalList.size() - 1]));
         metricList.add(new Metric<>("dew.response.tps", BigDecimal.valueOf(totalList.size() * 1.0 / dewConfig.getMetric().getPeriodSec()).setScale(2, BigDecimal.ROUND_HALF_UP)));
+        //monitor
         try {
-            MonitorInfo monitorInfo = MonitorService.getMonitorInfoBean();
-            Field[] fileds = MonitorInfo.class.getDeclaredFields();
-            Field.setAccessible(fileds, true);
-            for (Field field : fileds) {
+            MonitorInfo monitorInfo = MonitorUtil.getMonitorInfoBean();
+            Field[] fields = MonitorInfo.class.getDeclaredFields();
+            Field.setAccessible(fields, true);
+            for (Field field : fields) {
+                if (field.get(monitorInfo) == null) {
+                    continue;
+                }
+                if (field.getGenericType().toString().equals("double")) {
+                    metricList.add(new Metric<>("dew.monitor." + field.getName(), field.getDouble(monitorInfo)));
+                }
                 if (field.getGenericType().toString().equals("long")) {
                     metricList.add(new Metric<>("dew.monitor." + field.getName(), field.getLong(monitorInfo)));
                 }
                 if (field.getGenericType().toString().equals("int")) {
                     metricList.add(new Metric<>("dew.monitor." + field.getName(), field.getInt(monitorInfo)));
                 }
+                if (field.getGenericType().toString().equals("java.util.Map<java.lang.String, java.lang.Double>")) {
+                    Map<String, Double> threadTimes = (Map<String, Double>) field.get(monitorInfo);
+                    threadTimes.forEach((key, value) -> metricList.add(new Metric<>("dew.monitor.threadInfo." + key, value)));
+                }
             }
         } catch (Exception e) {
-            System.err.println("获取bean失败");
+            logger.error("Error:->get motitorInfo bean failed", e);
         }
         return metricList;
     }

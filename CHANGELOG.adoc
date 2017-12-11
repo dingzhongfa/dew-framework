@@ -1,5 +1,16 @@
 == 版本说明
 
+=== 1.3.0-RC
+
+.Feature
+
+
+.Improvement
+* #82 metrics指标增加线程、内存、cpu、磁盘等统计
+
+.Fixed
+
+
 === 1.2.0-RC
 
 .Feature

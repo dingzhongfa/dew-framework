@@ -1,6 +1,8 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.core.DewConfig;
+import org.hyperic.sigar.CpuInfo;
+import org.hyperic.sigar.CpuPerc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +82,22 @@ public class DewMetrics implements PublicMetrics {
                 if (field.getGenericType().toString().equals("java.util.Map<java.lang.String, java.lang.Double>")) {
                     Map<String, Double> threadTimes = (Map<String, Double>) field.get(monitorInfo);
                     threadTimes.forEach((key, value) -> metricList.add(new Metric<>("dew.monitor.threadInfo." + key, value)));
+                }
+                if (field.getGenericType().toString().equals("java.util.Map<org.hyperic.sigar.CpuInfo, org.hyperic.sigar.CpuPerc>")) {
+                    LinkedHashMap<CpuInfo, CpuPerc> cpuInfoCpuPercMap = (LinkedHashMap<CpuInfo, CpuPerc>) field.get(monitorInfo);
+                    int count = 0;
+                    for (Map.Entry<CpuInfo, CpuPerc> entry : cpuInfoCpuPercMap.entrySet()) {
+                        CpuInfo cpuInfo = entry.getKey();
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (++count) + "." + "mhz", cpuInfo.getMhz()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "cacheSize", cpuInfo.getCacheSize()));
+                        CpuPerc cpuPerc = entry.getValue();
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "user", cpuPerc.getUser()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "sys", cpuPerc.getSys()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "wait", cpuPerc.getWait()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "nice", cpuPerc.getNice()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "idle", cpuPerc.getIdle()));
+                        metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "combined", cpuPerc.getCombined()));
+                    }
                 }
             }
         } catch (Exception e) {

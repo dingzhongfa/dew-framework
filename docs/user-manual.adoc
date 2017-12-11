@@ -2226,9 +2226,14 @@ dew:
 
 一次调用日志的查看，以 `ES` 为例，过滤条件是: logger:com.tairanchina.csp.dew.core.logger.DewTraceLogWrap & trace:<对应的traceID>
 
-==== TPS查询接口
+==== metrics查询接口
 
 基于``Spring Boot Actuator``提供的metrics接口，dew增加了三个TPS指标，最大响应时间，平均响应时间，90%的响应时间。
+
+NOTE: 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标
+      及针对接口的对应指标,生产或测试环境中多以登陆admin服务来查看统计数据
+
+TIP: 1.3.0后metrics指标增加线程、内存、cpu、磁盘等统计
 
 [source,yml]
 .需要配置如下

@@ -1,6 +1,9 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.sun.management.OperatingSystemMXBean;
+import org.hyperic.sigar.CpuInfo;
+import org.hyperic.sigar.CpuPerc;
+import org.hyperic.sigar.Sigar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,25 +67,27 @@ public class MonitorUtil {
         infoBean.setTotalStartedThreadCount(totalStartedThreadCount);
         infoBean.setDaemonThreadCount(daemonThreadCount);
         infoBean.setThreadTimes(threadTimes);
+        Sigar sigar = new Sigar();
+        CpuInfo infos[] = sigar.getCpuInfoList();
+        CpuPerc cpuList[] = sigar.getCpuPercList();
+        Map<CpuInfo, CpuPerc> cpuInfoCpuPercMap = new LinkedHashMap<>();
+        for (int i = 0; i < infos.length; i++) {
+            cpuInfoCpuPercMap.put(infos[i], cpuList[i]);
+        }
+        infoBean.setCpuInfoCpuPercMap(cpuInfoCpuPercMap);
         if (osName != null && !osName.toLowerCase().contains("mac")) {
             infoBean.setCpuUsage(getCpuUsage());
             infoBean.setMemUsage(getMemUsage());
             infoBean.setDiskUsage(getDiskUsage());
         }
-        if (osName != null && osName.toLowerCase().contains("linux")) {
-            try {
-                // infoBean.setCpuInfo((Map<String, String>) MonitorUtil.cpuinfo());
-            } catch (Exception e) {
-                logger.error("{\"error\":\"linux info load failed\"}", e);
-            }
-        }
+
         return infoBean;
     }
 
     /**
      * 功能：获取Linux和Window系统cpu使用率
      */
-    public static double getCpuUsage() {
+    private static double getCpuUsage() {
         // 如果是window系统
         if (osName.toLowerCase().contains("windows")
                 || osName.toLowerCase().contains("win")) {
@@ -96,7 +101,7 @@ public class MonitorUtil {
                 if (c0 != null && c1 != null) {
                     long idletime = c1[0] - c0[0];//空闲时间
                     long busytime = c1[1] - c0[1];//使用时间
-                    Double cpusage = Double.valueOf(PERCENT * (busytime) * 1.0 / (busytime + idletime));
+                    Double cpusage = PERCENT * (busytime) * 1.0 / (busytime + idletime);
                     BigDecimal b1 = new BigDecimal(cpusage);
                     double cpuUsage = b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                     return cpuUsage;
@@ -155,7 +160,7 @@ public class MonitorUtil {
     /**
      * 功能：Linux CPU使用信息
      */
-    static Map<?, ?> cpuinfo() {
+    private static Map<?, ?> cpuinfo() {
         InputStreamReader inputs = null;
         BufferedReader buffer = null;
         Map<String, Object> map = new HashMap<>();
@@ -203,7 +208,7 @@ public class MonitorUtil {
     /**
      * 功能：Linux 和 Window 内存使用率
      */
-    public static double getMemUsage() {
+    private static double getMemUsage() {
         if (osName.toLowerCase().contains("windows")
                 || osName.toLowerCase().contains("win")) {
 
@@ -216,8 +221,7 @@ public class MonitorUtil {
                 long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize();
                 Double usage = (Double) (1 - freePhysicalMemorySize * 1.0 / totalvirtualMemory) * 100;
                 BigDecimal b1 = new BigDecimal(usage);
-                double memoryUsage = b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                return memoryUsage;
+                return b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             } catch (Exception e) {
                 logger.error("{\"error\":\"memUsage load failed\"}", e);
             }
@@ -253,8 +257,7 @@ public class MonitorUtil {
 
                 double usage = (double) (memused - buffers - cached) / memTotal * 100;
                 BigDecimal b1 = new BigDecimal(usage);
-                double memoryUsage = b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                return memoryUsage;
+                return b1.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             } catch (Exception e) {
                 logger.error("{\"error\":\"memUsage load failed\"}", e);
             } finally {
@@ -276,7 +279,7 @@ public class MonitorUtil {
      * @return
      * @throws Exception
      */
-    public static double getDiskUsage() throws Exception {
+    private static double getDiskUsage() throws Exception {
         double totalHD = 0;
         double usedHD = 0;
         if (osName.toLowerCase().contains("windows")
@@ -312,7 +315,7 @@ public class MonitorUtil {
                         if (tmp.trim().length() == 0)
                             continue;
                         ++m;
-                        if (tmp.indexOf("G") != -1) {
+                        if (tmp.contains("G")) {
                             if (m == 2) {
                                 if (!tmp.equals("") && !tmp.equals("0"))
                                     totalHD += Double.parseDouble(tmp.substring(0, tmp.length() - 1)) * 1024;
@@ -322,7 +325,7 @@ public class MonitorUtil {
                                     usedHD += Double.parseDouble(tmp.substring(0, tmp.length() - 1)) * 1024;
                             }
                         }
-                        if (tmp.indexOf("M") != -1) {
+                        if (tmp.contains("M")) {
                             if (m == 2) {
                                 if (!tmp.equals("") && !tmp.equals("0"))
                                     totalHD += Double.parseDouble(tmp.substring(0, tmp.length() - 1));
@@ -375,7 +378,7 @@ public class MonitorUtil {
                 // 字段出现顺序：Caption,CommandLine,KernelModeTime,ReadOperationCount
                 String caption = substring(line, capidx, cmdidx - 1).trim();
                 String cmd = substring(line, cmdidx, kmtidx - 1).trim();
-                if (cmd.indexOf("wmic.exe") >= 0) {
+                if (cmd.contains("wmic.exe")) {
                     continue;
                 }
                 String s1 = substring(line, kmtidx, rocidx - 1).trim();
@@ -385,25 +388,25 @@ public class MonitorUtil {
                 if (caption.equals("System Idle Process") || caption.equals("System")) {
                     if (s1.length() > 0) {
                         if (!digitS1.get(0).equals("") && digitS1.get(0) != null) {
-                            idletime += Long.valueOf(digitS1.get(0)).longValue();
+                            idletime += Long.valueOf(digitS1.get(0));
                         }
                     }
                     if (s2.length() > 0) {
                         if (!digitS2.get(0).equals("") && digitS2.get(0) != null) {
-                            idletime += Long.valueOf(digitS2.get(0)).longValue();
+                            idletime += Long.valueOf(digitS2.get(0));
                         }
                     }
                     continue;
                 }
                 if (s1.length() > 0) {
                     if (!digitS1.get(0).equals("") && digitS1.get(0) != null) {
-                        kneltime += Long.valueOf(digitS1.get(0)).longValue();
+                        kneltime += Long.valueOf(digitS1.get(0));
                     }
                 }
 
                 if (s2.length() > 0) {
                     if (!digitS2.get(0).equals("") && digitS2.get(0) != null) {
-                        kneltime += Long.valueOf(digitS2.get(0)).longValue();
+                        kneltime += Long.valueOf(digitS2.get(0));
                     }
                 }
             }
@@ -445,11 +448,11 @@ public class MonitorUtil {
      */
     private static String substring(String src, int start_idx, int end_idx) {
         byte[] b = src.getBytes();
-        String tgt = "";
+        StringBuilder tgt = new StringBuilder();
         for (int i = start_idx; i <= end_idx; i++) {
-            tgt += (char) b[i];
+            tgt.append((char) b[i]);
         }
-        return tgt;
+        return tgt.toString();
     }
 
 

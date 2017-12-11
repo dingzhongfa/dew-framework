@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.jdbc.sharding;
 
 import io.shardingjdbc.core.api.ShardingDataSourceFactory;
-import io.shardingjdbc.core.yaml.masterslave.YamMasterSlaveRuleConfiguration;
+import io.shardingjdbc.core.yaml.masterslave.YamlMasterSlaveRuleConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -12,5 +12,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConditionalOnClass(ShardingDataSourceFactory.class)
 @ConfigurationProperties(prefix = "sharding.jdbc.config.masterslave")
-public class MasterSlaveRuleConfigurationProperties extends YamMasterSlaveRuleConfiguration {
+public class MasterSlaveRuleConfigurationProperties extends YamlMasterSlaveRuleConfiguration {
 }

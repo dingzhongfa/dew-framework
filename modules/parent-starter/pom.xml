@@ -38,7 +38,7 @@
         <sonar.host.url></sonar.host.url>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.version>3.3.0.603</sonar.version>
-        <sharding-jdbc.version>2.0.0.M1</sharding-jdbc.version>
+        <sharding-jdbc.version>2.0.0</sharding-jdbc.version>
         <logback-elasticsearch-appender.version>1.6</logback-elasticsearch-appender.version>
         <api.file.name>index</api.file.name>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
@@ -157,6 +157,11 @@
             <dependency>
                 <groupId>io.shardingjdbc</groupId>
                 <artifactId>sharding-jdbc-core</artifactId>
+                <version>${sharding-jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.shardingjdbc</groupId>
+                <artifactId>sharding-jdbc-transaction</artifactId>
                 <version>${sharding-jdbc.version}</version>
             </dependency>
             <dependency>

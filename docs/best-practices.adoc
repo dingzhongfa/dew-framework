@@ -129,7 +129,7 @@ Resp<CustomerInfoVO> applyCA(@RequestBody CAIdentificationDTO params,
      @RequestHeader Map<String, Object> headers);
 ----
 
-=== `Feign` 文件上传实践
+=== `Feign` 文件上传实践
 * 在 `SDK` 工程处，添加包依赖 e.g.
 
 [source,xml]

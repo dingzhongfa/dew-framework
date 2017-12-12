@@ -560,12 +560,10 @@
     <repositories>
         <repository>
             <id>central</id>
-            <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
         <repository>
             <id>oss-snapshots-repo</id>
-            <name>Sonatype OSS Maven Repository</name>
             <url>https://oss.sonatype.org/content/groups/public</url>
         </repository>
         <repository>
@@ -576,6 +574,10 @@
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
+        </repository>
+        <repository>
+            <id>redhat-repo</id>
+            <url>https://maven.repository.redhat.com/ga</url>
         </repository>
     </repositories>
 

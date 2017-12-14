@@ -5,7 +5,7 @@ import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
-import com.tairanchina.csp.dew.jdbc.sharding.ShardingConfiguration;
+import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -40,7 +40,7 @@ public class DewDSManager implements DSManager {
     private DataSource dataSource;
 
     @Autowired(required = false)
-    private ShardingConfiguration shardingConfiguration;
+    private ShardingEnvironmentAware shardingEnvironmentAware;
 
     @Value("${spring.datasource.url}")
     private String primaryJdbcUrl;
@@ -96,8 +96,8 @@ public class DewDSManager implements DSManager {
             }
         }
         // Register sharding ds
-        if (shardingConfiguration != null) {
-            register("sharding", shardingConfiguration.getJdbcUrls().iterator().next(), shardingConfiguration.dataSource());
+        if (shardingEnvironmentAware != null) {
+            register("sharding", shardingEnvironmentAware.getJdbcUrls().iterator().next(), shardingEnvironmentAware.dataSource());
         }
 
     }

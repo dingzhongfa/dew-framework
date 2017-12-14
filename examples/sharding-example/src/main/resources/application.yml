@@ -8,6 +8,7 @@ spring:
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
 sharding:
+  enabled: true
   jdbc:
     datasource:
       names: ds_0,ds_1

@@ -11,20 +11,23 @@ import io.shardingjdbc.core.yaml.masterslave.YamlMasterSlaveConfiguration;
 import io.shardingjdbc.core.yaml.masterslave.YamlMasterSlaveRuleConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.bind.RelaxedPropertyResolver;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-@Configuration
+@Component
 @ConditionalOnClass(ShardingDataSourceFactory.class)
+@ConditionalOnExpression("'${sharding.enabled}'=='true'")
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
-public class ShardingConfiguration implements EnvironmentAware {
+public class ShardingEnvironmentAware implements EnvironmentAware {
 
     @Autowired
     private ShardingRuleConfigurationProperties shardingProperties;

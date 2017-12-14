@@ -27,12 +27,13 @@ public class HystrixExampleController {
 
     @GetMapping("get-exe/ori")
     public ResponseEntity getExe() throws InterruptedException {
-        /*logger.info("post-exe   " );
+        logger.info("post-exe   " );
         for (int m =0;m<80000;m++){
-            exampleClient.postExe(m,"post");
+            exampleClient2.deleteExe(1,"post");
+//            exampleClient2.postExe(m,"post");
 //            nullClient.getExe();
             Thread.sleep(100);
-        }*/
+        }
         exampleClient2.deleteExe(1,"post");
         return ResponseEntity.ok().build();
     }

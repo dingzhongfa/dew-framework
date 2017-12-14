@@ -1,22 +1,21 @@
 dew:
   cloud:
     error:
-      notify-interval-sec: 10000
-      notify-emails: 71964899@qq.com
-      notify-event-types: FAILURE,SHORT_CIRCUITED
-      notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
+      notify-interval-sec: 5
+      notify-emails: hzpsw@tairanchina.com
+      notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]
 spring:
   mail:
-    host: smtp.163.com
-    username:
+    host: smtp.alibaba.com
+    username: jiangji@tairanchina.com
     password:
     properties:
       mail:
         smtp:
           auth: true
           starttls:
-            enable: true
-            required: true
+            enable: false
+            required: fasle
   application:
     name: hystrix-feign-example
 server:

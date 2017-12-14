@@ -17,12 +17,15 @@ import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 @Component
-@ConditionalOnExpression("'${spring.mail.host}'.isEmpty()")
+@ConditionalOnExpression("!'${spring.mail.host}'.isEmpty()")
 public class FailureEventNotifier extends HystrixEventNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);
@@ -40,7 +43,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     private long notifiedTime;
     // key.name -> eventType.names
-    private Map<String, Set<String>> failureInfo =  new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
+    private Map<String, Set<String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private Executor executor = Executors.newSingleThreadExecutor();
 

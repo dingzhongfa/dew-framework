@@ -2183,6 +2183,7 @@ NOTE: 为能更及时的对服务异常做出处理， `dew` 增加邮件通知�
 dew:
   cloud:
     error:
+      enabled: true
       notify-interval-sec: 1800
       notify-emails: 71964899@qq.com
       notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED

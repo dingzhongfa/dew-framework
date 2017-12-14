@@ -47,6 +47,7 @@ dew: # Dew 参数key前缀
         trace-log:
             enabled: true # 是否启用服务API调用（追踪）日志
         error:
+             enabled: true #启用降级邮件通知，默认为false
              notify-interval-sec: 1800 # 通知的间隔时间
              notify-emails:  # 通知的邮箱，逗号分隔
              notify-event-types: FAILURE,SHORT_CIRCUITED,TIMEOUT,THREAD_POOL_REJECTED,SEMAPHORE_REJECTED # 通知的事件类型

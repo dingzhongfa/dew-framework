@@ -584,6 +584,7 @@ RedisCacheManager cacheManager() {
     <springProperty scope="context" name="esMaxMessageSize" source="logging.es.maxMessageSize" defaultValue="-1"/>
 
     <property name="LOG_FILE" value="${logPath}/${springAppName}/%d{yyyy-MM-dd}.log"/>​
+    <property name="ES_INDEX" value="${esIndex}-%d{yyyy-MM-dd}"/>​
 
     <appender name="dailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -604,8 +605,8 @@ RedisCacheManager cacheManager() {
 
     <appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
         <url>${esUrl}/_bulk</url>
-        <index>${esIndex}</index>
-        <type>%date{yyyy-MM-dd}</type>
+        <index>${ES_INDEX}</index>
+        <type>log</type>
         <connectTimeout>${esConnectTimeout}</connectTimeout> <!-- optional (in ms, default 30000) -->
         <readTimeout>${esReadTimeout}</readTimeout> <!-- optional (in ms, default 30000) -->
         <maxQueueSize>${esMaxQueueSize}</maxQueueSize> <!-- optional (default 104857600) -->

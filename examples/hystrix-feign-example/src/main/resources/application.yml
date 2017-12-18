@@ -1,14 +1,16 @@
 dew:
   cloud:
     error:
+      enabled: true
+      notify-title: 丁-测试
       notify-interval-sec: 5
-      notify-emails: hzpsw@tairanchina.com
-      notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]
+      notify-emails: 71964899@qq.com
+      #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]
 spring:
   mail:
     host: smtp.alibaba.com
     username: jiangji@tairanchina.com
-    password:
+    password: gSQiQxGR5wLUFkNh
     properties:
       mail:
         smtp:

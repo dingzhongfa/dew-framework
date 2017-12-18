@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,10 +17,9 @@ import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -44,7 +42,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     private long notifiedTime;
     // key.name -> eventType.names
-    private Map<String, Set<String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
+    private Map<String, Map<String,String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -72,8 +70,8 @@ public class FailureEventNotifier extends HystrixEventNotifier {
         if (!dewCloudConfig.getError().getNotifyEventTypes().contains(eventType.name())) {
             return;
         }
-        failureInfo.putIfAbsent(key.name(), new HashSet<>());
-        failureInfo.get(key.name()).add(eventType.name());
+        failureInfo.putIfAbsent(key.name(), new HashMap<>());
+        failureInfo.get(key.name()).putIfAbsent(eventType.name(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         if (Instant.now().toEpochMilli() - notifiedTime < dewCloudConfig.getError().getNotifyIntervalSec() * 1000) {
             return;
@@ -91,14 +89,16 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             message.setTo(dewCloudConfig.getError().getNotifyEmails().toArray(new String[]{}));
             message.setSubject(Dew.dewConfig.getBasic().getName() + dewCloudConfig.getError().getNotifyTitle());
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("以下服务发生异常:");
             failureInfo.forEach((key, value) -> {
-                stringBuilder.append("\r\n" +
-                        "异常方法:").append(key).append("\t类型:\t");
-                value.forEach(type -> stringBuilder.append(type).append(",\t"));
+                stringBuilder.append("\r\n").append(
+                        "异常方法:").append(key).append("\t类型:\r\n");
+                value.forEach((k,v) -> stringBuilder.append("\t\t\t").append(k).append("\t\t").append(v).append(",\r\n"));
             });
             stringBuilder.append("\r\n");
-            message.setText(stringBuilder.toString());
+            if (stringBuilder.capacity() < 8) {
+                return;
+            }
+            message.setText("以下服务发生异常:" + stringBuilder.toString());
             mailSender.send(message);
             logger.info("邮件通知成功\t\t\tdetail:\t" + stringBuilder.toString());
         } catch (Exception e) {

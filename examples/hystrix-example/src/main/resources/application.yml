@@ -5,11 +5,24 @@ spring:
     host: localhost
     port: 6379
     database: 0
-
+  mail:
+    host: smtp.alibaba.com
+    username: jiangji@tairanchina.com
+    password: gSQiQxGR5wLUFkNh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: false
+            required: fasle
 server:
-  port: 11000
+  port: 11001
 
 eureka:
+  instance:
+    status-page-url-path: ${management.context-path}/info
+    health-check-url-path: ${management.context-path}/health
   client:
     serviceUrl:
       defaultZone:  http://registry:123456@localhost:9999/eureka
@@ -17,3 +30,13 @@ eureka:
 dew:
   cluster:
     cache: redis
+  cloud:
+    error:
+      enabled: true
+      notify-title: 丁-测试
+      notify-interval-sec: 5
+      notify-emails: 71964899@qq.com
+management:
+  security:
+    enabled: false
+  context-path: /management-admin

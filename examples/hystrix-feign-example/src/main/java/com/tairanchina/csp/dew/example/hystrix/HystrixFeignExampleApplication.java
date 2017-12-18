@@ -8,10 +8,10 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
  * 工程启动类
  */
 @EnableFeignClients
-public class HystrixExampleApplication extends DewCloudApplication {
+public class HystrixFeignExampleApplication extends DewCloudApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(HystrixExampleApplication.class).run(args);
+        new SpringApplicationBuilder(HystrixFeignExampleApplication.class).run(args);
     }
 
 }

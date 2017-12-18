@@ -37,12 +37,16 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     @Autowired
     private JavaMailSender mailSender;
+
     @Value("${spring.mail.username}")
     private String emailFrom;
 
+    @Value("${spring.application.name:dew-default}")
+    private String applicationName;
+
     private long notifiedTime;
     // key.name -> eventType.names
-    private Map<String, Map<String,String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
+    private Map<String, Map<String, String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private Executor executor = Executors.newSingleThreadExecutor();
 
@@ -87,12 +91,12 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
             message.setTo(dewCloudConfig.getError().getNotifyEmails().toArray(new String[]{}));
-            message.setSubject(Dew.dewConfig.getBasic().getName() + dewCloudConfig.getError().getNotifyTitle());
+            message.setSubject(Dew.dewConfig.getBasic().getName() + dewCloudConfig.getError().getNotifyTitle() + "-" + applicationName);
             StringBuilder stringBuilder = new StringBuilder();
             failureInfo.forEach((key, value) -> {
                 stringBuilder.append("\r\n").append(
                         "异常方法:").append(key).append("\t类型:\r\n");
-                value.forEach((k,v) -> stringBuilder.append("\t\t\t").append(k).append("\t\t").append(v).append(",\r\n"));
+                value.forEach((k, v) -> stringBuilder.append("\t\t\t").append(k).append("\t\t").append(v).append(",\r\n"));
             });
             stringBuilder.append("\r\n");
             if (stringBuilder.capacity() < 8) {

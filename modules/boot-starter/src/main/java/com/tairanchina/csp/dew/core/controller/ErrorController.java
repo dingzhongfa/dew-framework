@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
+import org.apache.catalina.connector.RequestFacade;
 import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
@@ -36,16 +39,18 @@ import static com.tairanchina.csp.dew.core.metric.DewFilter.RECORD_MAP;
 
 @RestController
 @RequestMapping("${error.path:/error}")
-@ConditionalOnProperty(prefix = "dew.basic.format", name = "useUnityError", havingValue = "true",matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dew.basic.format", name = "useUnityError", havingValue = "true", matchIfMissing = true)
 public class ErrorController extends AbstractErrorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 
     private static final int FALL_BACK_STATUS = 500;
+
     private static final Pattern MESSAGE_CHECK = Pattern.compile("^\\{\"code\":\"\\w*\",\"message\":\".*\",\"customHttpCode\":.*}$");
 
     private static final String SPECIAL_ERROR_FLAG = "org.springframework.boot.autoconfigure.web.DefaultErrorAttributes.ERROR";
-    private static final String DETAIL_FLAG = " Detail:";
+
+    private static final String DETAIL_FLAG = "\tDetail:";
 
     @Value("${error.path:/error}")
     private String errorPath;
@@ -74,7 +79,12 @@ public class ErrorController extends AbstractErrorController {
             return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());
         }
         Map<String, Object> error = getErrorAttributes(request, false);
-        String path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
+        String path = null;
+        if (error.containsKey("path")) {
+            path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
+        } else {
+            path = ((RequestFacade) ((ServletRequestWrapper) request).getRequest()).getRequestURI();
+        }
         int statusCode = (int) error.getOrDefault("status", -1);
         String message = error.getOrDefault("message", "").toString();
         String exClass = (String) error.getOrDefault("exception", "");
@@ -87,19 +97,11 @@ public class ErrorController extends AbstractErrorController {
         return ResponseEntity.status((int) result[0]).contentType(MediaType.APPLICATION_JSON_UTF8).body(result[1]);
     }
 
-    public static void error(HttpServletRequest request,HttpServletResponse response, int statusCode, String message, String exClass) throws IOException {
-        Object[] confirmedError = error(request, request.getRequestURI(), statusCode, message, exClass, "", null, null);
-        response.setStatus((Integer) confirmedError[0]);
-        response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
-        response.getWriter().write((String) confirmedError[1]);
-        response.getWriter().flush();
-        response.getWriter().close();
-    }
 
     private static Object[] error(HttpServletRequest request, String path, int statusCode, String message, String exClass, String exMsg, List exDetail, Throwable specialError) {
         String requestFrom = request.getHeader(Dew.Constant.HTTP_REQUEST_FROM_FLAG);
         int httpCode = statusCode;
-        String busCode = statusCode + "";
+        String busCode = String.valueOf(statusCode);
         if (!StringUtils.isEmpty(exClass) && Dew.dewConfig.getBasic().getErrorMapping().containsKey(exClass)) {
             // Found Error Mapping
             DewConfig.Basic.ErrorMapping errorMapping = Dew.dewConfig.getBasic().getErrorMapping().get(exClass);
@@ -122,36 +124,37 @@ public class ErrorController extends AbstractErrorController {
                 httpCode = detail.get("customHttpCode").asInt();
             }
         }
-        if (specialError != null) {
-            if (specialError instanceof ConstraintViolationException) {
+        if (specialError instanceof ConstraintViolationException) {
+            ArrayNode errorExt = $.json.createArrayNode();
+            ((ConstraintViolationException) specialError).getConstraintViolations()
+                    .forEach(cv ->
+                            errorExt.add($.json.createObjectNode()
+                                    .put("field", "")
+                                    .put("reason", ((ConstraintDescriptorImpl<?>) cv.getConstraintDescriptor())
+                                            .getAnnotationType().getSimpleName())
+                                    .put("msg", cv.getMessage()))
+                    );
+            message += DETAIL_FLAG + $.json.toJsonString(errorExt);
+        }
+        if (specialError instanceof MethodArgumentNotValidException) {
+            if (exDetail != null && !exDetail.isEmpty()) {
                 ArrayNode errorExt = $.json.createArrayNode();
-                ((ConstraintViolationException) specialError).getConstraintViolations()
-                        .forEach(cv ->
-                                errorExt.add($.json.createObjectNode()
-                                        .put("field", "")
-                                        .put("reason", ((ConstraintDescriptorImpl<?>) cv.getConstraintDescriptor())
-                                                .getAnnotationType().getSimpleName())
-                                        .put("msg", cv.getMessage()))
-                        );
-                message += DETAIL_FLAG + $.json.toJsonString(errorExt);
-            } else {
-                if (exDetail != null && !exDetail.isEmpty()) {
-                    ArrayNode errorExt = $.json.createArrayNode();
-                    for (JsonNode json : $.json.toJson(exDetail)) {
-                        errorExt.add($.json.createObjectNode()
-                                .put("field", json.get("field").asText(""))
-                                .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
-                                .put("msg", json.get("defaultMessage").asText("")));
-                    }
-                    message += DETAIL_FLAG + $.json.toJsonString(errorExt);
+                for (JsonNode json : $.json.toJson(exDetail)) {
+                    errorExt.add($.json.createObjectNode()
+                            .put("field", json.get("field").asText(""))
+                            .put("reason", json.get("codes").get(0).asText().split("\\.")[0])
+                            .put("msg", json.get("defaultMessage").asText("")));
                 }
+                message += DETAIL_FLAG + $.json.toJsonString(errorExt);
             }
         }
+
         logger.error("Request [{}] from [{}] {} , error {} : {}", path, requestFrom, Dew.context().getSourceIP(), busCode, message);
         String body = "";
         if (!Dew.dewConfig.getBasic().getFormat().isReuseHttpState()) {
             if (specialError instanceof ConstraintViolationException) {
                 busCode = "400";
+                httpCode = 400;
             }
             if (httpCode >= 500 && httpCode < 600) {
                 httpCode = FALL_BACK_STATUS;
@@ -172,10 +175,14 @@ public class ErrorController extends AbstractErrorController {
         return new Object[]{httpCode, body};
     }
 
-
+    /**
+     * 加入metrics统计集合
+     *
+     * @param request
+     */
     private static void addRequestRecord(HttpServletRequest request) {
         Long start = (Long) request.getAttribute("dew.metric.start");
-        if (start==null){
+        if (start == null) {
             return;
         }
         String key = "{[" + request.getMethod() + "]:/error}";
@@ -187,6 +194,15 @@ public class ErrorController extends AbstractErrorController {
                 put(start, resTime);
             }});
         }
+    }
+
+    public static void error(HttpServletRequest request, HttpServletResponse response, int statusCode, String message, String exClass) throws IOException {
+        Object[] confirmedError = error(request, request.getRequestURI(), statusCode, message, exClass, "", null, null);
+        response.setStatus((Integer) confirmedError[0]);
+        response.setContentType(String.valueOf(MediaType.APPLICATION_JSON_UTF8));
+        response.getWriter().write((String) confirmedError[1]);
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 
 }

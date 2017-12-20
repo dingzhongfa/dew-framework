@@ -7,6 +7,7 @@
 
 .Improvement
 * #82 metrics指标增加线程、内存、cpu、磁盘等统计
+* #86 ErrorController增加zuul日志追踪支持
 
 === 1.2.2-RC
 

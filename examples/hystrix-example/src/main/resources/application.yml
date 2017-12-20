@@ -33,7 +33,7 @@ dew:
   cloud:
     error:
       enabled: true
-      notify-title: 丁-测试
+      notify-title: dew-test
       notify-interval-sec: 5
       notify-emails: 71964899@qq.com
 management:

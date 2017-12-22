@@ -566,6 +566,8 @@ RedisCacheManager cacheManager() {
 
 当然这一方案会损失一定的可读性，即没有可视化的接口调用展现。
 
+TIP: 开发中我们可能会改变profile,切记同时修改``logback-spring.xml``,在<springProfile>标签里配上该prifile。
+
 [source,xml]
 .logback-spring.xml模板
 ----
@@ -681,6 +683,7 @@ RedisCacheManager cacheManager() {
 </configuration>
 ----
 
+
 === `servo` 内存泄漏问题
 
 已知在某此情况下 `servo` 统计会导致内存泄漏，如无特殊需要建议关闭 `spring.metrics.servo.enabled: false`
@@ -718,7 +721,6 @@ zuul:
   ignoredPatterns: /*/dew-example/** //<1>
 ----
 <1> 这里之所以不是 `/dew-example/**` ，由于网关存在项目前缀，需要往前一级，大家可以具体场景具体配置
-
 --
 
 * `Spring Boot Admin` 配置

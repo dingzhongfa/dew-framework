@@ -19,7 +19,10 @@ eureka:
     metadata-map:
       cluster: default
 
-management.security.enabled: false
+management:
+  security:
+    enabled: false
+  context-path: /management-admin
 
 logging:
   path: ./logs

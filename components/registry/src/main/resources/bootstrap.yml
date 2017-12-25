@@ -16,6 +16,9 @@ security:
     password: 123456
 
 eureka:
+  instance:
+    metadata-map:
+      cluster: default
   server:
     enable-self-preservation: false
     #eviction-interval-timer-in-ms: 5000

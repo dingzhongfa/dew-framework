@@ -6,9 +6,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 
-/**
- * 工程启动类
- */
 @ComponentScan(basePackageClasses = {Dew.class, ServiceExampleApplication.class})
 public class ServiceExampleApplication extends DewCloudApplication {
 

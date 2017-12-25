@@ -40,6 +40,7 @@
         <module>examples/jdbc-example</module>
         <module>examples/sharding-example</module>
         <module>examples/cache-example</module>
+        <module>examples/cloud-example</module>
         <module>examples/hystrix-feign-example</module>
         <module>examples/hystrix-feign-example2</module>
         <module>examples/cluster-example</module>
@@ -56,7 +57,7 @@
         <module>examples/performance-test-service</module>
         <!--
        <module>examples/config-example</module>
-               <module>examples/service-cloud-example</module>-->
+               -->
         <module>modules/parent</module>
     </modules>
 

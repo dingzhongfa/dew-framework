@@ -711,6 +711,7 @@ eureka:
 ----
 <1> 管理前缀
 <2> 集群名称
+--
 
 * `Zuul` 网关配置
 
@@ -773,3 +774,4 @@ management:
 <1> 要监控的集群名称
 <3> 添加需要被监控的应用 `Service-Id` ，以逗号分隔
 <4> 同上文 ``management.context-path``
+--

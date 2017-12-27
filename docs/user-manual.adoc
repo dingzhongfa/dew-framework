@@ -326,7 +326,7 @@ public class WebExampleController {
 
 `Dew` 支持两种格式：
 
-* 协议无关：`Resp<E>` 响应，对于 `HTTP` 统一返回 `200` (业务操作不需要降级) 或 `1000` (业务操作需要降级) HTTP状态码，使用 `code` 表示业务状态码，`Resp` 对象包含:
+* 协议无关：`Resp<E>` 响应，对于 `HTTP` 统一返回 `200` (业务操作不需要降级) 或 `500` (业务操作需要降级) HTTP状态码，使用 `code` 表示业务状态码，`Resp` 对象包含:
 
  code 响应编码，与http状态码类似，200表示成功
  message 响应附加消息，多有于错误描述
@@ -335,15 +335,15 @@ public class WebExampleController {
 TIP: `Resp`类提供了常用操作：详见 https://gudaoxuri.github.io/dew-common/#true-resp[https://gudaoxuri.github.io/dew-common/#true-resp]
 
 [NOTE]
-.1000 Http状态码说明
+.500 Http状态码说明
 ====
-`1000` 状态码仅用于告诉 `Hystrix` 这次请求是需要降级的错误，对于 `Resp` 中的 `code` 没有影响。
+`500` 状态码仅用于告诉 `Hystrix` 这次请求是需要降级的错误，对于 `Resp` 中的 `code` 没有影响。
 
-`dew` 框架会把所有 `5xx`（服务端错误，需要降级） 的异常统一转换成 `1000` 的Http状态码返回给调用方。
+`dew` 框架会把所有 `5xx`（服务端错误，需要降级） 的异常统一转换成 `500` 的Http状态码返回给调用方。
 
 `Resp.xxx.fallback()` 用于显示声明当前返回需要降级，
 比如 `Resp.serverError("some message")` 不会降级，返回http状态码为200，body为 `{"code":"500","message":"some message","body":null}`，
-但 `Resp.serverError("some message").fallback()` 会降级，返回http状态码为1000，body为 同上。
+但 `Resp.serverError("some message").fallback()` 会降级，返回http状态码为500，body为 同上。
 ====
 
 

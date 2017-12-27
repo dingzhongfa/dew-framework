@@ -575,10 +575,10 @@
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
         </repository>
-        <repository>
+        <!--<repository>
             <id>redhat-repo</id>
             <url>https://maven.repository.redhat.com/ga</url>
-        </repository>
+        </repository>-->
     </repositories>
 
 </project>

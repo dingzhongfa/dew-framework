@@ -1,8 +1,6 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.core.DewConfig;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.CpuPerc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +81,7 @@ public class DewMetrics implements PublicMetrics {
                     Map<String, Double> threadTimes = (Map<String, Double>) field.get(monitorInfo);
                     threadTimes.forEach((key, value) -> metricList.add(new Metric<>("dew.monitor.threadInfo." + key, value)));
                 }
-                if (field.getGenericType().toString().equals("java.util.Map<org.hyperic.sigar.CpuInfo, org.hyperic.sigar.CpuPerc>")) {
+                /*if (field.getGenericType().toString().equals("java.util.Map<org.hyperic.sigar.CpuInfo, org.hyperic.sigar.CpuPerc>")) {
                     LinkedHashMap<CpuInfo, CpuPerc> cpuInfoCpuPercMap = (LinkedHashMap<CpuInfo, CpuPerc>) field.get(monitorInfo);
                     int count = 0;
                     for (Map.Entry<CpuInfo, CpuPerc> entry : cpuInfoCpuPercMap.entrySet()) {
@@ -98,7 +96,7 @@ public class DewMetrics implements PublicMetrics {
                         metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "idle", cpuPerc.getIdle()));
                         metricList.add(new Metric<>("dew.monitor.cpuInfo." + (count) + "." + "combined", cpuPerc.getCombined()));
                     }
-                }
+                }*/
             }
         } catch (Exception e) {
             logger.error("Error:->get motitorInfo bean failed", e);

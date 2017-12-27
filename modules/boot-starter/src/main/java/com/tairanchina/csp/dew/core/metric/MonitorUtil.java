@@ -1,9 +1,6 @@
 package com.tairanchina.csp.dew.core.metric;
 
 import com.sun.management.OperatingSystemMXBean;
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.CpuPerc;
-import org.hyperic.sigar.Sigar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,14 +64,14 @@ public class MonitorUtil {
         infoBean.setTotalStartedThreadCount(totalStartedThreadCount);
         infoBean.setDaemonThreadCount(daemonThreadCount);
         infoBean.setThreadTimes(threadTimes);
-        Sigar sigar = new Sigar();
+        /*Sigar sigar = new Sigar();
         CpuInfo infos[] = sigar.getCpuInfoList();
         CpuPerc cpuList[] = sigar.getCpuPercList();
         Map<CpuInfo, CpuPerc> cpuInfoCpuPercMap = new LinkedHashMap<>();
         for (int i = 0; i < infos.length; i++) {
             cpuInfoCpuPercMap.put(infos[i], cpuList[i]);
         }
-        infoBean.setCpuInfoCpuPercMap(cpuInfoCpuPercMap);
+        infoBean.setCpuInfoCpuPercMap(cpuInfoCpuPercMap);*/
         if (osName != null && !osName.toLowerCase().contains("mac")) {
             infoBean.setCpuUsage(getCpuUsage());
             infoBean.setMemUsage(getMemUsage());

@@ -1,8 +1,6 @@
 package com.tairanchina.csp.dew.core.metric;
 
 
-import org.hyperic.sigar.CpuInfo;
-import org.hyperic.sigar.CpuPerc;
 
 import java.util.Map;
 
@@ -31,7 +29,7 @@ public class MonitorInfo {
     /**
      * 每块cpu具体参数->每块cpu百分比参数
      */
-    private Map<CpuInfo, CpuPerc> cpuInfoCpuPercMap;
+//    private Map<CpuInfo, CpuPerc> cpuInfoCpuPercMap;
 
     /**
      * 总的物理内存.
@@ -138,13 +136,7 @@ public class MonitorInfo {
         this.processors = processors;
     }
 
-    public Map<CpuInfo, CpuPerc> getCpuInfoCpuPercMap() {
-        return cpuInfoCpuPercMap;
-    }
 
-    public void setCpuInfoCpuPercMap(Map<CpuInfo, CpuPerc> cpuInfoCpuPercMap) {
-        this.cpuInfoCpuPercMap = cpuInfoCpuPercMap;
-    }
 
     public long getTotalMemorySize() {
         return totalMemorySize;

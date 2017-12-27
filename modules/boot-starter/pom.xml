@@ -95,11 +95,11 @@
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>test-starter</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.hyperic</groupId>
             <artifactId>sigar</artifactId>
             <version>1.6.5.132-7</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
 </project>

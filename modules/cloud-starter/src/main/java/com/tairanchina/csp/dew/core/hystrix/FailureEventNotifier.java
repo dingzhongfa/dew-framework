@@ -75,7 +75,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             return;
         }
         failureInfo.putIfAbsent(key.name(), new HashMap<>());
-        failureInfo.get(key.name()).putIfAbsent(eventType.name(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        failureInfo.get(key.name()).put(eventType.name(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         if (Instant.now().toEpochMilli() - notifiedTime < dewCloudConfig.getError().getNotifyIntervalSec() * 1000) {
             return;

@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.jdbc.sharding.transaction;
 
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,4 +12,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnBean(ShardingEnvironmentAware.class)
 public class ShardingTransactionConfiguration {
+
+    @Value("${sharding.transaction.datasourceName:shardingTransaction}")
+    private String shardingTransactionDatasourceName;
+
+
+
+
 }

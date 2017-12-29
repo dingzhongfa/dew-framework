@@ -25,7 +25,7 @@ public class ShardingSelector implements ImportSelector {
         }
 
         AdviceMode adviceMode = attributes.getEnum("");
-        String[] imports = selectImports();
+        String[] imports = null;
         if (imports == null) {
             throw new IllegalArgumentException(String.format("Unknown AdviceMode: '%s'", adviceMode));
         }

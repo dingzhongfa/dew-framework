@@ -42,10 +42,10 @@ public class DewDSManager implements DSManager {
     @Autowired(required = false)
     private ShardingEnvironmentAware shardingEnvironmentAware;
 
+    private DefaultListableBeanFactory beanFactory;
+
     @Value("${spring.datasource.url}")
     private String primaryJdbcUrl;
-
-    private DefaultListableBeanFactory beanFactory;
 
     @PostConstruct
     private void init() throws SQLException {

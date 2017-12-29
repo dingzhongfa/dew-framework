@@ -27,6 +27,7 @@
         <module>modules/boot-starter</module>
         <module>modules/cloud-starter</module>
         <module>modules/jdbc-starter</module>
+        <module>modules/mybatis-starter</module>
         <module>modules/idempotent-starter</module>
         <module>modules/test-starter</module>
         <module>modules/csp-starter</module>
@@ -34,6 +35,7 @@
         <module>components/config</module>
         <module>components/gateway</module>
         <module>components/monitor</module>
+        <module>examples/mybatis-multi-example</module>
         <module>examples/guide-petstore</module>
         <module>examples/bone-example</module>
         <module>examples/web-example</module>

@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.mybatis.multi;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.DewSB;
@@ -43,7 +44,7 @@ public class MybatisMultiTest {
     private TOrderService tOrderService;
 
     @Before
-    public void init(){
+    public void init() {
         ((DewDS) Dew.ds()).jdbc().execute("CREATE TABLE user\n" +
                 "(\n" +
                 "test_id int primary key,\n" +
@@ -58,86 +59,58 @@ public class MybatisMultiTest {
 
     @Test
     @Transactional
-    public void TestUser(){
+    public void testUser() {
+        testUserProcess(userService);
+        testUserProcess(userService2);
+    }
+
+
+    public void testUserProcess(ServiceImpl service) {
         User user = new User();
         user.setId(1L);
         user.setName("Tom");
-        userService.insert(user);
+        service.insert(user);
         logger.info("======================");
 
-        User exampleUser = userService.selectById(user.getId());
+        User exampleUser = (User) service.selectById(user.getId());
         exampleUser.setAge(18);
-        userService.updateById(exampleUser);
+        service.updateById(exampleUser);
 
-        List<User> userList = userService.selectList(
+        List<User> userList = service.selectList(
                 new EntityWrapper<User>().eq("name", "Tom")
         );
         logger.info("========userList=========size====={}", userList.size());
 
-        Page<User> userListTemp = userService.selectPage(
+        Page<User> userListTemp = service.selectPage(
                 new Page<User>(1, 2),
                 new EntityWrapper<User>().eq("name", "Tom")
         );
         logger.info("========userList=========size====={}", userListTemp.getRecords().size());
 
-        userList = userService.selectList(
+        userList = service.selectList(
                 new EntityWrapper<User>().eq("age", "19")
         );
         logger.info("========userList===age===19===size====={}", userList.size());
 
-        userService.delete(new EntityWrapper<User>().eq("age", "19"));
+        service.delete(new EntityWrapper<User>().eq("age", "19"));
 
-        userList = userService.selectList(
+        userList = service.selectList(
                 new EntityWrapper<User>().eq("age", "19")
         );
         logger.info("========userList=========size====={}", userList.size());
 
-        List<String> ages = userService.ageGroup();
-        logger.info("========userList=========ages====={}", ages);
-
-    }
-
-    @Test
-    public void TestUser2(){
-        User user = new User();
-        user.setId(1L);
-        user.setName("Tom");
-        userService2.insert(user);
-        logger.info("======================");
-
-        User exampleUser = userService2.selectById(user.getId());
-        exampleUser.setAge(18);
-        userService2.updateById(exampleUser);
-
-        List<User> userList = userService2.selectList(
-                new EntityWrapper<User>().eq("name", "Tom")
-        );
-        logger.info("========userList=========size====={}", userList.size());
-
-        Page<User> userListTemp = userService2.selectPage(
-                new Page<User>(1, 2),
-                new EntityWrapper<User>().eq("name", "Tom")
-        );
-        logger.info("========userList=========size====={}", userListTemp.getRecords().size());
-
-        userList = userService2.selectList(
-                new EntityWrapper<User>().eq("age", "19")
-        );
-        logger.info("========userList===age===19===size====={}", userList.size());
-
-        userService2.delete(new EntityWrapper<User>().eq("age", "19"));
-
-        userList = userService2.selectList(
-                new EntityWrapper<User>().eq("age", "19")
-        );
-        logger.info("========userList=========size====={}", userList.size());
-
-        List<String> ages = userService2.ageGroup();
+        List<String> ages =null;
+        if (service instanceof UserService) {
+            ages = ((UserService) service).ageGroup();
+        }
+        if (service instanceof UserService2){
+            ages =((UserService2) service).ageGroup();
+        }
         logger.info("========userList=========ages====={}", ages);
     }
 
     @Test
-    public void testSharding(){
+    public void testSharding() {
         long cout = tOrderService.selectCount(new EntityWrapper<TOrder>());
         long countStart = Dew.ds("sharding").countAll(TOrder.class);
         TOrder tOrder = new TOrder();
@@ -156,6 +129,6 @@ public class MybatisMultiTest {
         Assert.assertEquals(20, tOrderList.size());
         Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
         Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
-        Assert.assertEquals(20,Dew.ds("sharding").countAll(TOrder.class));
+        Assert.assertEquals(20, Dew.ds("sharding").countAll(TOrder.class));
     }
 }

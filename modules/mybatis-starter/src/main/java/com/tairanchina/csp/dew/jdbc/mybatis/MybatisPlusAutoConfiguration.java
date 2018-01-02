@@ -30,6 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
@@ -47,6 +48,7 @@ import java.util.List;
 @ConditionalOnBean({DataSource.class})
 @EnableConfigurationProperties({MybatisPlusProperties.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
+@Import(ShardingEnvironmentAware.class)
 public class MybatisPlusAutoConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
     private final MybatisPlusProperties properties;

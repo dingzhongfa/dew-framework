@@ -13,8 +13,15 @@ spring:
         url: jdbc:mysql://127.0.0.1:3306/dew?useUnicode=true&characterEncoding=utf-8
         username: root
         password: 123456
+      test2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/transaction?useUnicode=true&characterEncoding=utf-8
+        username: root
+        password: 123456
 sharding:
   enabled: true
+  transaction:
+    name: test2
   jdbc:
     datasource:
       names: ds_0,ds_1

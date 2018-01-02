@@ -63,6 +63,10 @@
             <artifactId>sharding-jdbc-transaction</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.shardingjdbc</groupId>
+            <artifactId>sharding-jdbc-transaction-storage</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>

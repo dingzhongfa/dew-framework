@@ -2059,6 +2059,36 @@ public void transferAReceive(String id) {
 }
 ----
 
+==== mybatis-starter模块
+
+考虑到业务团队较多采用mybatis框架,dew定制了mybatis的dew实现方式，同时针对sharding-jdbc做出整合。
+
+NOTE: 在多数据源处理上，因为两个数据源（除``sharding-jdbc``外）已经足以满足业务团队的需求，``mybatis-starter``模块只支持两个数据源，此处不支持扩展，如有需要，会考虑针对扩展性对代码做出修改。
+
+[source,java]
+.启动类配置示例
+----
+@DewBootApplication(scanBasePackageClasses = {Dew.class, MybatisMultiApplication.class}, exclude = MybatisPlusAutoConfiguration.class)
+@DewMapperScan(basePackages = "com.tairanchina.csp.dew.mybatis.multi.mapper",secondPrefix = "test1",enableSharding = true)
+public class MybatisMultiApplication {
+
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(MybatisMultiApplication.class).web(false).run(args);
+    }
+}
+----
+
+[source,yml]
+.配置文件示例
+----
+dew:
+  mybatis:
+    second:
+      enabled: true #设为true开启第二数据源，默认为false
+sharding:
+  enabled: true #
+----
+
 === 工程化
 
 ==== 代码质量检查

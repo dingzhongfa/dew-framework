@@ -42,6 +42,7 @@
         <logback-elasticsearch-appender.version>1.6</logback-elasticsearch-appender.version>
         <api.file.name>index</api.file.name>
         <sonar.host.url>http://10.200.131.24:9000</sonar.host.url>
+        <mybatisplus-spring-boot-starter.version>1.0.2</mybatisplus-spring-boot-starter.version>
     </properties>
 
     <developers>
@@ -165,6 +166,11 @@
                 <version>${sharding-jdbc.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.shardingjdbc</groupId>
+                <artifactId>sharding-jdbc-transaction-storage</artifactId>
+                <version>${sharding-jdbc.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.tairanchina.csp.dew</groupId>
                 <artifactId>jdbc-starter</artifactId>
                 <version>${dew.version}</version>
@@ -211,6 +217,11 @@
                 <groupId>com.internetitem</groupId>
                 <artifactId>logback-elasticsearch-appender</artifactId>
                 <version>${logback-elasticsearch-appender.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatisplus-spring-boot-starter</artifactId>
+                <version>${mybatisplus-spring-boot-starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

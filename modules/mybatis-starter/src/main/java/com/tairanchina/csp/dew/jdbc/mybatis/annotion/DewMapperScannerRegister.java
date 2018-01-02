@@ -75,7 +75,7 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
         if (annotationClass.equals(Second.class)) {
             secondPrefix = annoAttrs.getString("secondPrefix");
             if (StringUtils.isEmpty(secondPrefix)) {
-                logger.info("no spercific secondSqlSessionTemplate, use primarySqlSessionTemplate instead");
+                logger.error("no spercific secondSqlSessionTemplate, use primarySqlSessionTemplate instead");
             }
             scanner.setSqlSessionTemplateBeanName("secondSqlSessionTemplate");
         }

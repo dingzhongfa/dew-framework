@@ -1,7 +1,10 @@
 package com.tairanchina.csp.dew.mybatis.multi.entity;
 
 
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import com.tairanchina.csp.dew.jdbc.entity.Column;
 import com.tairanchina.csp.dew.jdbc.entity.Entity;
 import com.tairanchina.csp.dew.jdbc.entity.PkColumn;
@@ -10,16 +13,20 @@ import com.tairanchina.csp.dew.jdbc.entity.PkColumn;
 @TableName("t_order")
 public class TOrder {
 
-    @PkColumn(uuid = true)
+    @PkColumn(uuid = true)         // Dew备注
+    @TableId(type = IdType.UUID)   // Mybatis备注
     private String id;
 
     @Column
+    @TableField("order_id")
     private long orderId;
 
     @Column
+    @TableField("user_id")
     private int userId;
 
     @Column
+    @TableField
     private String status;
 
     public String getId() {

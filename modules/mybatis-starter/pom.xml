@@ -16,9 +16,6 @@
     <description>Dew mybatis Starter</description>
     <packaging>jar</packaging>
 
-    <properties>
-        <mybatisplus-spring-boot-starter.version>1.0.2</mybatisplus-spring-boot-starter.version>
-    </properties>
 
     <dependencies>
         <!--依赖jdbc-starter-->
@@ -71,7 +68,6 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatisplus-spring-boot-starter</artifactId>
-            <version>${mybatisplus-spring-boot-starter.version}</version>
         </dependency>
     </dependencies>
 </project>

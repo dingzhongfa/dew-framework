@@ -3,7 +3,7 @@
 === 1.3.0-RC
 
 .Feature
-
+* #87 局部使用sharding-jdbc，mybatis实现，增加mybatis-starter模块
 
 .Improvement
 * #82 metrics指标增加线程、内存、cpu、磁盘等统计

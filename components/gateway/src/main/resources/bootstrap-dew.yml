@@ -14,7 +14,9 @@ eureka:
     serviceUrl:
       defaultZone: http://registry:123456@127.0.0.1:9999/eureka
 
-management.security.enabled: false
+management:
+  security:
+    enabled: false
 
 #zuul:
 #  ignored-patterns: /hystrix**

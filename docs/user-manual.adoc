@@ -2112,6 +2112,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select age from user group by age")
     List<String> ageGroup();
+}
 //数据源为第二数据源
 @Second
 public interface UserMapper2 extends BaseMapper<User> {
@@ -2119,8 +2120,66 @@ public interface UserMapper2 extends BaseMapper<User> {
     @Select("select age from user group by age")
     List<String> ageGroup();
 }
-}
+----
+[source,java]
+.事务使用示例
+----
 
+@Autowired
+private SoftTransactionManager softTransactionManager;
+
+
+@Autowired
+private ShardingEnvironmentAware shardingEnvironmentAware;
+
+public void example(){
+ BEDSoftTransaction softTransaction = (BEDSoftTransaction) softTransactionManager.getTransaction(SoftTransactionType.BestEffortsDelivery);
+            try {
+                try {
+                    softTransaction.begin(shardingEnvironmentAware.dataSource().getConnection());
+                } catch (SQLException e) {
+                    logger.info("sharding transaction begin failed");
+                }
+                TOrder tOrder = new TOrder();
+                tOrder.setUserId(12).setStatus("test");
+                tOrder.setOrderId(1012);
+                tOrderService.insert(tOrder);
+                tOrderService.insert(tOrder);
+                tOrderService.insert(tOrder);
+                logger.info("sharding init test end");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    softTransaction.end();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+ }
+----
+[source,xml]
+.pom.xml配置
+----
+ <dependency>
+    <groupId>io.shardingjdbc</groupId>
+    <artifactId>sharding-jdbc-core</artifactId>
+</dependency>
+<dependency>
+   <groupId>io.shardingjdbc</groupId>
+   <artifactId>sharding-jdbc-transaction</artifactId>
+</dependency>
+<dependency>
+   <groupId>io.shardingjdbc</groupId>
+   <artifactId>sharding-jdbc-transaction-storage</artifactId>
+</dependency>
+<dependency>
+   <groupId>com.tairanchina.csp.dew</groupId>
+   <artifactId>mybatis-starter</artifactId>
+</dependency>
 ----
 
 

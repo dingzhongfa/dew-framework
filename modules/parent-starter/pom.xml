@@ -109,6 +109,11 @@
                 <version>${dew.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.tairanchina.csp.dew</groupId>
+                <artifactId>mybatis-starter</artifactId>
+                <version>${dew.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
                 <version>${aspectjrt.version}</version>

@@ -44,6 +44,9 @@ public class FailureEventNotifier extends HystrixEventNotifier {
     @Value("${spring.application.name:dew-default}")
     private String applicationName;
 
+    @Value(("${spring.profiles.active:default}"))
+    private String profile;
+
     private long notifiedTime;
     // key.name -> eventType.names
     private Map<String, Map<String, String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
@@ -91,7 +94,7 @@ public class FailureEventNotifier extends HystrixEventNotifier {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailFrom);
             message.setTo(dewCloudConfig.getError().getNotifyEmails().toArray(new String[]{}));
-            message.setSubject(Dew.dewConfig.getBasic().getName() + dewCloudConfig.getError().getNotifyTitle() + "-" + applicationName);
+            message.setSubject(Dew.dewConfig.getBasic().getName() + dewCloudConfig.getError().getNotifyTitle() + "\t\tserviceId=" + applicationName+"\t\tprofile="+profile);
             StringBuilder stringBuilder = new StringBuilder();
             failureInfo.forEach((key, value) -> {
                 stringBuilder.append("\r\n").append(

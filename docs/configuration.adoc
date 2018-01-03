@@ -5,6 +5,9 @@
 [source,yml]
 ----
 dew: # Dew 参数key前缀
+    mybatis:
+      second:
+        enabled: true
     basic: # 基础信息
         name: # 服务名称，用于API文档显示等
         version: 1.0 # 服务版本号，用于API文档显示等
@@ -81,6 +84,9 @@ spring:
 
 #sharding-jdbc配置（分库分表样例，详细见使用手册及sharding-example）
 sharding:
+  enabled: true
+  transaction:
+    name: transaction #默认值为transaction
   jdbc:
     datasource:
       names: ds_0,ds_1

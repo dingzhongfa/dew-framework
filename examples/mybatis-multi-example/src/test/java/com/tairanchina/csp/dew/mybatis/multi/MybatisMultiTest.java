@@ -54,6 +54,16 @@ public class MybatisMultiTest {
                 "role long,\n" +
                 "phone varchar(50)\n" +
                 ")");
+        ((DewDS) Dew.ds("test1")).jdbc().execute("CREATE TABLE IF NOT EXISTS user\n" +
+                "(\n" +
+                "test_id int primary key,\n" +
+                "name varchar(50),\n" +
+                "age INT ,\n" +
+                "test_type INT ,\n" +
+                "test_date datetime,\n" +
+                "role long,\n" +
+                "phone varchar(50)\n" +
+                ")");
         // 删除项目中测试的数据
         tOrderService.delete(new EntityWrapper<TOrder>().eq("user_id", 12));
         tOrderService.delete(new EntityWrapper<TOrder>().eq("user_id", 13));

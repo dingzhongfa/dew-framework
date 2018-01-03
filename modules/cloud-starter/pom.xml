@@ -71,11 +71,6 @@
             <artifactId>logback-elasticsearch-appender</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatisplus-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.tairanchina.csp.dew</groupId>
             <artifactId>test-starter</artifactId>
         </dependency>

@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.core.autoconfigure;
 
-import com.baomidou.mybatisplus.spring.boot.starter.MybatisPlusAutoConfiguration;
 import com.tairanchina.csp.dew.Dew;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
@@ -20,7 +19,7 @@ import java.lang.annotation.*;
 public @interface DewCloudApplication {
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "exclude")
-    Class<?>[] exclude() default {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class,MybatisPlusAutoConfiguration.class};
+    Class<?>[] exclude() default {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class};
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackages")
     String[] scanBasePackages() default {};

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -48,6 +49,7 @@ import java.util.List;
 @ConditionalOnBean({DataSource.class})
 @EnableConfigurationProperties({MybatisPlusProperties.class})
 @AutoConfigureAfter({DataSourceAutoConfiguration.class})
+@AutoConfigureBefore(com.baomidou.mybatisplus.spring.boot.starter.MybatisPlusAutoConfiguration.class)
 @Import(ShardingEnvironmentAware.class)
 public class MybatisPlusAutoConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);

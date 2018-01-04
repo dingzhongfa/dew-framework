@@ -29,6 +29,7 @@ public class DewCloudConfig {
 
     public static class Error {
 
+        private boolean enabled;
         private Set<String> notifyEmails = new HashSet<>();
         private String notifyTitle = "服务异常";
         private long notifyIntervalSec = 1800;
@@ -41,6 +42,14 @@ public class DewCloudConfig {
             add("THREAD_POOL_REJECTED");
             add("SEMAPHORE_REJECTED");
         }};
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
 
         public Set<String> getNotifyEmails() {
             return notifyEmails;

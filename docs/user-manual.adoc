@@ -1941,7 +1941,7 @@ tables: #分库分表配置，可配置多个logic_table_name
                 algorithmClassName: #分片算法类名称。该类需使用默认的构造器或者提供无参数的构造器
             inline: #inline表达式分片策略
                 shardingColumn : #分片列名
-                algorithmInlineExpression: #分库算法表达式，需要符合groovy动态语法
+                algorithmExpression: #分库算法表达式，需要符合groovy动态语法
             hint: #Hint分片策略
                 algorithmClassName: #分片算法类名称。该类需使用默认的构造器或者提供无参数的构造器
             none: #不分片

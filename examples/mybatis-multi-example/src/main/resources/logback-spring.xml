@@ -22,5 +22,7 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="dailyRollingFileAppender"/>
     </root>
-
+    <logger name="com.tairanchina" level="TRACE"/>
+    <logger name="org.springframework.jdbc.core" level="TRACE"/>
+    <logger name="com.tairanchina.csp.dew.mybatis.multi.mapper" level="TRACE"/>
 </configuration>

@@ -45,23 +45,25 @@ sharding:
             #generateKeyColumns:
               #- columnName: order_id
             tableStrategy:
-              inline:
+              standard:
                 shardingColumn: order_id
-                algorithmExpression: t_order_${order_id.longValue() % 2}
+                preciseAlgorithmClassName: com.tairanchina.csp.dew.jdbc.sharding.algorithm.DewLongShardingAlgorithm
           t_order_item:
             actualDataNodes: ds_${0..1}.t_order_item_${0..1}
             tableStrategy:
-              inline:
+              standard:
                 shardingColumn: order_id
-                algorithmExpression: t_order_item_${order_id.longValue() % 2}
+                preciseAlgorithmClassName: com.tairanchina.csp.dew.jdbc.sharding.algorithm.DewLongShardingAlgorithm
         #绑定表中其余的表的策略与第一张表的策略相同
         bindingTables:
           - t_order,t_order_item
         #默认数据库分片策略
         defaultDatabaseStrategy:
-          inline:
+          standard:
             shardingColumn: user_id
-            algorithmExpression: ds_${user_id.longValue() % 2}
+            preciseAlgorithmClassName: com.tairanchina.csp.dew.jdbc.sharding.algorithm.DewIntegerShardingAlgorithm
         props:
           sql:
             show: true
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml

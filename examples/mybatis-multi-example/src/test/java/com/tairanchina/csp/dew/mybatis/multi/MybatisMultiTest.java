@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
+import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.tairanchina.csp.dew.mybatis.multi.entity.TOrder;
 import com.tairanchina.csp.dew.mybatis.multi.entity.User;
 import com.tairanchina.csp.dew.mybatis.multi.service.TOrderService;
@@ -122,33 +123,74 @@ public class MybatisMultiTest {
     }
 
     @Test
-    public void testSharding() {
-//        long countStart = Dew.ds("sharding").countAll(TOrder.class);
+    public void testShardingPlus() {
         long countStart = tOrderService.selectCount(new EntityWrapper<>());
         TOrder tOrder = new TOrder();
         tOrder.setUserId(13).setStatus("test");
         for (int i = 1110; i < 1120; i++) {
             tOrder.setId(null);
             tOrder.setOrderId(i);
-//            Dew.ds("sharding").insert(tOrder);
             tOrderService.insert(tOrder);
         }
         tOrder.setUserId(12).setStatus("test");
         for (int i = 1010; i < 1020; i++) {
             tOrder.setId(null);
             tOrder.setOrderId(i);
-//            Dew.ds("sharding").insert(tOrder);
             tOrderService.insert(tOrder);
         }
-//        Assert.assertTrue((Dew.ds("sharding").countAll(TOrder.class) - countStart) == 20);
         Assert.assertTrue((tOrderService.selectCount(new EntityWrapper<>()) - countStart) == 20);
-//        List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
         List<TOrder> tOrderList = tOrderService.selectList(new EntityWrapper<TOrder>().eq("status", "test"));
         Assert.assertEquals(20, tOrderList.size());
-//        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
-//        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
         tOrderService.delete(new EntityWrapper<TOrder>().eq("user_id", 12));
         tOrderService.delete(new EntityWrapper<TOrder>().eq("user_id", 13));
         Assert.assertEquals(20, Dew.ds("sharding").countAll(TOrder.class));
+    }
+
+    @Test
+    public void testShardingDew() {
+        long countStart = Dew.ds("sharding").countAll(TOrder.class);
+        TOrder tOrder = new TOrder();
+        tOrder.setUserId(13).setStatus("test");
+        for (int i = 1110; i < 1120; i++) {
+            tOrder.setId(null);
+            tOrder.setOrderId(i);
+            Dew.ds("sharding").insert(tOrder);
+        }
+        tOrder.setUserId(12).setStatus("test");
+        for (int i = 1010; i < 1020; i++) {
+            tOrder.setOrderId(i);
+            Dew.ds("sharding").insert(tOrder);
+        }
+        Assert.assertTrue((Dew.ds("sharding").countAll(TOrder.class) - countStart) == 20);
+        List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
+        Assert.assertEquals(20, tOrderList.size());
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 12), TOrder.class);
+        Dew.ds("sharding").delete(DewSB.inst().eq("userId", 13), TOrder.class);
+        Assert.assertEquals(20, Dew.ds("sharding").countAll(TOrder.class));
+    }
+
+    @Test
+    public void testShardingWithXml() {
+        long countStart = tOrderService.countAllByXml();
+        TOrder tOrder = new TOrder();
+        tOrder.setUserId(13).setStatus("test");
+        for (int i = 1110; i < 1120; i++) {
+            tOrder.setId(i + "");
+            tOrder.setOrderId(i);
+            Integer res = tOrderService.insertByXml(tOrder);
+        }
+        tOrder.setUserId(12).setStatus("test");
+        for (int i = 1010; i < 1020; i++) {
+            tOrder.setId(i + "");
+            tOrder.setOrderId(i);
+            tOrderService.insertByXml(tOrder);
+        }
+        Assert.assertTrue((tOrderService.countAllByXml() - countStart) == 20);
+        List<TOrder> tOrderList = tOrderService.selectList(new EntityWrapper<TOrder>().eq("status", "test"));
+        Assert.assertEquals(20, tOrderList.size());
+        tOrderService.deleteByXml(12);
+        tOrderService.deleteByXml(13);
+        Assert.assertEquals(20, Dew.ds("sharding").countAll(TOrder.class));
+
     }
 }

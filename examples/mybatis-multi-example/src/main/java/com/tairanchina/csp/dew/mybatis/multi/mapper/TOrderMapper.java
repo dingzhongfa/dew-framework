@@ -1,8 +1,11 @@
 package com.tairanchina.csp.dew.mybatis.multi.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.tairanchina.csp.dew.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.jdbc.mybatis.annotion.Sharding;
 import com.tairanchina.csp.dew.mybatis.multi.entity.TOrder;
+
+import java.util.List;
 
 /**
  * desription:
@@ -10,4 +13,16 @@ import com.tairanchina.csp.dew.mybatis.multi.entity.TOrder;
  */
 @Sharding
 public interface TOrderMapper extends BaseMapper<TOrder> {
+
+    Long countAllByXml();
+
+    Integer updateByXml(TOrder tOrder);
+
+    List<TOrder> getAllByXml();
+
+    TOrder getOneByXml(@Param("userId") Integer userId);
+
+    Integer insertByXml(TOrder tOrder);
+
+    Integer deleteByXml(@Param("userId") Integer userId);
 }

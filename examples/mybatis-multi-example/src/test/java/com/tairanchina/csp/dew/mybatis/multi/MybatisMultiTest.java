@@ -172,7 +172,6 @@ public class MybatisMultiTest {
             tOrder.setOrderId(i);
             Dew.ds("sharding").insert(tOrder);
         }
-
         Assert.assertTrue((Dew.ds("sharding").countAll(TOrder.class) - countStart) == 20);
         List<TOrder> tOrderList = Dew.ds("sharding").find(DewSB.inst().eq("status", "test"), TOrder.class);
         Assert.assertEquals(20, tOrderList.size());
@@ -208,15 +207,15 @@ public class MybatisMultiTest {
     public void testPressure() throws InterruptedException {
         long start = Instant.now().toEpochMilli();
         // 100 个并发，各执行 5000条插入
-        CountDownLatch countDownLatch = new CountDownLatch(50);
+        CountDownLatch countDownLatch = new CountDownLatch(100);
         int times = 2500;
         for (int i = 10000; i < 260000; i += times) {
             new Thread(new PressureTask(i, i + times, countDownLatch, false)).start();
         }
         countDownLatch.await();
         // 延时一分钟结束，保证事务的异步尝试执行完成
-        Thread.sleep(60000);
-        logger.info("运行结束，耗时" + (Instant.now().toEpochMilli() - start) + " ms");
+        Thread.sleep(10000);
+        logger.info("运行结束，耗时" + (Instant.now().toEpochMilli() - start - 10000) + " ms");
     }
 
     class PressureTask implements Runnable {

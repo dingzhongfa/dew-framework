@@ -3,7 +3,7 @@ dew:
     second: true
 spring:
   application:
-    name: sharding-example
+    name: mybatis-multi-example
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test

@@ -1850,7 +1850,7 @@ NOTE: dew里有两个分库分表策略模版(DewIntegerShardingAlgorithm,DewLon
 WARNING: sharding-jdbc的2.0.0.M1版本源码存在问题，反射获取方法时存在bug，不支持druid连接池，暂时还不建议使用
 
 [source,yml]
-.``sharding-jdbc``在``/resources/META-INF/``下的配置文件示例，该示例为分库分表+读写分离
+.``sharding-jdbc``配置文件示例，该示例为分库分表+读写分离
 ----
 sharding:
   jdbc:
@@ -1886,6 +1886,7 @@ sharding:
         url: jdbc:mysql://localhost:3306/demo_ds_master_1_slave_0
         username: root
         password: 123456
+
       ds_master_1_slave_1:
         type: org.apache.commons.dbcp.BasicDataSource
         driverClassName: com.mysql.jdbc.Driver
@@ -1901,18 +1902,18 @@ sharding:
             tableStrategy:
               inline:
                 shardingColumn: order_id
-                algorithmInlineExpression: t_order_${order_id % 2}
+                algorithmExpression: t_order_${order_id % 2}
           t_order_item:
             actualDataNodes: ds_${0..1}.t_order_item_${0..1}
             tableStrategy:
               inline:
                 shardingColumn: order_id
-                algorithmInlineExpression: t_order_item_${order_id % 2}
+                algorithmExpression: t_order_item_${order_id % 2}
         #默认数据库分片策略
         defaultDatabaseStrategy:
           inline:
             shardingColumn: user_id
-            algorithmInlineExpression: ds_${user_id.longValue() % 2}
+            algorithmExpression: ds_${user_id.longValue() % 2}
         masterSlaveRules:
           ds_0:
             masterDataSourceName: ds_master_0
@@ -1922,8 +1923,6 @@ sharding:
             slaveDataSourceNames: [ds_master_1_slave_0, ds_master_1_slave_1]
 
 ----
-
-TIP: inline写法在2.0.0.M1之后被废除。
 
 [source,yml]
 .所有策略配置方式
@@ -2102,18 +2101,18 @@ sharding:
 [source,java]
 .mapper接口类
 ----
-//数据源为sharding-jdbc datasource
+// 数据源为sharding-jdbc datasource
 @Sharding
 public interface TOrderMapper extends BaseMapper<TOrder> {
 }
-//数据源为主数据源
+// 数据源为主数据源
 @Primary
 public interface UserMapper extends BaseMapper<User> {
 
     @Select("select age from user group by age")
     List<String> ageGroup();
 }
-//数据源为第二数据源
+// 数据源为第二数据源
 @Second
 public interface UserMapper2 extends BaseMapper<User> {
 
@@ -2121,6 +2120,7 @@ public interface UserMapper2 extends BaseMapper<User> {
     List<String> ageGroup();
 }
 ----
+TIP: 这里讲述下使用事务带来的问题，sharding-jdbc目前仅提供最大努力型事务（TCC还待开发），保证最终一致性。sharding-jdbc默认对执行失败的语句异步重试三次，若都失败，则记录在事务表中。笔者对于大数据量大并发下的数据插入做了测试，具体的数据量和并发量详见``mybatis-multi-example``项目，无事务情况下两次耗时为675751ms,750752ms,有事务情况下两次耗时为1939277ms,1942079ms,显然用了事务后耗时接近原来的三倍，具体是否使用请自行取舍
 [source,java]
 .事务使用示例
 ----

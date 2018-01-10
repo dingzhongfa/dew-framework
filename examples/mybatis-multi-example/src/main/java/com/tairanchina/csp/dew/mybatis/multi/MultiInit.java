@@ -26,10 +26,6 @@ public class MultiInit {
     @Autowired
     private TOrderService tOrderService;
 
- /*   @Autowired
-    private BEDSoftTransaction softTransaction;*/
-
-
     @Autowired
     private SoftTransactionManager softTransactionManager;
 
@@ -42,8 +38,8 @@ public class MultiInit {
      *
      * @throws SQLException
      */
-    @PostConstruct
-    public void kinit() throws SQLException, InterruptedException {
+//    @PostConstruct
+    public void init() throws SQLException, InterruptedException {
         new Thread(() -> {
             logger.info("sharding init test start");
             BEDSoftTransaction softTransaction = (BEDSoftTransaction) softTransactionManager.getTransaction(SoftTransactionType.BestEffortsDelivery);

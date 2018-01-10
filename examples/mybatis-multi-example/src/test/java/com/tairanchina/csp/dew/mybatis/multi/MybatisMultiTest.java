@@ -213,9 +213,7 @@ public class MybatisMultiTest {
             new Thread(new PressureTask(i, i + times, countDownLatch, false)).start();
         }
         countDownLatch.await();
-        // 延时一分钟结束，保证事务的异步尝试执行完成
-        Thread.sleep(10000);
-        logger.info("运行结束，耗时" + (Instant.now().toEpochMilli() - start - 10000) + " ms");
+        logger.info("运行结束，耗时" + (Instant.now().toEpochMilli() - start) + " ms");
     }
 
     class PressureTask implements Runnable {

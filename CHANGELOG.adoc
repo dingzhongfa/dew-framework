@@ -45,7 +45,7 @@
 
 * #43 swagger2markup-maven-plugin 在使用 spring.content-path 无效
 
-.从 `1.1.0-RC` 迁移到 `1.3.0-SNAPSHOT`
+.从 `1.1.0-RC` 迁移到 `1.2.0-RC`
 
 . 使用 `统一响应——协议无关` 类型时，UI端由原来只需要获取200状态下的数据改成需要获取 200 和 555 状态下的数据，两者对UI端没有区别。( @See https://rep.360taihe.com/csp/dew-framework/issues/53 )
 

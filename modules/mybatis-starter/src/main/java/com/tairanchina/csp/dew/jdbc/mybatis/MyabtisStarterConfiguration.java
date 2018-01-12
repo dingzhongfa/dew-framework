@@ -6,34 +6,31 @@ import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import com.baomidou.mybatisplus.spring.boot.starter.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.spring.boot.starter.MybatisPlusProperties;
 import com.baomidou.mybatisplus.spring.boot.starter.SpringBootVFS;
-import com.tairanchina.csp.dew.jdbc.DewDS;
-import com.tairanchina.csp.dew.jdbc.mybatis.annotion.DewMapperScannerRegister;
-import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
+import com.tairanchina.csp.dew.jdbc.DewDSManager;
+import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -41,25 +38,35 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-@Configuration
+
+@org.springframework.context.annotation.Configuration
+@ConditionalOnBean(DewDSManager.class)
 @ConditionalOnClass({SqlSessionFactory.class, MybatisSqlSessionFactoryBean.class})
-@ConditionalOnBean({DataSource.class})
 @EnableConfigurationProperties({MybatisPlusProperties.class})
-@AutoConfigureAfter({DataSourceAutoConfiguration.class})
-@AutoConfigureBefore(com.baomidou.mybatisplus.spring.boot.starter.MybatisPlusAutoConfiguration.class)
-@Import(ShardingEnvironmentAware.class)
-public class MybatisPlusAutoConfiguration {
-    private static final Logger logger = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
+@Import({DewMultiDSConfig.class})
+@DewLoadImmediately
+public class MyabtisStarterConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyabtisStarterConfiguration.class);
     private final MybatisPlusProperties properties;
     private final Interceptor[] interceptors;
     private final ResourceLoader resourceLoader;
     private final DatabaseIdProvider databaseIdProvider;
     private final List<ConfigurationCustomizer> configurationCustomizers;
 
-    public MybatisPlusAutoConfiguration(MybatisPlusProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider, ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider, ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
+    @Autowired
+    private DewMultiDSConfig dewMultiDSConfig;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private DefaultListableBeanFactory beanFactory;
+
+    public MyabtisStarterConfiguration(MybatisPlusProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider, ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider, ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;
@@ -73,70 +80,63 @@ public class MybatisPlusAutoConfiguration {
             Resource resource = this.resourceLoader.getResource(this.properties.getConfigLocation());
             Assert.state(resource.exists(), "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
         }
+        registerBeanDefinitions();
     }
 
-    @Bean
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+    private void registerBeanDefinitions() {
+        try {
+            //主数据源注入
+            DataSource primaryDataSource = (DataSource) applicationContext.getBean("dataSource");
+            registerBeanDefinitions(primaryDataSource, "primary");
+
+            // 从数据源注入
+            Set<String> dataSourceNames = dewMultiDSConfig.getMultiDatasources().keySet();
+            for (String dataSourceName : dataSourceNames) {
+                if (applicationContext.containsBean(dataSourceName + "JdbcTemplate")) {
+                    // Registry SqlSessionFactory
+                    DataSource dataSource = ((JdbcTemplate) applicationContext.getBean(dataSourceName + "JdbcTemplate")).getDataSource();
+                    registerBeanDefinitions(dataSource, dataSourceName);
+                }
+            }
+
+            //sharding-jdbc注入
+            DataSource shardingDataSource = ((JdbcTemplate) applicationContext.getBean("shardingJdbcTemplate")).getDataSource();
+            registerBeanDefinitions(shardingDataSource, "sharding");
+        } catch (Exception e) {
+            logger.error("dew sqlsessiontemplate init failed", e);
+        }
+    }
+
+    private void registerBeanDefinitions(DataSource dataSource, String dataSourceName) throws Exception {
+        // registry SqlSessionFactory
+        AbstractBeanDefinition sqlSessionFactory = BeanDefinitionBuilder.rootBeanDefinition(DefaultSqlSessionFactory.class).addConstructorArgValue(configuration(dataSource)).getBeanDefinition();
+        beanFactory.registerBeanDefinition(dataSourceName + "SqlSessionFactory", sqlSessionFactory);
+
+        // Registry SqlSessionTemplate
+        AbstractBeanDefinition sqlSessionTemplate = null;
+        ExecutorType executorType = this.properties.getExecutorType();
+        if (executorType != null) {
+            sqlSessionTemplate = BeanDefinitionBuilder.rootBeanDefinition(SqlSessionTemplate.class).addConstructorArgReference(dataSourceName + "SqlSessionFactory").addConstructorArgValue(executorType).getBeanDefinition();
+        } else {
+            sqlSessionTemplate = BeanDefinitionBuilder.rootBeanDefinition(SqlSessionTemplate.class).addConstructorArgReference(dataSourceName + "SqlSessionFactory").getBeanDefinition();
+        }
+        beanFactory.registerBeanDefinition(dataSourceName + "SqlSessionTemplate", sqlSessionTemplate);
+    }
+
+    private Configuration configuration(DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
-        return creatSqlSessionFactory(factory);
-    }
-
-    @Bean
-    public SqlSessionTemplate sqlSessionTemplate(@Qualifier("sqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
-        ExecutorType executorType = this.properties.getExecutorType();
-        return executorType != null ? new SqlSessionTemplate(sqlSessionFactory, executorType) : new SqlSessionTemplate(sqlSessionFactory);
-    }
-
-
-    @Bean(name = "shardingSqlSessionFactory")
-    @ConditionalOnBean(ShardingEnvironmentAware.class)
-    public SqlSessionFactory shardingSqlSessionFactory(@Autowired ShardingEnvironmentAware shardingEnvironmentAware) throws Exception {
-        MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
-        factory.setDataSource(shardingEnvironmentAware.dataSource());
-        return creatSqlSessionFactory(factory);
-    }
-
-    @Bean(name = "shardingSqlSessionTemplate")
-    @ConditionalOnBean(ShardingEnvironmentAware.class)
-    public SqlSessionTemplate shardingSqlSessionTemplate(@Qualifier("shardingSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
-        ExecutorType executorType = this.properties.getExecutorType();
-        return executorType != null ? new SqlSessionTemplate(sqlSessionFactory, executorType) : new SqlSessionTemplate(sqlSessionFactory);
-    }
-
-    @Bean(name = "secondSqlSessionFactory")
-    @ConditionalOnProperty(prefix = "dew.mybatis", name = "second", havingValue = "true")
-    public SqlSessionFactory secondSqlSessionFactory(@Autowired ApplicationContext applicationContext) throws Exception {
-        MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
-        DataSource dataSource = ((DewDS) applicationContext.getBean(DewMapperScannerRegister.secondPrefix + "DS")).jdbc().getDataSource();
-        factory.setDataSource(dataSource);
-        return creatSqlSessionFactory(factory);
-    }
-
-    @Bean(name = "secondSqlSessionTemplate")
-    @ConditionalOnProperty(prefix = "dew.mybatis", name = "second", havingValue = "true")
-    public SqlSessionTemplate secondSqlSessionTemplate(@Qualifier("secondSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
-        ExecutorType executorType = this.properties.getExecutorType();
-        return executorType != null ? new SqlSessionTemplate(sqlSessionFactory, executorType) : new SqlSessionTemplate(sqlSessionFactory);
-    }
-
-
-    private SqlSessionFactory creatSqlSessionFactory(MybatisSqlSessionFactoryBean factory) throws Exception {
         factory.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }
-
         MybatisConfiguration configuration = this.properties.getConfiguration();
         if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
             configuration = new MybatisConfiguration();
         }
-
         if (configuration != null && !CollectionUtils.isEmpty(this.configurationCustomizers)) {
-            Iterator i$ = this.configurationCustomizers.iterator();
-            while (i$.hasNext()) {
-                ConfigurationCustomizer customizer = (ConfigurationCustomizer) i$.next();
-                customizer.customize(configuration);
+            for (Object customizer : this.configurationCustomizers) {
+                ((ConfigurationCustomizer) customizer).customize(configuration);
             }
         }
         if (configuration != null) {
@@ -146,43 +146,25 @@ public class MybatisPlusAutoConfiguration {
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
         }
-
         if (!ObjectUtils.isEmpty(this.interceptors)) {
             factory.setPlugins(this.interceptors);
         }
-
         if (this.databaseIdProvider != null) {
             factory.setDatabaseIdProvider(this.databaseIdProvider);
         }
-
         if (StringUtils.hasLength(this.properties.getTypeAliasesPackage())) {
             factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
         }
-
         if (StringUtils.hasLength(this.properties.getTypeHandlersPackage())) {
             factory.setTypeHandlersPackage(this.properties.getTypeHandlersPackage());
         }
-
         if (!ObjectUtils.isEmpty(this.properties.resolveMapperLocations())) {
             factory.setMapperLocations(this.properties.resolveMapperLocations());
         }
-
         if (!ObjectUtils.isEmpty(this.properties.getGlobalConfig())) {
             factory.setGlobalConfig(this.properties.getGlobalConfig().convertGlobalConfiguration());
         }
-        return factory.getObject();
-    }
-
-    @Configuration
-    @ConditionalOnMissingBean({MapperFactoryBean.class})
-    public static class MapperScannerRegistrarNotFoundConfiguration {
-        public MapperScannerRegistrarNotFoundConfiguration() {
-        }
-
-        @PostConstruct
-        public void afterPropertiesSet() {
-            MybatisPlusAutoConfiguration.logger.debug("No " + MapperFactoryBean.class.getName() + " found.");
-        }
+        return factory.getObject().getConfiguration();
     }
 
 }

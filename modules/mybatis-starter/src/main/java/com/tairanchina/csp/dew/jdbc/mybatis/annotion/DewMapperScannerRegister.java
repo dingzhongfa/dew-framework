@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.jdbc.mybatis.annotion;
 
-import org.mybatis.spring.mapper.ClassPathMapperScanner;
+import com.ecfront.dew.common.$;
+import com.tairanchina.csp.dew.jdbc.mybatis.MapperScaner;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +17,17 @@ import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-/**
- * desription:
- * Created by ding on 2017/12/28.
- */
+
 public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+
+    private Set<String> dataSources = new HashSet<>();
 
     private static final Logger logger = LoggerFactory.getLogger(DewMapperScannerRegister.class);
 
-    public static String secondPrefix = "";
 
     private ResourceLoader resourceLoader;
 
@@ -39,55 +38,49 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         // 获取DewMapperScanner字段值
         AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(DewMapperScan.class.getName()));
-        Map<Class<? extends Annotation>, ClassPathMapperScanner> scanners = new HashMap<Class<? extends Annotation>, ClassPathMapperScanner>() {{
-            put(Primary.class, new ClassPathMapperScanner(registry));
-            put(Second.class, new ClassPathMapperScanner(registry));
-            if (annoAttrs.getBoolean("enableSharding")) {
-                logger.info("use sharding-jdbc with mybatis");
-                put(Sharding.class, new ClassPathMapperScanner(registry));
+
+        // 获取被MapperInfo注解的类
+        for (String pkg : annoAttrs.getStringArray("basePackages")) {
+            Set<Class<?>> mappers = null;
+            try {
+                mappers = $.clazz.scan(pkg, new HashSet<Class<? extends Annotation>>() {{
+                    add(DS.class);
+                }}, null);
+                if (mappers.isEmpty()) {
+                    break;
+                }
+            } catch (Exception e) {
+                logger.error("mapper init failed");
             }
-        }};
-        scanners.forEach((k, v) -> scan(k, v, annoAttrs));
+            assert mappers != null;
+            mappers.forEach(c -> {
+                if (c.getAnnotation(DS.class).isSharding()) {
+                    dataSources.add("sharding");
+                } else {
+                    dataSources.add(c.getAnnotation(DS.class).dataSource());
+                }
+
+            });
+        }
+        for (String dataSource : dataSources) {
+            scan(new MapperScaner(registry).setDataSource(dataSource), annoAttrs);
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
-    private void scan(Class<? extends Annotation> annotationClass, ClassPathMapperScanner scanner, AnnotationAttributes annoAttrs) {
+    private void scan(MapperScaner scanner, AnnotationAttributes annoAttrs) {
         if (resourceLoader != null) {
             scanner.setResourceLoader(resourceLoader);
-        }
-        if (!Annotation.class.equals(annotationClass)) {
-            scanner.setAnnotationClass(annotationClass);
         }
         Class<? extends MapperFactoryBean> mapperFactoryBeanClass = annoAttrs.getClass("factoryBean");
         if (!MapperFactoryBean.class.equals(mapperFactoryBeanClass)) {
             scanner.setMapperFactoryBean(BeanUtils.instantiateClass(mapperFactoryBeanClass));
         }
-        if (annotationClass.equals(Primary.class)) {
-            scanner.setSqlSessionTemplateBeanName("sqlSessionTemplate");
-        }
-        if (annotationClass.equals(Second.class)) {
-            secondPrefix = annoAttrs.getString("secondPrefix");
-            if (StringUtils.isEmpty(secondPrefix)) {
-                logger.error("no spercific secondSqlSessionTemplate, use primarySqlSessionTemplate instead");
-            }
-            scanner.setSqlSessionTemplateBeanName("secondSqlSessionTemplate");
-        }
-        if (annotationClass.equals(Sharding.class)) {
-            scanner.setSqlSessionTemplateBeanName("shardingSqlSessionTemplate");
-        }
-        List<String> basePackages = new ArrayList<String>();
-        for (String pkg : annoAttrs.getStringArray("value")) {
-            if (StringUtils.hasText(pkg)) {
-                basePackages.add(pkg);
-            }
-        }
+        List<String> basePackages = new ArrayList<>();
         for (String pkg : annoAttrs.getStringArray("basePackages")) {
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
@@ -99,5 +92,6 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
         scanner.registerFilters();
         scanner.doScan(StringUtils.toStringArray(basePackages));
     }
+
 
 }

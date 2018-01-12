@@ -2062,16 +2062,11 @@ public void transferAReceive(String id) {
 
 考虑到业务团队较多采用mybatis框架,dew定制了mybatis的dew实现方式，同时针对sharding-jdbc做出整合。对应example为``mybatis-multi-example``
 
-NOTE: 在多数据源处理上，因为两个数据源（除``sharding-jdbc``外）已经足以满足业务团队的需求，``mybatis-starter``模块只支持两个数据源，此处不支持扩展，如有需要，会考虑针对扩展性对代码做出修改。
-
-TIP: 第二数据源默认不开启第二数据源和``sharding-jdbc``,启用第二数据源加配置``dew.mybatis.second.enabled: true ``（这个配置仅加载）,同时通过@DewMapperScan(secondPrefix = "name")指定数据源，
-``sharding-jdbc``同样默认不开启，开启需加``sharding.enabled``,`sharding.transaction.name`
-这两个配置，同时启动类配置``@DewMapperScan(enableSharding = true)``
 [source,java]
 .启动类配置示例
 ----
 @DewBootApplication(scanBasePackageClasses = {Dew.class, MybatisMultiApplication.class}, exclude = MybatisPlusAutoConfiguration.class)
-@DewMapperScan(basePackages = "com.tairanchina.csp.dew.mybatis.multi.mapper",secondPrefix = "test1",enableSharding = true)
+@DewMapperScan(basePackages = "com.tairanchina.csp.dew.mybatis.multi.mapper")
 public class MybatisMultiApplication {
 
     public static void main(String[] args) {
@@ -2089,10 +2084,7 @@ spring:
       url: jdbc:mysql://127.0.0.1:3306/transaction?useUnicode=true&characterEncoding=utf-8
       username: root
       password: 123456
-dew:
-  mybatis:
-    second:
-      enabled: true #设为true开启第二数据源，默认为false
+
 sharding:
   enabled: true #
   transaction:
@@ -2102,18 +2094,18 @@ sharding:
 .mapper接口类
 ----
 // 数据源为sharding-jdbc datasource
-@Sharding
+@DS(isSharding = true)
 public interface TOrderMapper extends BaseMapper<TOrder> {
 }
 // 数据源为主数据源
-@Primary
+@DS
 public interface UserMapper extends BaseMapper<User> {
 
     @Select("select age from user group by age")
     List<String> ageGroup();
 }
 // 数据源为第二数据源
-@Second
+@DS(dataSource = "test1")
 public interface UserMapper2 extends BaseMapper<User> {
 
     @Select("select age from user group by age")

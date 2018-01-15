@@ -39,7 +39,7 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
         // 获取DewMapperScanner字段值
         AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importingClassMetadata.getAnnotationAttributes(DewMapperScan.class.getName()));
 
-        // 获取被MapperInfo注解的类
+        // 获取被DS注解的类
         for (String pkg : annoAttrs.getStringArray("basePackages")) {
             Set<Class<?>> mappers = null;
             try {

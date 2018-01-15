@@ -23,6 +23,16 @@ public class DewConfig {
 
         private long periodSec = 600;
 
+        private long urlSize = 2000;
+
+        public long getUrlSize() {
+            return urlSize;
+        }
+
+        public void setUrlSize(long urlSize) {
+            this.urlSize = urlSize;
+        }
+
         public boolean isEnabled() {
             return enabled;
         }

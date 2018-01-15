@@ -1,7 +1,9 @@
 package com.tairanchina.csp.dew.core.metric;
 
+import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -21,8 +23,11 @@ public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
+    @Autowired
+    private DewConfig dewConfig;
+
     // url->(timestamp,resTime)
-    public static final Map<String, LinkedHashMap<Long, Integer>> RECORD_MAP = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
+    public static final Map<String, RecordMap<Long, Integer>> RECORD_MAP = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private static final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
@@ -45,7 +50,7 @@ public class DewFilter implements Filter {
             if (RECORD_MAP.containsKey(key)) {
                 RECORD_MAP.get(key).put(start, resTime);
             } else {
-                RECORD_MAP.put(key, new LinkedHashMap<Long, Integer>() {{
+                RECORD_MAP.put(key, new RecordMap<Long, Integer>() {{
                     put(start, resTime);
                 }});
             }
@@ -55,5 +60,13 @@ public class DewFilter implements Filter {
     @Override
     public void destroy() {
         logger.info("dewFilter destroyed");
+    }
+
+    class RecordMap<K,V> extends LinkedHashMap<K,V>{
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > dewConfig.getMetric().getUrlSize();
+        }
     }
 }

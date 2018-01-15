@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
+import com.tairanchina.csp.dew.core.metric.DewFilter;
 import org.apache.catalina.connector.RequestFacade;
 import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
@@ -30,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -190,7 +190,7 @@ public class ErrorController extends AbstractErrorController {
         if (RECORD_MAP.containsKey(key)) {
             RECORD_MAP.get(key).put(start, resTime);
         } else {
-            RECORD_MAP.put(key, new LinkedHashMap<Long, Integer>() {{
+            RECORD_MAP.put(key, new DewFilter().new RecordMap<Long, Integer>() {{
                 put(start, resTime);
             }});
         }

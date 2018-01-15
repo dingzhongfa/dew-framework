@@ -62,7 +62,7 @@ public class DewFilter implements Filter {
         logger.info("dewFilter destroyed");
     }
 
-    class RecordMap<K,V> extends LinkedHashMap<K,V>{
+    public class RecordMap<K,V> extends LinkedHashMap<K,V>{
 
         @Override
         protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {

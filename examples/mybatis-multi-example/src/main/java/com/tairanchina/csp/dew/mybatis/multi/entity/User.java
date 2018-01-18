@@ -3,6 +3,9 @@ package com.tairanchina.csp.dew.mybatis.multi.entity;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.tairanchina.csp.dew.jdbc.entity.Column;
+import com.tairanchina.csp.dew.jdbc.entity.Entity;
+import com.tairanchina.csp.dew.jdbc.entity.PkColumn;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,31 +14,43 @@ import java.util.Date;
  * 用户表
  */
 @SuppressWarnings("serial")
+@Entity
 public class User extends Model<User> {
 
     /**
      * 主键ID
      */
     @TableId("test_id")
+    @PkColumn(columnName = "test_id")
     private Long id;
 
     /**
      * 名称
      */
+    @Column
+    @TableField("name")
     private String name;
 
     /**
      * 年龄
      */
+    @Column
+    @TableField("age")
     private Integer age;
 
     @TableField("test_type")
+    @Column
     private Integer testType;
 
     @TableField("test_date")
+    @Column
     private Date testDate;
 
+    @TableField("role")
+    @Column
     private Long role;
+    @TableField("phone")
+    @Column
     private String phone;
 
     public User() {

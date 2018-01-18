@@ -1,9 +1,7 @@
 spring:
   application:
     name: registry
-  cloud:
-    config:
-      enabled: false
+
 
 server:
   port: 9999
@@ -20,7 +18,7 @@ eureka:
     metadata-map:
       cluster: default
   server:
-    enable-self-preservation: false
+    enable-self-preservation: true
     #eviction-interval-timer-in-ms: 5000
   client:
     register-with-eureka: false

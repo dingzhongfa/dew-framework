@@ -28,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -90,7 +92,6 @@ public class MybatisMultiTest {
         testUserProcess(userService);
         testUserProcess(userService2);
     }
-
 
     public void testUserProcess(ServiceImpl service) {
         User user = new User();
@@ -204,7 +205,6 @@ public class MybatisMultiTest {
     }
 
 
-
     @Test
     public void testPressure() throws InterruptedException {
         long start = Instant.now().toEpochMilli();
@@ -279,5 +279,36 @@ public class MybatisMultiTest {
                 }
             }
         }
+    }
+
+    @Test
+    public void testBatchInsert() {
+        List<User> mybatis = new ArrayList<>();
+        List<User> dew = new ArrayList<>();
+
+        for (int i = 1; i <= 3000; i++) {
+            User user = new User();
+            user.setId((long) i);
+            user.setRole((long) i);
+            user.setAge(i);
+            user.setName("user" + i);
+            user.setTestDate(new Date());
+            user.setTestType(i);
+            user.setPhone("15957199704");
+            if (i > 1500) {
+                dew.add(user);
+            } else {
+                mybatis.add(user);
+            }
+        }
+        long mybatisStart = Instant.now().toEpochMilli();
+        /*for (User user:mybatis){
+            userService.insert(user);
+        }*/
+        userService.batchInsert(mybatis);
+        logger.info("mybatis耗时   " + (Instant.now().toEpochMilli() - mybatisStart));
+        long dewStart = Instant.now().toEpochMilli();
+        Dew.ds().insert(dew);
+        logger.info("dew耗时   " + (Instant.now().toEpochMilli() - dewStart));
     }
 }

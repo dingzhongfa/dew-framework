@@ -15,4 +15,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return baseMapper.ageGroup();
     }
 
+    public void batchInsert(List<User> list){
+        baseMapper.batchInsert(list);
+    }
 }

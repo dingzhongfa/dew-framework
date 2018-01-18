@@ -776,3 +776,57 @@ management:
 <3> 添加需要被监控的应用 `Service-Id` ，以逗号分隔
 <4> 同上文 ``management.context-path``
 --
+
+=== jdbc 批量插入性能问题
+
+如果不开启rewriteBatchedStatements=true，那么jdbc会把批量插入当做一行行的单条处理，也就没有达到批量插入的效果
+
+[source,java]
+.jdbc配置示例
+----
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/dew?useUnicode=true&characterEncoding=utf-8&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+----
+
+* 对于一张七列的表，插入1500条数据，分别对mybatis和jdbctemplate进行测试，记录三次数据如下,可以看到，该配置对于jdbctemplate影响是极大的，而对于mybatis影响却不大，后续有时间再继续深入了解
+
+.测试数据
+|===
+|rewriteBatchedStatements |mybatis(ms) |jdbctemplate(ms) |dew(ms)
+
+|true
+|401
+|88
+|174
+
+|true
+|427
+|78
+|167
+
+|true
+|422
+|75
+|176
+
+|false
+|428
+|1967
+|2065
+
+|false
+|410
+|2641
+|2744
+
+|false
+|369
+|2299
+|2398
+|===
+
+

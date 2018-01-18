@@ -85,7 +85,7 @@ public class MyabtisStarterConfiguration {
 
     private void registerBeanDefinitions() {
         try {
-            //主数据源注入
+            // 主数据源注入
             DataSource primaryDataSource = (DataSource) applicationContext.getBean("dataSource");
             registerBeanDefinitions(primaryDataSource, "primary");
 
@@ -99,7 +99,7 @@ public class MyabtisStarterConfiguration {
                 }
             }
 
-            //sharding-jdbc注入
+            // sharding-jdbc注入
             DataSource shardingDataSource = ((JdbcTemplate) applicationContext.getBean("shardingJdbcTemplate")).getDataSource();
             registerBeanDefinitions(shardingDataSource, "sharding");
         } catch (Exception e) {

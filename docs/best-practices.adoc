@@ -829,4 +829,14 @@ spring:
 |2398
 |===
 
+=== http请求并发数性能瓶颈
+
+* 当策略为Thread时（默认是Thread)，hystrix.threadpool.default.maximumSize为第一个性能瓶颈，默认值为10.
+
+TIP: 修改值时，需要先设置hystrix.threadpool.default.allowMaximumSizeToDivergeFromCoreSize为true，默认为false
+
+.hystrix详细配置参见https://github.com/Netflix/Hystrix/wiki/configuration#allowMaximumSizeToDivergeFromCoreSize
+
+* 第二个瓶颈为springboot内置的tomcat的最大连接数，参数为server.tomcat.maxThreads，默认值为200，
+
 

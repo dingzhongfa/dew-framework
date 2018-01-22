@@ -50,7 +50,7 @@ public class DewFilter implements Filter {
             if (RECORD_MAP.containsKey(key)) {
                 RECORD_MAP.get(key).put(start, resTime);
             } else {
-                RECORD_MAP.put(key, new RecordMap<Long, Integer>() {{
+                RECORD_MAP.put(key, new RecordMap<Long, Integer>(RequestType.NORMAL) {{
                     put(start, resTime);
                 }});
             }
@@ -62,11 +62,20 @@ public class DewFilter implements Filter {
         logger.info("dewFilter destroyed");
     }
 
-    public class RecordMap<K,V> extends LinkedHashMap<K,V>{
+    public class RecordMap<K, V> extends LinkedHashMap<K, V> {
+
+        private RequestType requestType;
+
+        public RecordMap(RequestType requestType) {
+            this.requestType = requestType;
+        }
 
         @Override
         protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-            return size() > dewConfig.getMetric().getUrlSize();
+            if (requestType.equals(RequestType.NORMAL)) {
+                return size() > dewConfig.getMetric().getUrlSize();
+            }
+            return size() > 2000;
         }
     }
 }

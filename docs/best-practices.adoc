@@ -837,6 +837,28 @@ TIP: 修改值时，需要先设置hystrix.threadpool.default.allowMaximumSizeTo
 
 .hystrix详细配置参见https://github.com/Netflix/Hystrix/wiki/configuration#allowMaximumSizeToDivergeFromCoreSize
 
-* 第二个瓶颈为springboot内置的tomcat的最大连接数，参数为server.tomcat.maxThreads，默认值为200，
+* 第二个瓶颈为springboot内置的tomcat的最大连接数，参数为server.tomcat.maxThreads，默认值为200
+
+=== 日志中解析message,动态显示property
+
+. 在启动类的main方法中注册converter，如下``PatternLayout.defaultConverterMap.put("dew", TestConverter.class.getName());``
+
+NOTE: 这个是解析%dew的内容
+
+. 自定义Converter继承ynamicConverter<ILoggingEvent>，解析message，获取有效信息并返回解析后得到的字符串。
+
+[source,java]
+.Converter代码示例
+----
+public class TestConverter extends DynamicConverter<ILoggingEvent> {
+
+    @Override
+    public String convert(ILoggingEvent event) {
+        // 这里未做解析，示例代码
+        return event.getMessage();
+    }
+}
+----
+
 
 

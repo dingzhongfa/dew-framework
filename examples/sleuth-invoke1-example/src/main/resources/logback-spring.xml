@@ -81,6 +81,10 @@
                 <name>stacktrace</name>
                 <value>%ex</value>
             </property>
+            <property>
+                <name>dew</name>
+                <value>%dew</value>
+            </property>
         </properties>
         <headers>
             <header>
@@ -101,7 +105,7 @@
             <appender-ref ref="ASYNC_LOG"/>
         </root>
     </springProfile>
-    <springProfile name="uat,prd">
+    <springProfile name="uat,prd,pro1">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ASYNC_LOG"/>

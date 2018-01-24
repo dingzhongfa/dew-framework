@@ -4,12 +4,12 @@ dew:
   cloud:
     error:
       enabled: false
-      notify-interval-sec: 5
+      notify-interval-sec: 10
       notify-emails: 71964899@qq.com
       #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]
 spring:
   mail:
-    host: smtp.ssss.com
+    host: smtp.alibaba.com
     username: jiangji@tairanchina.com
     password: gSQiQxGR5wLUFkNh
     properties:
@@ -22,10 +22,12 @@ spring:
   application:
     name: hystrix-feign-example
 server:
-  port: 11000
+  tomcat:
+    max-threads: 300
+  port: 11100
 eureka:
   client:
-    fetch-registry: true #必须加？关闭自我保护模式
+    fetch-registry: true
     serviceUrl:
       defaultZone:  http://registry:123456@localhost:9999/eureka
 ribbon:
@@ -41,4 +43,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 2000
+            timeoutInMilliseconds: 500000

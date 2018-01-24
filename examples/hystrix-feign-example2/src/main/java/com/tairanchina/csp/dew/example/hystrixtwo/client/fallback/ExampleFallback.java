@@ -12,7 +12,27 @@ import org.springframework.stereotype.Component;
 public class ExampleFallback implements ExampleClient {
 
     @Override
+    public ResponseEntity testPressure() {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity testPressure2() {
+        return null;
+    }
+
+    @Override
     public ResponseEntity getExe() {
+        return null;
+    }
+
+    @Override
+    public String exe() {
+        return null;
+    }
+
+    @Override
+    public String noMethod() {
         return null;
     }
 

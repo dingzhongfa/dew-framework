@@ -1,10 +1,12 @@
 dew:
+  basic:
+    name: hystrix-feign样例工程
   cloud:
     error:
+      enabled: false
       notify-interval-sec: 10
       notify-emails: 71964899@qq.com
-      #notify-event-types: FAILURE,SHORT_CIRCUITED
-      #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
+      #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]
 spring:
   mail:
     host: smtp.alibaba.com
@@ -18,26 +20,18 @@ spring:
             enable: false
             required: fasle
   application:
-    name: hystrix-feign-example2
+    name: hystrix-feign-example
 server:
   tomcat:
-    max-threads: 300
-  port: 12000
+    max-threads: 20
+  port: 11000
 eureka:
-  instance:
-    prefer-ip-address: true
   client:
     fetch-registry: true
     serviceUrl:
       defaultZone:  http://registry:123456@localhost:9999/eureka
 ribbon:
-  PoolMaxThreads: 12
-  OkToRetryOnAllOperations: false
-  ConnectTimeout: 1000
-  ReadTimeout: 2000000
-  MaxAutoRetriesNextServer: 1
-  MaxAutoRetries: 2
-
+  ReadTimeout: 3000
 feign:
   hystrix:
     enabled: true
@@ -49,8 +43,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 500000
-  threadpool:
-    default:
-      allowMaximumSizeToDivergeFromCoreSize: true
-      maximumSize: 300
+            timeoutInMilliseconds: 2000

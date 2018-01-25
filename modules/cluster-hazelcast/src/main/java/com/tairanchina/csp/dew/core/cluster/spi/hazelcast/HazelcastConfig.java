@@ -1,14 +1,10 @@
 package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@ConditionalOnBean(HazelcastAdapter.class)
 @ConfigurationProperties(prefix = "spring.hazelcast")
 public class HazelcastConfig {
 

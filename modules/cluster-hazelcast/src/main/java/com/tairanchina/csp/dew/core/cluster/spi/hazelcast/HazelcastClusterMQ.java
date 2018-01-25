@@ -8,12 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-@Component
-@ConditionalOnBean(HazelcastAdapter.class)
 public class HazelcastClusterMQ implements ClusterMQ {
 
-    @Autowired
     private HazelcastAdapter hazelcastAdapter;
+
+    public HazelcastClusterMQ(HazelcastAdapter hazelcastAdapter) {
+        this.hazelcastAdapter = hazelcastAdapter;
+    }
 
     @Override
     public boolean publish(String topic, String message) {

@@ -14,11 +14,13 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Component
 public class DewIdempotentHandlerInterceptor extends HandlerInterceptorAdapter {
 
-    @Autowired
     private DewIdempotentConfig dewIdempotentConfig;
+
+    public DewIdempotentHandlerInterceptor(DewIdempotentConfig dewIdempotentConfig) {
+        this.dewIdempotentConfig = dewIdempotentConfig;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

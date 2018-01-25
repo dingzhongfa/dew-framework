@@ -4,7 +4,6 @@ package com.tairanchina.csp.dew.idempotent.strategy;
 import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.stereotype.Component;
 
-@Component
 public class ItemProcessor implements DewIdempotentProcessor {
 
     private static final String CACHE_KEY = "dew:idempotent:item:";

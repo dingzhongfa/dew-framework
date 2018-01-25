@@ -5,15 +5,13 @@ import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 public class BloomFilterProcessor implements DewIdempotentProcessor {
 
     private static final String NAME_SPACE_EXIT = "dew:idempotent:bloom:exit:";
 
     private static final String NAME_SPACE_CONFIRM = "dew:idempotent:bloom:confirm";
 
-    @Autowired
-    private BloomFilter bloomFilter;
+    private BloomFilter bloomFilter = new BloomFilter();
 
     @Override
     public StatusEnum process(String optType, String optId, StatusEnum initStatus, long expireMs) {

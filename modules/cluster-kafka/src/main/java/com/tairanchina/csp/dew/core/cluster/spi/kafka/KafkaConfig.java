@@ -9,15 +9,13 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.core.io.Resource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
 
-@Component
 @ConfigurationProperties(prefix = "spring.kafka")
-public class KafkaProperties {
+public class KafkaConfig {
 
 	/**
      * Comma-delimited list of host:port pairs to use for establishing the initial

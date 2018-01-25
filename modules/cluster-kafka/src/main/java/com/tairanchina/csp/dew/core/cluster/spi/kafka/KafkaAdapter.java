@@ -2,10 +2,6 @@ package com.tairanchina.csp.dew.core.cluster.spi.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
@@ -15,24 +11,24 @@ import java.util.Properties;
  * desription:
  * Created by ding on 2017/11/9.
  */
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.mq}'=='kafka'}")
-@ConditionalOnBean(KafkaProperties.class)
 public class KafkaAdapter {
 
     private KafkaProducer<String, String> kafkaProducer;
 
     private Properties consumerProperties;
 
-    @Autowired
-    private KafkaProperties kafkaProperties;
+    private KafkaConfig kafkaConfig;
+
+    public KafkaAdapter(KafkaConfig kafkaConfig) {
+        this.kafkaConfig = kafkaConfig;
+    }
 
     @PostConstruct
     public void init() throws IllegalAccessException {
         // 生产者（发布）
-        this.kafkaProducer = new KafkaProducer<>(getProperties(kafkaProperties.getProducer(), KafkaProperties.Producer.class));
+        this.kafkaProducer = new KafkaProducer<>(getProperties(kafkaConfig.getProducer(), KafkaConfig.Producer.class));
         // 消费者（订阅）
-        this.consumerProperties = getProperties(kafkaProperties.getConsumer(), KafkaProperties.Consumer.class);
+        this.consumerProperties = getProperties(kafkaConfig.getConsumer(), KafkaConfig.Consumer.class);
     }
 
     KafkaProducer<String, String> getKafkaProducer() {

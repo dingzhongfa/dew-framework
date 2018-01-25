@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -15,20 +14,20 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class RedisAutoConfiguration {
 
     @Bean
-    @ConditionalOnExpression("#{'${dew.cluster.cache}'=='redis' }")
-    public RedisClusterCache redisClusterCache(@Autowired RedisTemplate<String,String> redisTemplate){
+    @ConditionalOnExpression("'${dew.cluster.cache}'=='redis' ")
+    public RedisClusterCache redisClusterCache(RedisTemplate<String, String> redisTemplate) {
         return new RedisClusterCache(redisTemplate);
     }
 
     @Bean
-    @ConditionalOnExpression("#{'${dew.cluster.dist}'=='redis'}")
-    public RedisClusterDist redisClusterDist(@Autowired RedisTemplate<String,String> redisTemplate){
+    @ConditionalOnExpression("'${dew.cluster.dist}'=='redis'")
+    public RedisClusterDist redisClusterDist(@Autowired RedisTemplate<String, String> redisTemplate) {
         return new RedisClusterDist(redisTemplate);
     }
 
     @Bean
-    @ConditionalOnExpression("#{'${dew.cluster.mq}'=='redis'}")
-    public RedisClusterMQ redisClusterMQ(@Autowired RedisTemplate<String,String> redisTemplate){
+    @ConditionalOnExpression("'${dew.cluster.mq}'=='redis'")
+    public RedisClusterMQ redisClusterMQ(@Autowired RedisTemplate<String, String> redisTemplate) {
         return new RedisClusterMQ(redisTemplate);
     }
 

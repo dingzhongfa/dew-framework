@@ -1,12 +1,8 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
 import com.tairanchina.csp.dew.core.cluster.ClusterCache;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

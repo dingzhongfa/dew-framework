@@ -6,13 +6,11 @@ import io.shardingjdbc.transaction.api.SoftTransactionManager;
 import io.shardingjdbc.transaction.api.config.SoftTransactionConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import java.sql.SQLException;
 
@@ -22,7 +20,6 @@ import java.sql.SQLException;
  */
 @Configuration
 @ConditionalOnBean(ShardingEnvironmentAware.class)
-@Import(ShardingEnvironmentAware.class)
 public class ShardingTransactionConfiguration {
 
     @Value("${sharding.transaction.name:transaction}")
@@ -30,10 +27,12 @@ public class ShardingTransactionConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ShardingTransactionConfiguration.class);
 
+
     @Bean
-    public SoftTransactionManager softTransactionManager(@Autowired ApplicationContext applicationContext, @Autowired ShardingEnvironmentAware shardingEnvironmentAware) throws Exception {
+    @SuppressWarnings("SpringJavaAutowiringInspection")
+    public SoftTransactionManager softTransactionManager(ApplicationContext applicationContext, ShardingEnvironmentAware shardingEnvironmentAware) throws Exception {
         SoftTransactionConfiguration softTransactionConfiguration = new SoftTransactionConfiguration(shardingEnvironmentAware.dataSource());
-        softTransactionConfiguration.setTransactionLogDataSource(((DewDS) applicationContext.getBean(transaction+"DS")).jdbc().getDataSource());
+        softTransactionConfiguration.setTransactionLogDataSource(((DewDS) applicationContext.getBean(transaction + "DS")).jdbc().getDataSource());
         SoftTransactionManager softTransactionManager = new SoftTransactionManager(softTransactionConfiguration);
         try {
             softTransactionManager.init();
@@ -42,6 +41,6 @@ public class ShardingTransactionConfiguration {
         }
         return softTransactionManager;
     }
-    
+
 
 }

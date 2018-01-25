@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-@Component
+@Configuration
 @ConditionalOnClass(ShardingDataSourceFactory.class)
 @ConditionalOnExpression("'${sharding.enabled}'=='true'")
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})

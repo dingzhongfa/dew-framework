@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
@@ -24,13 +26,15 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
+
+@Configuration
+@EnableConfigurationProperties(DewMultiDSConfig.class)
 @DewLoadImmediately
+@SuppressWarnings("ALL")
 public class DewDSManager implements DSManager {
 
     private static final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
 
-    @Autowired
     private DewMultiDSConfig dsConfig;
 
     @Autowired
@@ -46,6 +50,10 @@ public class DewDSManager implements DSManager {
 
     @Value("${spring.datasource.url}")
     private String primaryJdbcUrl;
+
+    public DewDSManager(DewMultiDSConfig dsConfig) {
+        this.dsConfig = dsConfig;
+    }
 
     @PostConstruct
     private void init() throws SQLException {

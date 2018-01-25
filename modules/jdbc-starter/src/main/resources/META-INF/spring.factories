@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware,\
+  com.tairanchina.csp.dew.jdbc.sharding.transaction,\
+  com.tairanchina.csp.dew.jdbc.DewDSManager,\
+  com.tairanchina.csp.dew.jdbc

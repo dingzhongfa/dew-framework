@@ -1,10 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.tairanchina.csp.dew.test.DewTestAutoConfiguration
-
-
-
-#org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker=\
-#org.springframework.cloud.netflix.hystrix.HystrixCircuitBreakerConfiguration
-#
-#org.springframework.boot.env.EnvironmentPostProcessor=\
-#org.springframework.cloud.netflix.metrics.ServoEnvironmentPostProcessor

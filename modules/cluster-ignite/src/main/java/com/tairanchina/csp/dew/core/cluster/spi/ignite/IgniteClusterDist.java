@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnBean(IgniteAdapter.class)
 public class IgniteClusterDist implements ClusterDist {
 
-    @Autowired
     private IgniteAdapter igniteAdapter;
+
+    public IgniteClusterDist(IgniteAdapter igniteAdapter) {
+        this.igniteAdapter = igniteAdapter;
+    }
 
     @Override
     public ClusterDistLock lock(String key) {

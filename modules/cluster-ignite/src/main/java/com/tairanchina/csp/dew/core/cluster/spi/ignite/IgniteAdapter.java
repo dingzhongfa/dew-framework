@@ -15,14 +15,15 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.cache}'=='ignite' || '${dew.cluster.mq}'=='ignite' || '${dew.cluster.dist}'=='ignite'}")
 public class IgniteAdapter {
 
-    @Autowired
     private IgniteConfig config;
 
     private Ignite ignite;
+
+    public IgniteAdapter(IgniteConfig config) {
+        this.config = config;
+    }
 
     @PostConstruct
     public void init() {

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-@Component
-@ConditionalOnBean(IgniteAdapter.class)
 public class IgniteClusterMQ implements ClusterMQ {
 
-    @Autowired
     private IgniteAdapter igniteAdapter;
+
+    public IgniteClusterMQ(IgniteAdapter igniteAdapter) {
+        this.igniteAdapter = igniteAdapter;
+    }
 
     @Override
     public boolean publish(String topic, String message) {

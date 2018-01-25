@@ -1,14 +1,13 @@
 package com.tairanchina.csp.dew.jdbc.sharding;
 
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.tairanchina.csp.dew.jdbc.sharding.entity.TOrder;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class TestSharding {

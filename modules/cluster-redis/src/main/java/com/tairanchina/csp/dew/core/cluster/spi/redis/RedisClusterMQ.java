@@ -10,12 +10,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.cache}'=='redis' || '${dew.cluster.mq}'=='redis' || '${dew.cluster.dist}'=='redis'}")
+
 public class RedisClusterMQ implements ClusterMQ {
 
-    @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    public RedisClusterMQ(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public boolean publish(String topic, String message) {

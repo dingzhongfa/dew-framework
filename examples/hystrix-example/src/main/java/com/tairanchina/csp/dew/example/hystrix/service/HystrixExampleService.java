@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example.hystrix.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

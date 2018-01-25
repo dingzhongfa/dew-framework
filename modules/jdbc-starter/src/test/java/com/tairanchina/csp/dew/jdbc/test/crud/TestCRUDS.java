@@ -4,7 +4,7 @@ import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.test.crud.convert.VOConvert;
 import com.tairanchina.csp.dew.jdbc.test.crud.entity.TestSelectEntity;

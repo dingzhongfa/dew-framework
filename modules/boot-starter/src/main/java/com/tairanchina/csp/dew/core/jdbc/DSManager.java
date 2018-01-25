@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.core.jdbc;
 
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 
 public interface DSManager {
 

@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Component
 public class LocalDateConverter implements Converter<String, LocalDate> {
 
     @Override

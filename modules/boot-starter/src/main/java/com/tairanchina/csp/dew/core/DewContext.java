@@ -1,7 +1,6 @@
 package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.jdbc.test.ds;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.tairanchina.csp.dew.jdbc.test.ds.entity.BasicEntity;

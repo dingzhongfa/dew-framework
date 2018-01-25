@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example.jdbc;
 
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.example.jdbc.dao.CustomerDao;
 import com.tairanchina.csp.dew.example.jdbc.dao.OrderDao;
 import com.tairanchina.csp.dew.example.jdbc.dao.PetDao;

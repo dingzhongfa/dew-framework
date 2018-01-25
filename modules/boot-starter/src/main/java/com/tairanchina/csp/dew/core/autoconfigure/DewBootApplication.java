@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.core.autoconfigure;
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;

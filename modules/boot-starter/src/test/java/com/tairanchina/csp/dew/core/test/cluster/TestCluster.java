@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.core.test.cluster;
 
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.VoidProcessFun;
@@ -33,19 +33,19 @@ public class TestCluster {
     private String setTest = "set_test";
 
     public void testAll() throws Exception {
-       /* // Cache Test
+        // Cache Test
         testCache();
         // Dist Test
-        testDistMapExp();
+        /*testDistMapExp();
         testDistLockWithFun();
         testDistLock();
         testDifferentTreadLock();
         testUnLock();
         testConnection();
-        testDistMap();*/
+        testDistMap();
         // MQ Test
         testMQTopic();
-        testMQReq();
+        testMQReq();*/
     }
 
     /**

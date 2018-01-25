@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.jdbc.test.ds.util;
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.jdbc.test.ds.entity.BasicEntity;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;

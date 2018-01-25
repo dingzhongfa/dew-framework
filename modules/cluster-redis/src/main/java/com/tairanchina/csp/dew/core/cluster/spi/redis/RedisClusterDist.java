@@ -8,12 +8,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.cache}'=='redis' || '${dew.cluster.mq}'=='redis' || '${dew.cluster.dist}'=='redis'}")
 public class RedisClusterDist implements ClusterDist {
 
-    @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    public RedisClusterDist(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public ClusterDistLock lock(String key) {

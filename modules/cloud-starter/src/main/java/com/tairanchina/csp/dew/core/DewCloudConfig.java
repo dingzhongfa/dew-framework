@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-@Component
 @ConfigurationProperties(prefix = "dew.cloud")
 public class DewCloudConfig {
 

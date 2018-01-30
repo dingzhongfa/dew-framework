@@ -19,7 +19,6 @@ import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(DewConfig.class)
-@ConditionalOnBean(DewFilter.class)
 public class DewMetricAutoConfiguration {
 
     private DewConfig dewConfig;
@@ -66,7 +65,7 @@ public class DewMetricAutoConfiguration {
     @Bean
     @ConditionalOnBean(DewFilter.class)
     public DewMetrics dewMetrics(){
-        return new DewMetrics();
+        return new DewMetrics(dewConfig);
     }
 
 

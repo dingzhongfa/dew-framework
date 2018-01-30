@@ -31,6 +31,6 @@ public @interface DewBootApplication {
     String[] scanBasePackages() default {};
 
     @AliasFor(annotation = SpringBootApplication.class, attribute = "scanBasePackageClasses")
-    Class<?>[] scanBasePackageClasses() default {Dew.class,};
+    Class<?>[] scanBasePackageClasses() default {Dew.class};
 
 }

@@ -20,6 +20,10 @@ public class DewMetrics implements PublicMetrics {
 
     private DewConfig dewConfig;
 
+    public DewMetrics(DewConfig dewConfig) {
+        this.dewConfig = dewConfig;
+    }
+
     @Override
     public Collection<Metric<?>> metrics() {
         long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getPeriodSec()).toEpochMilli();

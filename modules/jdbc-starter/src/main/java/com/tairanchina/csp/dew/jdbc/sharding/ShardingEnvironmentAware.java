@@ -7,8 +7,6 @@ import io.shardingjdbc.core.api.ShardingDataSourceFactory;
 import io.shardingjdbc.core.constant.ShardingPropertiesConstant;
 import io.shardingjdbc.core.exception.ShardingJdbcException;
 import io.shardingjdbc.core.util.DataSourceUtil;
-import io.shardingjdbc.core.yaml.masterslave.YamlMasterSlaveConfiguration;
-import io.shardingjdbc.core.yaml.masterslave.YamlMasterSlaveRuleConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -17,22 +15,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
-@Configuration
-@ConditionalOnClass(ShardingDataSourceFactory.class)
-@ConditionalOnExpression("'${sharding.enabled}'=='true'")
-@EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
+
+
 public class ShardingEnvironmentAware implements EnvironmentAware {
 
-    @Autowired
     private ShardingRuleConfigurationProperties shardingProperties;
 
-    @Autowired
     private MasterSlaveRuleConfigurationProperties masterSlaveProperties;
 
     private final Map<String, DataSource> dataSourceMap = new HashMap<>();
@@ -40,6 +33,11 @@ public class ShardingEnvironmentAware implements EnvironmentAware {
     private Set<String> jdbcUrls = new HashSet<>();
 
     private final Properties props = new Properties();
+
+    public ShardingEnvironmentAware(ShardingRuleConfigurationProperties shardingProperties, MasterSlaveRuleConfigurationProperties masterSlaveProperties) {
+        this.shardingProperties = shardingProperties;
+        this.masterSlaveProperties = masterSlaveProperties;
+    }
 
     public DataSource dataSource() throws SQLException {
         return null == masterSlaveProperties.getMasterDataSourceName()

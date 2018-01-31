@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
 import com.tairanchina.csp.dew.core.metric.DewFilter;
-import com.tairanchina.csp.dew.core.metric.RequestType;
+import com.tairanchina.csp.dew.core.metric.RecordMap;
 import org.apache.catalina.connector.RequestFacade;
 import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
@@ -191,7 +191,7 @@ public class ErrorController extends AbstractErrorController {
         if (RECORD_MAP.containsKey(key)) {
             RECORD_MAP.get(key).put(start, resTime);
         } else {
-            RECORD_MAP.put(key, new DewFilter().new RecordMap<Long, Integer>(RequestType.ERROR) {{
+            RECORD_MAP.put(key,new RecordMap<Long, Integer>() {{
                 put(start, resTime);
             }});
         }

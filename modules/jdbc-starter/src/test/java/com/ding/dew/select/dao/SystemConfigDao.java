@@ -6,9 +6,7 @@ import com.tairanchina.csp.dew.jdbc.annotations.Param;
 import com.tairanchina.csp.dew.jdbc.annotations.Select;
 import com.ding.dew.select.dto.ModelDTO;
 import com.ding.dew.select.entity.SystemConfig;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface SystemConfigDao extends DewDao<String ,SystemConfig> {
 
     @Select(value = "SELECT s.*,t.*" +

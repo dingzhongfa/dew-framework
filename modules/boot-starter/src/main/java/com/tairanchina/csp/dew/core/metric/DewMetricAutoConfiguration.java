@@ -49,7 +49,7 @@ public class DewMetricAutoConfiguration {
     @ConditionalOnClass(Filter.class)
     @ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
     public DewFilter dewFilter(){
-        return new DewFilter(dewConfig);
+        return new DewFilter();
     }
 
     @Bean

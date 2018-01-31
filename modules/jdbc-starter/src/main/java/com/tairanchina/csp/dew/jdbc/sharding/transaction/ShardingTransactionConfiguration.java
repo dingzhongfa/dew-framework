@@ -25,6 +25,7 @@ import java.sql.SQLException;
  * Created by ding on 2017/12/13.
  */
 @Configuration
+@ConditionalOnExpression("'${sharding.enabled}'=='true'")
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
 public class ShardingTransactionConfiguration {
 
@@ -59,7 +60,6 @@ public class ShardingTransactionConfiguration {
 
     @Bean
     @ConditionalOnClass(ShardingDataSourceFactory.class)
-    @ConditionalOnExpression("'${sharding.enabled}'=='true'")
     public ShardingEnvironmentAware shardingEnvironmentAware(){
         return new ShardingEnvironmentAware(shardingRuleConfigurationProperties,masterSlaveRuleConfigurationProperties);
     }

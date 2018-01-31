@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
 @ConfigurationProperties(prefix = "spring")
 public class DewMultiDSConfig {
 

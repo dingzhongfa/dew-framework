@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.example.hystrix.controller;
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.example.hystrix.service.HystrixExampleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

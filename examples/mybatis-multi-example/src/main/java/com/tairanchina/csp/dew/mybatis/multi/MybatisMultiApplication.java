@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.mybatis.multi;
 
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
 import com.tairanchina.csp.dew.jdbc.mybatis.annotion.DewMapperScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;

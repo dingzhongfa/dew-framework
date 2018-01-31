@@ -28,7 +28,6 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
 
     private static final Logger logger = LoggerFactory.getLogger(DewMapperScannerRegister.class);
 
-
     private ResourceLoader resourceLoader;
 
     /**

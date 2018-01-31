@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class DewIdempotent {
 
     private static final Logger logger = LoggerFactory.getLogger(DewIdempotent.class);
@@ -22,22 +21,9 @@ public class DewIdempotent {
     // optType,optId
     private static final ThreadLocal<String[]> CONTEXT = new ThreadLocal<>();
 
-    @Autowired
-    @Qualifier("itemProcessor")
-    private ItemProcessor innerItemProcessor;
+    private static ItemProcessor itemProcessor = new ItemProcessor();
+    private static BloomFilterProcessor bloomFilterProcessor = new BloomFilterProcessor();
 
-    @Autowired
-    @Qualifier("bloomFilterProcessor")
-    private BloomFilterProcessor innerBloomFilterProcessor;
-
-    private static ItemProcessor itemProcessor;
-    private static BloomFilterProcessor bloomFilterProcessor;
-
-    @PostConstruct
-    private void init() {
-        itemProcessor = innerItemProcessor;
-        bloomFilterProcessor = innerBloomFilterProcessor;
-    }
 
     /**
      * 初始化操作类型信息

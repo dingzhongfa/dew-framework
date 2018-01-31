@@ -1,14 +1,10 @@
 package com.tairanchina.csp.dew.core.cluster.spi.ignite;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@ConditionalOnBean(IgniteAdapter.class)
 @ConfigurationProperties(prefix = "spring.ignite")
 public class IgniteConfig {
 

@@ -10,7 +10,6 @@ import java.time.Instant;
  * desription:
  * Created by ding on 2017/11/5.
  */
-@Component
 public class InstantConvert implements Converter<String,Instant> {
     @Override
     public Instant convert(String str) {

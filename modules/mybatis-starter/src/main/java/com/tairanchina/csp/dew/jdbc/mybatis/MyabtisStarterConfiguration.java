@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.spring.boot.starter.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.spring.boot.starter.MybatisPlusProperties;
 import com.baomidou.mybatisplus.spring.boot.starter.SpringBootVFS;
 import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
-import com.tairanchina.csp.dew.jdbc.DewDSManager;
+import com.tairanchina.csp.dew.jdbc.DewDSAutoConfiguration;
 import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
@@ -43,7 +43,7 @@ import java.util.Set;
 
 
 @org.springframework.context.annotation.Configuration
-@ConditionalOnBean(DewDSManager.class)
+@ConditionalOnBean(DewDSAutoConfiguration.class)
 @ConditionalOnClass({SqlSessionFactory.class, MybatisSqlSessionFactoryBean.class})
 @EnableConfigurationProperties({MybatisPlusProperties.class})
 @Import({DewMultiDSConfig.class})

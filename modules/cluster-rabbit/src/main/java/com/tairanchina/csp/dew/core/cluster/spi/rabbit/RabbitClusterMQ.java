@@ -3,20 +3,18 @@ package com.tairanchina.csp.dew.core.cluster.spi.rabbit;
 import com.rabbitmq.client.*;
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
 import org.springframework.amqp.rabbit.connection.Connection;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
-@Component
-@ConditionalOnBean(RabbitAdapter.class)
 public class RabbitClusterMQ implements ClusterMQ {
 
-    @Autowired
     private RabbitAdapter rabbitAdapter;
+
+    public RabbitClusterMQ(RabbitAdapter rabbitAdapter) {
+        this.rabbitAdapter = rabbitAdapter;
+    }
 
     @Override
     public boolean publish(String topic, String message) {
@@ -31,7 +29,7 @@ public class RabbitClusterMQ implements ClusterMQ {
             if (confirm) {
                 channel.confirmSelect();
             }
-            channel.exchangeDeclare(topic, "fanout",true);
+            channel.exchangeDeclare(topic, "fanout", true);
             channel.basicPublish(topic, "", MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
             if (confirm) {
                 try {
@@ -41,7 +39,7 @@ public class RabbitClusterMQ implements ClusterMQ {
                     logger.error("[MQ] Rabbit publish error.", e);
                     return false;
                 }
-            }else{
+            } else {
                 return true;
             }
         } catch (IOException e) {
@@ -61,7 +59,7 @@ public class RabbitClusterMQ implements ClusterMQ {
     public void subscribe(String topic, Consumer<String> consumer) {
         Channel channel = rabbitAdapter.getConnection().createChannel(false);
         try {
-            channel.exchangeDeclare(topic, "fanout",true);
+            channel.exchangeDeclare(topic, "fanout", true);
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, topic, "");
             channel.basicQos(1);
@@ -106,7 +104,7 @@ public class RabbitClusterMQ implements ClusterMQ {
                     logger.error("[MQ] Rabbit request error.", e);
                     return false;
                 }
-            }else{
+            } else {
                 return true;
             }
         } catch (IOException e) {

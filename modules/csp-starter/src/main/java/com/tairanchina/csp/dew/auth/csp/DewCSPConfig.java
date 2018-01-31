@@ -2,9 +2,7 @@ package com.tairanchina.csp.dew.auth.csp;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "dew.security.auth.csp")
 public class DewCSPConfig {
 

@@ -2,20 +2,14 @@ package com.tairanchina.csp.dew.core.metric;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Map;
 
-@Component
-@ConditionalOnClass(Filter.class)
-@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
+
 public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
@@ -41,7 +35,13 @@ public class DewFilter implements Filter {
         String matchingPattern = (String) httpServletRequest.getAttribute(MATCHING_PATTERN_KEY);
         if (matchingPattern != null && !matchingPattern.endsWith("/favicon.ico")) {
             String key = "{[" + method + "]:" + matchingPattern + "}";
-            RECORD_MAP.getOrDefault(key, new RecordMap<>()).put(start, resTime);
+            if (RECORD_MAP.containsKey(key)) {
+                RECORD_MAP.get(key).put(start, resTime);
+            } else {
+                RECORD_MAP.put(key, new RecordMap<Long, Integer>() {{
+                    put(start, resTime);
+                }});
+            }
         }
     }
 

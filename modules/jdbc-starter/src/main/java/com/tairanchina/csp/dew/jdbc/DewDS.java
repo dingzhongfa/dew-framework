@@ -14,7 +14,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.StandardCode;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.SB;
 import com.tairanchina.csp.dew.jdbc.dialect.Dialect;

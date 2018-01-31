@@ -10,15 +10,16 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.cache}'=='hazelcast' || '${dew.cluster.mq}'=='hazelcast' || '${dew.cluster.dist}'=='hazelcast'}")
 public class HazelcastAdapter {
 
-    @Autowired
     private HazelcastConfig hazelcastConfig;
 
     private HazelcastInstance hazelcastInstance;
     private boolean active;
+
+    public HazelcastAdapter(HazelcastConfig hazelcastConfig) {
+        this.hazelcastConfig = hazelcastConfig;
+    }
 
     @PostConstruct
     public void init() {
@@ -48,4 +49,5 @@ public class HazelcastAdapter {
         active=false;
         hazelcastInstance.shutdown();
     }
+
 }

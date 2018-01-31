@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.example.cluster;
 
 
 import com.ecfront.dew.common.$;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistMap;
 import com.tairanchina.csp.dew.core.cluster.spi.rabbit.RabbitClusterMQ;

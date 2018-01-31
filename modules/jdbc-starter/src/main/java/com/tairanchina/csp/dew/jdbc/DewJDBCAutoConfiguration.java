@@ -1,26 +1,30 @@
 package com.tairanchina.csp.dew.jdbc;
 
-import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.jdbc.config.DewJDBCConfig;
 import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
-@DewLoadImmediately
+@EnableConfigurationProperties(DewJDBCConfig.class)
+@AutoConfigureAfter(Dew.class)
 public class DewJDBCAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(DewJDBCAutoConfiguration.class);
 
-    @Autowired
     private DewJDBCConfig dewJDBCConfig;
+
+    public DewJDBCAutoConfiguration(DewJDBCConfig dewJDBCConfig) {
+        this.dewJDBCConfig = dewJDBCConfig;
+    }
 
     @PostConstruct
     private void init() {

@@ -13,7 +13,6 @@ import java.time.format.DateTimeFormatter;
  * desription:
  * Created by ding on 2017/10/31.
  */
-@Component
 public class LocalDateTimeConverter implements Converter<String, LocalDateTime> {
     @Override
     public LocalDateTime convert(String str) {

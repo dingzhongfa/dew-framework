@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.idempotent;
 
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.idempotent.annotations.Idempotent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

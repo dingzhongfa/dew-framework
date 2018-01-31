@@ -1,11 +1,8 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
 import com.tairanchina.csp.dew.core.cluster.ClusterCache;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -13,12 +10,14 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.cache}'=='redis' || '${dew.cluster.mq}'=='redis' || '${dew.cluster.dist}'=='redis'}")
+
 public class RedisClusterCache implements ClusterCache {
 
-    @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    public RedisClusterCache(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public boolean exists(String key) {

@@ -99,7 +99,6 @@ public class IdempotentTest {
             put(DewIdempotentConfig.DEFAULT_OPT_TYPE_FLAG, "cancleConfirm");
             put(DewIdempotentConfig.DEFAULT_OPT_ID_FLAG, "0001");
         }};
-        String s = $.http.get(urlPre + "cancel?str=dew-cancel", cancelMap);
         result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);
         Assert.assertTrue(!result.ok());
         result = Resp.generic($.http.get(urlPre + "cancel?str=dew-cancel", cancelMap), String.class);

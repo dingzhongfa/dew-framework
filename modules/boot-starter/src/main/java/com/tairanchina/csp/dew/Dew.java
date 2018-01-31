@@ -1,10 +1,8 @@
-package com.tairanchina.csp.dew;
+package com.tairanchina.csp.dew.core;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.StandardCode;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.DewContext;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.auth.BasicAuthAdapter;
 import com.tairanchina.csp.dew.core.cluster.*;
@@ -17,11 +15,11 @@ import com.tairanchina.csp.dew.core.utils.NetUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +30,8 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
+@Configuration
+@EnableConfigurationProperties(DewConfig.class)
 public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
@@ -45,8 +44,6 @@ public class Dew {
     @Value("${spring.application.name}")
     private String applicationName;
 
-    @Autowired
-    @Qualifier("dewConfig")
     private DewConfig innerDewConfig;
 
     @Autowired(required = false)
@@ -54,6 +51,11 @@ public class Dew {
 
     @Autowired
     private ApplicationContext innerApplicationContext;
+
+
+    public Dew(DewConfig dewConfig) {
+        this.innerDewConfig = dewConfig;
+    }
 
     @PostConstruct
     private void init() throws IOException, ClassNotFoundException {

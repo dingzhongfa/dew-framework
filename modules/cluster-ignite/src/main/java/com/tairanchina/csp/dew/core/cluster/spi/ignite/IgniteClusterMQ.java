@@ -1,18 +1,16 @@
 package com.tairanchina.csp.dew.core.cluster.spi.ignite;
 
 import com.tairanchina.csp.dew.core.cluster.ClusterMQ;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-@Component
-@ConditionalOnBean(IgniteAdapter.class)
 public class IgniteClusterMQ implements ClusterMQ {
 
-    @Autowired
     private IgniteAdapter igniteAdapter;
+
+    public IgniteClusterMQ(IgniteAdapter igniteAdapter) {
+        this.igniteAdapter = igniteAdapter;
+    }
 
     @Override
     public boolean publish(String topic, String message) {

@@ -1,9 +1,8 @@
 package com.tairanchina.csp.dew.example.sharding;
 
 
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;

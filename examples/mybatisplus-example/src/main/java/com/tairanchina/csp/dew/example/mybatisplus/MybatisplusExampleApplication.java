@@ -1,10 +1,9 @@
 package com.tairanchina.csp.dew.example.mybatisplus;
 
-import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-@DewBootApplication(scanBasePackageClasses = {Dew.class, MybatisplusExampleApplication.class})
+@SpringBootApplication
 public class MybatisplusExampleApplication {
 
     public static void main(String[] args) throws InterruptedException {

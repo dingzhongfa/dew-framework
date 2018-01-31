@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
-@Component
-@ConditionalOnBean(HazelcastAdapter.class)
 public class HazelcastClusterDist implements ClusterDist {
 
-    @Autowired
     private HazelcastAdapter hazelcastAdapter;
+
+    public HazelcastClusterDist(HazelcastAdapter hazelcastAdapter) {
+        this.hazelcastAdapter = hazelcastAdapter;
+    }
 
     @Override
     public ClusterDistLock lock(String key) {

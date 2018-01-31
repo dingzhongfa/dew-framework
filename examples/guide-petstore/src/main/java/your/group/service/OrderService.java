@@ -2,7 +2,7 @@ package your.group.service;
 
 import com.ecfront.dew.common.Page;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.cluster.ClusterDistLock;
 import com.tairanchina.csp.dew.core.service.CRUService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -94,7 +94,7 @@
 
 * Maven: `Dew` 框架的版本修正成 `1.1.0-X`，目前是 `1.1.0-beta1`
 * Maven: `boot-core` 更名为 `boot-starter` , `cloud-core` 更名为 `cloud-starter`
-* 核心代码: `com.tairanchina.csp.dew.core.Dew` 包路径改成 `com.tairanchina.csp.dew.Dew`
+* 核心代码: `com.tairanchina.csp.dew.core.Dew` 包路径改成 `com.tairanchina.csp.dew.core.Dew`
 * `Dew JDBC` 模块（使用MyBatis等其它持久化框架的项目可以忽略）
 **  `SafeEntity` 的创建/更新时间 由 `Date` 换成了 `LocalDateTime`
 **  所有 `entity` 包 迁移到 `com.tairanchina.csp.dew.jdbc.entity`

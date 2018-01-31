@@ -2,13 +2,15 @@ package com.tairanchina.csp.dew.example.mybatisplus;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.example.mybatisplus.entity.User;
 import com.tairanchina.csp.dew.example.mybatisplus.service.UserService;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +20,7 @@ import java.util.List;
  * Created by panshuai on 17/6/26.
  */
 @Component
+@ConditionalOnClass(Dew.class)
 public class MybatisplusExampleInitiator {
 
     private static final Logger logger = LoggerFactory.getLogger(MybatisplusExampleInitiator.class);

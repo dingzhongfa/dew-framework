@@ -8,12 +8,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- * The properties for Sharding-JDBC configuration.
- *
- * @author gaohongtao
- * @author zhangliang
- */
+
 public final class ShardingProperties {
 
     private final Properties props;

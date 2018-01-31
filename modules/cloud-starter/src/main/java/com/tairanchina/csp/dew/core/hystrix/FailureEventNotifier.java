@@ -3,7 +3,7 @@ package com.tairanchina.csp.dew.core.hystrix;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixEventType;
 import com.netflix.hystrix.strategy.eventnotifier.HystrixEventNotifier;
-import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.Dew;
 import com.tairanchina.csp.dew.core.DewCloudConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-@Component
-@ConditionalOnProperty(prefix = "dew.cloud.error", name = "enabled", havingValue = "true")
 public class FailureEventNotifier extends HystrixEventNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);

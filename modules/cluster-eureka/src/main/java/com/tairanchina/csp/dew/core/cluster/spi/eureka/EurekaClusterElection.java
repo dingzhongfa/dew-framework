@@ -4,32 +4,33 @@ import com.ecfront.dew.common.$;
 import com.netflix.appinfo.InstanceInfo;
 import com.tairanchina.csp.dew.core.cluster.ClusterElection;
 import org.apache.commons.lang.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EurekaDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Comparator;
 import java.util.Optional;
 
-@Component
-@ConditionalOnExpression("#{'${dew.cluster.election}'=='eureka'}")
+
 public class EurekaClusterElection implements ClusterElection {
 
     private static boolean leader = false;
 
-    @Value("${dew.cluster.election.config.election-period-sec:60}")
     private int electionPeriodSec;
-    @Value("${spring.application.name}")
+
     private String applicationName;
-    @Autowired
+
     private DiscoveryClient discoveryClient;
-    @Autowired
+
     private EurekaRegistration eurekaRegistration;
+
+    public EurekaClusterElection(int electionPeriodSec, String applicationName, DiscoveryClient discoveryClient, EurekaRegistration eurekaRegistration) {
+        this.electionPeriodSec = electionPeriodSec;
+        this.applicationName = applicationName;
+        this.discoveryClient = discoveryClient;
+        this.eurekaRegistration = eurekaRegistration;
+    }
 
     @Override
     @PostConstruct
@@ -53,4 +54,5 @@ public class EurekaClusterElection implements ClusterElection {
     public boolean isLeader() {
         return leader;
     }
+
 }

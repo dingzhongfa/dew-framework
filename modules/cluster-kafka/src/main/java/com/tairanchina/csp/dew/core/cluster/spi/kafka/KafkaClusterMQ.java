@@ -6,9 +6,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
@@ -19,16 +16,17 @@ import java.util.function.Consumer;
  * desription:
  * Created by ding on 2017/11/9.
  */
-@Component
-@ConditionalOnBean(KafkaAdapter.class)
 public class KafkaClusterMQ implements ClusterMQ {
 
     private String DEFAULT_TOPIC = "TRC_TOPIC";
 
-    @Autowired
     private KafkaAdapter kafkaAdapter;
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+
+    public KafkaClusterMQ(KafkaAdapter kafkaAdapter) {
+        this.kafkaAdapter = kafkaAdapter;
+    }
 
     @Override
     public boolean publish(String topic, String message) {

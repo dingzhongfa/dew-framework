@@ -14,14 +14,15 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 
-@Component
-@ConditionalOnBean(DewFilter.class)
 public class DewMetrics implements PublicMetrics {
 
     private static final Logger logger = LoggerFactory.getLogger(DewMetrics.class);
 
-    @Autowired
     private DewConfig dewConfig;
+
+    public DewMetrics(DewConfig dewConfig) {
+        this.dewConfig = dewConfig;
+    }
 
     @Override
     public Collection<Metric<?>> metrics() {
@@ -104,6 +105,13 @@ public class DewMetrics implements PublicMetrics {
         return metricList;
     }
 
+    public DewConfig getDewConfig() {
+        return dewConfig;
+    }
+
+    public void setDewConfig(DewConfig dewConfig) {
+        this.dewConfig = dewConfig;
+    }
 }
 
 

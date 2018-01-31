@@ -2,7 +2,7 @@ package com.ding.dew.select;
 
 import com.ecfront.dew.common.Page;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.ding.dew.crud.entity.TestSelectEntity;
 import com.ding.dew.select.dao.SystemConfigDao;
@@ -10,9 +10,6 @@ import com.ding.dew.select.dao.TestInterfaceDao;
 import com.ding.dew.select.dto.ModelDTO;
 import com.ding.dew.select.entity.SystemConfig;
 import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 

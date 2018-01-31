@@ -2,7 +2,7 @@ package com.trc.test.dewutil;
 
 
 import com.tairanchina.csp.dew.core.Container;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

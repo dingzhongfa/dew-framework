@@ -1,8 +1,7 @@
 package com.tairanchina.csp.dew.idempotent.strategy;
 
 
-import com.tairanchina.csp.dew.core.Dew;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tairanchina.csp.dew.Dew;
 import org.springframework.stereotype.Component;
 
 public class BloomFilterProcessor implements DewIdempotentProcessor {

@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.core.metric;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

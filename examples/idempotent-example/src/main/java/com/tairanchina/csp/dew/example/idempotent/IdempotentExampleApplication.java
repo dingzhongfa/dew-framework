@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.example.idempotent;
 
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

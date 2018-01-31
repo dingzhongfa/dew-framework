@@ -1,7 +1,7 @@
 package com.ding.dew.sharding;
 
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.ding.dew.sharding.entity.TOrder;
 import org.junit.Assert;

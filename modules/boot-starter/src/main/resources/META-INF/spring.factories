@@ -1,12 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tairanchina.csp.dew.core.Dew,\
+  com.tairanchina.csp.dew.Dew,\
   com.tairanchina.csp.dew.core.auth.AuthAutoConfiguration,\
   com.tairanchina.csp.dew.core.interceptor.DewWebMvcConfigurer,\
   com.tairanchina.csp.dew.core.utils.convert.ConvertConfiguration,\
   com.tairanchina.csp.dew.core.controller.ControllerAutoConfiguration,\
   com.tairanchina.csp.dew.core.metric.DewMetricAutoConfiguration
-#org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker=\
-#org.springframework.cloud.netflix.hystrix.HystrixCircuitBreakerConfiguration
-#
-#org.springframework.boot.env.EnvironmentPostProcessor=\
-#org.springframework.cloud.netflix.metrics.ServoEnvironmentPostProcessor

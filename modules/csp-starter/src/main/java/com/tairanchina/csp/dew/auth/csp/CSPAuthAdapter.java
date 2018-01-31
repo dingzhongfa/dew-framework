@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.auth.csp;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.auth.AuthAdapter;
 import com.tairanchina.csp.dew.core.dto.OptInfo;
 

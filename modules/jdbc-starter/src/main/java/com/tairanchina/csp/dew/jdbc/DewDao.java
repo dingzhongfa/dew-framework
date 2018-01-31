@@ -2,7 +2,7 @@ package com.tairanchina.csp.dew.jdbc;
 
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.core.Container;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DS;
 import com.tairanchina.csp.dew.core.jdbc.Dao;
 import com.tairanchina.csp.dew.core.jdbc.SB;

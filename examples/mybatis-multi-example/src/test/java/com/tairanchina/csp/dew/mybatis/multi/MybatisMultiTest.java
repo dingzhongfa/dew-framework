@@ -3,7 +3,7 @@ package com.tairanchina.csp.dew.mybatis.multi;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;

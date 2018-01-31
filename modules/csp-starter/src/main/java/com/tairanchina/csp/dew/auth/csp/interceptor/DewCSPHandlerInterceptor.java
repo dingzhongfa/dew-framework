@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.auth.csp.interceptor;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.auth.csp.CSPOptInfo;
 import com.tairanchina.csp.dew.auth.csp.DewCSPAuthAutoConfiguration;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

@@ -1,6 +1,6 @@
 package com.tairanchina.csp.dew.jdbc;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.proxy.ProxyInvoker;
 import org.springframework.beans.factory.FactoryBean;
 

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.auth.csp;
 
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import org.springframework.web.bind.annotation.*;
 

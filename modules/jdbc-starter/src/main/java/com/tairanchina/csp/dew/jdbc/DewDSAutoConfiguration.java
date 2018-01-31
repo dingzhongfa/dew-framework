@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew.jdbc;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
 import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;

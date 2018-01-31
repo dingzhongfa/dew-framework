@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
-import com.tairanchina.csp.dew.core.metric.DewFilter;
-import com.tairanchina.csp.dew.core.metric.RequestType;
+import com.tairanchina.csp.dew.core.metric.RecordMap;
 import org.apache.catalina.connector.RequestFacade;
 import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.slf4j.Logger;
@@ -80,7 +79,7 @@ public class ErrorController extends AbstractErrorController {
             return ResponseEntity.status(FALL_BACK_STATUS).contentType(MediaType.APPLICATION_JSON_UTF8).body(((Resp.FallbackException) specialError).getMessage());
         }
         Map<String, Object> error = getErrorAttributes(request, false);
-        String path = null;
+        String path;
         if (error.containsKey("path")) {
             path = (String) error.getOrDefault("path", Dew.context().getRequestUri());
         } else {
@@ -188,13 +187,7 @@ public class ErrorController extends AbstractErrorController {
         }
         String key = "{[" + request.getMethod() + "]:/error}";
         int resTime = (int) (Instant.now().toEpochMilli() - start);
-        if (RECORD_MAP.containsKey(key)) {
-            RECORD_MAP.get(key).put(start, resTime);
-        } else {
-            RECORD_MAP.put(key, new DewFilter().new RecordMap<Long, Integer>(RequestType.ERROR) {{
-                put(start, resTime);
-            }});
-        }
+        RECORD_MAP.getOrDefault(key, new RecordMap<>()).put(start, resTime);
     }
 
     public static void error(HttpServletRequest request, HttpServletResponse response, int statusCode, String message, String exClass) throws IOException {

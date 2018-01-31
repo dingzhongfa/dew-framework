@@ -16,7 +16,7 @@ dew:
   cluster:
     cache: redis
     dist: redis
-    mq: kafka
+    mq: redis
   security:
     token-flag: _token_
     token-in-header: true

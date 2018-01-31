@@ -33,7 +33,7 @@ public class TestCluster {
     private String setTest = "set_test";
 
     public void testAll() throws Exception {
-       /* // Cache Test
+        // Cache Test
         testCache();
         // Dist Test
         testDistMapExp();
@@ -42,7 +42,7 @@ public class TestCluster {
         testDifferentTreadLock();
         testUnLock();
         testConnection();
-        testDistMap();*/
+        testDistMap();
         // MQ Test
         testMQTopic();
         testMQReq();
@@ -355,16 +355,29 @@ public class TestCluster {
      * @throws InterruptedException
      */
     private void testMQTopic() throws InterruptedException {
-        Dew.cluster.mq.subscribe("test_pub_sub", message -> {
-            Assert.assertTrue(message.contains("msg"));
-            logger.info("1 pub_sub>>" + message);
-        });
-
-        Dew.cluster.mq.subscribe("test_pub_sub", message -> {
-            Assert.assertTrue(message.contains("msg"));
-            logger.info("2 pub_sub>>" + message);
-        });
-
+        CountDownLatch countDownLatch = new CountDownLatch(2);
+        // pub-sub
+        new Thread(() -> {
+            Dew.cluster.mq.subscribe("test_pub_sub", message -> {
+                Assert.assertTrue(message.contains("msg"));
+                logger.info("1 pub_sub>>" + message);
+            });
+            logger.info("另起线程");
+            countDownLatch.countDown();
+        }).start();
+        new Thread(() -> {
+            Dew.cluster.mq.subscribe("test_pub_sub", message -> {
+                Assert.assertTrue(message.contains("msg"));
+                logger.info("2 pub_sub>>" + message);
+            });
+            countDownLatch.countDown();
+        }).start();
+        Thread.sleep(500);
+        logger.info("count   " + countDownLatch.getCount());
+        countDownLatch.await();
+        logger.info("测试1     " + Thread.activeCount());
+        Thread.sleep(500);
+        logger.info("测试2     " + Thread.activeCount());
         for (int i = 0; i < 10; i++) {
             logger.info(Thread.activeCount() + "");
             logger.info("单位开始");

@@ -1,9 +1,7 @@
 package com.tairanchina.csp.dew.core.metric;
 
-import com.tairanchina.csp.dew.core.DewConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -13,7 +11,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
@@ -23,11 +20,8 @@ public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);
 
-    @Autowired
-    private DewConfig dewConfig;
-
     // url->(timestamp,resTime)
-    public static final Map<String, RecordMap<Long, Integer>> RECORD_MAP = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
+    public static final ConcurrentReferenceHashMap<String, RecordMap<Long, Integer>> RECORD_MAP = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private static final String MATCHING_PATTERN_KEY = "org.springframework.web.servlet.HandlerMapping.bestMatchingPattern";
 
@@ -47,13 +41,7 @@ public class DewFilter implements Filter {
         String matchingPattern = (String) httpServletRequest.getAttribute(MATCHING_PATTERN_KEY);
         if (matchingPattern != null && !matchingPattern.endsWith("/favicon.ico")) {
             String key = "{[" + method + "]:" + matchingPattern + "}";
-            if (RECORD_MAP.containsKey(key)) {
-                RECORD_MAP.get(key).put(start, resTime);
-            } else {
-                RECORD_MAP.put(key, new RecordMap<Long, Integer>(RequestType.NORMAL) {{
-                    put(start, resTime);
-                }});
-            }
+            RECORD_MAP.getOrDefault(key, new RecordMap<>()).put(start, resTime);
         }
     }
 
@@ -62,20 +50,4 @@ public class DewFilter implements Filter {
         logger.info("dewFilter destroyed");
     }
 
-    public class RecordMap<K, V> extends LinkedHashMap<K, V> {
-
-        private RequestType requestType;
-
-        public RecordMap(RequestType requestType) {
-            this.requestType = requestType;
-        }
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-            if (requestType.equals(RequestType.NORMAL)) {
-                return size() > dewConfig.getMetric().getUrlSize();
-            }
-            return size() > 2000;
-        }
-    }
 }

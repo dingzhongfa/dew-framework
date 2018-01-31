@@ -3,8 +3,12 @@ package com.tairanchina.csp.dew.jdbc;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.jdbc.DSManager;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
+import com.tairanchina.csp.dew.core.utils.convert.ConvertAutoConfiguration;
 import com.tairanchina.csp.dew.jdbc.config.DewMultiDSConfig;
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -30,8 +34,10 @@ import java.util.regex.Pattern;
 @Configuration
 @EnableConfigurationProperties(DewMultiDSConfig.class)
 @AutoConfigureAfter(JdbcTemplateAutoConfiguration.class)
-@SuppressWarnings("ALL")
+@DewLoadImmediately
 public class DewDSAutoConfiguration implements DSManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(DewDSAutoConfiguration.class);
 
     private static final Pattern LINE_TO_CAMEL_REGEX = Pattern.compile("-[a-z]{1}");
 
@@ -57,6 +63,7 @@ public class DewDSAutoConfiguration implements DSManager {
 
     @PostConstruct
     private void init() throws SQLException {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         // Register TransactionManager
         beanFactory = (DefaultListableBeanFactory) ((ConfigurableApplicationContext) Dew.applicationContext).getBeanFactory();
         AbstractBeanDefinition transactionManager = BeanDefinitionBuilder.rootBeanDefinition(DataSourceTransactionManager.class)

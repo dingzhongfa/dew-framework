@@ -1,6 +1,7 @@
 package com.tairanchina.csp.dew.jdbc;
 
 import com.tairanchina.csp.dew.Dew;
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.jdbc.config.DewJDBCConfig;
 import com.tairanchina.csp.dew.jdbc.entity.EntityContainer;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableConfigurationProperties(DewJDBCConfig.class)
-@AutoConfigureAfter(Dew.class)
+@DewLoadImmediately
 public class DewJDBCAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(DewJDBCAutoConfiguration.class);
@@ -28,7 +29,8 @@ public class DewJDBCAutoConfiguration {
 
     @PostConstruct
     private void init() {
-        logger.info("Enabled Dew JDBC");
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
+
         Dew.applicationContext.containsBean(EntityContainer.class.getSimpleName());
         // JDBC Scan
         if (!dewJDBCConfig.getJdbc().getBasePackages().isEmpty()) {

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Import(DewDSAutoConfiguration.class)
 public class TestJDBC {
 
     @Autowired

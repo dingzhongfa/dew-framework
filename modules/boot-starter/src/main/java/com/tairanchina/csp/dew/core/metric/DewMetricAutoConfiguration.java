@@ -2,7 +2,10 @@ package com.tairanchina.csp.dew.core.metric;
 
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,6 +24,8 @@ import java.util.Map;
 @EnableConfigurationProperties(DewConfig.class)
 public class DewMetricAutoConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(DewMetricAutoConfiguration.class);
+
     private DewConfig dewConfig;
 
     public DewMetricAutoConfiguration(DewConfig dewConfig) {
@@ -29,6 +34,7 @@ public class DewMetricAutoConfiguration {
 
     @PostConstruct
     public void init() {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         long standardTime = Instant.now().minusSeconds(dewConfig.getMetric().getPeriodSec()).toEpochMilli();
         Dew.Timer.periodic(60, () -> {
             for (Map<Long, Integer> map : DewFilter.RECORD_MAP.values()) {
@@ -48,7 +54,7 @@ public class DewMetricAutoConfiguration {
     @Bean
     @ConditionalOnClass(Filter.class)
     @ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public DewFilter dewFilter(){
+    public DewFilter dewFilter() {
         return new DewFilter();
     }
 
@@ -64,7 +70,7 @@ public class DewMetricAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(DewFilter.class)
-    public DewMetrics dewMetrics(){
+    public DewMetrics dewMetrics() {
         return new DewMetrics(dewConfig);
     }
 

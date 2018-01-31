@@ -10,6 +10,7 @@ import com.trc.dew.select.dao.TestInterfaceDao;
 import com.trc.dew.select.dto.ModelDTO;
 import com.trc.dew.select.entity.SystemConfig;
 import org.junit.Assert;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +20,19 @@ import java.util.Map;
 @Component
 public class TestSelect {
 
+    @Autowired
+    private Dew dew;
+
+    @Autowired
     private TestInterfaceDao dao;
 
+    @Autowired
     private SystemConfigDao systemConfigDao;
 
 
     public void testAll() throws Exception {
         initialize();
-        testMulty();
+        testMulti();
         testInterface();
     }
 
@@ -81,7 +87,7 @@ public class TestSelect {
         Assert.assertTrue(model != null);
     }
 
-    private void testMulty() {
+    private void testMulti() {
         // 加载entityclassinfo
         List<TestSelectEntity> testSelectEntities = dao.findAll();
         List<SystemConfig> systemConfigs = systemConfigDao.findAll();

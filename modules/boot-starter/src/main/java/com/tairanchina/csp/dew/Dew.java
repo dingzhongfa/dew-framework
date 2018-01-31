@@ -37,7 +37,7 @@ public class Dew {
     public static AuthAdapter auth;
 
     public Dew(String applicationName, DewConfig innerDewConfig, JacksonProperties jacksonProperties, ApplicationContext innerApplicationContext) throws IOException, ClassNotFoundException {
-        logger.info("Load Dew ");Object
+        logger.info("Load Dew Object");
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");

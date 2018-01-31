@@ -1,6 +1,6 @@
 package com.ding.dew.ds.util;
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.ding.dew.ds.entity.BasicEntity;
 import org.junit.Assert;
 import org.springframework.stereotype.Component;

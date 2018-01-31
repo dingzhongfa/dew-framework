@@ -1,8 +1,7 @@
 package com.tairanchina.csp.dew.idempotent.strategy;
 
 
-import com.tairanchina.csp.dew.core.Dew;
-import org.springframework.stereotype.Component;
+import com.tairanchina.csp.dew.Dew;
 
 public class ItemProcessor implements DewIdempotentProcessor {
 

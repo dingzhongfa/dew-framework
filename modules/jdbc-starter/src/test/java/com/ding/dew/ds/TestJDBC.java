@@ -1,7 +1,7 @@
 package com.ding.dew.ds;
 
 import com.ecfront.dew.common.Page;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.DewDSAutoConfiguration;
 import com.tairanchina.csp.dew.jdbc.DewSB;
@@ -11,7 +11,6 @@ import com.ding.dew.ds.entity.FullEntity;
 import com.ding.dew.ds.util.TxService;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

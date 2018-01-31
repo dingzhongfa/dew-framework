@@ -1,7 +1,7 @@
 package your.group;
 
 
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import org.springframework.stereotype.Component;
 

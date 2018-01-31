@@ -2,7 +2,7 @@ package com.trc.test.auth;
 
 import com.ecfront.dew.common.$;
 import com.ecfront.dew.common.Resp;
-import com.tairanchina.csp.dew.core.Dew;
+import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.core.DewContext;
 import com.trc.test.auth.dto.OptInfoExt;
 import org.slf4j.Logger;

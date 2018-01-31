@@ -19,20 +19,7 @@ import java.util.List;
 @ConditionalOnWebApplication
 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class })
 @AutoConfigureBefore(ErrorMvcAutoConfiguration.class)
-// Load before the main WebMvcAutoConfiguration so that the error View is available
-/*@AutoConfigureBefore(WebMvcAutoConfiguration.class)
-@EnableConfigurationProperties(ServerProperties.class)*/
 public class ControllerAutoConfiguration {
-
-   /* private final ServerProperties serverProperties;
-
-    private final List<ErrorViewResolver> errorViewResolvers;
-
-    public ControllerAutoConfiguration(ServerProperties serverProperties,
-                                     ObjectProvider<List<ErrorViewResolver>> errorViewResolversProvider) {
-        this.serverProperties = serverProperties;
-        this.errorViewResolvers = errorViewResolversProvider.getIfAvailable();
-    }*/
 
     @Bean
     @SuppressWarnings("SpringJavaAutowiringInspection")

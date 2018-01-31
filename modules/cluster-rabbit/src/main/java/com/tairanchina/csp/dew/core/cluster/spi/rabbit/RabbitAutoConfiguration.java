@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitAutoConfiguration {
 
-
     @Bean
     @ConditionalOnExpression("'${dew.cluster.mq}'=='rabbit'")
     @SuppressWarnings("SpringJavaAutowiringInspection")

@@ -21,9 +21,6 @@ import java.util.Map;
 public class TestSelect {
 
     @Autowired
-    private Dew dew;
-
-    @Autowired
     private TestInterfaceDao dao;
 
     @Autowired

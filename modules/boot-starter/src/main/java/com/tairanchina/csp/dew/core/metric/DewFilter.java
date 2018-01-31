@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.metric;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.ConcurrentReferenceHashMap;
 
 import javax.servlet.*;
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
 
-
+@Order(20000)
 public class DewFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(DewFilter.class);

@@ -16,15 +16,9 @@ import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.core.utils.NetUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -33,9 +27,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Configuration
-@EnableConfigurationProperties(DewConfig.class)
-@AutoConfigureOrder(Integer.MIN_VALUE)
 public class Dew {
 
     private static final Logger logger = LoggerFactory.getLogger(Dew.class);
@@ -45,25 +36,8 @@ public class Dew {
     public static DewConfig dewConfig;
     public static AuthAdapter auth;
 
-    @Value("${spring.application.name}")
-    private String applicationName;
-
-    private DewConfig innerDewConfig;
-
-    @Autowired(required = false)
-    private JacksonProperties jacksonProperties;
-
-    @Autowired
-    private ApplicationContext innerApplicationContext;
-
-
-    public Dew(DewConfig dewConfig) {
-        this.innerDewConfig = dewConfig;
-    }
-
-    @PostConstruct
-    private void init() throws IOException, ClassNotFoundException {
-        logger.info("Load Auto Configuration : {}",this.getClass().getName());
+    public Dew(String applicationName, DewConfig innerDewConfig, JacksonProperties jacksonProperties, ApplicationContext innerApplicationContext) throws IOException, ClassNotFoundException {
+        logger.info("Load Dew ");Object
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");

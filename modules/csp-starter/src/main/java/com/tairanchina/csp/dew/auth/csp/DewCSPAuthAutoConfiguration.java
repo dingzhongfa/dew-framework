@@ -22,11 +22,13 @@ public class DewCSPAuthAutoConfiguration {
     private DewCSPConfig cSPConfig;
 
     public DewCSPAuthAutoConfiguration(DewCSPConfig cSPConfig) {
+
         this.cSPConfig = cSPConfig;
     }
 
     @PostConstruct
     private void init() {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         logger.info("Enabled Dew CSP Auth");
         Dew.auth = new CSPAuthAdapter();
         DewContext.setOptInfoClazz(CSPOptInfo.class);

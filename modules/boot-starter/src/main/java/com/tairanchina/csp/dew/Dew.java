@@ -38,6 +38,8 @@ public class Dew {
 
     public Dew(String applicationName, DewConfig innerDewConfig, JacksonProperties jacksonProperties, ApplicationContext innerApplicationContext) throws IOException, ClassNotFoundException {
         logger.info("Load Dew Object");
+        Dew.dewConfig = innerDewConfig;
+        Dew.Info.name = applicationName;
         Dew.applicationContext = innerApplicationContext;
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getCache() + "ClusterCache")) {
             Dew.cluster.cache = (ClusterCache) Dew.applicationContext.getBean(innerDewConfig.getCluster().getCache() + "ClusterCache");
@@ -51,11 +53,9 @@ public class Dew {
         if (Dew.applicationContext.containsBean(innerDewConfig.getCluster().getElection() + "ClusterElection")) {
             Dew.cluster.election = (ClusterElection) Dew.applicationContext.getBean(innerDewConfig.getCluster().getElection() + "ClusterElection");
         }
-        Dew.dewConfig = innerDewConfig;
         if (Dew.applicationContext.containsBean(DSManager.class.getSimpleName())) {
             Dew.applicationContext.getBean(DSManager.class);
         }
-        Dew.Info.name = applicationName;
         // Load Auth Adapter
         auth = Dew.applicationContext.getBean(BasicAuthAdapter.class);
         // Support java8 Time

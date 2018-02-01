@@ -39,7 +39,6 @@ import static com.tairanchina.csp.dew.core.metric.DewFilter.RECORD_MAP;
 
 @RestController
 @RequestMapping("${error.path:/error}")
-@ConditionalOnProperty(prefix = "dew.basic.format", name = "useUnityError", havingValue = "true", matchIfMissing = true)
 public class ErrorController extends AbstractErrorController {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);

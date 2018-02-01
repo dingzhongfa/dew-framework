@@ -1,13 +1,12 @@
 package your.group;
 
-import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 /**
  * 工程启动类
  */
-@DewBootApplication(scanBasePackageClasses = {PetStoreApplication.class,Dew.class})
+@SpringBootApplication
 public class PetStoreApplication {
 
     public static void main(String[] args) {

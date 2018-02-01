@@ -39,6 +39,7 @@ public class ShardingTransactionConfiguration {
     private MasterSlaveRuleConfigurationProperties masterSlaveRuleConfigurationProperties;
 
     public ShardingTransactionConfiguration(ShardingRuleConfigurationProperties shardingRuleConfigurationProperties, MasterSlaveRuleConfigurationProperties masterSlaveRuleConfigurationProperties) {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         this.shardingRuleConfigurationProperties = shardingRuleConfigurationProperties;
         this.masterSlaveRuleConfigurationProperties = masterSlaveRuleConfigurationProperties;
     }

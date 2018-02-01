@@ -1,15 +1,10 @@
 package com.tairanchina.csp.dew.example.sharding;
 
 
-import com.tairanchina.csp.dew.Dew;
-import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
-import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.websocket.WebSocketAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-@DewBootApplication(scanBasePackageClasses = {Dew.class, ShardingApplication.class}, exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@SpringBootApplication
 public class ShardingApplication {
 
     public static void main(String[] args) {

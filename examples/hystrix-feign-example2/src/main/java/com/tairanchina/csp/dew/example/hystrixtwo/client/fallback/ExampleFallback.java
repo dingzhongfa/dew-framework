@@ -33,7 +33,7 @@ public class ExampleFallback implements ExampleClient {
 
     @Override
     public String noMethod() {
-        return null;
+        return "fallback";
     }
 
     @Override

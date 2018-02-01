@@ -3,7 +3,6 @@ package com.trc.dew.ds;
 import com.ecfront.dew.common.Page;
 import com.tairanchina.csp.dew.Dew;
 import com.tairanchina.csp.dew.jdbc.DewDS;
-import com.tairanchina.csp.dew.jdbc.DewDSAutoConfiguration;
 import com.tairanchina.csp.dew.jdbc.DewSB;
 import com.trc.dew.ds.entity.BasicEntity;
 import com.trc.dew.ds.entity.EmptyEntity;
@@ -11,7 +10,7 @@ import com.trc.dew.ds.entity.FullEntity;
 import com.trc.dew.ds.util.TxService;
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +29,8 @@ public class TestJDBC {
     private TxService txService;
 
 
+    @Autowired
+    @Qualifier("test2JdbcTemplate")
     private JdbcTemplate jdbcTemplate2;
 
 

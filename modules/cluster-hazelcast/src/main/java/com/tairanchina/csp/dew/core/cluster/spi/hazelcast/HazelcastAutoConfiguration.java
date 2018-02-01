@@ -1,5 +1,7 @@
 package com.tairanchina.csp.dew.core.cluster.spi.hazelcast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,9 +16,12 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(HazelcastConfig.class)
 public class HazelcastAutoConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(HazelcastAutoConfiguration.class);
+
     private HazelcastConfig hazelcastConfig;
 
     public HazelcastAutoConfiguration(HazelcastConfig hazelcastConfig) {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         this.hazelcastConfig = hazelcastConfig;
     }
 

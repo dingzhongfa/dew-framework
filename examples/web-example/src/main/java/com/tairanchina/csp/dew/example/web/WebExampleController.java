@@ -6,6 +6,8 @@ import com.tairanchina.csp.dew.core.validation.Phone;
 import com.tairanchina.csp.dew.core.validation.UpdateGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Api(description = "示例应用")
 @Validated // URL 类型的验证需要使用此注解
 public class WebExampleController {
+    private static final Logger logger = LoggerFactory.getLogger(WebExampleController.class);
 
     /**
      * 最基础的Controller示例
@@ -23,6 +26,9 @@ public class WebExampleController {
     @GetMapping("example")
     @ApiOperation(value = "示例方式")
     public String example() {
+        for (int i = 0;i<100;i++){
+            logger.info(" Mapped \"{[/autoconfig || /autoconfig.json],methods=[GET],produces=[application/vnd.spring-boot.actuator.v1+json || application/json]}\" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mv");
+        }
         return "enjoy!";
     }
 

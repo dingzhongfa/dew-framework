@@ -1,10 +1,14 @@
 package com.tairanchina.csp.dew.core.cluster.spi.redis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import javax.annotation.PostConstruct;
 
 /**
  * desription:
@@ -12,6 +16,13 @@ import org.springframework.data.redis.core.RedisTemplate;
  */
 @Configuration
 public class RedisAutoConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisAutoConfiguration.class);
+
+    @PostConstruct
+    private void init(){
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
+    }
 
     @Bean
     @ConditionalOnExpression("'${dew.cluster.cache}'=='redis' ")

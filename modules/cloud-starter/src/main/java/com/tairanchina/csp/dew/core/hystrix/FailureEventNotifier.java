@@ -25,29 +25,32 @@ public class FailureEventNotifier extends HystrixEventNotifier {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureEventNotifier.class);
 
-    @Autowired
     private DewCloudConfig dewCloudConfig;
+
+    private JavaMailSender mailSender;
+
+    private String emailFrom;
+
+    private String applicationName;
+
+    private String profile;
 
     private Set<String> notifyIncludeKeys = new HashSet<>();
     private Set<String> notifyExcludeKeys = new HashSet<>();
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Value("${spring.mail.username}")
-    private String emailFrom;
-
-    @Value("${spring.application.name:dew-default}")
-    private String applicationName;
-
-    @Value(("${spring.profiles.active:default}"))
-    private String profile;
 
     private long notifiedTime;
     // key.name -> eventType.names
     private Map<String, Map<String, String>> failureInfo = new ConcurrentReferenceHashMap<>(50, ConcurrentReferenceHashMap.ReferenceType.SOFT);
 
     private Executor executor = Executors.newSingleThreadExecutor();
+
+    public FailureEventNotifier(DewCloudConfig dewCloudConfig, JavaMailSender mailSender, String emailFrom, String applicationName, String profile) {
+        this.dewCloudConfig = dewCloudConfig;
+        this.mailSender = mailSender;
+        this.emailFrom = emailFrom;
+        this.applicationName = applicationName;
+        this.profile = profile;
+    }
 
     @PostConstruct
     public void init() {

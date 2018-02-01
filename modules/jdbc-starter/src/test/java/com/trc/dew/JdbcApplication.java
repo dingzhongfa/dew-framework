@@ -12,6 +12,6 @@ public class JdbcApplication {
 
     public static void main(String[] args) {
 
-        new SpringApplicationBuilder(JdbcApplication.class).run(args);
+        new SpringApplicationBuilder(JdbcApplication.class).web(true).run(args);
     }
 }

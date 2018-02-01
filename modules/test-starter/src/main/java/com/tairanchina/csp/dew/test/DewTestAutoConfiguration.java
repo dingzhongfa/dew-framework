@@ -23,6 +23,7 @@ public class DewTestAutoConfiguration {
 
     @PostConstruct
     public void init() throws IOException {
+        logger.info("Load Auto Configuration : {}", this.getClass().getName());
         logger.info("Enabled Dew Test");
         redisServer = new RedisServer();
         if (!redisServer.isActive()) {

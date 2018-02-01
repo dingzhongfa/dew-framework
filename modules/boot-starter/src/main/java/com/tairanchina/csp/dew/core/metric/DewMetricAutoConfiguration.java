@@ -22,6 +22,7 @@ import java.util.Map;
 
 @Configuration
 @EnableConfigurationProperties(DewConfig.class)
+@ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DewMetricAutoConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(DewMetricAutoConfiguration.class);
@@ -53,7 +54,6 @@ public class DewMetricAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(Filter.class)
-    @ConditionalOnProperty(prefix = "dew.metric", name = "enabled", havingValue = "true", matchIfMissing = true)
     public DewFilter dewFilter() {
         return new DewFilter();
     }

@@ -189,3 +189,4 @@ public abstract class AbstractElasticsearchPublisher<T> implements Runnable {
     }
 
 }
+

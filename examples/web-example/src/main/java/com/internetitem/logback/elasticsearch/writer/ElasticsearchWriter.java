@@ -57,7 +57,7 @@ public class ElasticsearchWriter implements SafeWriter {
 			urlConnection.setRequestMethod("POST");
 
 			String body = sendBuffer.toString();
-
+			sendBuffer.setLength(0);
 			if (!headerList.isEmpty()) {
 				for(HttpRequestHeader header: headerList) {
 					urlConnection.setRequestProperty(header.getName(), header.getValue());
@@ -82,7 +82,7 @@ public class ElasticsearchWriter implements SafeWriter {
 			urlConnection.disconnect();
 		}
 
-		sendBuffer = new StringBuilder();
+
 		if (bufferExceeded) {
 			errorReporter.logInfo("Send queue cleared - log messages will no longer be lost");
 			bufferExceeded = false;

@@ -15,7 +15,7 @@ public class ElasticsearchWriter implements SafeWriter {
 	private StringBuilder sendBuffer;
 
 	private ErrorReporter errorReporter;
-    private Settings settings;
+	private Settings settings;
 	private Collection<HttpRequestHeader> headerList;
 
 	private boolean bufferExceeded;
@@ -24,8 +24,8 @@ public class ElasticsearchWriter implements SafeWriter {
 		this.errorReporter = errorReporter;
 		this.settings = settings;
 		this.headerList = headers != null && headers.getHeaders() != null
-			? headers.getHeaders()
-			: Collections.<HttpRequestHeader>emptyList();
+				? headers.getHeaders()
+				: Collections.<HttpRequestHeader>emptyList();
 
 		this.sendBuffer = new StringBuilder();
 	}
@@ -57,7 +57,7 @@ public class ElasticsearchWriter implements SafeWriter {
 			urlConnection.setRequestMethod("POST");
 
 			String body = sendBuffer.toString();
-
+			sendBuffer.setLength(0);
 			if (!headerList.isEmpty()) {
 				for(HttpRequestHeader header: headerList) {
 					urlConnection.setRequestProperty(header.getName(), header.getValue());
@@ -82,11 +82,6 @@ public class ElasticsearchWriter implements SafeWriter {
 			urlConnection.disconnect();
 		}
 
-		sendBuffer.setLength(0);
-		if (bufferExceeded) {
-			errorReporter.logInfo("Send queue cleared - log messages will no longer be lost");
-			bufferExceeded = false;
-		}
 	}
 
 	public boolean hasPendingData() {

@@ -1,7 +1,7 @@
 package com.tairanchina.csp.dew;
 
-import com.tairanchina.csp.dew.core.DewCloudApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.client.SpringCloudApplication;
 
 
 /**
@@ -10,7 +10,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * @author hzzjb
  * @date 2017/9/19
  */
-public class ServiceApplication extends DewCloudApplication {
+@SpringCloudApplication
+public class ServiceApplication {
     public static void main(String[] args) {
         new SpringApplicationBuilder(ServiceApplication.class).run(args);
     }

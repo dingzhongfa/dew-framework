@@ -5,10 +5,19 @@
 .Feature
 * #87 局部使用sharding-jdbc，mybatis实现，增加mybatis-starter模
 * #89 支持配置提示
+* #91 Dew实例加载机制优化
 
 .Improvement
 * #82 metrics指标增加线程、内存、cpu、磁盘等统计
 * #86 ErrorController增加zuul日志追踪支持
+* #92 修复logback-elasticsearch日志压力过大时导致的内存泄漏
+
+.升级指南
+
+. 修改pom.xml中dew版本号为1.3.0-RC
+. 1.3.0-RC版本中已移除启动类配置，直接用``@SpringbootApplication``或``@SpringcloudApplication``
+. 启动类需要的注解不要忘记自行添加，如``@EnableTransactionManagement``、`@EnableScheduling`
+. 新增的mybatis-starter模块，详见使用说明
 
 === 1.2.2-RC
 

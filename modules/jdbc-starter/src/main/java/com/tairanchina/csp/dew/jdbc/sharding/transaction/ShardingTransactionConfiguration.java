@@ -1,5 +1,6 @@
 package com.tairanchina.csp.dew.jdbc.sharding.transaction;
 
+import com.tairanchina.csp.dew.core.loding.DewLoadImmediately;
 import com.tairanchina.csp.dew.jdbc.DewDS;
 import com.tairanchina.csp.dew.jdbc.sharding.MasterSlaveRuleConfigurationProperties;
 import com.tairanchina.csp.dew.jdbc.sharding.ShardingEnvironmentAware;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 @Configuration
 @ConditionalOnExpression("'${sharding.enabled}'=='true'")
 @EnableConfigurationProperties({ShardingRuleConfigurationProperties.class, MasterSlaveRuleConfigurationProperties.class})
+@DewLoadImmediately
 public class ShardingTransactionConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ShardingTransactionConfiguration.class);
@@ -45,7 +47,6 @@ public class ShardingTransactionConfiguration {
     }
 
     @Bean
-    @ConditionalOnBean(ShardingEnvironmentAware.class)
     @SuppressWarnings("SpringJavaAutowiringInspection")
     public SoftTransactionManager softTransactionManager(ApplicationContext applicationContext, ShardingEnvironmentAware shardingEnvironmentAware) throws Exception {
         SoftTransactionConfiguration softTransactionConfiguration = new SoftTransactionConfiguration(shardingEnvironmentAware.dataSource());

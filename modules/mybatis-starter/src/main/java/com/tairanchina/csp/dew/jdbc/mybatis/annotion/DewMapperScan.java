@@ -1,6 +1,8 @@
 package com.tairanchina.csp.dew.jdbc.mybatis.annotion;
 
+import com.tairanchina.csp.dew.jdbc.mybatis.MyabtisStarterConfiguration;
 import org.mybatis.spring.mapper.MapperFactoryBean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -9,7 +11,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({DewMapperScannerRegister.class})
+@DependsOn("dew")
+@Import({DewMapperScannerRegister.class, MyabtisStarterConfiguration.class})
 public @interface DewMapperScan {
 
     String[] basePackages() default {};

@@ -4,6 +4,7 @@ package com.tairanchina.csp.dew.mybatis.multi;
 import com.tairanchina.csp.dew.jdbc.mybatis.annotion.DewMapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.DependsOn;
 
 
 /**
@@ -16,6 +17,7 @@ public class MybatisMultiApplication {
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(MybatisMultiApplication.class).web(false).run(args);
+        System.out.println();
     }
 
 

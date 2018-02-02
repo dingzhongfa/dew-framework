@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,10 +44,9 @@ import java.util.Set;
 
 
 @org.springframework.context.annotation.Configuration
-@ConditionalOnBean(DewDSAutoConfiguration.class)
+@AutoConfigureAfter(DewDSAutoConfiguration.class)
 @ConditionalOnClass({SqlSessionFactory.class, MybatisSqlSessionFactoryBean.class})
-@EnableConfigurationProperties({MybatisPlusProperties.class})
-@Import({DewMultiDSConfig.class})
+@EnableConfigurationProperties({MybatisPlusProperties.class,DewMultiDSConfig.class})
 @DewLoadImmediately
 public class MyabtisStarterConfiguration {
 
@@ -56,6 +56,9 @@ public class MyabtisStarterConfiguration {
     private final ResourceLoader resourceLoader;
     private final DatabaseIdProvider databaseIdProvider;
     private final List<ConfigurationCustomizer> configurationCustomizers;
+
+    @Autowired
+    private DewDSAutoConfiguration dewDSAutoConfiguration;
 
     @Autowired
     private DewMultiDSConfig dewMultiDSConfig;
@@ -90,12 +93,12 @@ public class MyabtisStarterConfiguration {
             registerBeanDefinitions(primaryDataSource, "primary");
 
             // 从数据源注入
-            Set<String> dataSourceNames = dewMultiDSConfig.getMultiDatasources().keySet();
-            for (String dataSourceName : dataSourceNames) {
-                if (applicationContext.containsBean(dataSourceName + "JdbcTemplate")) {
+            Set<String> datasourceNames = dewMultiDSConfig.getMultiDatasources().keySet();
+            for (String datasourceName : datasourceNames) {
+                if (applicationContext.containsBean(datasourceName + "JdbcTemplate")) {
                     // Registry SqlSessionFactory
-                    DataSource dataSource = ((JdbcTemplate) applicationContext.getBean(dataSourceName + "JdbcTemplate")).getDataSource();
-                    registerBeanDefinitions(dataSource, dataSourceName);
+                    DataSource dataSource = ((JdbcTemplate) applicationContext.getBean(datasourceName + "JdbcTemplate")).getDataSource();
+                    registerBeanDefinitions(dataSource, datasourceName);
                 }
             }
 

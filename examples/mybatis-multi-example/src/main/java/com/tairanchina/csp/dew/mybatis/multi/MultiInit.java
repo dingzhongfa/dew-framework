@@ -22,14 +22,14 @@ public class MultiInit {
 
     private static final Logger logger = LoggerFactory.getLogger(MultiInit.class);
 
-    @Autowired
+//    @Autowired
     private TOrderService tOrderService;
 
-    @Autowired
+//    @Autowired
     private SoftTransactionManager softTransactionManager;
 
 
-    @Autowired
+//    @Autowired
     private ShardingEnvironmentAware shardingEnvironmentAware;
 
     /**

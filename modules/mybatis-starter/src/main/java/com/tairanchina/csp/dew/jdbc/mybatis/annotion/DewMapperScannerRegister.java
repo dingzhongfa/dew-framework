@@ -45,13 +45,12 @@ public class DewMapperScannerRegister implements ImportBeanDefinitionRegistrar, 
                 mappers = $.clazz.scan(pkg, new HashSet<Class<? extends Annotation>>() {{
                     add(DS.class);
                 }}, null);
-                if (mappers.isEmpty()) {
-                    break;
+                if (mappers == null || mappers.isEmpty()) {
+                    continue;
                 }
             } catch (Exception e) {
                 logger.error("mapper init failed");
             }
-            assert mappers != null;
             mappers.forEach(c -> {
                 if (c.getAnnotation(DS.class).isSharding()) {
                     dataSources.add("sharding");

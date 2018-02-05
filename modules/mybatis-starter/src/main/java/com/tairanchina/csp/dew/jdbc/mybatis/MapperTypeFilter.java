@@ -34,12 +34,13 @@ public class MapperTypeFilter extends AbstractTypeHierarchyTraversingFilter {
 
     @Override
     protected boolean matchSelf(MetadataReader metadataReader) {
+        Class mapper = null;
         try {
-            Class mapper = Class.forName(metadataReader.getClassMetadata().getClassName());
+            mapper = Class.forName(metadataReader.getClassMetadata().getClassName());
             DS annotation = (DS) mapper.getAnnotation(DS.class);
             return annotation.isSharding() && dataSource.equals("sharding") || annotation.dataSource().equals(dataSource);
         } catch (Exception e) {
-            logger.error("mapper is not annotationed by DS");
+            logger.error(metadataReader.getClassMetadata().getClassName() + " is not annotationed by DS");
             return false;
         }
     }

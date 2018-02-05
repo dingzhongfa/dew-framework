@@ -66,9 +66,9 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 
 |`boot-starter` |基于Spring Boot的扩展，Dew的核心模块
 |`cloud-starter` |基于Spring Cloud的扩展，基于`boot-starter`
-|`cloud-starter` |基于Spring Cloud的扩展，基于`boot-starter`
 |`idempotent-starter` |幂性处理模块
 |`jdbc-starter` |Dew JDBC模块
+|`mybatis-starter` |mybatis适配模块
 |`csp-starter` |用户权限中心扩展模块
 |`cluster-common` |集群能力接口
 |`cluster-redis` |集群能力-Redis实现
@@ -86,30 +86,11 @@ TIP: `parent` 中已包含各模块的版本，引用模块依赖时可省略版
 
 ==== 启动类
 
-`Dew` 有两个核心启动类 `DewBootApplication` 和 `DewCloudApplication` ，前者引用的依赖是 `boot-starter` 用于启动 `Spring boot` 类型的工程，后者依赖的是`cloud-starter` 继承自 `DewBootApplication` 用于启动 `Spring cloud` 类型的工程。
-
-[TIP]
-.DewBootApplication使用如下注解
-====
-@SpringBootApplication +
-@EnableTransactionManagement +
-@EnableAutoConfiguration(exclude = {FreeMarkerAutoConfiguration.class, GsonAutoConfiguration.class, WebSocketAutoConfiguration.class}) +
-@ComponentScan(basePackageClasses = {Dew.class}) +
-@EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true) +
-@EnableCaching(proxyTargetClass = true)
-====
-
-[TIP]
-.DewCloudApplication使用如下注解
-====
-@SpringCloudApplication
-====
-
-[NOTE]
-.@ComponentScan说明
-====
-`Spring boot` 严重依赖于包扫描功能，所以工程中需要重写 `@ComponentScan` 加入当前工程的根包，要求为 `Dew` 包在前，工程包在后，如： `(basePackageClasses = {Dew.class,PetStoreApplication.class})`
-====
+`Dew` 自``1.3.0-SNAPSHOT``版本起，去掉了对启动类的改造，正如dew的设计初衷：
+----
+Dew [du:] 意为`露水`，希望此框架可以像晨间的露水一样透明、静谧、丰盈。让使用者尽量不要感知框架的存在，专注业务实现。
+----
+so，原生的springboot和springcloud如何使用，现在就如何使用。
 
 TIP: 示例见 `example/guide-petstore`
 
@@ -2065,7 +2046,7 @@ public void transferAReceive(String id) {
 [source,java]
 .启动类配置示例
 ----
-@DewBootApplication(scanBasePackageClasses = {Dew.class, MybatisMultiApplication.class}, exclude = MybatisPlusAutoConfiguration.class)
+@SpringbootApplication
 @DewMapperScan(basePackages = "com.tairanchina.csp.dew.mybatis.multi.mapper")
 public class MybatisMultiApplication {
 
@@ -2374,38 +2355,3 @@ dew:
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标
 及针对接口的对应指标
 
-==== Dew 启动类配置多样性
-
-NOTE: ``dew``启动类支持注解式配置和继承式配置，注解为``@DewBootApplication``和``@DewCloudApplication``,抽象类为``DewBootApplication``和``DewCloudApplication``
-
-* 注解式配置
-
-TIP: 注解式配置必须详细配置扫描基类
-
-[source,java]
-.在启动类上加@DewBootApplication注解
-----
-@DewBootApplication(scanBasePackageClasses = {Dew.class, ExampleApplication.class})
-public class ExampleApplication {
-
-    public static void main(String[] args) throws InterruptedException {
-        new SpringApplicationBuilder(ExampleApplication.class).run(args);
-    }
-}
-----
-
-* 继承式配置
-
-TIP: 继承式配置注解继承自父类
-
-[source,java]
-.启动类继承DewBootApplication类
-----
-
-public class ExampleApplication extends DewBootApplication类 {
-
-    public static void main(String[] args) throws InterruptedException {
-        new SpringApplicationBuilder(ExampleApplication.class).run(args);
-    }
-}
-----

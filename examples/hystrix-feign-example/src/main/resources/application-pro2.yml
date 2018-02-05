@@ -3,7 +3,7 @@ dew:
     name: hystrix-feign样例工程
   cloud:
     error:
-      enabled: false
+      enabled: true
       notify-interval-sec: 10
       notify-emails: 71964899@qq.com
       #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)","ExampleClient2#deleteExe(int,String)"]

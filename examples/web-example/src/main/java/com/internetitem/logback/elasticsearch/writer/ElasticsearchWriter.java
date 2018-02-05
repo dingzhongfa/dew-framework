@@ -1,3 +1,4 @@
+/*
 package com.internetitem.logback.elasticsearch.writer;
 
 import com.internetitem.logback.elasticsearch.config.HttpRequestHeader;
@@ -57,7 +58,7 @@ public class ElasticsearchWriter implements SafeWriter {
 			urlConnection.setRequestMethod("POST");
 
 			String body = sendBuffer.toString();
-			sendBuffer.setLength(0);
+			sendBuffer=new StringBuilder();
 			if (!headerList.isEmpty()) {
 				for(HttpRequestHeader header: headerList) {
 					urlConnection.setRequestProperty(header.getName(), header.getValue());
@@ -114,3 +115,4 @@ public class ElasticsearchWriter implements SafeWriter {
 	}
 
 }
+*/

@@ -5,6 +5,7 @@ import com.tairanchina.csp.dew.jdbc.mybatis.annotion.DewMapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.DependsOn;
  * Created by ding on 2017/12/28.
  */
 @SpringBootApplication
+@EnableTransactionManagement
 @DewMapperScan(basePackages = "com.tairanchina.csp.dew.mybatis.multi.mapper")
 public class MybatisMultiApplication {
 

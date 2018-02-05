@@ -22,8 +22,8 @@ spring:
   application:
     name: hystrix-feign-example
 server:
-  tomcat:
-    max-threads: 20
+#  tomcat:
+#    max-threads: 20
   port: 11000
 eureka:
   client:

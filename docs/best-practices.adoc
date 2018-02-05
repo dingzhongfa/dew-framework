@@ -775,7 +775,7 @@ management:
 <1> 要监控的集群名称
 <3> 添加需要被监控的应用 `Service-Id` ，以逗号分隔
 <4> 同上文 ``management.context-path``
---
+
 
 === jdbc 批量插入性能问题
 
@@ -829,6 +829,7 @@ spring:
 |2398
 |===
 
+
 === http请求并发数性能瓶颈
 
 * 当策略为Thread时（默认是Thread)，hystrix.threadpool.default.maximumSize为第一个性能瓶颈，默认值为10.
@@ -845,7 +846,7 @@ TIP: 修改值时，需要先设置hystrix.threadpool.default.allowMaximumSizeTo
 
 NOTE: 这个是解析%dew的内容
 
-. 自定义Converter继承ynamicConverter<ILoggingEvent>，解析message，获取有效信息并返回解析后得到的字符串。
+. 自定义Converter继承DynamicConverter<ILoggingEvent>，解析message，获取有效信息并返回解析后得到的字符串。
 
 [source,java]
 .Converter代码示例

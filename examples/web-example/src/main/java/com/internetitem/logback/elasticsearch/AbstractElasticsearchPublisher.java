@@ -1,3 +1,4 @@
+/*
 package com.internetitem.logback.elasticsearch;
 
 import ch.qos.logback.core.Context;
@@ -190,3 +191,4 @@ public abstract class AbstractElasticsearchPublisher<T> implements Runnable {
 
 }
 
+*/

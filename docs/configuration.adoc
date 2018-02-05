@@ -129,7 +129,6 @@ sharding:
     mybatis:
       second:
         enabled: true
-
 ----
 
 === `Spring boot` 核心参数

@@ -24,11 +24,9 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,9 +46,9 @@ import java.util.Set;
 @ConditionalOnClass({SqlSessionFactory.class, MybatisSqlSessionFactoryBean.class})
 @EnableConfigurationProperties({MybatisPlusProperties.class,DewMultiDSConfig.class})
 @DewLoadImmediately
-public class MyabtisStarterConfiguration {
+public class MybatisStarterConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(MyabtisStarterConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(MybatisStarterConfiguration.class);
     private final MybatisPlusProperties properties;
     private final Interceptor[] interceptors;
     private final ResourceLoader resourceLoader;
@@ -69,7 +67,7 @@ public class MyabtisStarterConfiguration {
     @Autowired
     private DefaultListableBeanFactory beanFactory;
 
-    public MyabtisStarterConfiguration(MybatisPlusProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider, ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider, ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
+    public MybatisStarterConfiguration(MybatisPlusProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider, ResourceLoader resourceLoader, ObjectProvider<DatabaseIdProvider> databaseIdProvider, ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
         this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;

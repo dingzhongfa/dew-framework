@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.tairanchina.csp.dew.jdbc.mybatis.MyabtisStarterConfiguration
+com.tairanchina.csp.dew.jdbc.mybatis.MybatisStarterConfiguration

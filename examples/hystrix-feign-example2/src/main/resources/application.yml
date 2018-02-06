@@ -3,7 +3,7 @@ dew:
     error:
       notify-interval-sec: 10
       notify-emails: 71964899@qq.com
-      enabled: true
+#      enabled: true
       #notify-event-types: FAILURE,SHORT_CIRCUITED
       #notify-include-keys: ["ExampleClient#deleteExe(int,String)","ExampleClient#postExe(int,String)"]
 spring:

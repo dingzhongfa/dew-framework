@@ -4,7 +4,6 @@ import com.tairanchina.csp.dew.example.hystrixtwo.client.ExampleClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +16,11 @@ public class HystrixExampleController {
 
     private static final Logger logger = LoggerFactory.getLogger(HystrixExampleController.class);
 
-    public static int s = 0;
-
     private AtomicInteger atomicInteger = new AtomicInteger();
 
     @Autowired
     private ExampleClient exampleClient;
 
-    @Autowired
-    private SpringClientFactory factory;
 
     @GetMapping("test")
     public ResponseEntity testPressure(){

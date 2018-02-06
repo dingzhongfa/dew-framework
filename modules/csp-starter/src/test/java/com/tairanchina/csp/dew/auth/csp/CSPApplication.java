@@ -1,6 +1,5 @@
 package com.tairanchina.csp.dew.auth.csp;
 
-import com.tairanchina.csp.dew.core.autoconfigure.DewBootApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 

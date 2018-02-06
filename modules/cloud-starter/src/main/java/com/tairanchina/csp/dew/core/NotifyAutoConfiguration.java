@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
  * Created by ding on 2018/2/2.
  */
 @Configuration
-@ConditionalOnProperty(prefix = "dew.cloud.error",name = "enabled",havingValue = "true",matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dew.cloud.error",name = "enabled",havingValue = "true")
 @EnableConfigurationProperties(DewCloudConfig.class)
 public class NotifyAutoConfiguration {
 

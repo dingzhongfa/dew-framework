@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.sql.SQLException;
 
 /**
@@ -22,14 +23,14 @@ public class MultiInit {
 
     private static final Logger logger = LoggerFactory.getLogger(MultiInit.class);
 
-//    @Autowired
+    @Autowired
     private TOrderService tOrderService;
 
-//    @Autowired
+    @Autowired
     private SoftTransactionManager softTransactionManager;
 
 
-//    @Autowired
+    @Autowired
     private ShardingEnvironmentAware shardingEnvironmentAware;
 
     /**
@@ -37,7 +38,7 @@ public class MultiInit {
      *
      * @throws SQLException
      */
-//    @PostConstruct
+    @PostConstruct
     public void init() throws SQLException, InterruptedException {
         new Thread(() -> {
             logger.info("sharding init test start");

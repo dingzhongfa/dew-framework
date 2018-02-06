@@ -130,7 +130,10 @@ dew:
  * 工程启动类
  * 重写父类的ComponentScan，先扫描Dew下的包，再是项目的根包
  */
-@DewBootApplication(scanBasePackageClasses = {Dew.class,PetStoreApplication.class})
+@SpringBootApplication
+@EnableAspectJAutoProxy(exposeProxy = true,proxyTargetClass = true) //开启事务或catche时都需要加该注解
+@EnableTransactionManagement // 开启注解式事务需要添加
+@EnableCaching(proxyTargetClass = true) // 开启注解式catche需要添加
 public class PetStoreApplication {
 
     public static void main(String[] args) {

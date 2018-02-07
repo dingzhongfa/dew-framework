@@ -87,7 +87,7 @@ public class MybatisMultiTest {
     }
 
     @Test
-    @Transactional("test1TransactionManager")
+    @Transactional
     public void testUser() {
         testUserProcess(userService);
         testUserProcess(userService2);

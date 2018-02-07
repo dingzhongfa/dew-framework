@@ -2,6 +2,7 @@ package com.tairanchina.csp.dew.core.cluster.spi.kafka;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
@@ -17,25 +18,37 @@ public class KafkaAdapter {
 
     private Properties consumerProperties;
 
-    private KafkaConfig kafkaConfig;
+    private KafkaProperties kafkaProperties;
 
-    public KafkaAdapter(KafkaConfig kafkaConfig) {
-        this.kafkaConfig = kafkaConfig;
+    public KafkaAdapter(KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
     }
 
     @PostConstruct
     public void init() throws IllegalAccessException {
         // 生产者（发布）
-        this.kafkaProducer = new KafkaProducer<>(getProperties(kafkaConfig.getProducer(), KafkaConfig.Producer.class));
+        this.kafkaProducer = new KafkaProducer<>(getProperties(kafkaProperties.getProducer(), KafkaProperties.Producer.class));
         // 消费者（订阅）
-        this.consumerProperties = getProperties(kafkaConfig.getConsumer(), KafkaConfig.Consumer.class);
+        this.consumerProperties = getProperties(kafkaProperties.getConsumer(), KafkaProperties.Consumer.class);
     }
 
     KafkaProducer<String, String> getKafkaProducer() {
         return kafkaProducer;
     }
 
-    KafkaConsumer<String, String> getKafkaConsumer() {
+    KafkaConsumer<String, String> getKafkaConsumer(boolean isSubscibe) {
+
+        if (isSubscibe) {
+            Properties properties = new Properties();
+            consumerProperties.forEach((k, v) -> {
+                if (k.equals("group.id")) {
+                    properties.put(k, v + "_" + System.currentTimeMillis() + "_" + Math.random());
+                } else {
+                    properties.put(k, v);
+                }
+            });
+            return new KafkaConsumer<>(properties);
+        }
         return new KafkaConsumer<>(consumerProperties);
     }
 

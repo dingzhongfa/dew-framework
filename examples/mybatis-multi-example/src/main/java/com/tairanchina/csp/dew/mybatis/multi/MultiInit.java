@@ -38,7 +38,7 @@ public class MultiInit {
      *
      * @throws SQLException
      */
-    @PostConstruct
+//    @PostConstruct
     public void init() throws SQLException, InterruptedException {
         new Thread(() -> {
             logger.info("sharding init test start");

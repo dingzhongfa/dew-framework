@@ -22,7 +22,7 @@
         <module>modules/cluster-hazelcast</module>
         <module>modules/cluster-rabbit</module>
         <module>modules/cluster-eureka</module>
-       <!-- <module>modules/cluster-ignite</module>-->
+        <!-- <module>modules/cluster-ignite</module>-->
         <module>modules/cluster-kafka</module>
         <module>modules/boot-starter</module>
         <module>modules/cloud-starter</module>
@@ -30,7 +30,7 @@
         <module>modules/mybatis-starter</module>
         <module>modules/idempotent-starter</module>
         <module>modules/test-starter</module>
-        <module>modules/csp-starter</module>
+        <!--<module>modules/csp-starter</module>-->
         <module>components/registry</module>
         <module>components/config</module>
         <module>components/gateway</module>

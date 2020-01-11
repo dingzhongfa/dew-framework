@@ -32,18 +32,18 @@
         <appender-ref ref="dailyRollingFile"/>
     </appender>
 
-    <appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
+    <!--<appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
         <url>http://127.0.0.1:9200/_bulk</url>
         <index>${ES_INDEX}</index>
         <type>log</type>
-        <connectTimeout>${esConnectTimeout}</connectTimeout> <!-- optional (in ms, default 30000) -->
-        <readTimeout>${esReadTimeout}</readTimeout> <!-- optional (in ms, default 30000) -->
-        <maxQueueSize>${esMaxQueueSize}</maxQueueSize> <!-- optional (default 104857600) -->
-        <maxMessageSize>${esMaxMessageSize}</maxMessageSize> <!-- optional (default -1 -->
-        <errorsToStderr>true</errorsToStderr> <!-- optional (default false) -->
-        <maxRetries>3</maxRetries> <!-- optional (default 3) -->
-        <sleepTime>250</sleepTime> <!-- optional (in ms, default 250) -->
-        <!--<authentication class="com.internetitem.logback.elasticsearch.config.BasicAuthentication" /> --><!-- optional -->
+        <connectTimeout>${esConnectTimeout}</connectTimeout> &lt;!&ndash; optional (in ms, default 30000) &ndash;&gt;
+        <readTimeout>${esReadTimeout}</readTimeout> &lt;!&ndash; optional (in ms, default 30000) &ndash;&gt;
+        <maxQueueSize>${esMaxQueueSize}</maxQueueSize> &lt;!&ndash; optional (default 104857600) &ndash;&gt;
+        <maxMessageSize>${esMaxMessageSize}</maxMessageSize> &lt;!&ndash; optional (default -1 &ndash;&gt;
+        <errorsToStderr>true</errorsToStderr> &lt;!&ndash; optional (default false) &ndash;&gt;
+        <maxRetries>3</maxRetries> &lt;!&ndash; optional (default 3) &ndash;&gt;
+        <sleepTime>250</sleepTime> &lt;!&ndash; optional (in ms, default 250) &ndash;&gt;
+        &lt;!&ndash;<authentication class="com.internetitem.logback.elasticsearch.config.BasicAuthentication" /> &ndash;&gt;&lt;!&ndash; optional &ndash;&gt;
         <properties>
             <property>
                 <name>severity</name>
@@ -88,11 +88,10 @@
                 <value>text/plain</value>
             </header>
         </headers>
-    </appender>
+    </appender>-->
     <springProfile name="dev,default">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ELASTIC"/>
         </root>
     </springProfile>
     <springProfile name="test">
@@ -105,7 +104,6 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ASYNC_LOG"/>
-            <appender-ref ref="ELASTIC"/>
         </root>
     </springProfile>
 </configuration>

@@ -2205,7 +2205,7 @@ Dew使用"内嵌式"工具解决，数据库使用 `H2` ，Redis使用 `embedded
 
 # config
 dew:
-  cluster: #所有集群操作都使用reids模拟
+  cluster: #所有集群操作都使用redis模拟
     cache: redis
     dist: redis
     mq: redis
@@ -2376,4 +2376,3 @@ dew:
 
 开发者可以get请求访问根路径下的/metrics接口，即可看到新增的 `dew.response.nityPercent`,`dew.response.average`,`dew.response.max`,`dew.response.tps` 四个指标
 及针对接口的对应指标
-
